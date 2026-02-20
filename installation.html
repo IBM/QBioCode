@@ -31,6 +31,8 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=9478b45b" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -40,14 +42,15 @@
 
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=d45e8c67"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=f539c95a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'installation';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Tutorial" href="tutorials.html" />
+    <link rel="next" title="Background: Quantum Machine Learning" href="background.html" />
     <link rel="prev" title="QBioCode" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -139,6 +142,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="tutorials.html">
     Tutorials
   </a>
@@ -146,22 +156,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -200,6 +203,14 @@
         </li>
 </ul></div>
       
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
     </div>
     
   </div>
@@ -231,7 +242,7 @@
       
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -254,6 +265,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="tutorials.html">
     Tutorials
   </a>
@@ -261,22 +279,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -306,9 +317,33 @@
         </li>
 </ul></div>
         
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
       </div>
     
   </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+    </div>
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
@@ -362,8 +397,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <p><a class="reference external" href="https://www.python.org/downloads/"><img alt="Minimum Python Version" src="https://img.shields.io/badge/Python-%3E=%203.9-blue" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Maximum Python Version Tested" src="https://img.shields.io/badge/Python-%3C=%203.11-blueviolet" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Supported Python Versions" src="https://img.shields.io/badge/Python-3.9%20%7C%203.10%20%7C%203.11-blue" /></a></p>
-<p>This project has been tested and is compatible with Python versions 3.9, 3.10, and 3.11. While it might work on other versions, these are the officially supported and tested ones.</p>
+  <p><a class="reference external" href="https://www.python.org/downloads/"><img alt="Minimum Python Version" src="https://img.shields.io/badge/Python-%3E=%203.9-blue" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Maximum Python Version Tested" src="https://img.shields.io/badge/Python-%3C=%203.12-blueviolet" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Supported Python Versions" src="https://img.shields.io/badge/Python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue" /></a></p>
+<p>This project has been tested and is compatible with Python versions 3.9, 3.10, 3.11, and 3.12. While it might work on other versions, these are the officially supported and tested ones.</p>
 <section id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h1>
 <p>Before you can run this project, you need to have python installed on your system</p>
@@ -419,6 +454,17 @@ Once the virtual enviroment is activated, you can install the required packages 
 </pre></div>
 </div>
 <ol class="arabic" start="5">
+<li><p><strong>macOS Users: Install OpenMP for XGBoost (Required)</strong></p>
+<p>On macOS, XGBoost requires the OpenMP library. Install it using Homebrew:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>libomp
+</pre></div>
+</div>
+<p>If you don’t have Homebrew installed, visit <a class="reference external" href="https://brew.sh/">https://brew.sh/</a> for installation instructions.</p>
+<p>After installing OpenMP, you may need to reinstall XGBoost:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>xgboost
+</pre></div>
+</div>
+</li>
 <li><p><strong>Deactivate the virtual enviroment (when you are done):</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="w"> </span>deactivate
 </pre></div>
@@ -432,7 +478,7 @@ Once the virtual enviroment is activated, you can install the required packages 
 <ol class="arabic simple">
 <li><p>Create the environment from the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file.  This can be done using anaconda, miniconda, miniforge, or any other environment manager.</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">qbc</span> <span class="n">python</span><span class="o">==</span><span class="mf">3.11</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">qbc</span> <span class="n">python</span><span class="o">==</span><span class="mf">3.12</span>
 
 </pre></div>
 </div>
@@ -446,7 +492,18 @@ Once the virtual enviroment is activated, you can install the required packages 
 <span class="n">pip</span> <span class="n">install</span> <span class="o">.</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="3">
+<ol class="arabic" start="3">
+<li><p><strong>macOS Users: Install OpenMP for XGBoost (Required)</strong></p>
+<p>On macOS, XGBoost requires the OpenMP library. Install it using Homebrew:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>libomp
+</pre></div>
+</div>
+<p>If you don’t have Homebrew installed, visit <a class="reference external" href="https://brew.sh/">https://brew.sh/</a> for installation instructions.</p>
+<p>After installing OpenMP, you may need to reinstall XGBoost:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>xgboost
+</pre></div>
+</div>
+</li>
 <li><p>Verify that the new environment and packages were installed correctly:</p></li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="nb">list</span>
@@ -457,19 +514,184 @@ Once the virtual enviroment is activated, you can install the required packages 
    * [Connect to computing cluster](http://ccc.pok.ibm.com:1313/gettingstarted/newusers/connecting/)
    * [Set up / install Anaconda on remote linux server](https://kengchichang.com/post/conda-linux/)
    * [Set up remote development environment using VSCode](https://code.visualstudio.com/docs/remote/ssh) -->
+</section>
+<section id="option-3-using-galaxy-cloud-based-no-local-installation">
+<h2>Option 3: Using Galaxy (Cloud-Based, No Local Installation)<a class="headerlink" href="#option-3-using-galaxy-cloud-based-no-local-installation" title="Link to this heading">#</a></h2>
+<p>If you prefer not to install QBioCode on your local or personal machine, you can use <a class="reference external" href="https://usegalaxy.org/">Galaxy</a>, a free, web-based platform for data-intensive biomedical research.</p>
+<div class="tip admonition">
+<p class="admonition-title">Why Galaxy?</p>
+<ul class="simple">
+<li><p><strong>No installation required</strong>: Run everything in your browser</p></li>
+<li><p><strong>Free computational resources</strong>: Access to cloud computing</p></li>
+<li><p><strong>Jupyter notebook support</strong>: Run QBioCode tutorials directly</p></li>
+<li><p><strong>Persistent workspace</strong>: Your work is saved in the cloud</p></li>
+</ul>
+</div>
+<section id="step-1-register-for-a-galaxy-account">
+<h3>Step 1: Register for a Galaxy Account<a class="headerlink" href="#step-1-register-for-a-galaxy-account" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p>Go to <a class="reference external" href="https://usegalaxy.org/">https://usegalaxy.org/</a></p></li>
+<li><p>Click <strong>“Login or Register”</strong> in the top menu</p></li>
+<li><p>Select <strong>“Register”</strong> and fill in:</p>
+<ul class="simple">
+<li><p>Email address</p></li>
+<li><p>Password</p></li>
+<li><p>Public name (username)</p></li>
+</ul>
+</li>
+<li><p>Click <strong>“Create”</strong> to complete registration</p></li>
+<li><p>Verify your email address (check your inbox for confirmation link)</p></li>
+</ol>
+</section>
+<section id="step-2-launch-a-jupyter-notebook-server">
+<h3>Step 2: Launch a Jupyter Notebook Server<a class="headerlink" href="#step-2-launch-a-jupyter-notebook-server" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Log in</strong> to your Galaxy account at <a class="reference external" href="https://usegalaxy.org/">https://usegalaxy.org/</a></p></li>
+<li><p>From the top menu, select <strong>“Interactive Tools”</strong></p></li>
+<li><p>Search for <strong>“Jupyter Notebook”</strong> or <strong>“JupyterLab”</strong></p></li>
+<li><p>Click on the Jupyter tool to launch it</p></li>
+<li><p>Configure the notebook environment:</p>
+<ul class="simple">
+<li><p><strong>Select Python version</strong>: Choose Python 3.9, 3.10, 3.11, or 3.12</p></li>
+<li><p><strong>Allocate resources</strong>: Default settings are usually sufficient</p></li>
+<li><p>Click <strong>“Execute”</strong> or <strong>“Run Tool”</strong></p></li>
+</ul>
+</li>
+<li><p>Wait for the notebook server to start (this may take 1-2 minutes)</p></li>
+<li><p>Once ready, click the <strong>link</strong> to open your Jupyter environment in a new tab</p></li>
+</ol>
+</section>
+<section id="step-3-install-qbiocode-in-galaxy-jupyter">
+<h3>Step 3: Install QBioCode in Galaxy Jupyter<a class="headerlink" href="#step-3-install-qbiocode-in-galaxy-jupyter" title="Link to this heading">#</a></h3>
+<p>Once your Jupyter notebook server is running:</p>
+<ol class="arabic">
+<li><p><strong>Open a new terminal</strong> in Jupyter:</p>
+<ul class="simple">
+<li><p>Click <strong>“File” → “New” → “Terminal”</strong> (in JupyterLab)</p></li>
+<li><p>Or use the <strong>“New” → “Terminal”</strong> button (in classic Jupyter)</p></li>
+</ul>
+</li>
+<li><p><strong>Install QBioCode</strong> using Option 1 (pip install):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/IBM/QBioCode.git
+<span class="nb">cd</span><span class="w"> </span>QBioCode
+
+<span class="c1"># Install QBioCode</span>
+pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+</li>
+<li><p><strong>macOS Users: Install OpenMP for XGBoost (if needed)</strong></p>
+<p>If you’re using macOS and plan to use XGBoost models, you may need OpenMP:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This may not work in Galaxy&#39;s terminal, but try:</span>
+brew<span class="w"> </span>install<span class="w"> </span>libomp
+pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>xgboost
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Galaxy environments may have XGBoost pre-configured. If you encounter XGBoost errors, consider using other models (Random Forest, SVC, etc.) or switch to local installation.</p>
+</div>
+</li>
+<li><p><strong>Verify installation</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import qbiocode; print(&#39;QBioCode installed successfully!&#39;)&quot;</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="step-4-run-qbiocode-tutorials">
+<h3>Step 4: Run QBioCode Tutorials<a class="headerlink" href="#step-4-run-qbiocode-tutorials" title="Link to this heading">#</a></h3>
+<ol class="arabic">
+<li><p><strong>Navigate to the tutorial directory</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tutorial
+</pre></div>
+</div>
+</li>
+<li><p><strong>Open a tutorial notebook</strong>:</p>
+<ul class="simple">
+<li><p>In the Jupyter file browser, navigate to <code class="docutils literal notranslate"><span class="pre">QBioCode/tutorial/</span></code></p></li>
+<li><p>Click on any tutorial notebook to open it:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">QProfiler/example_qprofiler.ipynb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QSage/qsage.ipynb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Artificial_data_generation/example_data_generation.ipynb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quantum_Projection_Learning/QPL_example.ipynb</span></code></p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>Run the tutorial</strong>:</p>
+<ul class="simple">
+<li><p>Execute cells sequentially using <strong>Shift+Enter</strong></p></li>
+<li><p>Follow the instructions in each notebook</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="tips-for-using-galaxy">
+<h3>Tips for Using Galaxy<a class="headerlink" href="#tips-for-using-galaxy" title="Link to this heading">#</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Best Practices:</strong></p>
+<ul class="simple">
+<li><p><strong>Save your work frequently</strong>: Use File → Save to preserve your progress</p></li>
+<li><p><strong>Download important results</strong>: Export notebooks and data files to your local machine</p></li>
+<li><p><strong>Monitor resource usage</strong>: Galaxy sessions have time limits; plan accordingly</p></li>
+<li><p><strong>Use version control</strong>: Consider connecting to GitHub for better workflow management</p></li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Important Limitations:</strong></p>
+<ul class="simple">
+<li><p>Galaxy sessions may timeout after inactivity (typically 1-2 hours)</p></li>
+<li><p>Computational resources are shared; quantum simulations may be slower</p></li>
+<li><p>Large datasets may require local installation for better performance</p></li>
+<li><p>IBM Quantum hardware access requires separate IBM Quantum account setup</p></li>
+</ul>
+</div>
+</section>
+<section id="troubleshooting-galaxy-installation">
+<h3>Troubleshooting Galaxy Installation<a class="headerlink" href="#troubleshooting-galaxy-installation" title="Link to this heading">#</a></h3>
+<p><strong>Issue: pip install fails</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Try upgrading pip first</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+pip<span class="w"> </span>install<span class="w"> </span>.
+</pre></div>
+</div>
+<p><strong>Issue: Import errors</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restart the kernel: Kernel → Restart Kernel</span>
+<span class="c1"># Then re-import</span>
+import<span class="w"> </span>qbiocode
+</pre></div>
+</div>
+<p><strong>Issue: XGBoost errors on macOS</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install OpenMP library</span>
+brew<span class="w"> </span>install<span class="w"> </span>libomp
+pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>xgboost
+</pre></div>
+</div>
+<p><strong>Issue: Session timeout</strong></p>
+<ul class="simple">
+<li><p>Save your work regularly</p></li>
+<li><p>Download notebooks before closing</p></li>
+<li><p>Restart the interactive tool if needed</p></li>
+</ul>
+</section>
+<section id="alternative-google-colab">
+<h3>Alternative: Google Colab<a class="headerlink" href="#alternative-google-colab" title="Link to this heading">#</a></h3>
+<p>Another cloud-based option is <a class="reference external" href="https://colab.research.google.com/">Google Colab</a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In a Colab notebook cell:</span>
+<span class="err">!</span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">IBM</span><span class="o">/</span><span class="n">QBioCode</span><span class="o">.</span><span class="n">git</span>
+<span class="o">%</span><span class="n">cd</span> <span class="n">QBioCode</span>
+<span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="o">.</span>
+</pre></div>
+</div>
+<p>Then upload tutorial notebooks from the <code class="docutils literal notranslate"><span class="pre">tutorial/</span></code> directory.</p>
+<hr class="docutils" />
 <p><a name="running_qbiocode"></a></p>
-<!-- ### Running QBioCode -->
-<!-- [![Notebook Template][notebook]](#running_comical) -->
-<!-- 1. Request resources from computing cluster:
-```
-jbsub -cores 2+1 -q x86_1h -mem 5g -interactive bash
-```
-OR
-Submit your job without the interactive session (shown later).  -->
-<!-- 2. Activate the new environment:
-```
-conda activate qbiocode
-``` -->
+</section>
 </section>
 </section>
 
@@ -479,6 +701,30 @@ conda activate qbiocode
               
               
               
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">QBioCode</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="background.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Background: Quantum Machine Learning</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
               
             </div>
             
@@ -498,6 +744,16 @@ conda activate qbiocode
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-setting-up-a-python-virtual-enviroment-venv">Option 1: Setting up a Python Virtual Enviroment (venv)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-setting-up-a-conda-enviroment">Option 2: Setting up a Conda Enviroment</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-3-using-galaxy-cloud-based-no-local-installation">Option 3: Using Galaxy (Cloud-Based, No Local Installation)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-register-for-a-galaxy-account">Step 1: Register for a Galaxy Account</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-launch-a-jupyter-notebook-server">Step 2: Launch a Jupyter Notebook Server</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-install-qbiocode-in-galaxy-jupyter">Step 3: Install QBioCode in Galaxy Jupyter</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-run-qbiocode-tutorials">Step 4: Run QBioCode Tutorials</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tips-for-using-galaxy">Tips for Using Galaxy</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting-galaxy-installation">Troubleshooting Galaxy Installation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#alternative-google-colab">Alternative: Google Colab</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -535,7 +791,7 @@ conda activate qbiocode
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>

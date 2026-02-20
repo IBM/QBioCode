@@ -30,6 +30,8 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=9478b45b" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -39,9 +41,10 @@
 
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=d45e8c67"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=f539c95a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'py-modindex';</script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -139,6 +142,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="tutorials.html">
     Tutorials
   </a>
@@ -146,22 +156,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -200,6 +203,14 @@
         </li>
 </ul></div>
       
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
     </div>
     
   </div>
@@ -229,7 +240,7 @@
         
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -252,6 +263,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="tutorials.html">
     Tutorials
   </a>
@@ -259,22 +277,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -304,9 +315,27 @@
         </li>
 </ul></div>
         
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
       </div>
     
   </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+    </div>
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
@@ -406,12 +435,12 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.embeddings.compute_autoencoder.html#module-qbiocode.embeddings.compute_autoencoder"><code class="xref">qbiocode.embeddings.compute_autoencoder</code></a></td><td>
+       <a href="api/qbiocode.embeddings.html#module-qbiocode.embeddings.compute_autoencoder"><code class="xref">qbiocode.embeddings.compute_autoencoder</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.embeddings.embed.html#module-qbiocode.embeddings.embed"><code class="xref">qbiocode.embeddings.embed</code></a></td><td>
+       <a href="api/qbiocode.embeddings.html#module-qbiocode.embeddings.embed"><code class="xref">qbiocode.embeddings.embed</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -421,12 +450,12 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.evaluation.dataset_evaluation.html#module-qbiocode.evaluation.dataset_evaluation"><code class="xref">qbiocode.evaluation.dataset_evaluation</code></a></td><td>
+       <a href="api/qbiocode.evaluation.html#module-qbiocode.evaluation.dataset_evaluation"><code class="xref">qbiocode.evaluation.dataset_evaluation</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.evaluation.model_evaluation.html#module-qbiocode.evaluation.model_evaluation"><code class="xref">qbiocode.evaluation.model_evaluation</code></a></td><td>
+       <a href="api/qbiocode.evaluation.html#module-qbiocode.evaluation.model_evaluation"><code class="xref">qbiocode.evaluation.model_evaluation</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -441,57 +470,107 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_dt.html#module-qbiocode.learning.compute_dt"><code class="xref">qbiocode.learning.compute_dt</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_dt"><code class="xref">qbiocode.learning.compute_dt</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_lr.html#module-qbiocode.learning.compute_lr"><code class="xref">qbiocode.learning.compute_lr</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_lr"><code class="xref">qbiocode.learning.compute_lr</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_mlp.html#module-qbiocode.learning.compute_mlp"><code class="xref">qbiocode.learning.compute_mlp</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_mlp"><code class="xref">qbiocode.learning.compute_mlp</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_nb.html#module-qbiocode.learning.compute_nb"><code class="xref">qbiocode.learning.compute_nb</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_nb"><code class="xref">qbiocode.learning.compute_nb</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_pqk.html#module-qbiocode.learning.compute_pqk"><code class="xref">qbiocode.learning.compute_pqk</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_pqk"><code class="xref">qbiocode.learning.compute_pqk</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_qnn.html#module-qbiocode.learning.compute_qnn"><code class="xref">qbiocode.learning.compute_qnn</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_qnn"><code class="xref">qbiocode.learning.compute_qnn</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_qsvc.html#module-qbiocode.learning.compute_qsvc"><code class="xref">qbiocode.learning.compute_qsvc</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_qsvc"><code class="xref">qbiocode.learning.compute_qsvc</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_rf.html#module-qbiocode.learning.compute_rf"><code class="xref">qbiocode.learning.compute_rf</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_rf"><code class="xref">qbiocode.learning.compute_rf</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_svc.html#module-qbiocode.learning.compute_svc"><code class="xref">qbiocode.learning.compute_svc</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_svc"><code class="xref">qbiocode.learning.compute_svc</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.learning.compute_vqc.html#module-qbiocode.learning.compute_vqc"><code class="xref">qbiocode.learning.compute_vqc</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_vqc"><code class="xref">qbiocode.learning.compute_vqc</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.version.html#module-qbiocode.version"><code class="xref">qbiocode.version</code></a></td><td>
+       <a href="api/qbiocode.learning.html#module-qbiocode.learning.compute_xgb"><code class="xref">qbiocode.learning.compute_xgb</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils"><code class="xref">qbiocode.utils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils.combine_evals_results"><code class="xref">qbiocode.utils.combine_evals_results</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils.dataset_checkpoint"><code class="xref">qbiocode.utils.dataset_checkpoint</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils.find_duplicates"><code class="xref">qbiocode.utils.find_duplicates</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils.find_string"><code class="xref">qbiocode.utils.find_string</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils.helper_fn"><code class="xref">qbiocode.utils.helper_fn</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils.ibm_account"><code class="xref">qbiocode.utils.ibm_account</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils.qc_winner_finder"><code class="xref">qbiocode.utils.qc_winner_finder</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.utils.html#module-qbiocode.utils.qutils"><code class="xref">qbiocode.utils.qutils</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="cg-1">
+       <td></td>
+       <td>&#160;&#160;&#160;
+       <a href="api/qbiocode.html#module-qbiocode.version"><code class="xref">qbiocode.version</code></a></td><td>
        <em></em></td></tr>
      <tr class="cg-1">
        <td></td>
@@ -501,7 +580,7 @@
      <tr class="cg-1">
        <td></td>
        <td>&#160;&#160;&#160;
-       <a href="api/qbiocode.visualization.visualize_correlation.html#module-qbiocode.visualization.visualize_correlation"><code class="xref">qbiocode.visualization.visualize_correlation</code></a></td><td>
+       <a href="api/qbiocode.visualization.html#module-qbiocode.visualization.visualize_correlation"><code class="xref">qbiocode.visualization.visualize_correlation</code></a></td><td>
        <em></em></td></tr>
    </table>
 
@@ -511,6 +590,12 @@
               
               
               
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
               
             </div>
             
@@ -548,7 +633,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>

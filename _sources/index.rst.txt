@@ -12,9 +12,9 @@
 QBioCode
 #######################################
 
+
 QBioCode is an open-source suite of computational resources dedicated to exploring and developing quantum applications tailored for healthcare and life science (HCLS) data.
-Our goal is to levearege unique capabilites of quantum compunting to tacke some of the most complex challanges in HCLS.
-Within this toolkit are analytic methods that span ... for omics scale data.
+Our goal is to leverage unique capabilities of quantum computing to tackle some of the most *complex challenges* in HCLS. Within this toolkit are analytic methods that span variational quantum classifiers, quantum kernels, and classical machine learning methods for omics scale data.
 
 QBioCode is easy to use and simplifies the development of new software tools. 
 QBioCode provides access to individual tools as well as detailed use cases for analyses that demonstrate how multiple methodologies can be leveraged together.
@@ -24,9 +24,9 @@ QBioCode provides access to individual tools as well as detailed use cases for a
 Key Features
 ========================
 
-* **Quantum algorithms for HLCS**: Dive into bioinformatics and computation biology applications powered by quantum insights.
-* **Open Source Collaboration**: Contribute to the code, sharing your code, and collaborate on groundbreaking research.
-* **Practical Examples**: Learn by doing with a collection of practical code example demonstrating how to implement quantum solution for various HLCS scenarios.
+* **Quantum algorithms for HLCS**: Dive into bioinformatics and computational biology applications powered by quantum insights.
+* **Open Source Collaboration**: Contribute to the code, share your code, and collaborate on groundbreaking research.
+* **Practical Examples**: Learn by doing with a collection of practical code examples demonstrating how to implement quantum solutions for various HLCS scenarios.
 
 ----------------------------------------------------------
 
@@ -43,16 +43,10 @@ Ready to dive into the world of quantum healthcare and life sciences?
     :maxdepth: 2
     
     Installation <installation.md>
+    Background <background.md>
     Tutorials <tutorials.md>
+    Applications <apps>
     API <api_overview>
-
-
-.. toctree::
-    :caption: Apps
-    :maxdepth: 1
-    
-    QProfiler <apps/profiler>
-    QSage <apps/sage>
 
 
 
@@ -62,3 +56,9 @@ Ready to dive into the world of quantum healthcare and life sciences?
 .. * :ref:`genindex`
 .. * :ref:`modindex`
 .. * :ref:`search`
+
+----
+
+.. container:: text-muted small
+
+   |ai_note|

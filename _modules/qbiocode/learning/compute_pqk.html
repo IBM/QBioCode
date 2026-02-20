@@ -30,6 +30,8 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=9478b45b" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -39,9 +41,10 @@
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/qbiocode/learning/compute_pqk';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -136,6 +139,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../tutorials.html">
     Tutorials
   </a>
@@ -143,22 +153,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -197,6 +200,14 @@
         </li>
 </ul></div>
       
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
     </div>
     
   </div>
@@ -226,7 +237,7 @@
         
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -249,6 +260,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../tutorials.html">
     Tutorials
   </a>
@@ -256,22 +274,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -301,9 +312,27 @@
         </li>
 </ul></div>
         
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
       </div>
     
   </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+    </div>
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
@@ -365,6 +394,20 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">auc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomizedSearchCV</span><span class="p">,</span> <span class="n">GridSearchCV</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neural_network</span><span class="w"> </span><span class="kn">import</span> <span class="n">MLPClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
+    <span class="n">XGBOOST_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="n">XGBOOST_AVAILABLE</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">XGBClassifier</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore</span>
 
 <span class="c1"># ====== Additional local imports ======</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.evaluation.model_evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">modeleval</span>
@@ -380,14 +423,15 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">svm</span>
 
 <div class="viewcode-block" id="compute_pqk">
-<a class="viewcode-back" href="../../../api/qbiocode.learning.compute_pqk.html#qbiocode.learning.compute_pqk.compute_pqk">[docs]</a>
+<a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_pqk">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_pqk</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;PQK&#39;</span><span class="p">,</span> <span class="n">data_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">primitive</span> <span class="o">=</span> <span class="s1">&#39;estimator&#39;</span><span class="p">,</span> <span class="n">entanglement</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+                 <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">primitive</span> <span class="o">=</span> <span class="s1">&#39;estimator&#39;</span><span class="p">,</span> <span class="n">entanglement</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+                 <span class="n">classical_models</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function generates quantum circuits, computes projections of the data onto these circuits,</span>
-<span class="sd">    and evaluates the performance of a Support Vector Classifier (SVC) on the projected data.</span>
+<span class="sd">    and evaluates the performance of classical machine learning models on the projected data.</span>
 <span class="sd">    It uses a feature map to encode the data into quantum states and then measures the expectation values</span>
-<span class="sd">    of Pauli operators to obtain the features. The SVC is trained on the projected training data and</span>
+<span class="sd">    of Pauli operators to obtain the features. The classical models are trained on the projected training data and</span>
 <span class="sd">    evaluated on the projected test data. The function returns evaluation metrics and model parameters.</span>
 <span class="sd">    This function requires a quantum backend (simulator or real quantum hardware) for execution.</span>
 <span class="sd">    It supports various configurations such as encoding methods, entanglement strategies, and repetitions</span>
@@ -410,10 +454,17 @@
 <span class="sd">        primitive (str): Primitive type to use, default is &#39;estimator&#39;.</span>
 <span class="sd">        entanglement (str): Entanglement strategy, default is &#39;linear&#39;.</span>
 <span class="sd">        reps (int): Number of repetitions for the feature map, default is 2.</span>
+<span class="sd">        classical_models (list): List of classical models to train on quantum projections.</span>
+<span class="sd">                                 Options: &#39;rf&#39;, &#39;mlp&#39;, &#39;svc&#39;, &#39;lr&#39;, &#39;xgb&#39;.</span>
+<span class="sd">                                 Default is [&#39;rf&#39;, &#39;mlp&#39;, &#39;svc&#39;, &#39;lr&#39;, &#39;xgb&#39;].</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        modeleval (dict): A dictionary containing evaluation metrics and model parameters.</span>
+<span class="sd">        modeleval (pd.DataFrame): A DataFrame containing evaluation metrics and model parameters for all models.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="c1"># Set default classical models if not provided</span>
+    <span class="k">if</span> <span class="n">classical_models</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">classical_models</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rf&#39;</span><span class="p">,</span> <span class="s1">&#39;mlp&#39;</span><span class="p">,</span> <span class="s1">&#39;svc&#39;</span><span class="p">,</span> <span class="s1">&#39;lr&#39;</span><span class="p">,</span> <span class="s1">&#39;xgb&#39;</span><span class="p">]</span>
 
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">feat_dimension</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -527,35 +578,190 @@
     <span class="n">projections_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">load</span><span class="p">(</span> <span class="n">file_projection_test</span> <span class="p">)</span>
     <span class="n">projections_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">projections_test</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">projections_test</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
     
-    <span class="c1"># Run SVC</span>
-    <span class="n">gridsearch_svc_args</span><span class="o">=</span> <span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> 
-                        <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                        <span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="s1">&#39;poly&#39;</span><span class="p">,</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">]</span>
-                        <span class="p">}</span>
+    <span class="c1"># Check if XGBoost is requested but not available</span>
+    <span class="k">if</span> <span class="s1">&#39;xgb&#39;</span> <span class="ow">in</span> <span class="n">classical_models</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">XGBOOST_AVAILABLE</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;XGBoost is not properly installed or configured and will be skipped.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;On macOS, you may need to install OpenMP:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;  brew install libomp</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Then reinstall XGBoost:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;  pip install --force-reinstall xgboost</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;See installation documentation for more details.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Continuing with other models: </span><span class="si">{</span><span class="p">[</span><span class="n">m</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">classical_models</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;xgb&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span>
+        <span class="p">)</span>
+        <span class="c1"># Remove xgb from the list</span>
+        <span class="n">classical_models</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">classical_models</span> <span class="k">if</span> <span class="n">m</span> <span class="o">!=</span> <span class="s1">&#39;xgb&#39;</span><span class="p">]</span>
     
+    <span class="c1"># If no models remain after filtering, raise an error</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">classical_models</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No valid classical models specified. Please provide at least one model from: &#39;rf&#39;, &#39;mlp&#39;, &#39;svc&#39;, &#39;lr&#39;, &#39;xgb&#39;&quot;</span><span class="p">)</span>
+    
+    <span class="n">model_res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">classical_models</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;rf&#39;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">create_rf_model</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;svc&#39;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">create_svc_model</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;mlp&#39;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">create_mlp_model</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;lr&#39;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">create_lr_model</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s1">&#39;xgb&#39;</span><span class="p">:</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">create_xgb_model</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unknown model type &#39;</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s2">&#39; skipped. Valid options: &#39;rf&#39;, &#39;mlp&#39;, &#39;svc&#39;, &#39;lr&#39;, &#39;xgb&#39;&quot;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
+            <span class="k">continue</span>
+        
+        <span class="n">method_pqk</span> <span class="o">=</span> <span class="s1">&#39;pqk_&#39;</span> <span class="o">+</span> <span class="n">method</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">method_pqk</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">projections_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+        <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">projections_test</span><span class="p">)</span>
 
-    <span class="n">svc</span> <span class="o">=</span> <span class="n">svm</span><span class="o">.</span><span class="n">SVC</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">])</span>
+        <span class="n">hyperparameters</span> <span class="o">=</span> <span class="p">{</span>
+                            <span class="s1">&#39;feature_map&#39;</span><span class="p">:</span> <span class="n">feature_map</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                            <span class="s1">&#39;feature_map_reps&#39;</span><span class="p">:</span> <span class="n">reps</span><span class="p">,</span>
+                            <span class="s1">&#39;entanglement&#39;</span> <span class="p">:</span> <span class="n">entanglement</span><span class="p">,</span>
+                            <span class="s1">&#39;best_params&#39;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">best_params_</span><span class="p">,</span>
+                            <span class="c1"># Add other hyperparameters as needed</span>
+                            <span class="p">}</span>
+        <span class="n">model_params</span> <span class="o">=</span> <span class="n">hyperparameters</span>
 
-    <span class="c1"># Initialize GridSearchCV</span>
-    <span class="n">svc_random</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">svc</span><span class="p">,</span> 
-                                <span class="n">param_grid</span><span class="o">=</span><span class="n">gridsearch_svc_args</span><span class="p">,</span> 
+        <span class="n">model_res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">method_pqk</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span>
+
+    <span class="n">model_res</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">model_res</span><span class="p">)</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">model_res</span><span class="p">)</span></div>
+
+
+
+
+<div class="viewcode-block" id="create_xgb_model">
+<a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.create_xgb_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_xgb_model</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
+    <span class="c1"># Initialize the XGBoost Classifier</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">XGBOOST_AVAILABLE</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span>
+            <span class="s2">&quot;XGBoost is not properly installed or configured.</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;On macOS, you may need to install OpenMP:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;  brew install libomp</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;Then reinstall XGBoost:</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;  pip install --force-reinstall xgboost</span><span class="se">\n\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;See installation documentation for more details.&quot;</span>
+        <span class="p">)</span>
+    <span class="n">xgb</span> <span class="o">=</span> <span class="n">XGBClassifier</span><span class="p">(</span><span class="n">objective</span><span class="o">=</span><span class="s1">&#39;binary:logistic&#39;</span><span class="p">,</span> <span class="n">eval_metric</span><span class="o">=</span><span class="s1">&#39;logloss&#39;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="n">xgb_param_distributions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
+        <span class="s1">&#39;learning_rate&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+        <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">],</span>
+        <span class="s1">&#39;subsample&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="s1">&#39;colsample_bytree&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+        <span class="s1">&#39;min_child_weight&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Initialize RandomizedSearchCV</span>
+    <span class="n">xgb_model</span> <span class="o">=</span> <span class="n">RandomizedSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">xgb</span><span class="p">,</span> 
+                                <span class="n">param_distributions</span><span class="o">=</span><span class="n">xgb_param_distributions</span><span class="p">,</span> 
+                                <span class="n">n_iter</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> 
                                 <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
+                                <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                                <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">xgb_model</span></div>
+
+
+<div class="viewcode-block" id="create_lr_model">
+<a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.create_lr_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_lr_model</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
+    <span class="c1"># Initialize the Logistic Regression Classifier</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+
+    <span class="n">lr_param_distributions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="s1">&#39;penalty&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;l1&#39;</span><span class="p">,</span> <span class="s1">&#39;l2&#39;</span><span class="p">],</span>
+        <span class="s1">&#39;solver&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;liblinear&#39;</span><span class="p">,</span> <span class="s1">&#39;saga&#39;</span><span class="p">]</span> 
+    <span class="p">}</span>
+
+    <span class="c1"># Initialize RandomizedSearchCV</span>
+    <span class="n">lr_model</span> <span class="o">=</span> <span class="n">RandomizedSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> 
+                                <span class="n">param_distributions</span><span class="o">=</span><span class="n">lr_param_distributions</span><span class="p">,</span> 
+                                <span class="n">n_iter</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> 
+                                <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
+                                <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                                <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">lr_model</span></div>
+
+
+
+<div class="viewcode-block" id="create_rf_model">
+<a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.create_rf_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_rf_model</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
+    <span class="c1"># Initialize the Random Forest Classifier</span>
+    <span class="n">rf</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="n">rf_param_distributions</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">100</span><span class="p">),</span>
+        <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+        <span class="s1">&#39;min_samples_split&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+        <span class="s1">&#39;min_samples_leaf&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+        <span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Initialize RandomizedSearchCV</span>
+    <span class="n">rf_model</span> <span class="o">=</span> <span class="n">RandomizedSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">rf</span><span class="p">,</span> 
+                                <span class="n">param_distributions</span><span class="o">=</span><span class="n">rf_param_distributions</span><span class="p">,</span> 
+                                <span class="n">n_iter</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> 
+                                <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
+                                <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                                <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">rf_model</span></div>
+
+
+<div class="viewcode-block" id="create_mlp_model">
+<a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.create_mlp_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_mlp_model</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
+    <span class="n">mlp_param_distributions</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;hidden_layer_sizes&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">128</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">,</span><span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="mi">128</span><span class="p">,</span><span class="mi">64</span><span class="p">,</span><span class="mi">32</span><span class="p">)],</span> 
+                            <span class="s2">&quot;activation&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;identity&quot;</span><span class="p">,</span> <span class="s2">&quot;logistic&quot;</span><span class="p">,</span> <span class="s2">&quot;tanh&quot;</span><span class="p">,</span> <span class="s2">&quot;relu&quot;</span><span class="p">],</span> 
+                            <span class="s2">&quot;solver&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;lbfgs&quot;</span><span class="p">,</span> <span class="s2">&quot;sgd&quot;</span><span class="p">,</span> <span class="s2">&quot;adam&quot;</span><span class="p">],</span> 
+                            <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.00005</span><span class="p">,</span><span class="mf">0.0005</span><span class="p">]}</span>
+
+    <span class="c1"># Initialize the MLP Classifier</span>
+    <span class="n">mlp</span> <span class="o">=</span> <span class="n">MLPClassifier</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="c1"># Initialize RandomizedSearchCV</span>
+    <span class="n">mlp_model</span> <span class="o">=</span> <span class="n">RandomizedSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">mlp</span><span class="p">,</span> 
+                                <span class="n">param_distributions</span><span class="o">=</span><span class="n">mlp_param_distributions</span><span class="p">,</span> 
+                                <span class="n">n_iter</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> 
+                                <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
+                                <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
                                 <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
 
+    <span class="k">return</span> <span class="n">mlp_model</span></div>
 
-    <span class="n">svc_random</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">projections_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
-    <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">svc_random</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">projections_test</span><span class="p">)</span>
 
-    <span class="n">hyperparameters</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s1">&#39;feature_map&#39;</span><span class="p">:</span> <span class="n">feature_map</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                        <span class="s1">&#39;feature_map_reps&#39;</span><span class="p">:</span> <span class="n">reps</span><span class="p">,</span>
-                        <span class="s1">&#39;entanglement&#39;</span> <span class="p">:</span> <span class="n">entanglement</span><span class="p">,</span>                        
-                        <span class="s1">&#39;svc_best_params&#39;</span><span class="p">:</span> <span class="n">svc_random</span><span class="o">.</span><span class="n">best_params_</span>
-                        <span class="c1"># Add other hyperparameters as needed</span>
-                        <span class="p">}</span>
-    <span class="n">model_params</span> <span class="o">=</span> <span class="n">hyperparameters</span>
+<div class="viewcode-block" id="create_svc_model">
+<a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.create_svc_model">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_svc_model</span><span class="p">(</span><span class="n">seed</span><span class="p">):</span>
+    <span class="n">svc_param_distributions</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.001</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="s1">&#39;rbf&#39;</span><span class="p">,</span> <span class="s1">&#39;poly&#39;</span><span class="p">,</span><span class="s1">&#39;sigmoid&#39;</span><span class="p">]</span>
+        <span class="p">}</span>
+
+    <span class="c1"># Initialize the SVC</span>
+    <span class="n">svc</span> <span class="o">=</span> <span class="n">SVC</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+
+    <span class="c1"># Initialize RandomizedSearchCV</span>
+    <span class="n">svc_model</span> <span class="o">=</span> <span class="n">RandomizedSearchCV</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">svc</span><span class="p">,</span> 
+                                <span class="n">param_distributions</span><span class="o">=</span><span class="n">svc_param_distributions</span><span class="p">,</span> 
+                                <span class="n">n_iter</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> 
+                                <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
+                                <span class="n">random_state</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+                                <span class="n">n_jobs</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>   
     
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">svc_model</span></div>
 
 </pre></div>
 
@@ -564,6 +770,12 @@
               
               
               
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
               
             </div>
             
@@ -601,7 +813,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>

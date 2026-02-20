@@ -7,7 +7,7 @@ qbiocode.embeddings.embed module
 .. currentmodule:: qbiocode.embeddings.embed
 
 .. automodule:: qbiocode.embeddings.embed
-    :members: get_embeddings, pqk
+    :members: get_embeddings
     :undoc-members:
     :show-inheritance:
     :member-order: bysource
@@ -21,7 +21,6 @@ qbiocode.embeddings.embed module
         :nosignatures:
 
         get_embeddings
-        pqk
 
 
 

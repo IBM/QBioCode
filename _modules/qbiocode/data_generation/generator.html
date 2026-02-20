@@ -30,6 +30,8 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=9478b45b" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -39,9 +41,10 @@
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/qbiocode/data_generation/generator';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -136,6 +139,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../tutorials.html">
     Tutorials
   </a>
@@ -143,29 +153,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../citing.html">
-    Citing
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -204,6 +200,14 @@
         </li>
 </ul></div>
       
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
     </div>
     
   </div>
@@ -233,7 +237,7 @@
         
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -256,6 +260,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../tutorials.html">
     Tutorials
   </a>
@@ -263,29 +274,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../citing.html">
-    Citing
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -315,9 +312,27 @@
         </li>
 </ul></div>
         
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
       </div>
     
   </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+    </div>
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
@@ -375,7 +390,14 @@
                 <article class="bd-article">
                   
   <h1>Source code for qbiocode.data_generation.generator</h1><div class="highlight"><pre>
-<span></span><span class="c1">### Imports ###</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Main data generation interface for QBioCode.</span>
+
+<span class="sd">This module provides a unified interface to generate various types of synthetic</span>
+<span class="sd">datasets for machine learning benchmarking and evaluation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1">### Imports ###</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_circles</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">circles</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_moons</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">moons</span>
@@ -402,7 +424,7 @@
 
 
 <div class="viewcode-block" id="generate_data">
-<a class="viewcode-back" href="../../../api/qbiocode.data_generation.generator.html#qbiocode.data_generation.generator.generate_data">[docs]</a>
+<a class="viewcode-back" href="../../../api/qbiocode.data_generation.generator.html#qbiocode.generate_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_data</span><span class="p">(</span>
         <span class="n">type_of_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -416,60 +438,121 @@
         <span class="n">n_informative</span><span class="o">=</span><span class="n">N_INFORMATIVE</span><span class="p">,</span>
         <span class="n">n_redundant</span><span class="o">=</span><span class="n">N_REDUNDANT</span><span class="p">,</span>
         <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="n">N_CLUSTERS_PER_CLASS</span><span class="p">,</span>
-        <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span>
+        <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span><span class="p">,</span>
+        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Main function to generate datasets using various methods.</span>
+<span class="sd">    Generate synthetic datasets for machine learning benchmarking.</span>
+<span class="sd">    </span>
+<span class="sd">    Unified interface to generate various types of synthetic datasets with</span>
+<span class="sd">    configurable parameters. Each dataset type creates multiple configurations</span>
+<span class="sd">    by varying the specified parameters.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    type_of_data : str</span>
+<span class="sd">        Type of dataset to generate. Options: &#39;circles&#39;, &#39;moons&#39;, &#39;classes&#39;,</span>
+<span class="sd">        &#39;s_curve&#39;, &#39;spheres&#39;, &#39;spirals&#39;, &#39;swiss_roll&#39;.</span>
+<span class="sd">    save_path : str</span>
+<span class="sd">        Directory path where datasets will be saved.</span>
+<span class="sd">    n_samples : list of int, default=range(100, 300, 20)</span>
+<span class="sd">        Sample sizes for dataset configurations.</span>
+<span class="sd">    noise : list of float, default=[0.1, 0.2, ..., 0.9]</span>
+<span class="sd">        Noise levels to apply.</span>
+<span class="sd">    hole : list of bool, default=[True, False]</span>
+<span class="sd">        Whether to include hole (for swiss_roll only).</span>
+<span class="sd">    n_classes : list of int, default=[2]</span>
+<span class="sd">        Number of classes (for spirals and classes).</span>
+<span class="sd">    dim : list of int, default=[3, 6, 9, 12]</span>
+<span class="sd">        Dimensionalities (for spheres and spirals).</span>
+<span class="sd">    rad : list of float, default=[3, 6, 9, 12]</span>
+<span class="sd">        Radii (for spheres only).</span>
+<span class="sd">    n_features : list of int, default=range(10, 60, 20)</span>
+<span class="sd">        Feature counts (for classes only).</span>
+<span class="sd">    n_informative : list of int, default=range(2, 8, 4)</span>
+<span class="sd">        Informative feature counts (for classes only).</span>
+<span class="sd">    n_redundant : list of int, default=range(2, 8, 4)</span>
+<span class="sd">        Redundant feature counts (for classes only).</span>
+<span class="sd">    n_clusters_per_class : list of int, default=range(1, 2, 3)</span>
+<span class="sd">        Clusters per class (for classes only).</span>
+<span class="sd">    weights : list of list of float, default=[[0.3, 0.7], [0.4, 0.6], [0.5, 0.5]]</span>
+<span class="sd">        Class weight distributions (for classes only).</span>
+<span class="sd">    random_state : int, default=42</span>
+<span class="sd">        Random seed for reproducibility.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        Saves generated datasets to the specified path.</span>
+<span class="sd">    </span>
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If type_of_data is not one of the supported types.</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qbiocode.data_generation import generate_data</span>
+<span class="sd">    &gt;&gt;&gt; generate_data(type_of_data=&#39;circles&#39;, save_path=&#39;data/circles&#39;)</span>
+<span class="sd">    Generating circles dataset...</span>
+<span class="sd">    Dataset generation complete.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">type_of_data</span> <span class="ow">is</span> <span class="s1">&#39;circles&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;circles&#39;</span><span class="p">:</span>
         <span class="c1"># Generate circles dataset</span>
-        <span class="n">circles</span><span class="o">.</span><span class="n">my_make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> 
-                                       <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span> 
-                                       <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="ow">is</span> <span class="s1">&#39;moons&#39;</span><span class="p">:</span>
+        <span class="n">circles</span><span class="o">.</span><span class="n">generate_circles_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+                                       <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
+                                       <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                       <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;moons&#39;</span><span class="p">:</span>
         <span class="c1"># Generate moons dataset</span>
-        <span class="n">moons</span><span class="o">.</span><span class="n">my_make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> 
+        <span class="n">moons</span><span class="o">.</span><span class="n">generate_moons_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                                      <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
-                                     <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="ow">is</span> <span class="s1">&#39;classes&#39;</span><span class="p">:</span>
+                                     <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                     <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;classes&#39;</span><span class="p">:</span>
         <span class="c1"># Generate higher-dimensional classification dataset</span>
-        <span class="n">make_class</span><span class="o">.</span><span class="n">my_make_classification</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+        <span class="n">make_class</span><span class="o">.</span><span class="n">generate_classification_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                                             <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
                                             <span class="n">n_informative</span><span class="o">=</span><span class="n">n_informative</span><span class="p">,</span>
                                             <span class="n">n_redundant</span><span class="o">=</span><span class="n">n_redundant</span><span class="p">,</span>
                                             <span class="n">n_classes</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span>
                                             <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="n">n_clusters_per_class</span><span class="p">,</span>
                                             <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
-                                            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span>
+                                            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
         <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="ow">is</span> <span class="s1">&#39;s_curve&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;s_curve&#39;</span><span class="p">:</span>
         <span class="c1"># Generate S-curve dataset</span>
-        <span class="n">s_curve</span><span class="o">.</span><span class="n">my_make_s_curve</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+        <span class="n">s_curve</span><span class="o">.</span><span class="n">generate_s_curve_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                                 <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
-                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span>
+                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
                                 <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="ow">is</span> <span class="s1">&#39;spheres&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;spheres&#39;</span><span class="p">:</span>
         <span class="c1"># Generate spheres dataset</span>
-        <span class="n">spheres</span><span class="o">.</span><span class="n">my_make_spheres</span><span class="p">(</span><span class="n">n_s</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+        <span class="n">spheres</span><span class="o">.</span><span class="n">generate_spheres_datasets</span><span class="p">(</span><span class="n">n_s</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                                 <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span>
                                 <span class="n">radius</span><span class="o">=</span><span class="n">rad</span><span class="p">,</span>
-                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span>
+                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
                                 <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="ow">is</span> <span class="s1">&#39;spirals&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;spirals&#39;</span><span class="p">:</span>
         <span class="c1"># Generate spirals dataset</span>
-        <span class="n">spirals</span><span class="o">.</span><span class="n">my_make_spirals</span><span class="p">(</span><span class="n">n_s</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+        <span class="n">spirals</span><span class="o">.</span><span class="n">generate_spirals_datasets</span><span class="p">(</span><span class="n">n_s</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                                 <span class="n">n_c</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span>
                                 <span class="n">n_n</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
                                 <span class="n">n_d</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span>
-                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span>
+                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
                                 <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="ow">is</span> <span class="s1">&#39;swiss_roll&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;swiss_roll&#39;</span><span class="p">:</span>
         <span class="c1"># Generate Swiss roll dataset</span>
-        <span class="n">swiss_roll</span><span class="o">.</span><span class="n">my_make_swiss_roll</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+        <span class="n">swiss_roll</span><span class="o">.</span><span class="n">generate_swiss_roll_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
                                     <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
                                     <span class="n">hole</span><span class="o">=</span><span class="n">hole</span><span class="p">,</span>
-                                    <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span>
+                                    <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+                                    <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
                                     <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid type_of_data. Choose from &#39;circles&#39;, &#39;moons&#39;, &#39;classes&#39;, &#39;s_curve&#39;, &#39;spheres&#39;, &#39;spirals&#39;, or &#39;swiss_roll&#39;.&quot;</span><span class="p">)</span>
@@ -485,6 +568,12 @@
               
               
               
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
               
             </div>
             
@@ -513,7 +602,7 @@
 
   <p class="copyright">
     
-      © Copyright 2025 IBM Research, Bryan Raubenolt, Aritra Bose, Kahn Rhrissorrakrai, Filippo Utro, Akhil Mohan, Daniel Blankenberg, Laxmi Parida.
+      © Copyright 2025 IBM Research.
       <br/>
     
   </p>
@@ -522,7 +611,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>

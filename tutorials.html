@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tutorial &#8212; qbiocode 0.0.1 documentation</title>
+    <title>Tutorials &#8212; qbiocode 0.0.1 documentation</title>
   
   
   
@@ -31,6 +31,8 @@
 <link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=9478b45b" />
   
   <!-- So that users can add custom icons -->
   <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -40,15 +42,16 @@
 
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="_static/documentation_options.js?v=d45e8c67"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/documentation_options.js?v=f539c95a"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API Overview" href="api_overview.html" />
-    <link rel="prev" title="Getting Started" href="installation.html" />
+    <link rel="next" title="Applications" href="apps.html" />
+    <link rel="prev" title="Background: Quantum Machine Learning" href="background.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -133,42 +136,35 @@
     
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="installation.html">
-       Installation
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="background.html">
+    Background
   </a>
 </li>
 
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-       Tutorials
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apps.html">
+    Applications
   </a>
 </li>
 
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="api_overview.html">
-       API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="citing.html">
-    ..   Citing
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/sage.html">
-    QSage
+    API
   </a>
 </li>
 
@@ -207,6 +203,14 @@
         </li>
 </ul></div>
       
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
     </div>
     
   </div>
@@ -238,7 +242,7 @@
       
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -255,42 +259,35 @@
     
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="installation.html">
-       Installation
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="background.html">
+    Background
   </a>
 </li>
 
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-       Tutorials
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="apps.html">
+    Applications
   </a>
 </li>
 
 
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="api_overview.html">
-       API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="citing.html">
-    ..   Citing
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="apps/sage.html">
-    QSage
+    API
   </a>
 </li>
 
@@ -320,9 +317,33 @@
         </li>
 </ul></div>
         
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
       </div>
     
   </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+    </div>
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
@@ -359,7 +380,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Tutorial</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Tutorials</span></li>
   </ul>
 </nav>
 </div>
@@ -376,34 +397,133 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="tutorial">
-<h1>Tutorial<a class="headerlink" href="#tutorial" title="Link to this heading">#</a></h1>
-<p>In this tutorial we will showcase …</p>
-<section id="import-needed-packages">
-<h2>Import needed packages<a class="headerlink" href="#import-needed-packages" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qbc</span> 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">cm</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
-</pre></div>
-</div>
+  <section id="tutorials">
+<h1>Tutorials<a class="headerlink" href="#tutorials" title="Link to this heading">#</a></h1>
+<p>Welcome to the QBioCode tutorials! These Jupyter notebooks provide hands-on examples demonstrating how to use various features and applications of QBioCode for quantum healthcare and life sciences applications.</p>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h2>
+<p>Before running these tutorials, make sure you have:</p>
+<ul class="simple">
+<li><p>Installed QBioCode following the <a class="reference internal" href="installation.html"><span class="std std-doc">Installation Guide</span></a></p></li>
+<li><p>Set up your Python environment with all required dependencies</p></li>
+<li><p>Access to quantum computing resources (if running quantum algorithms)</p></li>
+</ul>
 </section>
-<section id="gallery">
-<h2>Gallery<a class="headerlink" href="#gallery" title="Link to this heading">#</a></h2>
 <hr class="docutils" />
-<section id="data-generation">
-<h3>Data Generation<a class="headerlink" href="#data-generation" title="Link to this heading">#</a></h3>
-<p>This tutorial..</p>
-<figure class="align-default" id="id1">
-<img alt="Thumbnail Tutorial Data Generation" src="_images/tutorial_data_thumb.png" />
-<figcaption>
-<p><span class="caption-text"><a class="reference internal" href="#../tutorial/Artificial_data_generation/example_data_generation"><span class="xref myst">Data Generation</span></a></span><a class="headerlink" href="#id1" title="Link to this image">#</a></p>
-</figcaption>
-</figure>
-<hr class="docutils" />
+<section id="tutorial-gallery">
+<h2>Tutorial Gallery<a class="headerlink" href="#tutorial-gallery" title="Link to this heading">#</a></h2>
+<section id="artificial-data-generation">
+<h3>1. Artificial Data Generation<a class="headerlink" href="#artificial-data-generation" title="Link to this heading">#</a></h3>
+<p>Learn how to generate synthetic datasets for testing and benchmarking quantum machine learning algorithms.</p>
+<p><a href="tutorials/Artificial_data_generation/example_data_generation.html">📓 <strong>View Tutorial Notebook</strong></a></p>
 </section>
+<hr class="docutils" />
+<section id="qprofiler-automated-ml-model-benchmarking">
+<h3>2. QProfiler - Automated ML Model Benchmarking<a class="headerlink" href="#qprofiler-automated-ml-model-benchmarking" title="Link to this heading">#</a></h3>
+<p>Learn how to use QProfiler to systematically benchmark and compare quantum and classical machine learning models on artificial datasets. This tutorial demonstrates:</p>
+<p><a href="tutorials/QProfiler/example_qprofiler.html">📓 <strong>View Tutorial Notebook</strong></a></p>
+<p><strong>What You’ll Learn:</strong></p>
+<ul class="simple">
+<li><p>Generate artificial datasets with specific characteristics</p></li>
+<li><p>Configure and run QProfiler experiments via YAML configuration</p></li>
+<li><p>Evaluate multiple ML models (quantum and classical) automatically</p></li>
+<li><p>Analyze performance metrics (accuracy, F1-score, AUC)</p></li>
+<li><p>Visualize model comparisons and correlations</p></li>
+<li><p>Interpret results for model selection</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="qsage-quantum-inspired-feature-importance">
+<h3>3. QSage - Quantum-Inspired Feature Importance<a class="headerlink" href="#qsage-quantum-inspired-feature-importance" title="Link to this heading">#</a></h3>
+<p>Explore QSage, an intelligent meta-learning system that predicts which machine learning models will perform best on your dataset <em>before</em> you run them. By learning from data complexity patterns across multiple datasets, QSage provides data-driven model recommendations. This tutorial shows how to:</p>
+<p><a href="tutorials/QSage/qsage.html">📓 <strong>View Tutorial Notebook</strong></a></p>
+<p><strong>What You’ll Learn:</strong></p>
+<ul class="simple">
+<li><p>Load pre-trained QSage models</p></li>
+<li><p>Analyze dataset characteristics (intrinsic dimension, Fisher discriminant ratio, etc.) from compiled ML benchmark results</p></li>
+<li><p>Apply QSAGE to predict the model</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="quantum-projection-learning-qpl">
+<h3>4. Quantum Projection Learning (QPL)<a class="headerlink" href="#quantum-projection-learning-qpl" title="Link to this heading">#</a></h3>
+<p>Learn about Quantum Projection Learning (QPL), a technique that combines quantum feature maps with multiple classical machine learning algorithms. This comprehensive tutorial demonstrates how to systematically evaluate quantum-enhanced features across different learners.</p>
+<p><a href="tutorials/Quantum_Projection_Learning/QPL_example.html">📓 <strong>View Tutorial Notebook</strong></a></p>
+<p><strong>What You’ll Learn:</strong></p>
+<ul class="simple">
+<li><p>Generate synthetic datasets with controlled complexity</p></li>
+<li><p>Apply quantum feature maps to create quantum projections</p></li>
+<li><p>Train multiple classical models (SVC, RF, XGBoost, MLP, LR) on quantum features</p></li>
+<li><p>Compare quantum-enhanced vs. classical baseline performance</p></li>
+<li><p>Visualize and analyze comprehensive performance metrics</p></li>
+<li><p>Use QProfiler for automated QPL experiments</p></li>
+</ul>
+<p><strong>Key Concepts:</strong></p>
+<ul class="simple">
+<li><p>Quantum projection methods and expectation value measurements</p></li>
+<li><p>Ensemble learning with quantum features</p></li>
+<li><p>Data complexity analysis for quantum advantage prediction</p></li>
+<li><p>Systematic model comparison and evaluation</p></li>
+<li><p>Integration with classical ML pipelines</p></li>
+</ul>
+<p><strong>Workflow:</strong></p>
+<ol class="arabic simple">
+<li><p>Generate or load classification datasets</p></li>
+<li><p>Configure QPL experiments via YAML files</p></li>
+<li><p>Apply quantum feature maps (ZZ, Pauli, etc.)</p></li>
+<li><p>Extract quantum projections from circuits</p></li>
+<li><p>Train 5+ classical models on quantum features</p></li>
+<li><p>Compare with classical baselines</p></li>
+<li><p>Analyze results and identify quantum advantages</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="projected-quantum-kernel-pqk-ovarian-cancer-survival-prediction">
+<h3>5. Projected Quantum Kernel (PQK) - Ovarian Cancer Survival Prediction<a class="headerlink" href="#projected-quantum-kernel-pqk-ovarian-cancer-survival-prediction" title="Link to this heading">#</a></h3>
+<p>Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics data for survival prediction. This advanced tutorial demonstrates quantum-enhanced machine learning on multi-omics ovarian cancer data from TCGA.</p>
+<p><a href="tutorials/PQK%20-%20OV.html">📓 <strong>View Tutorial Notebook</strong></a></p>
+<p><strong>What You’ll Learn:</strong></p>
+<ul class="simple">
+<li><p>Apply quantum feature maps to high-dimensional genomics data</p></li>
+<li><p>Use PQK to create quantum feature representations</p></li>
+<li><p>Compare quantum-enhanced vs. classical SVM performance</p></li>
+<li><p>Work with multi-omics data (miRNA, methylation, gene expression)</p></li>
+<li><p>Perform comprehensive hyperparameter tuning for quantum kernels</p></li>
+<li><p>Evaluate quantum performance on real biomedical datasets</p></li>
+</ul>
+<p><strong>Dataset:</strong></p>
+<ul class="simple">
+<li><p>Ovarian cancer (OV) multi-omics data from TCGA</p></li>
+<li><p>3-year survival prediction task</p></li>
+<li><p>Four data modalities: miRNA, DNA methylation, gene expression, and integrated</p></li>
+</ul>
+<p><strong>Key Techniques:</strong></p>
+<ul class="simple">
+<li><p>Quantum kernel methods with ZZ feature maps</p></li>
+<li><p>Pairwise qubit entanglement strategies</p></li>
+<li><p>PCA dimensionality reduction for quantum encoding</p></li>
+<li><p>Stratified cross-validation for robust evaluation</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="additional-resources">
+<h2>Additional Resources<a class="headerlink" href="#additional-resources" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="api_overview.html"><span class="std std-doc">API Documentation</span></a> - Detailed API reference</p></li>
+<li><p><a class="reference internal" href="apps/profiler.html"><span class="std std-doc">QProfiler App</span></a> - Standalone profiling application</p></li>
+<li><p><a class="reference internal" href="apps/sage.html"><span class="std std-doc">QSage App</span></a> - Feature selection application</p></li>
+<li><p><a class="reference external" href="https://github.com/IBM/QBioCode">GitHub Repository</a> - Source code and examples</p></li>
+</ul>
+</section>
+<section id="support">
+<h2>Support<a class="headerlink" href="#support" title="Link to this heading">#</a></h2>
+<p>If you encounter any issues or have questions about the tutorials:</p>
+<ul class="simple">
+<li><p>Check the <a class="reference external" href="https://github.com/IBM/QBioCode/issues">GitHub Issues</a></p></li>
+<li><p>Review the <a class="reference external" href="https://github.com/IBM/QBioCode/blob/main/CONTRIBUTING.md">Contributing Guide</a></p></li>
+<li><p>Consult the API documentation for detailed function references</p></li>
+</ul>
 </section>
 </section>
 
@@ -413,6 +533,30 @@
               
               
               
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="background.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Background: Quantum Machine Learning</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="apps.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Applications</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
               
             </div>
             
@@ -430,11 +574,17 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#import-needed-packages">Import needed packages</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#gallery">Gallery</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-generation">Data Generation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tutorial-gallery">Tutorial Gallery</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#artificial-data-generation">1. Artificial Data Generation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qprofiler-automated-ml-model-benchmarking">2. QProfiler - Automated ML Model Benchmarking</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qsage-quantum-inspired-feature-importance">3. QSage - Quantum-Inspired Feature Importance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-projection-learning-qpl">4. Quantum Projection Learning (QPL)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#projected-quantum-kernel-pqk-ovarian-cancer-survival-prediction">5. Projected Quantum Kernel (PQK) - Ovarian Cancer Survival Prediction</a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#additional-resources">Additional Resources</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#support">Support</a></li>
 </ul>
   </nav></div>
 
@@ -472,7 +622,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>

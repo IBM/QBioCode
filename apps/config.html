@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Configure the YAML file &#8212; qbiocode 0.0.1 documentation</title>
+    <title>QProfiler Configuration Guide &#8212; qbiocode 0.0.1 documentation</title>
   
   
   
@@ -31,6 +31,8 @@
 <link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=9478b45b" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -40,15 +42,14 @@
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../_static/documentation_options.js?v=d45e8c67"></script>
-    <script src="../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'apps/config';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Sage" href="sage.html" />
-    <link rel="prev" title="QProfiler" href="profiler.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -139,6 +140,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../tutorials.html">
     Tutorials
   </a>
@@ -146,22 +154,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../api_overview.html">
-    API
-  </a>
-</li>
-
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="profiler.html">
-    QProfiler
+  <a class="nav-link nav-internal" href="../apps.html">
+    Applications
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="sage.html">
-    QSage
+  <a class="nav-link nav-internal" href="../api_overview.html">
+    API
   </a>
 </li>
 
@@ -200,6 +201,14 @@
         </li>
 </ul></div>
       
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
     </div>
     
   </div>
@@ -231,7 +240,7 @@
       
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -254,6 +263,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../tutorials.html">
     Tutorials
   </a>
@@ -261,22 +277,15 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../api_overview.html">
-    API
-  </a>
-</li>
-
-
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="profiler.html">
-    QProfiler
+  <a class="nav-link nav-internal" href="../apps.html">
+    Applications
   </a>
 </li>
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="sage.html">
-    QSage
+  <a class="nav-link nav-internal" href="../api_overview.html">
+    API
   </a>
 </li>
 
@@ -306,9 +315,33 @@
         </li>
 </ul></div>
         
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
       </div>
     
   </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"></div>
+</nav></div>
+        <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+    </div>
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
@@ -345,10 +378,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    
-    <li class="breadcrumb-item"><a href="profiler.html" class="nav-link">QProfiler</a></li>
-    
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Configure the YAML file</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">QProfiler Configuration Guide</span></li>
   </ul>
 </nav>
 </div>
@@ -365,116 +395,446 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="configure-the-yaml-file">
-<h1>Configure the YAML file<a class="headerlink" href="#configure-the-yaml-file" title="Link to this heading">#</a></h1>
-<p>In order to run mulitple experiments and for reprudicibility of the experiments, the use of the terminal <code class="docutils literal notranslate"><span class="pre">xxx</span></code>  is suggested.
-To do so, a <code class="docutils literal notranslate"><span class="pre">yaml</span></code> file should be set. An example of a config file can be found in <a class="reference internal" href="#../../../apps/profiler/configs/config.yaml"><span class="xref myst">config.yaml</span></a></p>
-<p>In what follows the major component of the file are explained.</p>
-<section id="define-the-inputs">
-<h2>Define the inputs<a class="headerlink" href="#define-the-inputs" title="Link to this heading">#</a></h2>
-<p>Inputs files can be placed in a single folder (e.g. <code class="docutils literal notranslate"><span class="pre">test_data</span></code>).
-In the case all files in the folder need to be analized, one can set:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">config_file_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;basic_config&#39;</span>
+  <section id="qprofiler-configuration-guide">
+<h1>QProfiler Configuration Guide<a class="headerlink" href="#qprofiler-configuration-guide" title="Link to this heading">#</a></h1>
+<p>This guide explains how to configure QProfiler using YAML configuration files for reproducible experiments and batch processing.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">#</a></h2>
+<p>QProfiler uses YAML configuration files to define:</p>
+<ul class="simple">
+<li><p>Input datasets and output directories</p></li>
+<li><p>Machine learning models to evaluate</p></li>
+<li><p>Quantum backend settings</p></li>
+<li><p>Embedding methods and parameters</p></li>
+<li><p>Train/test split configuration</p></li>
+<li><p>Model hyperparameters</p></li>
+</ul>
+<p>An example configuration file can be found at <a class="reference download internal" download="" href="../_downloads/b5e513d7ba87eb8038603bd0eb151168/config.yaml"><span class="xref download myst"><code class="docutils literal notranslate"><span class="pre">apps/qprofiler/configs/config.yaml</span></code></span></a>.</p>
+</section>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<p>Here’s a minimal configuration to get started:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Basic configuration</span>
+<span class="nt">config_file_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;my_experiment&#39;</span>
+<span class="nt">folder_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;data/&#39;</span>
+<span class="nt">file_dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;my_dataset.csv&#39;</span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
 
-<span class="c1"># specify output directory where input datasets are located</span>
-<span class="nt">folder_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;test_data/&#39;</span>
-<span class="nt">file_dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ALL&#39;</span>
-</pre></div>
-</div>
-<p>or use a list as below, to only select specif files</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">file_dataset</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;file1&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;file2&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;file3&#39;</span><span class="p p-Indicator">]</span>
-</pre></div>
-</div>
-<p>To ensure deterministic and reproducible outcome a seed for should be fixed as:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
-<span class="nt">q_seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
-</pre></div>
-</div>
-<p><code class="docutils literal notranslate"><span class="pre">q_seed</span></code> refers to the seed used by quantum algoriths.</p>
-</section>
-<section id="quantum-backend">
-<h2>Quantum backend<a class="headerlink" href="#quantum-backend" title="Link to this heading">#</a></h2>
-<p>Define which quantum backend to be used for quantum computation.
-For instance, in case of simulator:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># choose a backend for the QML methods</span>
+<span class="c1"># Models to evaluate</span>
+<span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;rf&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;svc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;qsvc&#39;</span><span class="p p-Indicator">]</span>
+
+<span class="c1"># Embedding</span>
+<span class="nt">embeddings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;none&#39;</span><span class="p p-Indicator">]</span>
+<span class="nt">n_components</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+
+<span class="c1"># Train/test split</span>
+<span class="nt">test_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+<span class="nt">stratify</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;y&#39;</span><span class="p p-Indicator">]</span>
+<span class="nt">scaling</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;True&#39;</span><span class="p p-Indicator">]</span>
+
+<span class="c1"># Quantum backend (for QML models)</span>
 <span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;simulator&#39;</span>
-</pre></div>
-</div>
-<p>In case one has access to IBM quantum device, one can specify the name. For instance to use the least busy:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># choose a backend for the QML methods</span>
-<span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ibm_least&#39;</span>
-</pre></div>
-</div>
-<p>as well as the number of shoots:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
-</pre></div>
-</div>
-<p>Level of error mitigation for the QML methods (ranges from 1-3) can be set as:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">resil_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-</pre></div>
-</div>
-<p>IBM runtime credential should be stored in your device, in case of json path, it can be specified for instance as:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">qiskit_json_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;~/.qiskit/qiskit-ibm.json&#39;</span>
-</pre></div>
-</div>
-<p>in case of multiple accounts stored in your json, the account name alias (used when saving your runtime credentials) can be specified as:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">account_qbc</span>
-</pre></div>
-</div>
-<p>Optionally you can also specify the instance with your account under which to run your job.  If not included, it will search for an available instance under your account if you have multiple.</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">ibm_instance</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">instance_name</span>
+<span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
 </pre></div>
 </div>
 </section>
-<section id="embedding">
-<h2>Embedding<a class="headerlink" href="#embedding" title="Link to this heading">#</a></h2>
-<p>To specify the embedding method for reducing dimensionality (number of features) in your data set, the following list</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">embeddings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;pca&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;nmf&#39;</span><span class="p p-Indicator">]</span>
+<hr class="docutils" />
+<section id="configuration-sections">
+<h2>Configuration Sections<a class="headerlink" href="#configuration-sections" title="Link to this heading">#</a></h2>
+<section id="input-data">
+<h3>Input Data<a class="headerlink" href="#input-data" title="Link to this heading">#</a></h3>
+<p>Specify the location and selection of input datasets.</p>
+<p><strong>Single Dataset:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">config_file_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;experiment_name&#39;</span>
+<span class="nt">folder_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;data/&#39;</span>
+<span class="nt">file_dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;dataset.csv&#39;</span>
 </pre></div>
 </div>
-<p>while the number of dimensions (features) to embed (reduce) your data down need to be set as:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">n_components</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<p><strong>All Datasets in Folder:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">folder_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;data/&#39;</span>
+<span class="nt">file_dataset</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ALL&#39;</span><span class="w">  </span><span class="c1"># Process all CSV files in folder</span>
 </pre></div>
 </div>
-<p>In case of no embedding need to be applied please specify it as:</p>
+<p><strong>Multiple Specific Datasets:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">file_dataset</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;dataset1.csv&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;dataset2.csv&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;dataset3.csv&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p><strong>Output Directory:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;results/&#39;</span><span class="w">  </span><span class="c1"># Where to save results</span>
+</pre></div>
+</div>
+</section>
+<section id="random-seeds">
+<h3>Random Seeds<a class="headerlink" href="#random-seeds" title="Link to this heading">#</a></h3>
+<p>Set random seeds for reproducibility:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span><span class="w">      </span><span class="c1"># Seed for classical ML algorithms</span>
+<span class="nt">q_seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span><span class="w">    </span><span class="c1"># Seed for quantum algorithms</span>
+</pre></div>
+</div>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Always set seeds for reproducible experiments. Use the same seed across runs to compare results.</p>
+</div>
+</section>
+<section id="quantum-backend-configuration">
+<h3>Quantum Backend Configuration<a class="headerlink" href="#quantum-backend-configuration" title="Link to this heading">#</a></h3>
+<p>Configure quantum computing backend for QML models (QSVC, VQC, QNN, PQK).</p>
+<p><strong>Simulator (Default):</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;simulator&#39;</span>
+<span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
+</pre></div>
+</div>
+<p><strong>IBM Quantum Hardware:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ibm_least&#39;</span><span class="w">  </span><span class="c1"># Use least busy device</span>
+<span class="c1"># OR</span>
+<span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ibm_kyoto&#39;</span><span class="w">  </span><span class="c1"># Specific device name</span>
+<span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
+<span class="nt">resil_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">  </span><span class="c1"># Error mitigation level (1-3)</span>
+</pre></div>
+</div>
+<p><strong>IBM Quantum Credentials:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">qiskit_json_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;~/.qiskit/qiskit-ibm.json&#39;</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;account_qbc&#39;</span><span class="w">  </span><span class="c1"># Account alias in JSON</span>
+<span class="nt">ibm_instance</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ibm-q/open/main&#39;</span><span class="w">  </span><span class="c1"># Optional: specific instance</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Backend Options:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'simulator'</span></code>: Local Qiskit Aer simulator</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ibm_least'</span></code>: Automatically select least busy IBM Quantum device</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'ibm_&lt;device_name&gt;'</span></code>: Specific IBM Quantum device (e.g., ‘ibm_kyoto’)</p></li>
+</ul>
+<p><strong>Shots:</strong> Number of circuit executions. Higher = more accurate but slower.</p>
+<p><strong>Resilience Level:</strong> Error mitigation strength (1=light, 2=medium, 3=heavy). Higher = more accurate but slower.</p>
+</div>
+</section>
+<section id="embedding-methods">
+<h3>Embedding Methods<a class="headerlink" href="#embedding-methods" title="Link to this heading">#</a></h3>
+<p>Dimensionality reduction techniques to apply before model training.</p>
+<p><strong>No Embedding:</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">embeddings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;none&#39;</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
-</section>
-<section id="train-test-parameters">
-<h2>Train/Test parameters<a class="headerlink" href="#train-test-parameters" title="Link to this heading">#</a></h2>
-<p>Ratio of train:test the data is split into via the <code class="docutils literal notranslate"><span class="pre">test_size</span></code> option.
-User can also specify if data need to be scaled and stratified. For instace, in this case 70:30 train:test ragio, with stratification and scaling:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">test_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.3</span>
-<span class="nt">stratify</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;y&#39;</span><span class="p p-Indicator">]</span>
-<span class="nt">scaling</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;True&#39;</span><span class="p p-Indicator">]</span>
+<p><strong>Single Embedding Method:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">embeddings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;pca&#39;</span><span class="p p-Indicator">]</span>
+<span class="nt">n_components</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span><span class="w">  </span><span class="c1"># Reduce to 3 dimensions</span>
 </pre></div>
+</div>
+<p><strong>Multiple Embedding Methods:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">embeddings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;pca&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;nmf&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;umap&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;autoencoder&#39;</span><span class="p p-Indicator">]</span>
+<span class="nt">n_components</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+</pre></div>
+</div>
+<p><strong>Available Embedding Methods:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'none'</span></code>: No dimensionality reduction</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'pca'</span></code>: Principal Component Analysis</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'nmf'</span></code>: Non-negative Matrix Factorization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'umap'</span></code>: Uniform Manifold Approximation and Projection</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'autoencoder'</span></code>: Neural network autoencoder</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Start with <code class="docutils literal notranslate"><span class="pre">'none'</span></code> to establish baseline performance, then try <code class="docutils literal notranslate"><span class="pre">'pca'</span></code> for faster quantum model training.</p>
+</div>
+</section>
+<section id="train-test-split">
+<h3>Train/Test Split<a class="headerlink" href="#train-test-split" title="Link to this heading">#</a></h3>
+<p>Configure data splitting and preprocessing.</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">test_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span><span class="w">      </span><span class="c1"># 80% train, 20% test</span>
+<span class="nt">stratify</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;y&#39;</span><span class="p p-Indicator">]</span><span class="w">     </span><span class="c1"># Maintain class distribution</span>
+<span class="nt">scaling</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;True&#39;</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># Standardize features</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test_size</span></code>: Proportion of data for testing (0.0-1.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stratify</span></code>: <code class="docutils literal notranslate"><span class="pre">['y']</span></code> to maintain class balance, <code class="docutils literal notranslate"><span class="pre">['n']</span></code> for random split</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">scaling</span></code>: <code class="docutils literal notranslate"><span class="pre">['True']</span></code> to standardize features (recommended), <code class="docutils literal notranslate"><span class="pre">['False']</span></code> for raw data</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Always use <code class="docutils literal notranslate"><span class="pre">stratify:</span> <span class="pre">['y']</span></code> for imbalanced datasets to ensure both train and test sets have representative class distributions.</p>
 </div>
 </section>
 <section id="model-selection">
-<h2>Model selection<a class="headerlink" href="#model-selection" title="Link to this heading">#</a></h2>
-<p>ML model can be selected as a list, between the following, options:
-<code class="docutils literal notranslate"><span class="pre">svc</span></code> (<a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html#sklearn.svm.SVC">Support Vector Classifier</a>), <code class="docutils literal notranslate"><span class="pre">dt</span></code> (<a class="reference external" href="https://scikit-learn.org/stable/modules/tree.html">Decision Tree</a>), <code class="docutils literal notranslate"><span class="pre">lr</span></code> (<a class="reference external" href="https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression">Logistic Regression</a>), <code class="docutils literal notranslate"><span class="pre">nb</span></code> (<a class="reference external" href="https://scikit-learn.org/stable/modules/naive_bayes.html">Naive Bayes</a>), <code class="docutils literal notranslate"><span class="pre">rf</span></code> (<a class="reference external" href="https://scikit-learn.org/stable/modules/ensemble.html#forest">Random Forest</a>), <code class="docutils literal notranslate"><span class="pre">mlp</span></code> (<a class="reference external" href="https://scikit-learn.org/stable/modules/neural_networks_supervised.html">Multi-layer Perceptron</a>), <code class="docutils literal notranslate"><span class="pre">qsvc</span></code> (Quantum svc), <code class="docutils literal notranslate"><span class="pre">vqc</span></code> (Variational Quantum Classifier), <code class="docutils literal notranslate"><span class="pre">qnn</span></code> (Quantum Neural Network), <code class="docutils literal notranslate"><span class="pre">pqk</span></code> (Projection Quantum Kernel). For instace if one would want to run all models, would set:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;svc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;dt&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;lr&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;nb&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;rf&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;mlp&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;qsvc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;vqc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;qnn&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;pqk&#39;</span><span class="p p-Indicator">]</span>
+<h3>Model Selection<a class="headerlink" href="#model-selection" title="Link to this heading">#</a></h3>
+<p>Specify which machine learning models to evaluate.</p>
+<p><strong>All Models:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;svc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;dt&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;lr&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;nb&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;rf&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;mlp&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;xgb&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;qsvc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;vqc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;qnn&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;pqk&#39;</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
-<p>parameters to use for each ML method could be set.
-Each CML method will have a grid search set of arguments as well as a standard set of arguments to pass, which will usually be the same as the grid search arguments except not as a list of parameters to iterate over.</p>
-<p>For instance, for <code class="docutils literal notranslate"><span class="pre">svc</span></code>:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">svc_args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="w"> </span><span class="s">&#39;C&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">0.01</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;gamma&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">0.1</span><span class="p p-Indicator">,</span><span class="nt"> kernel</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;linear&#39;</span><span class="w"> </span><span class="p p-Indicator">}</span>
+<p><strong>Classical Models Only:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;rf&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;svc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;lr&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;mlp&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;xgb&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p><strong>Quantum Models Only:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;qsvc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;vqc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;qnn&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;pqk&#39;</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<p><strong>Available Models:</strong></p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">svc</span></code></p></td>
+<td><p>Classical</p></td>
+<td><p>Support Vector Classifier</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dt</span></code></p></td>
+<td><p>Classical</p></td>
+<td><p>Decision Tree</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lr</span></code></p></td>
+<td><p>Classical</p></td>
+<td><p>Logistic Regression</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">nb</span></code></p></td>
+<td><p>Classical</p></td>
+<td><p>Naive Bayes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">rf</span></code></p></td>
+<td><p>Classical</p></td>
+<td><p>Random Forest</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">mlp</span></code></p></td>
+<td><p>Classical</p></td>
+<td><p>Multi-Layer Perceptron</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">xgb</span></code></p></td>
+<td><p>Classical</p></td>
+<td><p>XGBoost</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">qsvc</span></code></p></td>
+<td><p>Quantum</p></td>
+<td><p>Quantum Support Vector Classifier</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">vqc</span></code></p></td>
+<td><p>Quantum</p></td>
+<td><p>Variational Quantum Classifier</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">qnn</span></code></p></td>
+<td><p>Quantum</p></td>
+<td><p>Quantum Neural Network</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">pqk</span></code></p></td>
+<td><p>Quantum</p></td>
+<td><p>Projected Quantum Kernel</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="model-hyperparameters">
+<h3>Model Hyperparameters<a class="headerlink" href="#model-hyperparameters" title="Link to this heading">#</a></h3>
+<p>Configure hyperparameters for each model. Each model has:</p>
+<ul class="simple">
+<li><p><strong>Standard arguments</strong>: Single values for quick runs</p></li>
+<li><p><strong>Grid search arguments</strong>: Lists of values for hyperparameter tuning</p></li>
+</ul>
+<p><strong>Example: Support Vector Classifier (SVC)</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Standard run with fixed parameters</span>
+<span class="nt">svc_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">C</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="w">  </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">  </span><span class="nt">kernel</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;rbf&#39;</span>
 
-<span class="nt">gridsearch_svc_args</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&#39;C&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">100</span><span class="p p-Indicator">],</span><span class="w"> </span>
-<span class="w">                      </span><span class="s">&#39;gamma&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.001</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.01</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">],</span>
-<span class="w">                      </span><span class="s">&#39;kernel&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;linear&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;rbf&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;poly&#39;</span><span class="p p-Indicator">,</span><span class="s">&#39;sigmoid&#39;</span><span class="p p-Indicator">]</span>
-<span class="w">                     </span><span class="p p-Indicator">}</span>
+<span class="c1"># Grid search over parameter combinations</span>
+<span class="nt">gridsearch_svc_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">C</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">100</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">gamma</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.001</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.01</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">kernel</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;linear&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;rbf&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;poly&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;sigmoid&#39;</span><span class="p p-Indicator">]</span>
 </pre></div>
 </div>
-<p>Parameter name and range values description can be found in the corresponding sklearn page for CML.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>For QML grid search, one must use generate_experiments.ipynb in tutorial_notebooks/analyses/qml_experiment_generators/,
-which will generate individual config.yaml files for each combination of parameters.</p>
+<p><strong>Example: Random Forest (RF)</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">rf_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">n_estimators</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">  </span><span class="nt">max_depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">  </span><span class="nt">min_samples_split</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+
+<span class="nt">gridsearch_rf_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">n_estimators</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">50</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">100</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">200</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">max_depth</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">15</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">20</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">min_samples_split</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">]</span>
+</pre></div>
 </div>
+<p><strong>Example: XGBoost (XGB)</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">xgb_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">n_estimators</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.1</span>
+<span class="w">  </span><span class="nt">max_depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">6</span>
+
+<span class="nt">gridsearch_xgb_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">n_estimators</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">50</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">100</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">200</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">learning_rate</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.01</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.3</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">max_depth</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">3</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">6</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">9</span><span class="p p-Indicator">]</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>For detailed parameter descriptions, see the scikit-learn documentation:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html">SVC Parameters</a></p></li>
+<li><p><a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">Random Forest Parameters</a></p></li>
+<li><p><a class="reference external" href="https://xgboost.readthedocs.io/en/stable/parameter.html">XGBoost Parameters</a></p></li>
+</ul>
+</div>
+</section>
+<section id="quantum-model-hyperparameters">
+<h3>Quantum Model Hyperparameters<a class="headerlink" href="#quantum-model-hyperparameters" title="Link to this heading">#</a></h3>
+<p>For quantum models, hyperparameter tuning requires generating separate config files for each combination.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>QML Grid Search:</strong></p>
+<p>Quantum model grid search is handled differently than classical models. Use the <code class="docutils literal notranslate"><span class="pre">generate_experiments.ipynb</span></code> notebook in <code class="docutils literal notranslate"><span class="pre">archive/tutorial_notebooks/qml_experiment_generators/</span></code> to generate individual config files for each parameter combination.</p>
+<p>This approach is necessary because:</p>
+<ol class="arabic simple">
+<li><p>Quantum jobs are submitted to IBM Quantum queue</p></li>
+<li><p>Each configuration may take hours to complete</p></li>
+<li><p>Separate configs allow parallel job submission</p></li>
+</ol>
+</div>
+<p><strong>Example: Quantum SVC (QSVC)</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">qsvc_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">feature_map</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ZZFeatureMap&#39;</span>
+<span class="w">  </span><span class="nt">reps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="nt">entanglement</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;linear&#39;</span>
+</pre></div>
+</div>
+<p><strong>Example: Variational Quantum Classifier (VQC)</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">vqc_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">feature_map</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ZZFeatureMap&#39;</span>
+<span class="w">  </span><span class="nt">ansatz</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;RealAmplitudes&#39;</span>
+<span class="w">  </span><span class="nt">reps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">  </span><span class="nt">optimizer</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;COBYLA&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="complete-example-configuration">
+<h2>Complete Example Configuration<a class="headerlink" href="#complete-example-configuration" title="Link to this heading">#</a></h2>
+<p>Here’s a comprehensive example combining all sections:</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># Experiment identification</span>
+<span class="nt">config_file_name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;comprehensive_experiment&#39;</span>
+
+<span class="c1"># Input data</span>
+<span class="nt">folder_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;datasets/&#39;</span>
+<span class="nt">file_dataset</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;cancer_data.csv&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;diabetes_data.csv&#39;</span><span class="p p-Indicator">]</span>
+<span class="nt">output_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;results/experiment_001/&#39;</span>
+
+<span class="c1"># Reproducibility</span>
+<span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
+<span class="nt">q_seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
+
+<span class="c1"># Quantum backend</span>
+<span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;simulator&#39;</span>
+<span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
+<span class="nt">resil_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+<span class="nt">qiskit_json_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;~/.qiskit/qiskit-ibm.json&#39;</span>
+<span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;my_ibm_account&#39;</span>
+
+<span class="c1"># Dimensionality reduction</span>
+<span class="nt">embeddings</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;none&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;pca&#39;</span><span class="p p-Indicator">]</span>
+<span class="nt">n_components</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+
+<span class="c1"># Data splitting</span>
+<span class="nt">test_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0.2</span>
+<span class="nt">stratify</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;y&#39;</span><span class="p p-Indicator">]</span>
+<span class="nt">scaling</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;True&#39;</span><span class="p p-Indicator">]</span>
+
+<span class="c1"># Models to evaluate</span>
+<span class="nt">model</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;rf&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;svc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;mlp&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;xgb&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;qsvc&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;pqk&#39;</span><span class="p p-Indicator">]</span>
+
+<span class="c1"># Classical model parameters</span>
+<span class="nt">rf_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">n_estimators</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">100</span>
+<span class="w">  </span><span class="nt">max_depth</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+
+<span class="nt">gridsearch_rf_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">n_estimators</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">50</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">100</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">200</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">max_depth</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">15</span><span class="p p-Indicator">]</span>
+
+<span class="nt">svc_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">C</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1.0</span>
+<span class="w">  </span><span class="nt">kernel</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;rbf&#39;</span>
+
+<span class="nt">gridsearch_svc_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">C</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0.1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">10</span><span class="p p-Indicator">]</span>
+<span class="w">  </span><span class="nt">kernel</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;linear&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;rbf&#39;</span><span class="p p-Indicator">]</span>
+
+<span class="c1"># Quantum model parameters</span>
+<span class="nt">qsvc_args</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">feature_map</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ZZFeatureMap&#39;</span>
+<span class="w">  </span><span class="nt">reps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading">#</a></h2>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Configuration Tips:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Start Simple</strong>: Begin with a minimal config and add complexity gradually</p></li>
+<li><p><strong>Use Descriptive Names</strong>: Name configs by experiment purpose (e.g., <code class="docutils literal notranslate"><span class="pre">cancer_baseline.yaml</span></code>)</p></li>
+<li><p><strong>Version Control</strong>: Keep configs in git to track experiment history</p></li>
+<li><p><strong>Document Changes</strong>: Add comments in YAML to explain non-obvious choices</p></li>
+<li><p><strong>Test Locally First</strong>: Use <code class="docutils literal notranslate"><span class="pre">backend:</span> <span class="pre">'simulator'</span></code> before submitting to quantum hardware</p></li>
+</ol>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Common Pitfalls:</strong></p>
+<ul class="simple">
+<li><p><strong>Missing Seeds</strong>: Always set <code class="docutils literal notranslate"><span class="pre">seed</span></code> and <code class="docutils literal notranslate"><span class="pre">q_seed</span></code> for reproducibility</p></li>
+<li><p><strong>Too Many Grid Search Combinations</strong>: Start with small grids to estimate runtime</p></li>
+</ul>
+</div>
+</section>
+<hr class="docutils" />
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">#</a></h2>
+<p><strong>Problem: “Config file not found”</strong></p>
+<ul class="simple">
+<li><p>Ensure config file is in <code class="docutils literal notranslate"><span class="pre">configs/</span></code> directory</p></li>
+<li><p>Check file name matches <code class="docutils literal notranslate"><span class="pre">--config-name</span></code> argument</p></li>
+<li><p>Use relative path from project root</p></li>
+</ul>
+<p><strong>Problem: “Invalid backend”</strong></p>
+<ul class="simple">
+<li><p>Verify IBM Quantum credentials are configured</p></li>
+<li><p>Check device name spelling (use <code class="docutils literal notranslate"><span class="pre">ibm_&lt;device&gt;</span></code> format)</p></li>
+<li><p>Ensure you have access to the specified instance</p></li>
+</ul>
+<p><strong>Problem: “Grid search taking too long”</strong></p>
+<ul class="simple">
+<li><p>Reduce number of parameter combinations</p></li>
+<li><p>Use fewer cross-validation folds</p></li>
+<li><p>Consider using <code class="docutils literal notranslate"><span class="pre">RandomizedSearchCV</span></code> for large grids</p></li>
+</ul>
+<p><strong>Problem: “Out of memory”</strong></p>
+<ul class="simple">
+<li><p>Reduce <code class="docutils literal notranslate"><span class="pre">n_components</span></code> for embeddings</p></li>
+<li><p>Use smaller <code class="docutils literal notranslate"><span class="pre">test_size</span></code> to reduce data size</p></li>
+<li><p>Process datasets one at a time instead of batch</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="see-also">
+<h2>See Also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p>:doc:<code class="docutils literal notranslate"><span class="pre">QProfiler</span> <span class="pre">Usage</span> <span class="pre">Guide</span> <span class="pre">&lt;profiler&gt;</span></code> - How to run QProfiler</p></li>
+<li><p>:doc:<code class="docutils literal notranslate"><span class="pre">QSage</span> <span class="pre">Configuration</span> <span class="pre">&lt;sage&gt;</span></code> - Meta-learning model selection</p></li>
+<li><p>:doc:<code class="docutils literal notranslate"><span class="pre">Tutorial</span> <span class="pre">Notebooks</span> <span class="pre">&lt;../tutorials&gt;</span></code> - Step-by-step examples</p></li>
+</ul>
 </section>
 </section>
 
@@ -484,6 +844,12 @@ which will generate individual config.yaml files for each combination of paramet
               
               
               
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
               
             </div>
             
@@ -501,11 +867,23 @@ which will generate individual config.yaml files for each combination of paramet
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#define-the-inputs">Define the inputs</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-backend">Quantum backend</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#embedding">Embedding</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#train-test-parameters">Train/Test parameters</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#model-selection">Model selection</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-sections">Configuration Sections</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#input-data">Input Data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-seeds">Random Seeds</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-backend-configuration">Quantum Backend Configuration</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#embedding-methods">Embedding Methods</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#train-test-split">Train/Test Split</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model-selection">Model Selection</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#model-hyperparameters">Model Hyperparameters</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-model-hyperparameters">Quantum Model Hyperparameters</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#complete-example-configuration">Complete Example Configuration</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#best-practices">Best Practices</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See Also</a></li>
 </ul>
   </nav></div>
 
@@ -543,7 +921,7 @@ which will generate individual config.yaml files for each combination of paramet
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>

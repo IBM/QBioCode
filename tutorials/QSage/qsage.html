@@ -1,0 +1,977 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>QSage Tutorial &#8212; qbiocode 0.0.1 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/nbsphinx-code-cells.css?v=a35ea3b2" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=9478b45b" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorials/QSage/qsage';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/QBioCode_logo.png" class="logo__image only-light" alt="qbiocode 0.0.1 documentation - Home"/>
+    <img src="../../_static/QBioCode_logo.png" class="logo__image only-dark pst-js-only" alt="qbiocode 0.0.1 documentation - Home"/>
+  
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api_overview.html">
+    API
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../installation.html">
+    Installation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../api_overview.html">
+    API
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+</ul></div>
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">QSage Tutorial</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <style>
+    /* Improve notebook cell spacing */
+    div.nbinput.container,
+    div.nboutput.container {
+        margin-bottom: 1em;
+    }
+
+    /* Better code cell styling */
+    div.highlight-ipython3 {
+        margin: 0.5em 0;
+    }
+
+    /* Improve markdown cell rendering */
+    .nbinput + .nboutput {
+        margin-top: 0.5em;
+    }
+</style><section id="QSage-Tutorial">
+<h1>QSage Tutorial<a class="headerlink" href="#QSage-Tutorial" title="Link to this heading">#</a></h1>
+<p>This tutorial demonstrates how to use <strong>Quantum Sage (QSage)</strong>, a meta-learning tool that predicts which quantum or classical ML model will perform best on your dataset.</p>
+<section id="What-is-QSage?">
+<h2>What is QSage?<a class="headerlink" href="#What-is-QSage?" title="Link to this heading">#</a></h2>
+<p>QSage is a <strong>surrogate model</strong> trained on extensive benchmarking data that:</p>
+<ul class="simple">
+<li><p><strong>Predicts model performance</strong> without running expensive experiments</p></li>
+<li><p><strong>Recommends best models</strong> based on dataset characteristics</p></li>
+<li><p><strong>Saves computational resources</strong> by avoiding trial-and-error</p></li>
+<li><p><strong>Supports both quantum and classical</strong> ML algorithms</p></li>
+</ul>
+</section>
+<section id="How-QSage-Works">
+<h2>How QSage Works<a class="headerlink" href="#How-QSage-Works" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Analyzes your dataset</strong>: Computes data complexity metrics</p></li>
+<li><p><strong>Predicts performance</strong>: Uses trained surrogate model to estimate how each ML model will perform</p></li>
+<li><p><strong>Ranks models</strong>: Provides recommendations ordered by predicted performance</p></li>
+<li><p><strong>Explains predictions</strong>: Shows which data characteristics influenced the recommendation</p></li>
+</ol>
+</section>
+<section id="Tutorial-Overview">
+<h2>Tutorial Overview<a class="headerlink" href="#Tutorial-Overview" title="Link to this heading">#</a></h2>
+<p>In this tutorial, you will:</p>
+<ol class="arabic simple">
+<li><p>Download pre-trained QSage model weights</p></li>
+<li><p>Load benchmark results data</p></li>
+<li><p>Train QSage on the benchmark data (optional)</p></li>
+<li><p>Use QSage to predict model performance on new datasets</p></li>
+<li><p>Visualize and interpret QSage predictions</p></li>
+</ol>
+</section>
+<section id="1.-Setup-and-Imports">
+<h2>1. Setup and Imports<a class="headerlink" href="#1.-Setup-and-Imports" title="Link to this heading">#</a></h2>
+<p>First, let’s import the necessary modules.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+
+<span class="c1"># Import QSage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">apps.sage.sage</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumSage</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Imports successful&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="2.-Download-Pre-trained-Model">
+<h2>2. Download Pre-trained Model<a class="headerlink" href="#2.-Download-Pre-trained-Model" title="Link to this heading">#</a></h2>
+<p>QSage requires pre-trained model weights that were trained on extensive benchmarking data.</p>
+<section id="Download-the-Model">
+<h3>Download the Model<a class="headerlink" href="#Download-the-Model" title="Link to this heading">#</a></h3>
+<p><strong>Download link</strong>: <a class="reference external" href="https://ibm.biz/QSageModel">https://ibm.biz/QSageModel</a></p>
+<p>The download includes:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">QMLBench_sage.pkl</span></code>: Pre-trained Random Forest surrogate model</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Compiled_QMLBench_results.csv</span></code>: Benchmark results used for training</p></li>
+</ul>
+</section>
+<section id="File-Structure">
+<h3>File Structure<a class="headerlink" href="#File-Structure" title="Link to this heading">#</a></h3>
+<p>Place the downloaded files in a <code class="docutils literal notranslate"><span class="pre">results/</span></code> directory:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>results/
+├── QMLBench_sage.pkl
+└── Compiled_QMLBench_results.csv
+</pre></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set paths to downloaded files</span>
+<span class="n">dir_home</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># Set to your QBioCode directory if needed</span>
+<span class="n">dir_results</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_home</span><span class="p">,</span> <span class="s1">&#39;results&#39;</span><span class="p">)</span>
+
+<span class="n">file_input</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_results</span><span class="p">,</span> <span class="s1">&#39;Compiled_QMLBench_results.csv&#39;</span><span class="p">)</span>
+<span class="n">file_sage</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_results</span><span class="p">,</span> <span class="s1">&#39;QMLBench_sage.pkl&#39;</span><span class="p">)</span>
+
+<span class="c1"># Sage model type (random_forest or mlp)</span>
+<span class="n">sage_type</span> <span class="o">=</span> <span class="s1">&#39;random_forest&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data file: </span><span class="si">{</span><span class="n">file_input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model file: </span><span class="si">{</span><span class="n">file_sage</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sage type: </span><span class="si">{</span><span class="n">sage_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="3.-Load-Benchmark-Data">
+<h2>3. Load Benchmark Data<a class="headerlink" href="#3.-Load-Benchmark-Data" title="Link to this heading">#</a></h2>
+<p>The benchmark data contains results from running multiple ML models on various datasets.</p>
+<section id="Data-Structure">
+<h3>Data Structure<a class="headerlink" href="#Data-Structure" title="Link to this heading">#</a></h3>
+<p>The benchmark data includes:</p>
+<ul class="simple">
+<li><p><strong>Dataset characteristics</strong>: 20+ complexity metrics (intrinsic dimension, Fisher ratio, etc.)</p></li>
+<li><p><strong>Model results</strong>: Accuracy, F1-score, AUC, training time</p></li>
+<li><p><strong>Model configurations</strong>: Embeddings, hyperparameters</p></li>
+<li><p><strong>Multiple models</strong>: Classical (RF, SVM, LR, DT, NB, MLP) and Quantum (PQK, QSVC, VQC, QNN)</p></li>
+</ul>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define features and metrics</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Feature_Samples_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Intrinsic_Dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;Condition number&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Fisher Discriminant Ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Total Correlations&#39;</span><span class="p">,</span> <span class="s1">&#39;Mutual information&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;# Non-zero entries&#39;</span><span class="p">,</span> <span class="s1">&#39;# Low variance features&#39;</span><span class="p">,</span> <span class="s1">&#39;Variation&#39;</span><span class="p">,</span> <span class="s1">&#39;std_var&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Coefficient of Variation %&#39;</span><span class="p">,</span> <span class="s1">&#39;std_co_of_v&#39;</span><span class="p">,</span> <span class="s1">&#39;Skewness&#39;</span><span class="p">,</span> <span class="s1">&#39;std_skew&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Kurtosis&#39;</span><span class="p">,</span> <span class="s1">&#39;std_kurt&#39;</span><span class="p">,</span> <span class="s1">&#39;Mean Log Kernel Density&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Isomap Reconstruction Error&#39;</span><span class="p">,</span> <span class="s1">&#39;Fractal dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;Entropy&#39;</span>
+<span class="p">]</span>
+<span class="n">features</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;f1_score&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;auc&#39;</span><span class="p">]</span>
+<span class="n">metrics</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+<span class="c1"># Load benchmark results</span>
+<span class="n">reload</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Set to True to reprocess data</span>
+
+<span class="k">if</span> <span class="n">reload</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_input</span><span class="p">):</span>
+    <span class="c1"># Process raw results (if you have the raw data directory)</span>
+    <span class="n">path_to_compiled_results</span> <span class="o">=</span> <span class="n">dir_results</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path_to_compiled_results</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path_to_compiled_results</span><span class="p">)</span>
+                  <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span> <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;csv&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">!=</span> <span class="s1">&#39;RawDataEvaluation.csv&#39;</span><span class="p">]</span>
+        <span class="n">results_df</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fl</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;Compiled&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fl</span><span class="p">:</span>
+                <span class="n">results_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fl</span><span class="p">))</span>
+        <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results_df</span><span class="p">)</span>
+
+        <span class="c1"># Clean and process data</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
+            <span class="n">results_df</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results_df</span><span class="p">[</span><span class="n">f</span><span class="p">]]</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;\.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;-.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+                                   <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]]</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model_embed_datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">model</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">embeddings</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">datatype</span><span class="p">)])</span>
+            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">results_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+        <span class="p">]</span>
+
+        <span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">results_df</span><span class="p">[</span><span class="n">results_df</span> <span class="o">==</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+        <span class="n">results_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_input</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path_to_compiled_results</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># Load pre-compiled results</span>
+    <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_input</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> benchmark results&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Datasets: </span><span class="si">{</span><span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Models: </span><span class="si">{</span><span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">First few rows:&quot;</span><span class="p">)</span>
+<span class="n">results_df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="4.-Train-QSage-(Optional)">
+<h2>4. Train QSage (Optional)<a class="headerlink" href="#4.-Train-QSage-(Optional)" title="Link to this heading">#</a></h2>
+<p>If you want to train your own QSage model, you can do so here. Otherwise, skip to the next section to load the pre-trained model.</p>
+<section id="Training-Process">
+<h3>Training Process<a class="headerlink" href="#Training-Process" title="Link to this heading">#</a></h3>
+<p>QSage training involves:</p>
+<ol class="arabic simple">
+<li><p><strong>Feature selection</strong>: Choose which data complexity metrics to use</p></li>
+<li><p><strong>Target selection</strong>: Choose which performance metric to predict (accuracy, F1, AUC)</p></li>
+<li><p><strong>Model training</strong>: Train a Random Forest or MLP surrogate model</p></li>
+<li><p><strong>Validation</strong>: Evaluate prediction accuracy on held-out data</p></li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select a held-out dataset for testing</span>
+<span class="n">held_out_dataset</span> <span class="o">=</span> <span class="s1">&#39;iris_binary_class_dataset&#39;</span>
+
+<span class="c1"># Split data into training and held-out</span>
+<span class="n">train_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="o">~</span><span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">held_out_dataset</span><span class="p">)]</span>
+<span class="n">held_out_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">held_out_dataset</span><span class="p">)]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> results&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Held-out data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">held_out_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> results&quot;</span><span class="p">)</span>
+
+<span class="c1"># Initialize QSage</span>
+<span class="n">sage</span> <span class="o">=</span> <span class="n">QuantumSage</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">train_df</span><span class="p">,</span>
+    <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
+    <span class="n">sage_type</span><span class="o">=</span><span class="n">sage_type</span>  <span class="c1"># &#39;random_forest&#39; or &#39;mlp&#39;</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ QSage initialized with </span><span class="si">{</span><span class="n">sage_type</span><span class="si">}</span><span class="s2"> model&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train QSage</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training QSage...&quot;</span><span class="p">)</span>
+<span class="n">sage</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Training complete!&quot;</span><span class="p">)</span>
+
+<span class="c1"># Save trained model</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_sage</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sage</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Model saved to </span><span class="si">{</span><span class="n">file_sage</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="5.-Load-Pre-trained-QSage-Model">
+<h2>5. Load Pre-trained QSage Model<a class="headerlink" href="#5.-Load-Pre-trained-QSage-Model" title="Link to this heading">#</a></h2>
+<p>Load the pre-trained QSage model to make predictions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load pre-trained QSage model</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_sage</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">sage</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Pre-trained QSage model loaded&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model type: </span><span class="si">{</span><span class="n">sage</span><span class="o">.</span><span class="n">sage_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Features used: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sage</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Metrics predicted: </span><span class="si">{</span><span class="n">sage</span><span class="o">.</span><span class="n">metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="6.-Make-Predictions-with-QSage">
+<h2>6. Make Predictions with QSage<a class="headerlink" href="#6.-Make-Predictions-with-QSage" title="Link to this heading">#</a></h2>
+<p>Now let’s use QSage to predict which models will perform best on a new dataset.</p>
+<section id="Prediction-Process">
+<h3>Prediction Process<a class="headerlink" href="#Prediction-Process" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Provide dataset characteristics</strong>: Data complexity metrics</p></li>
+<li><p><strong>QSage predicts</strong>: Performance for each model/embedding combination</p></li>
+<li><p><strong>Get recommendations</strong>: Models ranked by predicted performance</p></li>
+</ol>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare held-out dataset features</span>
+<span class="n">_columns_data_features</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;# Features&#39;</span><span class="p">,</span> <span class="s1">&#39;# Samples&#39;</span><span class="p">,</span> <span class="s1">&#39;Feature_Samples_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Intrinsic_Dimension&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Condition number&#39;</span><span class="p">,</span> <span class="s1">&#39;Fisher Discriminant Ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Total Correlations&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Mutual information&#39;</span><span class="p">,</span> <span class="s1">&#39;# Non-zero entries&#39;</span><span class="p">,</span> <span class="s1">&#39;# Low variance features&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Variation&#39;</span><span class="p">,</span> <span class="s1">&#39;std_var&#39;</span><span class="p">,</span> <span class="s1">&#39;Coefficient of Variation %&#39;</span><span class="p">,</span> <span class="s1">&#39;std_co_of_v&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Skewness&#39;</span><span class="p">,</span> <span class="s1">&#39;std_skew&#39;</span><span class="p">,</span> <span class="s1">&#39;Kurtosis&#39;</span><span class="p">,</span> <span class="s1">&#39;std_kurt&#39;</span><span class="p">,</span> <span class="s1">&#39;Mean Log Kernel Density&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Isomap Reconstruction Error&#39;</span><span class="p">,</span> <span class="s1">&#39;Fractal dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;Entropy&#39;</span>
+<span class="p">]</span>
+
+<span class="c1"># Get unique dataset characteristics</span>
+<span class="n">held_out_features</span> <span class="o">=</span> <span class="n">held_out_df</span><span class="p">[</span><span class="n">_columns_data_features</span><span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Held-out dataset characteristics:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">held_out_features</span><span class="p">)</span>
+
+<span class="c1"># Make predictions</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">sage</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">held_out_features</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ Generated predictions for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span><span class="si">}</span><span class="s2"> model configurations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<section id="7.-Analyze-Predictions">
+<h2>7. Analyze Predictions<a class="headerlink" href="#7.-Analyze-Predictions" title="Link to this heading">#</a></h2>
+<p>Let’s examine QSage’s predictions and compare them to actual results.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="c1"># Merge predictions with actual results</span>
+<span class="n">comparison_df</span> <span class="o">=</span> <span class="n">held_out_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="n">predictions</span><span class="p">,</span>
+    <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">],</span>
+    <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;_actual&#39;</span><span class="p">,</span> <span class="s1">&#39;_predicted&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Display top predictions</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 Predicted Models (by accuracy):&quot;</span><span class="p">)</span>
+<span class="n">top_predictions</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">)[</span>
+    <span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">,</span> <span class="s1">&#39;f1_score_predicted&#39;</span><span class="p">]</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">top_predictions</span><span class="p">)</span>
+
+<span class="c1"># Compare predictions vs actual</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Prediction vs Actual Performance:&quot;</span><span class="p">)</span>
+<span class="n">comparison_summary</span> <span class="o">=</span> <span class="n">comparison_df</span><span class="p">[[</span>
+    <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;accuracy_actual&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;f1_score_actual&#39;</span><span class="p">,</span> <span class="s1">&#39;f1_score_predicted&#39;</span>
+<span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">comparison_summary</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="8.-Visualize-Results">
+<h2>8. Visualize Results<a class="headerlink" href="#8.-Visualize-Results" title="Link to this heading">#</a></h2>
+<p>Create visualizations to understand QSage’s predictions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set style</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="c1"># Plot 1: Predicted vs Actual Accuracy</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">comparison_df</span><span class="p">[</span><span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">],</span>
+    <span class="n">comparison_df</span><span class="p">[</span><span class="s1">&#39;accuracy_actual&#39;</span><span class="p">],</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Perfect prediction&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted Accuracy&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Actual Accuracy&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;QSage Prediction Accuracy&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="c1"># Plot 2: Model Rankings</span>
+<span class="n">top_models</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span>
+    <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_models</span><span class="p">)),</span>
+    <span class="n">top_models</span><span class="p">[</span><span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">],</span>
+    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span>
+<span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_models</span><span class="p">)))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">embeddings</span><span class="si">}</span><span class="s2">&quot;</span>
+                          <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">top_models</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()])</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted Accuracy&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Top 15 Recommended Models&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Calculate prediction error</span>
+<span class="n">mae</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">comparison_df</span><span class="p">[</span><span class="s1">&#39;accuracy_actual&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">comparison_df</span><span class="p">[</span><span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Mean Absolute Error: </span><span class="si">{</span><span class="n">mae</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="9.-Feature-Importance">
+<h2>9. Feature Importance<a class="headerlink" href="#9.-Feature-Importance" title="Link to this heading">#</a></h2>
+<p>Understand which dataset characteristics most influence QSage’s predictions.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get feature importance (for Random Forest sage)</span>
+<span class="k">if</span> <span class="n">sage</span><span class="o">.</span><span class="n">sage_type</span> <span class="o">==</span> <span class="s1">&#39;random_forest&#39;</span><span class="p">:</span>
+    <span class="n">feature_importance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+        <span class="s1">&#39;feature&#39;</span><span class="p">:</span> <span class="n">sage</span><span class="o">.</span><span class="n">features</span><span class="p">,</span>
+        <span class="s1">&#39;importance&#39;</span><span class="p">:</span> <span class="n">sage</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">feature_importances_</span>
+    <span class="p">})</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;importance&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="c1"># Plot top 15 features</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+    <span class="n">top_features</span> <span class="o">=</span> <span class="n">feature_importance</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_features</span><span class="p">)),</span> <span class="n">top_features</span><span class="p">[</span><span class="s1">&#39;importance&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;coral&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_features</span><span class="p">)),</span> <span class="n">top_features</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Importance&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Top 15 Most Important Features for QSage Predictions&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 Most Important Features:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">feature_importance</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feature importance analysis only available for Random Forest sage&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Summary">
+<h2>Summary<a class="headerlink" href="#Summary" title="Link to this heading">#</a></h2>
+<p>In this tutorial, you learned how to:</p>
+<ol class="arabic simple">
+<li><p>✅ Download and set up pre-trained QSage models</p></li>
+<li><p>✅ Load benchmark data with model performance results</p></li>
+<li><p>✅ Train QSage on benchmark data (optional)</p></li>
+<li><p>✅ Load pre-trained QSage models</p></li>
+<li><p>✅ Make predictions for new datasets</p></li>
+<li><p>✅ Analyze and visualize QSage predictions</p></li>
+<li><p>✅ Understand feature importance</p></li>
+</ol>
+</section>
+<section id="Key-Takeaways">
+<h2>Key Takeaways<a class="headerlink" href="#Key-Takeaways" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>QSage saves time</strong>: Predicts model performance without running expensive experiments</p></li>
+<li><p><strong>Data-driven recommendations</strong>: Uses dataset characteristics to recommend best models</p></li>
+<li><p><strong>Interpretable</strong>: Shows which features influence predictions</p></li>
+<li><p><strong>Flexible</strong>: Supports both quantum and classical ML models</p></li>
+</ul>
+</section>
+<section id="Next-Steps">
+<h2>Next Steps<a class="headerlink" href="#Next-Steps" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Use QSage on your data</strong>: Compute data complexity metrics and get model recommendations</p></li>
+<li><p><strong>Combine with QProfiler</strong>: Use QSage to narrow down models, then validate with QProfiler</p></li>
+<li><p><strong>Retrain QSage</strong>: Add your own benchmark results to improve predictions</p></li>
+<li><p><strong>Explore feature engineering</strong>: Experiment with different data complexity metrics</p></li>
+</ul>
+</section>
+<section id="See-Also">
+<h2>See Also<a class="headerlink" href="#See-Also" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="../../apps/sage.html"><span class="doc">QSage Documentation</span></a> - Full API reference</p></li>
+<li><p><a class="reference internal" href="../QProfiler/example_qprofiler.html"><span class="doc">QProfiler Tutorial</span></a> - Benchmark models</p></li>
+<li><p><a class="reference internal" href="../Artificial_data_generation/example_data_generation.html"><span class="doc">Data Generation Tutorial</span></a> - Create test datasets</p></li>
+</ul>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#What-is-QSage?">What is QSage?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#How-QSage-Works">How QSage Works</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Tutorial-Overview">Tutorial Overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.-Setup-and-Imports">1. Setup and Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Download-Pre-trained-Model">2. Download Pre-trained Model</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Download-the-Model">Download the Model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#File-Structure">File Structure</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Load-Benchmark-Data">3. Load Benchmark Data</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Data-Structure">Data Structure</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#4.-Train-QSage-(Optional)">4. Train QSage (Optional)</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Training-Process">Training Process</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Load-Pre-trained-QSage-Model">5. Load Pre-trained QSage Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Make-Predictions-with-QSage">6. Make Predictions with QSage</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Prediction-Process">Prediction Process</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#7.-Analyze-Predictions">7. Analyze Predictions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#8.-Visualize-Results">8. Visualize Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#9.-Feature-Importance">9. Feature Importance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Summary">Summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Key-Takeaways">Key Takeaways</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Next-Steps">Next Steps</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#See-Also">See Also</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2025 IBM Research.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

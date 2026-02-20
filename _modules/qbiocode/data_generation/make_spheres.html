@@ -30,6 +30,8 @@
 <link href="../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css?v=9478b45b" />
   
   <!-- So that users can add custom icons -->
   <script src="../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -39,9 +41,10 @@
 
     <script src="../../../_static/jquery.js?v=5d32c60e"></script>
     <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-    <script src="../../../_static/documentation_options.js?v=d45e8c67"></script>
-    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
-    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../_static/documentation_options.js?v=f539c95a"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/qbiocode/data_generation/make_spheres';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
@@ -136,6 +139,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../tutorials.html">
     Tutorials
   </a>
@@ -143,29 +153,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../citing.html">
-    Citing
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -204,6 +200,14 @@
         </li>
 </ul></div>
       
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
     </div>
     
   </div>
@@ -233,7 +237,7 @@
         
       
       <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
         
 
   
@@ -256,6 +260,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../background.html">
+    Background
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../tutorials.html">
     Tutorials
   </a>
@@ -263,29 +274,15 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../apps.html">
+    Applications
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api_overview.html">
     API
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../citing.html">
-    Citing
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/profiler.html">
-    QProfiler
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../apps/sage.html">
-    QSage
   </a>
 </li>
 
@@ -315,9 +312,27 @@
         </li>
 </ul></div>
         
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
       </div>
     
   </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+    </div>
   
   
   <div class="sidebar-primary-items__end sidebar-primary__section">
@@ -375,20 +390,45 @@
                 <article class="bd-article">
                   
   <h1>Source code for qbiocode.data_generation.make_spheres</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Generate synthetic concentric n-dimensional spheres datasets for binary classification.</span>
+
+<span class="sd">This module creates multiple configurations of high-dimensional concentric spheres</span>
+<span class="sd">datasets with varying sample sizes, dimensionality, and radii, useful for testing</span>
+<span class="sd">machine learning algorithms on high-dimensional non-linearly separable data.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
-<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="generate_points_in_nd_sphere">
-<a class="viewcode-back" href="../../../api/qbiocode.data_generation.make_spheres.html#qbiocode.data_generation.make_spheres.generate_points_in_nd_sphere">[docs]</a>
+<a class="viewcode-back" href="../../../api/qbiocode.data_generation.make_spheres.html#qbiocode.generate_points_in_nd_sphere">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_points_in_nd_sphere</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates n random points within a n-d sphere of given radius.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate random points within an n-dimensional spherical shell.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_s : int</span>
+<span class="sd">        Number of points to generate.</span>
+<span class="sd">    dim : int, default=3</span>
+<span class="sd">        Dimensionality of the sphere.</span>
+<span class="sd">    radius : float, default=1</span>
+<span class="sd">        Outer radius of the spherical shell.</span>
+<span class="sd">    thresh : float, default=0.9</span>
+<span class="sd">        Inner radius threshold as fraction of outer radius (creates shell).</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    points : ndarray of shape (n_s, dim)</span>
+<span class="sd">        Generated points within the spherical shell.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">points</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">while</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="n">n_s</span><span class="p">:</span>
@@ -406,17 +446,62 @@
 <span class="n">DIM</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">RAD</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 
-<div class="viewcode-block" id="my_make_spheres">
-<a class="viewcode-back" href="../../../api/qbiocode.data_generation.make_spheres.html#qbiocode.data_generation.make_spheres.my_make_spheres">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">my_make_spheres</span><span class="p">(</span>
-    <span class="n">n_s</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span> 
+<div class="viewcode-block" id="generate_spheres_datasets">
+<a class="viewcode-back" href="../../../api/qbiocode.data_generation.html#qbiocode.generate_spheres_datasets">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_spheres_datasets</span><span class="p">(</span>
+    <span class="n">n_s</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
     <span class="n">dim</span><span class="o">=</span><span class="n">DIM</span><span class="p">,</span>
     <span class="n">radius</span><span class="o">=</span><span class="n">RAD</span><span class="p">,</span>
-    <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
 <span class="p">):</span>
-
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generate multiple concentric n-dimensional spheres datasets with varying parameters.</span>
+<span class="sd">    </span>
+<span class="sd">    Creates a series of high-dimensional datasets where samples form two concentric</span>
+<span class="sd">    spherical shells, providing a challenging non-linearly separable binary classification</span>
+<span class="sd">    problem in high dimensions. Each configuration varies the number of samples,</span>
+<span class="sd">    dimensionality, and sphere radii.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    n_s : list of int, default=range(100, 300, 25)</span>
+<span class="sd">        List of sample sizes per class to generate for each configuration.</span>
+<span class="sd">    dim : list of int, default=range(5, 15, 5)</span>
+<span class="sd">        List of dimensionalities for the spheres.</span>
+<span class="sd">    radius : list of float, default=range(5, 20, 5)</span>
+<span class="sd">        List of outer sphere radii (inner sphere is 0.5 * outer radius).</span>
+<span class="sd">    save_path : str, optional</span>
+<span class="sd">        Directory path where datasets and configuration files will be saved.</span>
+<span class="sd">    random_state : int, default=42</span>
+<span class="sd">        Random seed for reproducibility.</span>
+<span class="sd">    </span>
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+<span class="sd">        Saves CSV files for each dataset configuration and a JSON file with</span>
+<span class="sd">        all configuration parameters.</span>
+<span class="sd">    </span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - Each dataset is saved as &#39;spheres_data-{i}.csv&#39; where i is the configuration number</span>
+<span class="sd">    - Configuration parameters are saved in &#39;dataset_config.json&#39;</span>
+<span class="sd">    - The last column &#39;class&#39; contains binary labels (0 for outer, 1 for inner sphere)</span>
+<span class="sd">    - Samples are generated in spherical shells (not solid spheres) for better separation</span>
+<span class="sd">    </span>
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from qbiocode.data_generation import generate_spheres_datasets</span>
+<span class="sd">    &gt;&gt;&gt; generate_spheres_datasets(n_s=[100], dim=[5], radius=[10], save_path=&#39;data&#39;)</span>
+<span class="sd">    Generating spheres dataset...</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating spheres dataset...&quot;</span><span class="p">)</span>
+    
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
 
+    <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">save_path</span> <span class="o">=</span> <span class="s1">&#39;spheres_data&#39;</span>
+    
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_path</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span>
 
@@ -474,6 +559,12 @@
               
               
               
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
             </div>
             
             
@@ -501,7 +592,7 @@
 
   <p class="copyright">
     
-      © Copyright 2025 IBM Research, Bryan Raubenolt, Aritra Bose, Kahn Rhrissorrakrai, Filippo Utro, Akhil Mohan, Daniel Blankenberg, Laxmi Parida.
+      © Copyright 2025 IBM Research.
       <br/>
     
   </p>
@@ -510,7 +601,7 @@
         <div class="footer-item">
 
   <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.1.0.
     <br/>
   </p>
 </div>
