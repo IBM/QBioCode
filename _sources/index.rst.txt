@@ -39,8 +39,8 @@ Ready to dive into the world of quantum healthcare and life sciences?
 
 
 .. toctree::
-    :caption: Getting Started
-    :maxdepth: 2
+    :maxdepth: 1
+    :titlesonly:
     
     Installation <installation.md>
     Background <background.md>
