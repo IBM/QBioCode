@@ -27,7 +27,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": null,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -146,26 +146,9 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": null,
    "metadata": {},
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "Model Performance Results:\n",
-      "  model  accuracy  f1_score       auc\n",
-      "0  qsvc  0.700000  0.576471  0.500000\n",
-      "1    rf  0.966667  0.966074  0.944444\n",
-      "2   svc  0.700000  0.576471  0.500000\n",
-      "3  qsvc  0.700000  0.576471  0.500000\n",
-      "4    rf  0.966667  0.967137  0.976190\n",
-      "\n",
-      "Data Complexity Metrics:\n",
-      "['Dataset', '# Features', '# Samples', 'Feature_Samples_ratio', 'Intrinsic_Dimension', 'Condition number', 'Fisher Discriminant Ratio', 'Total Correlations', 'Mutual information', '# Non-zero entries', '# Low variance features', 'Variation', 'std_var', 'Coefficient of Variation %', 'std_co_of_v', 'Skewness', 'std_skew', 'Kurtosis', 'std_kurt', 'Mean Log Kernel Density', 'Isomap Reconstruction Error', 'Fractal dimension', 'Entropy', 'std_entropy']\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
     "# Load model results\n",
     "model_results = pd.read_csv('ModelResults.csv')\n",
@@ -182,92 +165,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## 6. Compile Results from Multiple Runs (Optional)\n",
-    "\n",
-    "If you've run QProfiler multiple times on different datasets, you can compile all results into a single file for comprehensive analysis."
-   ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [
-    {
-     "ename": "SyntaxError",
-     "evalue": "invalid syntax (2577385970.py, line 19)",
-     "output_type": "error",
-     "traceback": [
-      "  \u001b[36mCell\u001b[39m\u001b[36m \u001b[39m\u001b[32mIn[17]\u001b[39m\u001b[32m, line 19\u001b[39m\n\u001b[31m    \u001b[39m\u001b[31mprint(f)\u001b[39m\n    ^\n\u001b[31mSyntaxError\u001b[39m\u001b[31m:\u001b[39m invalid syntax\n"
-     ]
-    }
-   ],
-   "source": [
-    "# Set the directory containing your QProfiler results\n",
-    "dir_home = os.getcwd()\n",
-    "results_dir = os.path.join(dir_home, 'tutorial', 'QProfiler')\n",
-    "\n",
-    "print(results_dir)\n",
-    "\n",
-    "# Find all RawDataEvaluation.csv files\n",
-    "data_evals = [\n",
-    "    os.path.join(dp, f) \n",
-    "    for dp, dn, filenames in os.walk(results_dir) \n",
-    "    for f in filenames \n",
-    "    if f == 'RawDataEvaluation.csv'\n",
-    "]\n",
-    "\n",
-    "c =  [\n",
-    "    os.path.join(dp, f) \n",
-    "    for dp, dn, filenames in os.walk(results_dir) \n",
-    "    for f in filenames \n",
-    "    f\n",
-    "]\n",
-    "\n",
-    "\n",
-    "# Find all ModelResults.csv files\n",
-    "data_result = [\n",
-    "    os.path.join(dp, f) \n",
-    "    for dp, dn, filenames in os.walk(results_dir) \n",
-    "    for f in filenames \n",
-    "    if f == 'ModelResults.csv'\n",
-    "]\n",
-    "\n",
-    "print(f\"Found {len(data_evals)} RawDataEvaluation files\")\n",
-    "print(f\"Found {len(data_result)} ModelResults files\")\n",
-    "\n",
-    "# Compile raw data evaluations\n",
-    "rawevals_df = []\n",
-    "for fl in data_evals:\n",
-    "    rawevals_df.append(pd.read_csv(fl))\n",
-    "rawevals_df = pd.concat(rawevals_df, ignore_index=True)\n",
-    "\n",
-    "# Save compiled data evaluations\n",
-    "rawevals_df.to_csv('compiled_raw_data_evaluations.csv', index=False)\n",
-    "print(f\"\\nSaved compiled data evaluations: {len(rawevals_df)} rows\")\n",
-    "\n",
-    "# Compile model results\n",
-    "results_df = []\n",
-    "for fl in data_result:\n",
-    "    results_df.append(pd.read_csv(fl))\n",
-    "results_df = pd.concat(results_df, ignore_index=True)\n",
-    "\n",
-    "# Add useful columns for analysis\n",
-    "results_df['datatype'] = [re.sub('-.*', '', x) for x in results_df['Dataset']]\n",
-    "results_df['model_embed_datatype'] = [\n",
-    "    f\"{row.model}_{row.embeddings}_{row.datatype}\" \n",
-    "    for idx, row in results_df.iterrows()\n",
-    "]\n",
-    "\n",
-    "# Save compiled results\n",
-    "results_df.to_csv('compiled_results.csv', index=False)\n",
-    "print(f\"Saved compiled model results: {len(results_df)} rows\")"
-   ]
-  },
-  {
-   "cell_type": "markdown",
-   "metadata": {},
-   "source": [
-    "## 7. Visualize Results"
+    "## 6. Visualize Results"
    ]
   },
   {
@@ -308,7 +206,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## 8. Correlation Analysis\n",
+    "## 7. Correlation Analysis\n",
     "\n",
     "Analyze correlations between data complexity metrics and model performance for all embedding types."
    ]
@@ -320,15 +218,7 @@
    "outputs": [],
    "source": [
     "# Use compiled results if available, otherwise use current results\n",
-    "if os.path.exists('compiled_results.csv'):\n",
-    "    compiled = pd.read_csv('compiled_results.csv')\n",
-    "else:\n",
-    "    compiled = model_results.copy()\n",
-    "    compiled['datatype'] = [re.sub('-.*', '', x) for x in compiled['Dataset']]\n",
-    "    compiled['model_embed_datatype'] = [\n",
-    "        f\"{row.model}_{row.embeddings}_{row.datatype}\" \n",
-    "        for idx, row in compiled.iterrows()\n",
-    "    ]\n",
+    "compiled = pd.read_csv('ModelResults.csv')\n",
     "\n",
     "# Compute correlation\n",
     "_, correlation_spearman_df = qbc.compute_results_correlation(\n",
@@ -376,7 +266,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "## 9. Understanding Data Complexity Metrics\n",
+    "## 8. Understanding Data Complexity Metrics\n",
     "\n",
     "### Geometric Properties:\n",
     "- **Intrinsic Dimension**: True dimensionality of data\n",
@@ -420,10 +310,9 @@
     "2. ✅ Configure QProfiler with YAML files\n",
     "3. ✅ Run QProfiler to benchmark multiple ML models\n",
     "4. ✅ Analyze model performance results\n",
-    "5. ✅ Compile results from multiple QProfiler runs\n",
-    "6. ✅ Visualize and compare model performance\n",
-    "7. ✅ Understand data complexity metrics\n",
-    "8. ✅ Correlate data properties with model performance across all embeddings\n",
+    "5. ✅ Visualize and compare model performance\n",
+    "6. ✅ Understand data complexity metrics\n",
+    "7. ✅ Correlate data properties with model performance across all embeddings\n",
     "\n",
     "## Next Steps\n",
     "\n",
@@ -439,6 +328,11 @@
     "- [QSage Tutorial](../QSage/qsage.ipynb) - Use compiled results for meta-learning\n",
     "- [Data Generation Tutorial](../Artificial_data_generation/example_data_generation.ipynb) - Create more datasets"
    ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": []
   }
  ],
  "metadata": {

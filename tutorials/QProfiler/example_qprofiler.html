@@ -426,7 +426,7 @@
 <section id="1.-Setup-and-Imports">
 <h2>1. Setup and Imports<a class="headerlink" href="#1.-Setup-and-Imports" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
@@ -527,8 +527,8 @@
 <li><p><strong>ModelResults.csv</strong>: Performance metrics (accuracy, F1-score, AUC, etc.)</p></li>
 <li><p><strong>RawDataEvaluation.csv</strong>: Data complexity metrics</p></li>
 </ol>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load model results</span>
@@ -543,108 +543,9 @@
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-Model Performance Results:
-  model  accuracy  f1_score       auc
-0  qsvc  0.700000  0.576471  0.500000
-1    rf  0.966667  0.966074  0.944444
-2   svc  0.700000  0.576471  0.500000
-3  qsvc  0.700000  0.576471  0.500000
-4    rf  0.966667  0.967137  0.976190
-
-Data Complexity Metrics:
-[&#39;Dataset&#39;, &#39;# Features&#39;, &#39;# Samples&#39;, &#39;Feature_Samples_ratio&#39;, &#39;Intrinsic_Dimension&#39;, &#39;Condition number&#39;, &#39;Fisher Discriminant Ratio&#39;, &#39;Total Correlations&#39;, &#39;Mutual information&#39;, &#39;# Non-zero entries&#39;, &#39;# Low variance features&#39;, &#39;Variation&#39;, &#39;std_var&#39;, &#39;Coefficient of Variation %&#39;, &#39;std_co_of_v&#39;, &#39;Skewness&#39;, &#39;std_skew&#39;, &#39;Kurtosis&#39;, &#39;std_kurt&#39;, &#39;Mean Log Kernel Density&#39;, &#39;Isomap Reconstruction Error&#39;, &#39;Fractal dimension&#39;, &#39;Entropy&#39;, &#39;std_entropy&#39;]
-</pre></div></div>
-</div>
 </section>
-<section id="6.-Compile-Results-from-Multiple-Runs-(Optional)">
-<h2>6. Compile Results from Multiple Runs (Optional)<a class="headerlink" href="#6.-Compile-Results-from-Multiple-Runs-(Optional)" title="Link to this heading">#</a></h2>
-<p>If you’ve run QProfiler multiple times on different datasets, you can compile all results into a single file for comprehensive analysis.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the directory containing your QProfiler results</span>
-<span class="n">dir_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-<span class="n">results_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_home</span><span class="p">,</span> <span class="s1">&#39;tutorial&#39;</span><span class="p">,</span> <span class="s1">&#39;QProfiler&#39;</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
-
-<span class="c1"># Find all RawDataEvaluation.csv files</span>
-<span class="n">data_evals</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span>
-    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s1">&#39;RawDataEvaluation.csv&#39;</span>
-<span class="p">]</span>
-
-<span class="n">c</span> <span class="o">=</span>  <span class="p">[</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span>
-    <span class="n">f</span>
-<span class="p">]</span>
-
-
-<span class="c1"># Find all ModelResults.csv files</span>
-<span class="n">data_result</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span>
-    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s1">&#39;ModelResults.csv&#39;</span>
-<span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data_evals</span><span class="p">)</span><span class="si">}</span><span class="s2"> RawDataEvaluation files&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data_result</span><span class="p">)</span><span class="si">}</span><span class="s2"> ModelResults files&quot;</span><span class="p">)</span>
-
-<span class="c1"># Compile raw data evaluations</span>
-<span class="n">rawevals_df</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">fl</span> <span class="ow">in</span> <span class="n">data_evals</span><span class="p">:</span>
-    <span class="n">rawevals_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fl</span><span class="p">))</span>
-<span class="n">rawevals_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">rawevals_df</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Save compiled data evaluations</span>
-<span class="n">rawevals_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;compiled_raw_data_evaluations.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Saved compiled data evaluations: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rawevals_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
-
-<span class="c1"># Compile model results</span>
-<span class="n">results_df</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">fl</span> <span class="ow">in</span> <span class="n">data_result</span><span class="p">:</span>
-    <span class="n">results_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fl</span><span class="p">))</span>
-<span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Add useful columns for analysis</span>
-<span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;-.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]]</span>
-<span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model_embed_datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">embeddings</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&quot;</span>
-    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">results_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
-<span class="p">]</span>
-
-<span class="c1"># Save compiled results</span>
-<span class="n">results_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;compiled_results.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved compiled model results: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-  <span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[17]</span><span class="ansi-green-fg">, line 19</span>
-<span class="ansi-red-fg">    </span><span class="ansi-red-fg">print(f)</span>
-    ^
-<span class="ansi-red-fg">SyntaxError</span><span class="ansi-red-fg">:</span> invalid syntax
-
-</pre></div></div>
-</div>
-</section>
-<section id="7.-Visualize-Results">
-<h2>7. Visualize Results<a class="headerlink" href="#7.-Visualize-Results" title="Link to this heading">#</a></h2>
+<section id="6.-Visualize-Results">
+<h2>6. Visualize Results<a class="headerlink" href="#6.-Visualize-Results" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -679,23 +580,15 @@ Data Complexity Metrics:
 </div>
 </div>
 </section>
-<section id="8.-Correlation-Analysis">
-<h2>8. Correlation Analysis<a class="headerlink" href="#8.-Correlation-Analysis" title="Link to this heading">#</a></h2>
+<section id="7.-Correlation-Analysis">
+<h2>7. Correlation Analysis<a class="headerlink" href="#7.-Correlation-Analysis" title="Link to this heading">#</a></h2>
 <p>Analyze correlations between data complexity metrics and model performance for all embedding types.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use compiled results if available, otherwise use current results</span>
-<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;compiled_results.csv&#39;</span><span class="p">):</span>
-    <span class="n">compiled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;compiled_results.csv&#39;</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">compiled</span> <span class="o">=</span> <span class="n">model_results</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="n">compiled</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;-.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">compiled</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]]</span>
-    <span class="n">compiled</span><span class="p">[</span><span class="s1">&#39;model_embed_datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">embeddings</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">compiled</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
-    <span class="p">]</span>
+<span class="n">compiled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;ModelResults.csv&#39;</span><span class="p">)</span>
 
 <span class="c1"># Compute correlation</span>
 <span class="n">_</span><span class="p">,</span> <span class="n">correlation_spearman_df</span> <span class="o">=</span> <span class="n">qbc</span><span class="o">.</span><span class="n">compute_results_correlation</span><span class="p">(</span>
@@ -741,8 +634,8 @@ Data Complexity Metrics:
 </div>
 </div>
 </section>
-<section id="9.-Understanding-Data-Complexity-Metrics">
-<h2>9. Understanding Data Complexity Metrics<a class="headerlink" href="#9.-Understanding-Data-Complexity-Metrics" title="Link to this heading">#</a></h2>
+<section id="8.-Understanding-Data-Complexity-Metrics">
+<h2>8. Understanding Data Complexity Metrics<a class="headerlink" href="#8.-Understanding-Data-Complexity-Metrics" title="Link to this heading">#</a></h2>
 <section id="Geometric-Properties:">
 <h3>Geometric Properties:<a class="headerlink" href="#Geometric-Properties:" title="Link to this heading">#</a></h3>
 <ul class="simple">
@@ -789,7 +682,6 @@ Data Complexity Metrics:
 <li><p>✅ Configure QProfiler with YAML files</p></li>
 <li><p>✅ Run QProfiler to benchmark multiple ML models</p></li>
 <li><p>✅ Analyze model performance results</p></li>
-<li><p>✅ Compile results from multiple QProfiler runs</p></li>
 <li><p>✅ Visualize and compare model performance</p></li>
 <li><p>✅ Understand data complexity metrics</p></li>
 <li><p>✅ Correlate data properties with model performance across all embeddings</p></li>
@@ -854,10 +746,9 @@ Data Complexity Metrics:
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Analyze-Results">5. Analyze Results</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Compile-Results-from-Multiple-Runs-(Optional)">6. Compile Results from Multiple Runs (Optional)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#7.-Visualize-Results">7. Visualize Results</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#8.-Correlation-Analysis">8. Correlation Analysis</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#9.-Understanding-Data-Complexity-Metrics">9. Understanding Data Complexity Metrics</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Visualize-Results">6. Visualize Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#7.-Correlation-Analysis">7. Correlation Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#8.-Understanding-Data-Complexity-Metrics">8. Understanding Data Complexity Metrics</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Geometric-Properties:">Geometric Properties:</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Statistical-Properties:">Statistical Properties:</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Separability-Measures:">Separability Measures:</a></li>
