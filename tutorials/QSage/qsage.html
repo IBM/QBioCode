@@ -423,38 +423,14 @@
 <li><p><strong>Supports both quantum and classical</strong> ML algorithms</p></li>
 </ul>
 </section>
-<section id="How-QSage-Works">
-<h2>How QSage Works<a class="headerlink" href="#How-QSage-Works" title="Link to this heading">#</a></h2>
-<ol class="arabic simple">
-<li><p><strong>Analyzes your dataset</strong>: Computes data complexity metrics</p></li>
-<li><p><strong>Predicts performance</strong>: Uses trained surrogate model to estimate how each ML model will perform</p></li>
-<li><p><strong>Ranks models</strong>: Provides recommendations ordered by predicted performance</p></li>
-<li><p><strong>Explains predictions</strong>: Shows which data characteristics influenced the recommendation</p></li>
-</ol>
-</section>
-<section id="Tutorial-Overview">
-<h2>Tutorial Overview<a class="headerlink" href="#Tutorial-Overview" title="Link to this heading">#</a></h2>
-<p>In this tutorial, you will:</p>
-<ol class="arabic simple">
-<li><p>Download pre-trained QSage model weights</p></li>
-<li><p>Load benchmark results data</p></li>
-<li><p>Train QSage on the benchmark data (optional)</p></li>
-<li><p>Use QSage to predict model performance on new datasets</p></li>
-<li><p>Visualize and interpret QSage predictions</p></li>
-</ol>
-</section>
 <section id="1.-Setup-and-Imports">
 <h2>1. Setup and Imports<a class="headerlink" href="#1.-Setup-and-Imports" title="Link to this heading">#</a></h2>
-<p>First, let’s import the necessary modules.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
 
 <span class="c1"># Import QSage</span>
@@ -465,114 +441,25 @@
 </div>
 </div>
 </section>
-<section id="2.-Download-Pre-trained-Model">
-<h2>2. Download Pre-trained Model<a class="headerlink" href="#2.-Download-Pre-trained-Model" title="Link to this heading">#</a></h2>
-<p>QSage requires pre-trained model weights that were trained on extensive benchmarking data.</p>
-<section id="Download-the-Model">
-<h3>Download the Model<a class="headerlink" href="#Download-the-Model" title="Link to this heading">#</a></h3>
-<p><strong>Download link</strong>: <a class="reference external" href="https://ibm.biz/QSageModel">https://ibm.biz/QSageModel</a></p>
-<p>The download includes:</p>
+<section id="2.-Load-Benchmark-Data">
+<h2>2. Load Benchmark Data<a class="headerlink" href="#2.-Load-Benchmark-Data" title="Link to this heading">#</a></h2>
+<p>QSage requires benchmark data containing:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">QMLBench_sage.pkl</span></code>: Pre-trained Random Forest surrogate model</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Compiled_QMLBench_results.csv</span></code>: Benchmark results used for training</p></li>
+<li><p>Dataset complexity features (# Features, # Samples, Intrinsic_Dimension, etc.)</p></li>
+<li><p>Performance metrics (accuracy, f1_score, auc)</p></li>
+<li><p>Metadata (Dataset, embeddings, model, etc.)</p></li>
 </ul>
-</section>
-<section id="File-Structure">
-<h3>File Structure<a class="headerlink" href="#File-Structure" title="Link to this heading">#</a></h3>
-<p>Place the downloaded files in a <code class="docutils literal notranslate"><span class="pre">results/</span></code> directory:</p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>results/
-├── QMLBench_sage.pkl
-└── Compiled_QMLBench_results.csv
-</pre></div>
-</div>
+<p><strong>Download the data</strong>: <a class="reference external" href="https://ibm.biz/QSageModel">https://ibm.biz/QSageModel</a></p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set paths to downloaded files</span>
-<span class="n">dir_home</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>  <span class="c1"># Set to your QBioCode directory if needed</span>
-<span class="n">dir_results</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_home</span><span class="p">,</span> <span class="s1">&#39;results&#39;</span><span class="p">)</span>
-
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set paths</span>
+<span class="n">dir_results</span> <span class="o">=</span> <span class="s1">&#39;results&#39;</span>  <span class="c1"># Directory containing downloaded files</span>
 <span class="n">file_input</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_results</span><span class="p">,</span> <span class="s1">&#39;Compiled_QMLBench_results.csv&#39;</span><span class="p">)</span>
-<span class="n">file_sage</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_results</span><span class="p">,</span> <span class="s1">&#39;QMLBench_sage.pkl&#39;</span><span class="p">)</span>
-
-<span class="c1"># Sage model type (random_forest or mlp)</span>
-<span class="n">sage_type</span> <span class="o">=</span> <span class="s1">&#39;random_forest&#39;</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data file: </span><span class="si">{</span><span class="n">file_input</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model file: </span><span class="si">{</span><span class="n">file_sage</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sage type: </span><span class="si">{</span><span class="n">sage_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</section>
-</section>
-<section id="3.-Load-Benchmark-Data">
-<h2>3. Load Benchmark Data<a class="headerlink" href="#3.-Load-Benchmark-Data" title="Link to this heading">#</a></h2>
-<p>The benchmark data contains results from running multiple ML models on various datasets.</p>
-<section id="Data-Structure">
-<h3>Data Structure<a class="headerlink" href="#Data-Structure" title="Link to this heading">#</a></h3>
-<p>The benchmark data includes:</p>
-<ul class="simple">
-<li><p><strong>Dataset characteristics</strong>: 20+ complexity metrics (intrinsic dimension, Fisher ratio, etc.)</p></li>
-<li><p><strong>Model results</strong>: Accuracy, F1-score, AUC, training time</p></li>
-<li><p><strong>Model configurations</strong>: Embeddings, hyperparameters</p></li>
-<li><p><strong>Multiple models</strong>: Classical (RF, SVM, LR, DT, NB, MLP) and Quantum (PQK, QSVC, VQC, QNN)</p></li>
-</ul>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define features and metrics</span>
-<span class="n">features</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;Feature_Samples_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Intrinsic_Dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;Condition number&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Fisher Discriminant Ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Total Correlations&#39;</span><span class="p">,</span> <span class="s1">&#39;Mutual information&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;# Non-zero entries&#39;</span><span class="p">,</span> <span class="s1">&#39;# Low variance features&#39;</span><span class="p">,</span> <span class="s1">&#39;Variation&#39;</span><span class="p">,</span> <span class="s1">&#39;std_var&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Coefficient of Variation %&#39;</span><span class="p">,</span> <span class="s1">&#39;std_co_of_v&#39;</span><span class="p">,</span> <span class="s1">&#39;Skewness&#39;</span><span class="p">,</span> <span class="s1">&#39;std_skew&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Kurtosis&#39;</span><span class="p">,</span> <span class="s1">&#39;std_kurt&#39;</span><span class="p">,</span> <span class="s1">&#39;Mean Log Kernel Density&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Isomap Reconstruction Error&#39;</span><span class="p">,</span> <span class="s1">&#39;Fractal dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;Entropy&#39;</span>
-<span class="p">]</span>
-<span class="n">features</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-
-<span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;f1_score&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;auc&#39;</span><span class="p">]</span>
-<span class="n">metrics</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
 
 <span class="c1"># Load benchmark results</span>
-<span class="n">reload</span> <span class="o">=</span> <span class="kc">False</span>  <span class="c1"># Set to True to reprocess data</span>
-
-<span class="k">if</span> <span class="n">reload</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">file_input</span><span class="p">):</span>
-    <span class="c1"># Process raw results (if you have the raw data directory)</span>
-    <span class="n">path_to_compiled_results</span> <span class="o">=</span> <span class="n">dir_results</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path_to_compiled_results</span><span class="p">):</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">for</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path_to_compiled_results</span><span class="p">)</span>
-                  <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span> <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;csv&#39;</span> <span class="ow">in</span> <span class="n">f</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span> <span class="o">!=</span> <span class="s1">&#39;RawDataEvaluation.csv&#39;</span><span class="p">]</span>
-        <span class="n">results_df</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">fl</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;Compiled&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">fl</span><span class="p">:</span>
-                <span class="n">results_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fl</span><span class="p">))</span>
-        <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results_df</span><span class="p">)</span>
-
-        <span class="c1"># Clean and process data</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">features</span><span class="p">:</span>
-            <span class="n">results_df</span><span class="p">[</span><span class="n">f</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results_df</span><span class="p">[</span><span class="n">f</span><span class="p">]]</span>
-        <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
-        <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">)</span>
-        <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;\.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;-.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
-                                   <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]]</span>
-        <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model_embed_datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">model</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">embeddings</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">datatype</span><span class="p">)])</span>
-            <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">results_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
-        <span class="p">]</span>
-
-        <span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="n">results_df</span><span class="p">[</span><span class="n">results_df</span> <span class="o">==</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">results_df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
-        <span class="n">results_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">file_input</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path_to_compiled_results</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="c1"># Load pre-compiled results</span>
-    <span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_input</span><span class="p">)</span>
+<span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">file_input</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loaded </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> benchmark results&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Datasets: </span><span class="si">{</span><span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -583,19 +470,9 @@
 </div>
 </div>
 </section>
-</section>
-<section id="4.-Train-QSage-(Optional)">
-<h2>4. Train QSage (Optional)<a class="headerlink" href="#4.-Train-QSage-(Optional)" title="Link to this heading">#</a></h2>
-<p>If you want to train your own QSage model, you can do so here. Otherwise, skip to the next section to load the pre-trained model.</p>
-<section id="Training-Process">
-<h3>Training Process<a class="headerlink" href="#Training-Process" title="Link to this heading">#</a></h3>
-<p>QSage training involves:</p>
-<ol class="arabic simple">
-<li><p><strong>Feature selection</strong>: Choose which data complexity metrics to use</p></li>
-<li><p><strong>Target selection</strong>: Choose which performance metric to predict (accuracy, F1, AUC)</p></li>
-<li><p><strong>Model training</strong>: Train a Random Forest or MLP surrogate model</p></li>
-<li><p><strong>Validation</strong>: Evaluate prediction accuracy on held-out data</p></li>
-</ol>
+<section id="3.-Initialize-QSage">
+<h2>3. Initialize QSage<a class="headerlink" href="#3.-Initialize-QSage" title="Link to this heading">#</a></h2>
+<p><strong>Important</strong>: The current QSage API uses <code class="docutils literal notranslate"><span class="pre">data_input</span></code> parameter (not <code class="docutils literal notranslate"><span class="pre">data</span></code>, <code class="docutils literal notranslate"><span class="pre">features</span></code>, <code class="docutils literal notranslate"><span class="pre">metrics</span></code>, <code class="docutils literal notranslate"><span class="pre">sage_type</span></code>).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -610,97 +487,73 @@
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Training data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> results&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Held-out data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">held_out_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> results&quot;</span><span class="p">)</span>
 
-<span class="c1"># Initialize QSage</span>
-<span class="n">sage</span> <span class="o">=</span> <span class="n">QuantumSage</span><span class="p">(</span>
-    <span class="n">data</span><span class="o">=</span><span class="n">train_df</span><span class="p">,</span>
-    <span class="n">features</span><span class="o">=</span><span class="n">features</span><span class="p">,</span>
-    <span class="n">metrics</span><span class="o">=</span><span class="n">metrics</span><span class="p">,</span>
-    <span class="n">sage_type</span><span class="o">=</span><span class="n">sage_type</span>  <span class="c1"># &#39;random_forest&#39; or &#39;mlp&#39;</span>
+<span class="c1"># Initialize QSage with correct API</span>
+<span class="n">sage</span> <span class="o">=</span> <span class="n">QuantumSage</span><span class="p">(</span><span class="n">data_input</span><span class="o">=</span><span class="n">train_df</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ QSage initialized&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available models: </span><span class="si">{</span><span class="n">sage</span><span class="o">.</span><span class="n">_available_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available metrics: </span><span class="si">{</span><span class="n">sage</span><span class="o">.</span><span class="n">_available_metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="4.-Train-QSage-Sub-Sages">
+<h2>4. Train QSage Sub-Sages<a class="headerlink" href="#4.-Train-QSage-Sub-Sages" title="Link to this heading">#</a></h2>
+<p>Train surrogate models for each ML model and metric combination.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train sub-sages with Random Forest</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training QSage sub-sages...&quot;</span><span class="p">)</span>
+<span class="n">sage</span><span class="o">.</span><span class="n">train_sub_sages</span><span class="p">(</span>
+    <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="n">sage_type</span><span class="o">=</span><span class="s1">&#39;random_forest&#39;</span><span class="p">,</span>  <span class="c1"># or &#39;mlp&#39;</span>
+    <span class="n">n_iter</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>  <span class="c1"># Number of hyperparameter search iterations</span>
+    <span class="n">cv</span><span class="o">=</span><span class="mi">5</span>  <span class="c1"># Cross-validation folds</span>
 <span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ QSage initialized with </span><span class="si">{</span><span class="n">sage_type</span><span class="si">}</span><span class="s2"> model&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train QSage</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Training QSage...&quot;</span><span class="p">)</span>
-<span class="n">sage</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Training complete!&quot;</span><span class="p">)</span>
-
-<span class="c1"># Save trained model</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_sage</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sage</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Model saved to </span><span class="si">{</span><span class="n">file_sage</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
-</section>
-<section id="5.-Load-Pre-trained-QSage-Model">
-<h2>5. Load Pre-trained QSage Model<a class="headerlink" href="#5.-Load-Pre-trained-QSage-Model" title="Link to this heading">#</a></h2>
-<p>Load the pre-trained QSage model to make predictions.</p>
+<section id="5.-Visualize-Training-Results">
+<h2>5. Visualize Training Results<a class="headerlink" href="#5.-Visualize-Training-Results" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load pre-trained QSage model</span>
-<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_sage</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-    <span class="n">sage</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Pre-trained QSage model loaded&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Model type: </span><span class="si">{</span><span class="n">sage</span><span class="o">.</span><span class="n">sage_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Features used: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sage</span><span class="o">.</span><span class="n">features</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Metrics predicted: </span><span class="si">{</span><span class="n">sage</span><span class="o">.</span><span class="n">metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Plot training results</span>
+<span class="n">sage</span><span class="o">.</span><span class="n">plot_results</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </section>
-<section id="6.-Make-Predictions-with-QSage">
-<h2>6. Make Predictions with QSage<a class="headerlink" href="#6.-Make-Predictions-with-QSage" title="Link to this heading">#</a></h2>
-<p>Now let’s use QSage to predict which models will perform best on a new dataset.</p>
-<section id="Prediction-Process">
-<h3>Prediction Process<a class="headerlink" href="#Prediction-Process" title="Link to this heading">#</a></h3>
-<ol class="arabic simple">
-<li><p><strong>Provide dataset characteristics</strong>: Data complexity metrics</p></li>
-<li><p><strong>QSage predicts</strong>: Performance for each model/embedding combination</p></li>
-<li><p><strong>Get recommendations</strong>: Models ranked by predicted performance</p></li>
-</ol>
+<section id="6.-Make-Predictions">
+<h2>6. Make Predictions<a class="headerlink" href="#6.-Make-Predictions" title="Link to this heading">#</a></h2>
+<p>Use trained QSage to predict model performance on new data.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Prepare held-out dataset features</span>
-<span class="n">_columns_data_features</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;# Features&#39;</span><span class="p">,</span> <span class="s1">&#39;# Samples&#39;</span><span class="p">,</span> <span class="s1">&#39;Feature_Samples_ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Intrinsic_Dimension&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Condition number&#39;</span><span class="p">,</span> <span class="s1">&#39;Fisher Discriminant Ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Total Correlations&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Mutual information&#39;</span><span class="p">,</span> <span class="s1">&#39;# Non-zero entries&#39;</span><span class="p">,</span> <span class="s1">&#39;# Low variance features&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Variation&#39;</span><span class="p">,</span> <span class="s1">&#39;std_var&#39;</span><span class="p">,</span> <span class="s1">&#39;Coefficient of Variation %&#39;</span><span class="p">,</span> <span class="s1">&#39;std_co_of_v&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Skewness&#39;</span><span class="p">,</span> <span class="s1">&#39;std_skew&#39;</span><span class="p">,</span> <span class="s1">&#39;Kurtosis&#39;</span><span class="p">,</span> <span class="s1">&#39;std_kurt&#39;</span><span class="p">,</span> <span class="s1">&#39;Mean Log Kernel Density&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Isomap Reconstruction Error&#39;</span><span class="p">,</span> <span class="s1">&#39;Fractal dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;Entropy&#39;</span>
-<span class="p">]</span>
-
-<span class="c1"># Get unique dataset characteristics</span>
-<span class="n">held_out_features</span> <span class="o">=</span> <span class="n">held_out_df</span><span class="p">[</span><span class="n">_columns_data_features</span><span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+<span class="n">held_out_features</span> <span class="o">=</span> <span class="n">held_out_df</span><span class="p">[</span><span class="n">sage</span><span class="o">.</span><span class="n">_columns_data_features</span><span class="p">]</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Held-out dataset characteristics:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">held_out_features</span><span class="p">)</span>
 
-<span class="c1"># Make predictions</span>
-<span class="n">predictions</span> <span class="o">=</span> <span class="n">sage</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">held_out_features</span><span class="p">)</span>
+<span class="c1"># Make predictions for accuracy metric</span>
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">sage</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">held_out_features</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s1">&#39;accuracy&#39;</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ Generated predictions for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span><span class="si">}</span><span class="s2"> model configurations&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ Generated predictions for </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">predictions</span><span class="p">)</span><span class="si">}</span><span class="s2"> models&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Top 10 Predicted Models:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">predictions</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 </section>
-</section>
-<section id="7.-Analyze-Predictions">
-<h2>7. Analyze Predictions<a class="headerlink" href="#7.-Analyze-Predictions" title="Link to this heading">#</a></h2>
-<p>Let’s examine QSage’s predictions and compare them to actual results.</p>
+<section id="7.-Compare-Predictions-vs-Actual-Results">
+<h2>7. Compare Predictions vs Actual Results<a class="headerlink" href="#7.-Compare-Predictions-vs-Actual-Results" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -708,109 +561,60 @@
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
 
-<span class="c1"># Merge predictions with actual results</span>
-<span class="n">comparison_df</span> <span class="o">=</span> <span class="n">held_out_df</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-    <span class="n">predictions</span><span class="p">,</span>
-    <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">],</span>
-    <span class="n">suffixes</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;_actual&#39;</span><span class="p">,</span> <span class="s1">&#39;_predicted&#39;</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="c1"># Get actual results for comparison</span>
+<span class="n">actual_results</span> <span class="o">=</span> <span class="n">held_out_df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="n">actual_results</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;actual_accuracy&#39;</span><span class="p">]</span>
 
-<span class="c1"># Display top predictions</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 Predicted Models (by accuracy):&quot;</span><span class="p">)</span>
-<span class="n">top_predictions</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">)[</span>
-    <span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">,</span> <span class="s1">&#39;f1_score_predicted&#39;</span><span class="p">]</span>
-<span class="p">]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">top_predictions</span><span class="p">)</span>
+<span class="c1"># Merge with predictions</span>
+<span class="n">comparison</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">actual_results</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="s1">&#39;model&#39;</span><span class="p">)</span>
 
-<span class="c1"># Compare predictions vs actual</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Prediction vs Actual Performance:&quot;</span><span class="p">)</span>
-<span class="n">comparison_summary</span> <span class="o">=</span> <span class="n">comparison_df</span><span class="p">[[</span>
-    <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;accuracy_actual&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;f1_score_actual&#39;</span><span class="p">,</span> <span class="s1">&#39;f1_score_predicted&#39;</span>
-<span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">comparison_summary</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</section>
-<section id="8.-Visualize-Results">
-<h2>8. Visualize Results<a class="headerlink" href="#8.-Visualize-Results" title="Link to this heading">#</a></h2>
-<p>Create visualizations to understand QSage’s predictions.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set style</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s2">&quot;whitegrid&quot;</span><span class="p">)</span>
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-
-<span class="c1"># Plot 1: Predicted vs Actual Accuracy</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-    <span class="n">comparison_df</span><span class="p">[</span><span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">],</span>
-    <span class="n">comparison_df</span><span class="p">[</span><span class="s1">&#39;accuracy_actual&#39;</span><span class="p">],</span>
-    <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span>
-<span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Perfect prediction&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted Accuracy&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Actual Accuracy&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;QSage Prediction Accuracy&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
-
-<span class="c1"># Plot 2: Model Rankings</span>
-<span class="n">top_models</span> <span class="o">=</span> <span class="n">predictions</span><span class="o">.</span><span class="n">nlargest</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span>
-    <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_models</span><span class="p">)),</span>
-    <span class="n">top_models</span><span class="p">[</span><span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">],</span>
-    <span class="n">color</span><span class="o">=</span><span class="s1">&#39;steelblue&#39;</span>
-<span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_models</span><span class="p">)))</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">embeddings</span><span class="si">}</span><span class="s2">&quot;</span>
-                          <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">top_models</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()])</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted Accuracy&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Top 15 Recommended Models&#39;</span><span class="p">)</span>
-<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-
+<span class="c1"># Plot</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">comparison</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">],</span> <span class="n">comparison</span><span class="p">[</span><span class="s1">&#39;actual_accuracy&#39;</span><span class="p">],</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s1">&#39;r--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Perfect prediction&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Predicted Accuracy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Actual Accuracy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;QSage Prediction Accuracy&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 
-<span class="c1"># Calculate prediction error</span>
-<span class="n">mae</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">comparison_df</span><span class="p">[</span><span class="s1">&#39;accuracy_actual&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">comparison_df</span><span class="p">[</span><span class="s1">&#39;accuracy_predicted&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="c1"># Calculate error</span>
+<span class="n">mae</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">comparison</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">comparison</span><span class="p">[</span><span class="s1">&#39;actual_accuracy&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Mean Absolute Error: </span><span class="si">{</span><span class="n">mae</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </section>
-<section id="9.-Feature-Importance">
-<h2>9. Feature Importance<a class="headerlink" href="#9.-Feature-Importance" title="Link to this heading">#</a></h2>
-<p>Understand which dataset characteristics most influence QSage’s predictions.</p>
+<section id="8.-Save-Trained-QSage-Model">
+<h2>8. Save Trained QSage Model<a class="headerlink" href="#8.-Save-Trained-QSage-Model" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Get feature importance (for Random Forest sage)</span>
-<span class="k">if</span> <span class="n">sage</span><span class="o">.</span><span class="n">sage_type</span> <span class="o">==</span> <span class="s1">&#39;random_forest&#39;</span><span class="p">:</span>
-    <span class="n">feature_importance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
-        <span class="s1">&#39;feature&#39;</span><span class="p">:</span> <span class="n">sage</span><span class="o">.</span><span class="n">features</span><span class="p">,</span>
-        <span class="s1">&#39;importance&#39;</span><span class="p">:</span> <span class="n">sage</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">feature_importances_</span>
-    <span class="p">})</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;importance&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Save trained model</span>
+<span class="n">file_sage</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_results</span><span class="p">,</span> <span class="s1">&#39;my_qsage_model.pkl&#39;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_sage</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">sage</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Model saved to </span><span class="si">{</span><span class="n">file_sage</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="9.-Load-Pre-trained-Model-(Optional)">
+<h2>9. Load Pre-trained Model (Optional)<a class="headerlink" href="#9.-Load-Pre-trained-Model-(Optional)" title="Link to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load pre-trained QSage model</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_sage</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">loaded_sage</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
 
-    <span class="c1"># Plot top 15 features</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
-    <span class="n">top_features</span> <span class="o">=</span> <span class="n">feature_importance</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_features</span><span class="p">)),</span> <span class="n">top_features</span><span class="p">[</span><span class="s1">&#39;importance&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;coral&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">top_features</span><span class="p">)),</span> <span class="n">top_features</span><span class="p">[</span><span class="s1">&#39;feature&#39;</span><span class="p">])</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Importance&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Top 15 Most Important Features for QSage Predictions&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Top 10 Most Important Features:&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">feature_importance</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Feature importance analysis only available for Random Forest sage&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ Pre-trained QSage model loaded&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available models: </span><span class="si">{</span><span class="n">loaded_sage</span><span class="o">.</span><span class="n">_available_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available metrics: </span><span class="si">{</span><span class="n">loaded_sage</span><span class="o">.</span><span class="n">_available_metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -819,31 +623,30 @@
 <h2>Summary<a class="headerlink" href="#Summary" title="Link to this heading">#</a></h2>
 <p>In this tutorial, you learned how to:</p>
 <ol class="arabic simple">
-<li><p>✅ Download and set up pre-trained QSage models</p></li>
 <li><p>✅ Load benchmark data with model performance results</p></li>
-<li><p>✅ Train QSage on benchmark data (optional)</p></li>
-<li><p>✅ Load pre-trained QSage models</p></li>
-<li><p>✅ Make predictions for new datasets</p></li>
-<li><p>✅ Analyze and visualize QSage predictions</p></li>
-<li><p>✅ Understand feature importance</p></li>
+<li><p>✅ Initialize QSage with the correct API (<code class="docutils literal notranslate"><span class="pre">data_input</span></code> parameter)</p></li>
+<li><p>✅ Train QSage sub-sages using <code class="docutils literal notranslate"><span class="pre">train_sub_sages()</span></code> method</p></li>
+<li><p>✅ Make predictions for new datasets using <code class="docutils literal notranslate"><span class="pre">predict()</span></code> method</p></li>
+<li><p>✅ Visualize and compare predictions vs actual results</p></li>
+<li><p>✅ Save and load trained QSage models</p></li>
 </ol>
 </section>
-<section id="Key-Takeaways">
-<h2>Key Takeaways<a class="headerlink" href="#Key-Takeaways" title="Link to this heading">#</a></h2>
+<section id="Key-API-Points">
+<h2>Key API Points<a class="headerlink" href="#Key-API-Points" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>QSage saves time</strong>: Predicts model performance without running expensive experiments</p></li>
-<li><p><strong>Data-driven recommendations</strong>: Uses dataset characteristics to recommend best models</p></li>
-<li><p><strong>Interpretable</strong>: Shows which features influence predictions</p></li>
-<li><p><strong>Flexible</strong>: Supports both quantum and classical ML models</p></li>
+<li><p><strong>Initialization</strong>: <code class="docutils literal notranslate"><span class="pre">QuantumSage(data_input=df)</span></code> - only takes <code class="docutils literal notranslate"><span class="pre">data_input</span></code> parameter</p></li>
+<li><p><strong>Training</strong>: <code class="docutils literal notranslate"><span class="pre">sage.train_sub_sages(sage_type='random_forest')</span></code> - specify model type here</p></li>
+<li><p><strong>Prediction</strong>: <code class="docutils literal notranslate"><span class="pre">sage.predict(features,</span> <span class="pre">metric='accuracy')</span></code> - predict for specific metric</p></li>
+<li><p><strong>Visualization</strong>: <code class="docutils literal notranslate"><span class="pre">sage.plot_results()</span></code> - plot training performance</p></li>
 </ul>
 </section>
 <section id="Next-Steps">
 <h2>Next Steps<a class="headerlink" href="#Next-Steps" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>Use QSage on your data</strong>: Compute data complexity metrics and get model recommendations</p></li>
-<li><p><strong>Combine with QProfiler</strong>: Use QSage to narrow down models, then validate with QProfiler</p></li>
-<li><p><strong>Retrain QSage</strong>: Add your own benchmark results to improve predictions</p></li>
-<li><p><strong>Explore feature engineering</strong>: Experiment with different data complexity metrics</p></li>
+<li><p>Use QSage on your own benchmark data</p></li>
+<li><p>Combine with QProfiler for comprehensive model evaluation</p></li>
+<li><p>Experiment with different sage types (Random Forest vs MLP)</p></li>
+<li><p>Try different metrics (accuracy, f1_score, auc)</p></li>
 </ul>
 </section>
 <section id="See-Also">
@@ -886,32 +689,17 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#What-is-QSage?">What is QSage?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#How-QSage-Works">How QSage Works</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Tutorial-Overview">Tutorial Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.-Setup-and-Imports">1. Setup and Imports</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Download-Pre-trained-Model">2. Download Pre-trained Model</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Download-the-Model">Download the Model</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#File-Structure">File Structure</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Load-Benchmark-Data">3. Load Benchmark Data</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Data-Structure">Data Structure</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#4.-Train-QSage-(Optional)">4. Train QSage (Optional)</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Training-Process">Training Process</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Load-Pre-trained-QSage-Model">5. Load Pre-trained QSage Model</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Make-Predictions-with-QSage">6. Make Predictions with QSage</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Prediction-Process">Prediction Process</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#7.-Analyze-Predictions">7. Analyze Predictions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#8.-Visualize-Results">8. Visualize Results</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#9.-Feature-Importance">9. Feature Importance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Load-Benchmark-Data">2. Load Benchmark Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Initialize-QSage">3. Initialize QSage</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#4.-Train-QSage-Sub-Sages">4. Train QSage Sub-Sages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Visualize-Training-Results">5. Visualize Training Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Make-Predictions">6. Make Predictions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#7.-Compare-Predictions-vs-Actual-Results">7. Compare Predictions vs Actual Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#8.-Save-Trained-QSage-Model">8. Save Trained QSage Model</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#9.-Load-Pre-trained-Model-(Optional)">9. Load Pre-trained Model (Optional)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Summary">Summary</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Key-Takeaways">Key Takeaways</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Key-API-Points">Key API Points</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Next-Steps">Next Steps</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#See-Also">See Also</a></li>
 </ul>

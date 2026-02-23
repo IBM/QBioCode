@@ -423,27 +423,16 @@
 <li><p><strong>Automated Workflows</strong>: Handles data splitting, scaling, and evaluation</p></li>
 </ul>
 </section>
-<section id="Tutorial-Overview">
-<h2>Tutorial Overview<a class="headerlink" href="#Tutorial-Overview" title="Link to this heading">#</a></h2>
-<p>In this tutorial, you will:</p>
-<ol class="arabic simple">
-<li><p>Generate artificial datasets for testing</p></li>
-<li><p>Configure QProfiler with a YAML file</p></li>
-<li><p>Run QProfiler to benchmark multiple models</p></li>
-<li><p>Visualize and analyze the results</p></li>
-<li><p>Understand data complexity metrics</p></li>
-</ol>
-</section>
 <section id="1.-Setup-and-Imports">
 <h2>1. Setup and Imports<a class="headerlink" href="#1.-Setup-and-Imports" title="Link to this heading">#</a></h2>
-<p>First, let’s import the necessary modules.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># Import QBioCode</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qbc</span>
@@ -456,14 +445,7 @@
 </section>
 <section id="2.-Generate-Test-Data">
 <h2>2. Generate Test Data<a class="headerlink" href="#2.-Generate-Test-Data" title="Link to this heading">#</a></h2>
-<p>We’ll create a simple artificial dataset to demonstrate QProfiler’s capabilities.</p>
-<p><strong>Dataset Parameters:</strong></p>
-<ul class="simple">
-<li><p>100 samples</p></li>
-<li><p>10 features (2 informative, 2 redundant)</p></li>
-<li><p>2 classes with 2 clusters each</p></li>
-<li><p>3 different class weight distributions</p></li>
-</ul>
+<p>We’ll create simple artificial datasets to demonstrate QProfiler’s capabilities.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -498,45 +480,24 @@
 </section>
 <section id="3.-Configure-QProfiler">
 <h2>3. Configure QProfiler<a class="headerlink" href="#3.-Configure-QProfiler" title="Link to this heading">#</a></h2>
-<p>QProfiler uses a YAML configuration file to specify:</p>
+<p>QProfiler uses a YAML configuration file (<code class="docutils literal notranslate"><span class="pre">configs/config.yaml</span></code>) to specify:</p>
 <ul class="simple">
-<li><p><strong>Data directories</strong>: Where to find your datasets</p></li>
-<li><p><strong>Models to test</strong>: Which ML algorithms to benchmark</p></li>
-<li><p><strong>Embeddings</strong>: Dimensionality reduction methods to try</p></li>
-<li><p><strong>Output settings</strong>: Where to save results</p></li>
+<li><p>Data directories</p></li>
+<li><p>Models to test (RF, SVC, LR, DT, NB, MLP, QSVC, PQK, VQC, QNN)</p></li>
+<li><p>Embeddings (none, pca, lle, isomap, spectral, umap, nmf)</p></li>
+<li><p>Output settings</p></li>
 </ul>
-<p>The configuration file <code class="docutils literal notranslate"><span class="pre">configs/config.yaml</span></code> contains all these settings.</p>
-<section id="Key-Configuration-Options:">
-<h3>Key Configuration Options:<a class="headerlink" href="#Key-Configuration-Options:" title="Link to this heading">#</a></h3>
-<p><strong>Models:</strong></p>
-<ul class="simple">
-<li><p>Classical: Random Forest (RF), SVM (SVC), Logistic Regression (LR), Decision Tree (DT), Naive Bayes (NB), MLP</p></li>
-<li><p>Quantum: QSVC, PQK, VQC, QNN (requires quantum backend)</p></li>
-</ul>
-<p><strong>Embeddings:</strong></p>
-<ul class="simple">
-<li><p>none, pca, lle, isomap, spectral, umap, nmf</p></li>
-</ul>
-<p><strong>Data Complexity Metrics:</strong></p>
-<ul class="simple">
-<li><p>Intrinsic dimension, fractal dimension</p></li>
-<li><p>Statistical properties (variance, skewness, kurtosis)</p></li>
-<li><p>Separability measures (Fisher ratio, mutual information)</p></li>
-</ul>
-</section>
 </section>
 <section id="4.-Run-QProfiler">
 <h2>4. Run QProfiler<a class="headerlink" href="#4.-Run-QProfiler" title="Link to this heading">#</a></h2>
-<p>There are two ways to run QProfiler:</p>
 <section id="Option-1:-Command-Line">
 <h3>Option 1: Command Line<a class="headerlink" href="#Option-1:-Command-Line" title="Link to this heading">#</a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qprofiler<span class="w"> </span>--config<span class="w"> </span>configs/config.yaml
 </pre></div>
 </div>
 </section>
-<section id="Option-2:-Python-API-(shown-below)">
-<h3>Option 2: Python API (shown below)<a class="headerlink" href="#Option-2:-Python-API-(shown-below)" title="Link to this heading">#</a></h3>
-<p>This approach loads the config and runs QProfiler programmatically.</p>
+<section id="Option-2:-Python-API">
+<h3>Option 2: Python API<a class="headerlink" href="#Option-2:-Python-API" title="Link to this heading">#</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -547,14 +508,13 @@
 <span class="c1"># Import QProfiler</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">apps.qprofiler</span><span class="w"> </span><span class="kn">import</span> <span class="n">qprofiler</span> <span class="k">as</span> <span class="n">profiler</span>
 
-<span class="c1"># Run QProfiler with the configuration</span>
+<span class="c1"># Run QProfiler</span>
 <span class="n">profiler</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;QProfiler execution complete!&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Results saved to:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  - ModelResults.csv&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  - RawDataEvaluation.csv&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  - compiled_results.csv&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -562,40 +522,16 @@
 </section>
 <section id="5.-Analyze-Results">
 <h2>5. Analyze Results<a class="headerlink" href="#5.-Analyze-Results" title="Link to this heading">#</a></h2>
-<p>QProfiler generates several output files:</p>
-<section id="Output-Files:">
-<h3>Output Files:<a class="headerlink" href="#Output-Files:" title="Link to this heading">#</a></h3>
+<p>QProfiler generates two main output files:</p>
 <ol class="arabic simple">
-<li><p><strong>ModelResults.csv</strong>: Performance metrics for each model</p>
-<ul class="simple">
-<li><p>Accuracy, F1-score, AUC, precision, recall</p></li>
-<li><p>Training and test times</p></li>
-<li><p>Model-specific parameters</p></li>
-</ul>
-</li>
-<li><p><strong>RawDataEvaluation.csv</strong>: Data complexity metrics</p>
-<ul class="simple">
-<li><p>Intrinsic dimension, fractal dimension</p></li>
-<li><p>Statistical properties</p></li>
-<li><p>Separability measures</p></li>
-</ul>
-</li>
-<li><p><strong>compiled_results.csv</strong>: Combined model and data metrics</p>
-<ul class="simple">
-<li><p>Enables correlation analysis</p></li>
-<li><p>Links performance to data characteristics</p></li>
-</ul>
-</li>
-<li><p><strong>Performance plots</strong>: Visualizations in <code class="docutils literal notranslate"><span class="pre">performance_summary_and_spearman_correlation_plots/</span></code></p></li>
+<li><p><strong>ModelResults.csv</strong>: Performance metrics (accuracy, F1-score, AUC, etc.)</p></li>
+<li><p><strong>RawDataEvaluation.csv</strong>: Data complexity metrics</p></li>
 </ol>
-<p>Let’s load and examine the results.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-
-<span class="c1"># Load model results</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load model results</span>
 <span class="n">model_results</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;ModelResults.csv&#39;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Model Performance Results:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">model_results</span><span class="p">[[</span><span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;f1_score&#39;</span><span class="p">,</span> <span class="s1">&#39;auc&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
@@ -607,28 +543,108 @@
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Model Performance Results:
+  model  accuracy  f1_score       auc
+0  qsvc  0.700000  0.576471  0.500000
+1    rf  0.966667  0.966074  0.944444
+2   svc  0.700000  0.576471  0.500000
+3  qsvc  0.700000  0.576471  0.500000
+4    rf  0.966667  0.967137  0.976190
+
+Data Complexity Metrics:
+[&#39;Dataset&#39;, &#39;# Features&#39;, &#39;# Samples&#39;, &#39;Feature_Samples_ratio&#39;, &#39;Intrinsic_Dimension&#39;, &#39;Condition number&#39;, &#39;Fisher Discriminant Ratio&#39;, &#39;Total Correlations&#39;, &#39;Mutual information&#39;, &#39;# Non-zero entries&#39;, &#39;# Low variance features&#39;, &#39;Variation&#39;, &#39;std_var&#39;, &#39;Coefficient of Variation %&#39;, &#39;std_co_of_v&#39;, &#39;Skewness&#39;, &#39;std_skew&#39;, &#39;Kurtosis&#39;, &#39;std_kurt&#39;, &#39;Mean Log Kernel Density&#39;, &#39;Isomap Reconstruction Error&#39;, &#39;Fractal dimension&#39;, &#39;Entropy&#39;, &#39;std_entropy&#39;]
+</pre></div></div>
+</div>
 </section>
+<section id="6.-Compile-Results-from-Multiple-Runs-(Optional)">
+<h2>6. Compile Results from Multiple Runs (Optional)<a class="headerlink" href="#6.-Compile-Results-from-Multiple-Runs-(Optional)" title="Link to this heading">#</a></h2>
+<p>If you’ve run QProfiler multiple times on different datasets, you can compile all results into a single file for comprehensive analysis.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set the directory containing your QProfiler results</span>
+<span class="n">dir_home</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+<span class="n">results_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_home</span><span class="p">,</span> <span class="s1">&#39;tutorial&#39;</span><span class="p">,</span> <span class="s1">&#39;QProfiler&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
+
+<span class="c1"># Find all RawDataEvaluation.csv files</span>
+<span class="n">data_evals</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s1">&#39;RawDataEvaluation.csv&#39;</span>
+<span class="p">]</span>
+
+<span class="n">c</span> <span class="o">=</span>  <span class="p">[</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span>
+    <span class="n">f</span>
+<span class="p">]</span>
+
+
+<span class="c1"># Find all ModelResults.csv files</span>
+<span class="n">data_result</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dp</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">dp</span><span class="p">,</span> <span class="n">dn</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">results_dir</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="s1">&#39;ModelResults.csv&#39;</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data_evals</span><span class="p">)</span><span class="si">}</span><span class="s2"> RawDataEvaluation files&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data_result</span><span class="p">)</span><span class="si">}</span><span class="s2"> ModelResults files&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compile raw data evaluations</span>
+<span class="n">rawevals_df</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">fl</span> <span class="ow">in</span> <span class="n">data_evals</span><span class="p">:</span>
+    <span class="n">rawevals_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fl</span><span class="p">))</span>
+<span class="n">rawevals_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">rawevals_df</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Save compiled data evaluations</span>
+<span class="n">rawevals_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;compiled_raw_data_evaluations.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Saved compiled data evaluations: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">rawevals_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+
+<span class="c1"># Compile model results</span>
+<span class="n">results_df</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">fl</span> <span class="ow">in</span> <span class="n">data_result</span><span class="p">:</span>
+    <span class="n">results_df</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fl</span><span class="p">))</span>
+<span class="n">results_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Add useful columns for analysis</span>
+<span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;-.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]]</span>
+<span class="n">results_df</span><span class="p">[</span><span class="s1">&#39;model_embed_datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">embeddings</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">results_df</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+<span class="p">]</span>
+
+<span class="c1"># Save compiled results</span>
+<span class="n">results_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;compiled_results.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Saved compiled model results: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results_df</span><span class="p">)</span><span class="si">}</span><span class="s2"> rows&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+  <span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[17]</span><span class="ansi-green-fg">, line 19</span>
+<span class="ansi-red-fg">    </span><span class="ansi-red-fg">print(f)</span>
+    ^
+<span class="ansi-red-fg">SyntaxError</span><span class="ansi-red-fg">:</span> invalid syntax
+
+</pre></div></div>
+</div>
 </section>
-<section id="6.-Visualize-Results">
-<h2>6. Visualize Results<a class="headerlink" href="#6.-Visualize-Results" title="Link to this heading">#</a></h2>
-<p>QProfiler automatically generates several visualizations:</p>
-<section id="Generated-Plots:">
-<h3>Generated Plots:<a class="headerlink" href="#Generated-Plots:" title="Link to this heading">#</a></h3>
-<ol class="arabic simple">
-<li><p><strong>Boxplots</strong>: Compare model performance across datasets</p>
-<ul class="simple">
-<li><p>Accuracy, F1-score, AUC distributions</p></li>
-</ul>
-</li>
-<li><p><strong>Correlation Heatmaps</strong>: Show relationships between:</p>
-<ul class="simple">
-<li><p>Data complexity metrics</p></li>
-<li><p>Model performance</p></li>
-</ul>
-</li>
-<li><p><strong>Best Model Summary</strong>: Identify top performers per dataset</p></li>
-</ol>
-<p>Let’s create some custom visualizations.</p>
+<section id="7.-Visualize-Results">
+<h2>7. Visualize Results<a class="headerlink" href="#7.-Visualize-Results" title="Link to this heading">#</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -663,14 +679,74 @@
 </div>
 </div>
 </section>
+<section id="8.-Correlation-Analysis">
+<h2>8. Correlation Analysis<a class="headerlink" href="#8.-Correlation-Analysis" title="Link to this heading">#</a></h2>
+<p>Analyze correlations between data complexity metrics and model performance for all embedding types.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use compiled results if available, otherwise use current results</span>
+<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;compiled_results.csv&#39;</span><span class="p">):</span>
+    <span class="n">compiled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;compiled_results.csv&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">compiled</span> <span class="o">=</span> <span class="n">model_results</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">compiled</span><span class="p">[</span><span class="s1">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;-.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">compiled</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]]</span>
+    <span class="n">compiled</span><span class="p">[</span><span class="s1">&#39;model_embed_datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">model</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">embeddings</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">row</span><span class="o">.</span><span class="n">datatype</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">compiled</span><span class="o">.</span><span class="n">iterrows</span><span class="p">()</span>
+    <span class="p">]</span>
+
+<span class="c1"># Compute correlation</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">correlation_spearman_df</span> <span class="o">=</span> <span class="n">qbc</span><span class="o">.</span><span class="n">compute_results_correlation</span><span class="p">(</span>
+    <span class="n">results_df</span><span class="o">=</span><span class="n">compiled</span><span class="p">,</span>
+    <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;spearman&#39;</span><span class="p">,</span>
+    <span class="n">thresh</span><span class="o">=</span><span class="mf">0.7</span>
+<span class="p">)</span>
+
+<span class="c1"># Get unique embedding types from the data</span>
+<span class="n">unique_embeddings</span> <span class="o">=</span> <span class="n">compiled</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2"> unique embedding types: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">unique_embeddings</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Plot correlation for each embedding type</span>
+<span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span>  <span class="c1"># Can add more: [&#39;f1_score&#39;, &#39;accuracy&#39;, &#39;auc&#39;]</span>
+
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">embedding</span> <span class="ow">in</span> <span class="n">unique_embeddings</span><span class="p">:</span>
+        <span class="c1"># Filter data for this embedding type</span>
+        <span class="n">embedding_data</span> <span class="o">=</span> <span class="n">correlation_spearman_df</span><span class="p">[</span>
+            <span class="n">correlation_spearman_df</span><span class="p">[</span><span class="s1">&#39;model_embed_datatype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;_</span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s1">_&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">embedding_data</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Create title based on embedding type</span>
+            <span class="k">if</span> <span class="n">embedding</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Data feature correlation to </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1"> with NO embedding&#39;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">title</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Data feature correlation to </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1"> with </span><span class="si">{</span><span class="n">embedding</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s1"> embedding&#39;</span>
+
+            <span class="c1"># Plot correlation</span>
+            <span class="n">qbc</span><span class="o">.</span><span class="n">plot_results_correlation</span><span class="p">(</span>
+                <span class="n">embedding_data</span><span class="p">,</span>
+                <span class="n">metric</span><span class="o">=</span><span class="n">m</span><span class="p">,</span>
+                <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                <span class="n">correlation_type</span><span class="o">=</span><span class="sa">f</span><span class="s1">&#39;Color: Spearman;</span><span class="se">\n</span><span class="s1">Size: </span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+                <span class="n">size</span><span class="o">=</span><span class="s1">&#39;median_metric&#39;</span><span class="p">,</span>
+                <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No data found for embedding: </span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
 </section>
-<section id="7.-Understanding-Data-Complexity-Metrics">
-<h2>7. Understanding Data Complexity Metrics<a class="headerlink" href="#7.-Understanding-Data-Complexity-Metrics" title="Link to this heading">#</a></h2>
-<p>QProfiler computes various metrics to characterize your data:</p>
+<section id="9.-Understanding-Data-Complexity-Metrics">
+<h2>9. Understanding Data Complexity Metrics<a class="headerlink" href="#9.-Understanding-Data-Complexity-Metrics" title="Link to this heading">#</a></h2>
 <section id="Geometric-Properties:">
 <h3>Geometric Properties:<a class="headerlink" href="#Geometric-Properties:" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p><strong>Intrinsic Dimension</strong>: True dimensionality of data (often &lt; number of features)</p></li>
+<li><p><strong>Intrinsic Dimension</strong>: True dimensionality of data</p></li>
 <li><p><strong>Fractal Dimension</strong>: Measures self-similarity and complexity</p></li>
 </ul>
 </section>
@@ -688,53 +764,19 @@
 <li><p><strong>Fisher Discriminant Ratio</strong>: Class separability (higher = more separable)</p></li>
 <li><p><strong>Mutual Information</strong>: Feature-label dependence</p></li>
 </ul>
-<p>These metrics help explain why certain models perform better on specific datasets.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Examine data complexity for our datasets</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Examine data complexity</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Data Complexity Summary:&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">data_eval</span><span class="p">[[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">,</span> <span class="s1">&#39;Intrinsic_Dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;Fractal dimension&#39;</span><span class="p">,</span> <span class="s1">&#39;Fisher Discriminant Ratio&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
-
-<span class="c1"># Correlation between complexity and performance</span>
-<span class="n">compiled</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;ModelResults.csv&#39;</span><span class="p">)</span>
-
-<span class="c1"># Visualization correlation between data features and metric</span>
-
-<span class="n">_</span><span class="p">,</span> <span class="n">correlation_spearman_df</span> <span class="o">=</span> <span class="n">qbc</span><span class="o">.</span><span class="n">compute_results_correlation</span><span class="p">(</span><span class="n">results_df</span><span class="o">=</span><span class="n">compiled</span><span class="p">,</span> <span class="n">correlation</span><span class="o">=</span><span class="s1">&#39;spearman&#39;</span><span class="p">,</span>
-                                                                               <span class="n">thresh</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">)</span>
-
-<span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
-<span class="c1">#metrics = [&#39;f1_score&#39;, &#39;accuracy&#39;, &#39;auc&#39; ]</span>
-<span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span>
-<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
-    <span class="c1"># other values that can be used for size argument above include &#39;frac&#39;, &#39;median_metric&#39;, and &#39;frac_gt_thresh&#39;</span>
-    <span class="n">qbc</span><span class="o">.</span><span class="n">plot_results_correlation</span><span class="p">(</span> <span class="n">correlation_spearman_df</span><span class="p">[</span><span class="n">correlation_spearman_df</span><span class="p">[</span><span class="s1">&#39;model_embed_datatype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;_none_&#39;</span><span class="p">)],</span>
-                                                <span class="n">metric</span> <span class="o">=</span> <span class="n">m</span><span class="p">,</span>
-                                                <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;Data feature correlation to &#39;</span> <span class="o">+</span> <span class="n">m</span> <span class="o">+</span> <span class="s1">&#39; with NO embedding&#39;</span><span class="p">,</span>
-                                                <span class="n">correlation_type</span> <span class="o">=</span> <span class="s1">&#39;Color: Spearman;</span><span class="se">\n</span><span class="s1">Size: &#39;</span> <span class="o">+</span> <span class="n">m</span><span class="p">,</span>
-                                                <span class="n">size</span> <span class="o">=</span> <span class="s1">&#39;median_metric&#39;</span><span class="p">,</span>
-                                                <span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">,</span>
-                                                <span class="c1">#save_file_path=os.path.join( output_dir, tag + &#39;_embed_NONE.png&#39;)</span>
-                                                <span class="p">)</span>
-    <span class="c1"># qbc.plot_results_correlation( correlation_spearman_df[correlation_spearman_df[&#39;model_embed_datatype&#39;].str.contains(&#39;_isomap_&#39;)],</span>
-    <span class="c1">#                                             metric = m,</span>
-    <span class="c1">#                                             title = &#39;Data feature correlation to &#39; + m + &#39; with isomap embedding&#39;,</span>
-    <span class="c1">#                                             correlation_type = &#39;Color: Spearman;\nSize: &#39; + m,</span>
-    <span class="c1">#                                             size = &#39;median_metric&#39;,</span>
-    <span class="c1">#                                             figsize=figsize,</span>
-    <span class="c1">#                                             save_file_path=os.path.join( output_dir,tag + &#39;_embed_isomap.png&#39;)</span>
-    <span class="c1">#                                             )</span>
-    <span class="c1"># qbc.plot_results_correlation( correlation_spearman_df[correlation_spearman_df[&#39;model_embed_datatype&#39;].str.contains(&#39;_pca_&#39;)],</span>
-    <span class="c1">#                                             metric = m,</span>
-    <span class="c1">#                                             title = &#39;Data feature correlation to &#39; + m + &#39; with PCA embedding&#39;,</span>
-    <span class="c1">#                                             correlation_type = &#39;Color: Spearman;\nSize: &#39; + m,</span>
-    <span class="c1">#                                             size = &#39;median_metric&#39;,</span>
-    <span class="c1">#                                             figsize=figsize,</span>
-    <span class="c1">#                                             save_file_path=os.path.join( output_dir, tag + &#39;_embed_PCA.png&#39;)</span>
-    <span class="c1">#                                             )</span>
-<br/></pre></div>
+<span class="nb">print</span><span class="p">(</span><span class="n">data_eval</span><span class="p">[[</span>
+    <span class="s1">&#39;Dataset&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Intrinsic_Dimension&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Fractal dimension&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Fisher Discriminant Ratio&#39;</span>
+<span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
 </div>
 </div>
 </section>
@@ -747,9 +789,10 @@
 <li><p>✅ Configure QProfiler with YAML files</p></li>
 <li><p>✅ Run QProfiler to benchmark multiple ML models</p></li>
 <li><p>✅ Analyze model performance results</p></li>
+<li><p>✅ Compile results from multiple QProfiler runs</p></li>
 <li><p>✅ Visualize and compare model performance</p></li>
 <li><p>✅ Understand data complexity metrics</p></li>
-<li><p>✅ Correlate data properties with model performance</p></li>
+<li><p>✅ Correlate data properties with model performance across all embeddings</p></li>
 </ol>
 </section>
 <section id="Next-Steps">
@@ -758,16 +801,16 @@
 <li><p><strong>Try different datasets</strong>: Use your own data or generate more complex artificial datasets</p></li>
 <li><p><strong>Experiment with embeddings</strong>: Test different dimensionality reduction methods</p></li>
 <li><p><strong>Quantum models</strong>: If you have access to quantum hardware, try QSVC, PQK, VQC</p></li>
-<li><p><strong>Grid search</strong>: For quantum models, use <code class="docutils literal notranslate"><span class="pre">generate_qml_experiment_configs()</span></code> utility</p></li>
 <li><p><strong>Batch processing</strong>: Run QProfiler on multiple datasets using bash loops or SLURM</p></li>
+<li><p><strong>Use with QSage</strong>: Compile results and train QSage for model recommendations</p></li>
 </ul>
 </section>
 <section id="See-Also">
 <h2>See Also<a class="headerlink" href="#See-Also" title="Link to this heading">#</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="../../apps/profiler.html"><span class="doc">QProfiler Documentation</span></a> - Full configuration reference</p></li>
+<li><p><a class="reference internal" href="../QSage/qsage.html"><span class="doc">QSage Tutorial</span></a> - Use compiled results for meta-learning</p></li>
 <li><p><a class="reference internal" href="../Artificial_data_generation/example_data_generation.html"><span class="doc">Data Generation Tutorial</span></a> - Create more datasets</p></li>
-<li><p><a class="reference external" href="https://ibm.github.io/QBioCode/api/qbiocode.html">API Documentation</a> - Complete API reference</p></li>
 </ul>
 </section>
 </section>
@@ -802,27 +845,19 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#What-is-QProfiler?">What is QProfiler?</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Tutorial-Overview">Tutorial Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.-Setup-and-Imports">1. Setup and Imports</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Generate-Test-Data">2. Generate Test Data</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Configure-QProfiler">3. Configure QProfiler</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Key-Configuration-Options:">Key Configuration Options:</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Configure-QProfiler">3. Configure QProfiler</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#4.-Run-QProfiler">4. Run QProfiler</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Option-1:-Command-Line">Option 1: Command Line</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Option-2:-Python-API-(shown-below)">Option 2: Python API (shown below)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Option-2:-Python-API">Option 2: Python API</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Analyze-Results">5. Analyze Results</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Output-Files:">Output Files:</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Visualize-Results">6. Visualize Results</a><ul class="visible nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Generated-Plots:">Generated Plots:</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#7.-Understanding-Data-Complexity-Metrics">7. Understanding Data Complexity Metrics</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Analyze-Results">5. Analyze Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Compile-Results-from-Multiple-Runs-(Optional)">6. Compile Results from Multiple Runs (Optional)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#7.-Visualize-Results">7. Visualize Results</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#8.-Correlation-Analysis">8. Correlation Analysis</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#9.-Understanding-Data-Complexity-Metrics">9. Understanding Data Complexity Metrics</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Geometric-Properties:">Geometric Properties:</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Statistical-Properties:">Statistical Properties:</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Separability-Measures:">Separability Measures:</a></li>
