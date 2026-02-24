@@ -56,17 +56,18 @@ You can override the default configuration in several ways:
 
 .. code-block:: bash
 
-   # Use a custom config file from current directory
-   qprofiler --config-path=. --config-name=my_config
+   # Use a custom config file from a specific directory (absolute path)
+   qprofiler --config-dir=/absolute/path/to/configs --config-name=my_config
 
-   # Use a config file from a specific directory
-   qprofiler --config-path=/path/to/configs --config-name=my_config
+   # Use a config file from current directory
+   cd /path/to/your/project
+   qprofiler --config-dir=$(pwd)/configs --config-name=my_config
 
    # Override specific parameters from command line
    qprofiler model=[svc,rf,qsvc] n_jobs=5 backend=simulator
 
    # Combine custom config with parameter overrides
-   qprofiler --config-path=./configs --config-name=experiment1 seed=123 test_size=0.2
+   qprofiler --config-dir=$(pwd)/configs --config-name=experiment1 seed=123 test_size=0.2
 
 **Batch Mode**
 
@@ -104,12 +105,12 @@ To use your own configuration:
 
    .. code-block:: bash
 
-      qprofiler --config-path=. --config-name=my_config
+      qprofiler --config-dir=$(pwd) --config-name=my_config
 
 .. tip::
    **Hydra Configuration Override Syntax:**
    
-   - ``--config-path``: Directory containing config files
+   - ``--config-dir``: Absolute path to directory containing config files
    - ``--config-name``: Config filename (without .yaml extension)
    - ``key=value``: Override individual parameters
    - ``key=[item1,item2]``: Override list parameters
@@ -118,7 +119,7 @@ To use your own configuration:
    
    .. code-block:: bash
    
-      qprofiler --config-path=./configs --config-name=base \
+      qprofiler --config-dir=$(pwd)/configs --config-name=base \
                 model=[rf,svc] backend=simulator seed=42
 
 See the :doc:`full configuration guide <config>` for all available options.

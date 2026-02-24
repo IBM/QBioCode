@@ -443,17 +443,18 @@
 <p>This runs QProfiler with the default configuration file installed with the package.</p>
 <p><strong>Using Custom Configuration</strong></p>
 <p>You can override the default configuration in several ways:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use a custom config file from current directory</span>
-qprofiler<span class="w"> </span>--config-path<span class="o">=</span>.<span class="w"> </span>--config-name<span class="o">=</span>my_config
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Use a custom config file from a specific directory (absolute path)</span>
+qprofiler<span class="w"> </span>--config-dir<span class="o">=</span>/absolute/path/to/configs<span class="w"> </span>--config-name<span class="o">=</span>my_config
 
-<span class="c1"># Use a config file from a specific directory</span>
-qprofiler<span class="w"> </span>--config-path<span class="o">=</span>/path/to/configs<span class="w"> </span>--config-name<span class="o">=</span>my_config
+<span class="c1"># Use a config file from current directory</span>
+<span class="nb">cd</span><span class="w"> </span>/path/to/your/project
+qprofiler<span class="w"> </span>--config-dir<span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/configs<span class="w"> </span>--config-name<span class="o">=</span>my_config
 
 <span class="c1"># Override specific parameters from command line</span>
 qprofiler<span class="w"> </span><span class="nv">model</span><span class="o">=[</span>svc,rf,qsvc<span class="o">]</span><span class="w"> </span><span class="nv">n_jobs</span><span class="o">=</span><span class="m">5</span><span class="w"> </span><span class="nv">backend</span><span class="o">=</span>simulator
 
 <span class="c1"># Combine custom config with parameter overrides</span>
-qprofiler<span class="w"> </span>--config-path<span class="o">=</span>./configs<span class="w"> </span>--config-name<span class="o">=</span>experiment1<span class="w"> </span><span class="nv">seed</span><span class="o">=</span><span class="m">123</span><span class="w"> </span><span class="nv">test_size</span><span class="o">=</span><span class="m">0</span>.2
+qprofiler<span class="w"> </span>--config-dir<span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/configs<span class="w"> </span>--config-name<span class="o">=</span>experiment1<span class="w"> </span><span class="nv">seed</span><span class="o">=</span><span class="m">123</span><span class="w"> </span><span class="nv">test_size</span><span class="o">=</span><span class="m">0</span>.2
 </pre></div>
 </div>
 <p><strong>Batch Mode</strong></p>
@@ -481,7 +482,7 @@ qprofiler<span class="w"> </span>--config-path<span class="o">=</span>./configs<
 </div>
 </li>
 <li><p><strong>Run with custom config</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qprofiler<span class="w"> </span>--config-path<span class="o">=</span>.<span class="w"> </span>--config-name<span class="o">=</span>my_config
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qprofiler<span class="w"> </span>--config-dir<span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span><span class="w"> </span>--config-name<span class="o">=</span>my_config
 </pre></div>
 </div>
 </li>
@@ -490,13 +491,13 @@ qprofiler<span class="w"> </span>--config-path<span class="o">=</span>./configs<
 <p class="admonition-title">Tip</p>
 <p><strong>Hydra Configuration Override Syntax:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">--config-path</span></code>: Directory containing config files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--config-dir</span></code>: Absolute path to directory containing config files</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--config-name</span></code>: Config filename (without .yaml extension)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">key=value</span></code>: Override individual parameters</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">key=[item1,item2]</span></code>: Override list parameters</p></li>
 </ul>
 <p>Example combining all:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qprofiler<span class="w"> </span>--config-path<span class="o">=</span>./configs<span class="w"> </span>--config-name<span class="o">=</span>base<span class="w"> </span><span class="se">\</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qprofiler<span class="w"> </span>--config-dir<span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/configs<span class="w"> </span>--config-name<span class="o">=</span>base<span class="w"> </span><span class="se">\</span>
 <span class="w">          </span><span class="nv">model</span><span class="o">=[</span>rf,svc<span class="o">]</span><span class="w"> </span><span class="nv">backend</span><span class="o">=</span>simulator<span class="w"> </span><span class="nv">seed</span><span class="o">=</span><span class="m">42</span>
 </pre></div>
 </div>
