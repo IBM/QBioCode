@@ -84,11 +84,13 @@ Learn about Quantum Projection Learning (QPL), a technique that combines quantum
 
 ### 5. Projected Quantum Kernel (PQK) - Ovarian Cancer Survival Prediction
 
-Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics data for survival prediction. This advanced tutorial demonstrates quantum-enhanced machine learning on multi-omics ovarian cancer data from TCGA.
+Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics data for survival prediction. This advanced tutorial demonstrates quantum-enhanced machine learning on multi-omics ovarian cancer data from the Multi-Omics Cancer Benchmark (TCGA preprocessed data).
 
 <a href="tutorials/PQK%20-%20OV.html">📓 <strong>View Tutorial Notebook</strong></a>
 
 **What You'll Learn:**
+- Automatically download and process multi-omics cancer data
+- Create 3-year survival labels from clinical data
 - Apply quantum feature maps to high-dimensional genomics data
 - Use PQK to create quantum feature representations
 - Compare quantum-enhanced vs. classical SVM performance
@@ -97,11 +99,15 @@ Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics
 - Evaluate quantum performance on real biomedical datasets
 
 **Dataset:**
-- Ovarian cancer (OV) multi-omics data from TCGA
+- Ovarian cancer (OV) multi-omics data from [Multi-Omics Cancer Benchmark](https://acgt.cs.tau.ac.il/multi_omic_benchmark/download.html)
+- TCGA preprocessed data with automatic download
 - 3-year survival prediction task
 - Four data modalities: miRNA, DNA methylation, gene expression, and integrated
 
 **Key Techniques:**
+- Automated data download and preprocessing pipeline
+- Patient ID standardization across multi-omics datasets
+- Survival label creation from clinical data
 - Quantum kernel methods with ZZ feature maps
 - Pairwise qubit entanglement strategies
 - PCA dimensionality reduction for quantum encoding

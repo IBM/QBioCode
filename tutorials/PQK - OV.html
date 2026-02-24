@@ -426,15 +426,20 @@
 </section>
 <section id="Dataset">
 <h3>Dataset<a class="headerlink" href="#Dataset" title="Link to this heading">#</a></h3>
-<p>We use ovarian cancer (OV) data from The Cancer Genome Atlas (TCGA) with four data modalities:</p>
+<p>For convenience, we use <strong>preprocessed data from the Multi-Omics Cancer Benchmark</strong> - TCGA Preprocessed Data.</p>
+<p>This tutorial uses <strong>ovarian cancer (OV)</strong> data with four data modalities:</p>
 <ul class="simple">
 <li><p><strong>miRNA expression</strong> (<code class="docutils literal notranslate"><span class="pre">mirna</span></code>)</p></li>
 <li><p><strong>DNA methylation</strong> (<code class="docutils literal notranslate"><span class="pre">methy</span></code>)</p></li>
 <li><p><strong>Gene expression</strong> (<code class="docutils literal notranslate"><span class="pre">exp</span></code>)</p></li>
 <li><p><strong>Integrated multi-omics</strong> (<code class="docutils literal notranslate"><span class="pre">integrated</span></code>)</p></li>
 </ul>
-<p><strong>Download the data from:</strong> <a class="reference external" href="https://ibm.biz/DataTutorialISMB2025">https://ibm.biz/DataTutorialISMB2025</a></p>
-<p>Place the downloaded files in an <code class="docutils literal notranslate"><span class="pre">OV/</span></code> directory in the same location as this notebook.</p>
+<p><strong>Data Source:</strong></p>
+<ul class="simple">
+<li><p><strong>OV Cancer Data:</strong> <a class="reference external" href="https://acgt.cs.tau.ac.il/multi_omic_benchmark/data/ovarian.zip">https://acgt.cs.tau.ac.il/multi_omic_benchmark/data/ovarian.zip</a></p></li>
+<li><p><strong>Other Cancer Types:</strong> <a class="reference external" href="https://acgt.cs.tau.ac.il/multi_omic_benchmark/download.html">https://acgt.cs.tau.ac.il/multi_omic_benchmark/download.html</a></p></li>
+</ul>
+<p>The data will be automatically downloaded and extracted in the next section.</p>
 <hr class="docutils" />
 </section>
 </section>
@@ -450,9 +455,6 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
-<span class="c1"># Add QBioCode to path</span>
-<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;qbiocode/&#39;</span><span class="p">)</span>
-
 <span class="c1"># QBioCode imports</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode</span><span class="w"> </span><span class="kn">import</span> <span class="n">pqk</span>
 
@@ -463,6 +465,270 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✓ All libraries imported successfully&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.1.-Download-and-Prepare-Data">
+<h2>1.1. Download and Prepare Data<a class="headerlink" href="#1.1.-Download-and-Prepare-Data" title="Link to this heading">#</a></h2>
+<p>Download and extract the ovarian cancer dataset from the Multi-Omics Cancer Benchmark.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+
+<span class="c1"># Create OV directory if it doesn&#39;t exist</span>
+<span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;OV&#39;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Define URL for ovarian cancer data (includes survival labels)</span>
+<span class="n">data_url</span> <span class="o">=</span> <span class="s1">&#39;https://acgt.cs.tau.ac.il/multi_omic_benchmark/data/ovarian.zip&#39;</span>
+<span class="n">zip_filename</span> <span class="o">=</span> <span class="s1">&#39;ovarian.zip&#39;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download a file with error handling&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;✓ Data already downloaded (</span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Downloading ovarian cancer data from </span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This may take a few minutes...&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Try using requests library (more robust)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;✓ Download complete&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="c1"># Fallback to urllib with SSL context</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">urllib.request</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">ssl</span>
+
+        <span class="c1"># Create SSL context that doesn&#39;t verify certificates (use with caution)</span>
+        <span class="n">ssl_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">()</span>
+        <span class="n">ssl_context</span><span class="o">.</span><span class="n">check_hostname</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">ssl_context</span><span class="o">.</span><span class="n">verify_mode</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">CERT_NONE</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">ssl_context</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;✓ Download complete&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error downloading: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Error downloading: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="c1"># Download the data</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Downloading Multi-Omics Cancer Benchmark - Ovarian Cancer Data&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+<span class="n">success</span> <span class="o">=</span> <span class="n">download_file</span><span class="p">(</span><span class="n">data_url</span><span class="p">,</span> <span class="n">zip_filename</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">⚠️  Download failed. Please download manually from:&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;   </span><span class="si">{</span><span class="n">data_url</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   Place it in the current directory as &quot;</span><span class="si">{zip_filename}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Extracting Files&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># Extract the zip file</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">zip_filename</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracting </span><span class="si">{</span><span class="n">zip_filename</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
+            <span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="s1">&#39;OV&#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;✓ Data extracted to OV/ directory&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Available Data Files&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c1"># List all downloaded files (including those without extensions)</span>
+    <span class="n">ov_files</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">([</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="s1">&#39;OV&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;OV&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">))])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ov_files</span><span class="p">)</span><span class="si">}</span><span class="s1"> files in OV/ directory:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">ov_files</span><span class="p">:</span>
+        <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;OV&#39;</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">file_size</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span>  <span class="c1"># Size in MB</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - </span><span class="si">{</span><span class="n">f</span><span class="si">:</span><span class="s1">&lt;30</span><span class="si">}</span><span class="s1"> (</span><span class="si">{</span><span class="n">file_size</span><span class="si">:</span><span class="s1">&gt;6.2f</span><span class="si">}</span><span class="s1"> MB)&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">✓ Setup complete! The survival labels are included in the survival file.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</section>
+<section id="1.2.-Process-Data-and-Create-Labels">
+<h2>1.2. Process Data and Create Labels<a class="headerlink" href="#1.2.-Process-Data-and-Create-Labels" title="Link to this heading">#</a></h2>
+<p>Process the downloaded multi-omics data and create 3-year survival labels from the survival file.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">data_path</span> <span class="o">=</span> <span class="s1">&#39;OV/&#39;</span>
+
+<span class="c1"># Helper functions</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_dup_columns</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove duplicate columns&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[:,</span> <span class="o">~</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">standardize_patient_id</span><span class="p">(</span><span class="n">patient_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Standardize patient ID format&quot;&quot;&quot;</span>
+    <span class="c1"># Convert to string, uppercase, replace dots with dashes</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">patient_id</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">)</span>
+    <span class="c1"># Keep only first 3 parts (TCGA-XX-XXXX)</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">pid</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">parts</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">parts</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">pid</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Loading Multi-Omics Data&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+<span class="c1"># Load data files (files have no extension)</span>
+<span class="n">ov_methy</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;methy&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Methylation: </span><span class="si">{</span><span class="n">ov_methy</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">ov_exp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;exp&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># Remove rows with missing values (marked with ?)</span>
+<span class="n">ov_exp</span> <span class="o">=</span> <span class="n">ov_exp</span><span class="p">[</span><span class="o">~</span><span class="n">ov_exp</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="s1">&#39;\?&#39;</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expression: </span><span class="si">{</span><span class="n">ov_exp</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">ov_mirna</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;mirna&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">index_col</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;miRNA: </span><span class="si">{</span><span class="n">ov_mirna</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">ov_survival</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;survival&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Survival data: </span><span class="si">{</span><span class="n">ov_survival</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Clean survival data</span>
+<span class="n">ov_survival</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ov_survival</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">([</span><span class="s1">&#39;PatientID&#39;</span><span class="p">],</span> <span class="n">keep</span><span class="o">=</span><span class="s1">&#39;last&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Processing and Aligning Data&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+<span class="c1"># Standardize column names (patient IDs) in omics data</span>
+<span class="n">ov_methy</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">standardize_patient_id</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">ov_methy</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+<span class="n">ov_exp</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">standardize_patient_id</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">ov_exp</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+<span class="n">ov_mirna</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">standardize_patient_id</span><span class="p">(</span><span class="n">col</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">ov_mirna</span><span class="o">.</span><span class="n">columns</span><span class="p">]</span>
+
+<span class="c1"># Remove duplicates after standardization</span>
+<span class="n">ov_methy_new</span> <span class="o">=</span> <span class="n">remove_dup_columns</span><span class="p">(</span><span class="n">ov_methy</span><span class="p">)</span>
+<span class="n">ov_exp_new</span> <span class="o">=</span> <span class="n">remove_dup_columns</span><span class="p">(</span><span class="n">ov_exp</span><span class="p">)</span>
+<span class="n">ov_mirna_new</span> <span class="o">=</span> <span class="n">remove_dup_columns</span><span class="p">(</span><span class="n">ov_mirna</span><span class="p">)</span>
+
+<span class="c1"># Standardize clinical sample IDs</span>
+<span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;PatientID&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;PatientID&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">standardize_patient_id</span><span class="p">)</span>
+<span class="n">clinical_samples_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;PatientID&#39;</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Clinical samples: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">clinical_samples_set</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sample ID examples (clinical): </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">clinical_samples_set</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sample ID examples (methy): </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">ov_methy_new</span><span class="o">.</span><span class="n">columns</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># Find overlapping samples across all modalities</span>
+<span class="n">overlapping_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ov_methy_new</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">ov_exp_new</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Samples in methy ∩ exp: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">overlapping_cols</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">overlapping_cols</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ov_mirna_new</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">overlapping_cols</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Samples in methy ∩ exp ∩ mirna: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">overlapping_cols</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">overlapping_cols</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">clinical_samples_set</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">overlapping_cols</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Samples with clinical data: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">overlapping_cols</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">overlapping_cols</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">⚠️  No overlapping samples found!&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;This might indicate a data format issue.&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please check the sample ID formats above.&#39;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No overlapping samples - cannot proceed with analysis&#39;</span><span class="p">)</span>
+
+<span class="c1"># Filter data to overlapping samples and transpose</span>
+<span class="n">ov_methy_ov</span> <span class="o">=</span> <span class="n">ov_methy_new</span><span class="p">[</span><span class="n">overlapping_cols</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+<span class="n">ov_exp_ov</span> <span class="o">=</span> <span class="n">ov_exp_new</span><span class="p">[</span><span class="n">overlapping_cols</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+<span class="n">ov_mirna_ov</span> <span class="o">=</span> <span class="n">ov_mirna_new</span><span class="p">[</span><span class="n">overlapping_cols</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Filtered shapes (samples × features):&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  Methylation: </span><span class="si">{</span><span class="n">ov_methy_ov</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  Expression: </span><span class="si">{</span><span class="n">ov_exp_ov</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  miRNA: </span><span class="si">{</span><span class="n">ov_mirna_ov</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Creating Survival Labels&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+<span class="c1"># Create survival labels (1 = survived, 0 = did not survive)</span>
+<span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;5y_survival&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ov_survival</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;3y_survival&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ov_survival</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+<span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;1y_survival&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">ov_survival</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+<span class="n">ov_survival</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;Survival&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">1</span><span class="o">*</span><span class="mi">365</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;1y_survival&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ov_survival</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;Survival&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">3</span><span class="o">*</span><span class="mi">365</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;3y_survival&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">ov_survival</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ov_survival</span><span class="p">[</span><span class="s1">&#39;Survival&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="p">(</span><span class="mi">5</span><span class="o">*</span><span class="mi">365</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;5y_survival&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Survival label distribution:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  5-year: </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">ov_survival</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;5y_survival&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  3-year: </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">ov_survival</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;3y_survival&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  1-year: </span><span class="si">{</span><span class="nb">dict</span><span class="p">(</span><span class="n">ov_survival</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;1y_survival&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Creating Final Datasets&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+
+<span class="c1"># Merge survival labels with each omics type</span>
+<span class="c1">#lets use 3y_survival</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_dataset</span><span class="p">(</span><span class="n">omics_df</span><span class="p">,</span> <span class="n">survival_df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Merge omics data with survival labels&quot;&quot;&quot;</span>
+    <span class="c1"># Reset index to make patient IDs a column</span>
+    <span class="n">omics_with_id</span> <span class="o">=</span> <span class="n">omics_df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="n">omics_with_id</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;index&#39;</span><span class="p">:</span> <span class="s1">&#39;sampleID&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># Merge with survival labels</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">survival_df</span><span class="p">[[</span><span class="s1">&#39;PatientID&#39;</span><span class="p">,</span> <span class="s1">&#39;3y_survival&#39;</span><span class="p">]],</span>
+        <span class="n">omics_with_id</span><span class="p">,</span>
+        <span class="n">left_on</span><span class="o">=</span><span class="s1">&#39;PatientID&#39;</span><span class="p">,</span>
+        <span class="n">right_on</span><span class="o">=</span><span class="s1">&#39;sampleID&#39;</span><span class="p">,</span>
+        <span class="n">how</span><span class="o">=</span><span class="s1">&#39;inner&#39;</span>
+    <span class="p">)</span>
+    <span class="c1"># Keep only sampleID and drop PatientID</span>
+    <span class="n">merged</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;PatientID&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">merged</span>
+
+<span class="n">ov_methy_final</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">ov_methy_ov</span><span class="p">,</span> <span class="n">ov_survival</span><span class="p">)</span>
+<span class="n">ov_exp_final</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">ov_exp_ov</span><span class="p">,</span> <span class="n">ov_survival</span><span class="p">)</span>
+<span class="n">ov_mirna_final</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">ov_mirna_ov</span><span class="p">,</span> <span class="n">ov_survival</span><span class="p">)</span>
+
+<span class="c1"># Create integrated dataset (concatenate all features)</span>
+<span class="n">ov_integrated_features</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">ov_methy_ov</span><span class="p">,</span> <span class="n">ov_exp_ov</span><span class="p">,</span> <span class="n">ov_mirna_ov</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ov_integrated</span> <span class="o">=</span> <span class="n">create_dataset</span><span class="p">(</span><span class="n">ov_integrated_features</span><span class="p">,</span> <span class="n">ov_survival</span><span class="p">)</span>
+
+<span class="c1"># Save processed datasets</span>
+<span class="n">ov_methy_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;OV_methy.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ov_exp_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;OV_exp.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ov_mirna_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;OV_mirna.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">ov_integrated</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">data_path</span> <span class="o">+</span> <span class="s1">&#39;OV_integrated.csv&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Saved datasets (samples × features):&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - OV_methy.csv: </span><span class="si">{</span><span class="n">ov_methy_final</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - OV_exp.csv: </span><span class="si">{</span><span class="n">ov_exp_final</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - OV_mirna.csv: </span><span class="si">{</span><span class="n">ov_mirna_final</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;  - OV_integrated.csv: </span><span class="si">{</span><span class="n">ov_integrated</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">✓ Data processing complete! Ready for PQK analysis.&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -858,6 +1124,8 @@
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.-Setup-and-Imports">1. Setup and Imports</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.1.-Download-and-Prepare-Data">1.1. Download and Prepare Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.2.-Process-Data-and-Create-Labels">1.2. Process Data and Create Labels</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Helper-Functions">2. Helper Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Configuration">3. Configuration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#4.-Main-Experiment-Loop">4. Main Experiment Loop</a></li>
