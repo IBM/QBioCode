@@ -185,7 +185,7 @@ Once your Jupyter notebook server is running:
 4. **Verify installation**:
 
    ```bash
-   python -c "import qbiocode; print('QBioCode installed successfully!')"
+   python -c "import qbiocode; print('QBioCode installed successfully')"
    ```
 
 ### Step 4: Run QBioCode Tutorials
