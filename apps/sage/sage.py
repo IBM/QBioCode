@@ -8,6 +8,9 @@ from sklearn.model_selection import RandomizedSearchCV
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.neural_network import MLPRegressor
+import xgboost as xgb
+import optuna
+import dill as pickle
 
 
 #####
@@ -102,16 +105,18 @@ class QuantumSage():
             
             - 'random_forest': Random Forest with hyperparameter tuning (default)
             - 'mlp': Multi-Layer Perceptron with grid search
+            - 'xgboost_optuna': XGBoost with Optuna optimization (state-of-the-art)
             
             Only ONE sage type can be selected per training run.
             
         n_iter : int, optional
             For Random Forest: number of hyperparameter search iterations (default: 50).
             For MLP: maximum number of training epochs (default: 1000).
+            For XGBoost-Optuna: number of Optuna trials (default: 100).
             If None, uses the default for the selected sage_type.
         cv : int, optional
             Number of cross-validation folds for hyperparameter evaluation.
-            Default is 5. Used by both Random Forest and MLP.
+            Default is 5. Used by all sage types.
         
         Returns
         -------
@@ -140,7 +145,9 @@ class QuantumSage():
         Raises
         ------
         ValueError
-            If sage_type is not 'random_forest' or 'mlp'.
+            If sage_type is not one of the valid types.
+        ImportError
+            If sage_type is 'xgboost_optuna' but XGBoost or Optuna is not installed.
         
         Notes
         -----
@@ -148,8 +155,13 @@ class QuantumSage():
         separate predictor for each combination. Progress is printed during training.
         
         Only one sage type can be used per training run. If you want to compare
-        Random Forest and MLP sages, you need to train them separately and compare
-        their results.
+        different sage types, you need to train them separately and compare results.
+        
+        **Recommended Sage Type:**
+        
+        For best performance on continuous value prediction, use 'xgboost_optuna',
+        which combines the power of gradient boosting with advanced Bayesian
+        hyperparameter optimization.
         
         Examples
         --------
@@ -161,6 +173,10 @@ class QuantumSage():
         
         >>> sage.train_sub_sages(test_size=0.2, sage_type='mlp')
         
+        Train with XGBoost-Optuna (state-of-the-art):
+        
+        >>> sage.train_sub_sages(test_size=0.2, sage_type='xgboost_optuna', n_iter=200)
+        
         Train with custom hyperparameter search:
         
         >>> sage.train_sub_sages(sage_type='random_forest', n_iter=100, cv=10)
@@ -169,10 +185,11 @@ class QuantumSage():
         --------
         _sage_random_forest : Random Forest Sage implementation
         _sage_mlp : MLP Sage implementation
+        _sage_xgboost_optuna : XGBoost with Optuna Sage implementation (state-of-the-art)
         predict : Make predictions using trained Sages
         """
         # Validate sage_type parameter
-        valid_sage_types = ['random_forest', 'mlp']
+        valid_sage_types = ['random_forest', 'mlp', 'xgboost_optuna']
         if sage_type not in valid_sage_types:
             raise ValueError(
                 f"Invalid sage_type '{sage_type}'. Must be one of {valid_sage_types}. "
@@ -203,6 +220,12 @@ class QuantumSage():
                     mlp_n_iter = n_iter if n_iter is not None else 1000
                     self._results_subsages[metric][model] = self._sage_mlp(
                         X_train, X_test, y_train, y_test, n_iter=mlp_n_iter, cv=cv
+                    )
+                elif sage_type == 'xgboost_optuna':
+                    # Use default n_iter=100 for XGBoost-Optuna if not specified
+                    xgb_n_iter = n_iter if n_iter is not None else 100
+                    self._results_subsages[metric][model] = self._sage_xgboost_optuna(
+                        X_train, X_test, y_train, y_test, n_iter=xgb_n_iter, cv=cv
                     )
 
     def _sage_mlp(self, X_train, X_test, y_train, y_test, n_iter=1000, cv=5):
@@ -350,6 +373,199 @@ class QuantumSage():
             'r2': r2
         }
 
+        return result
+
+    def _sage_xgboost_optuna(self, X_train, X_test, y_train, y_test, n_iter=100, cv=5):
+        """
+        Train an XGBoost regressor as a Sage predictor with advanced hyperparameter optimization using Optuna.
+        
+        This function uses Optuna, a state-of-the-art hyperparameter optimization framework, to find
+        the best XGBoost configuration through Bayesian optimization. XGBoost is a gradient boosting
+        algorithm known for its superior performance on tabular data and continuous value prediction.
+        
+        The function is called internally by :meth:`train_sub_sages` and is not meant to be called
+        directly by users. It is designed to work with preprocessed data that has been split into
+        training and test sets.
+        
+        Parameters
+        ----------
+        X_train : pd.DataFrame
+            Training features (data complexity metrics).
+        X_test : pd.DataFrame
+            Test features (data complexity metrics).
+        y_train : pd.Series
+            Training labels (model performance values).
+        y_test : pd.Series
+            Test labels (model performance values).
+        n_iter : int, optional
+            Number of Optuna trials for hyperparameter optimization. Default is 100.
+            Higher values explore more parameter combinations but take longer.
+            Each trial uses cross-validation to evaluate the parameter set.
+        cv : int, optional
+            Number of cross-validation folds for hyperparameter evaluation. Default is 5.
+            Each parameter combination is evaluated using k-fold cross-validation to
+            ensure robust performance estimates.
+        
+        Returns
+        -------
+        dict
+            Dictionary containing:
+            
+            - 'fit_model' : xgb.XGBRegressor
+                Trained XGBoost model with best parameters from Optuna optimization
+            - 'preds' : np.ndarray
+                Predictions on test set
+            - 'y_test' : pd.Series
+                True test labels
+            - 'params' : dict
+                Best hyperparameters found by Optuna
+            - 'mae' : float
+                Mean Absolute Error on test set
+            - 'mse' : float
+                Mean Squared Error on test set
+            - 'rmse' : float
+                Root Mean Squared Error on test set
+            - 'r2' : float
+                R² score on test set
+            - 'study' : optuna.Study
+                Complete Optuna study object with optimization history
+        
+        **Hyperparameter Search Space:**
+        
+        The optimization explores:
+        
+        - n_estimators: [50, 500] - number of boosting rounds
+        - max_depth: [3, 10] - maximum tree depth
+        - learning_rate: [0.001, 0.3] - step size shrinkage (log scale)
+        - subsample: [0.6, 1.0] - fraction of samples per tree
+        - colsample_bytree: [0.6, 1.0] - fraction of features per tree
+        - min_child_weight: [1, 10] - minimum sum of instance weight in child
+        - gamma: [0, 5] - minimum loss reduction for split
+        - reg_alpha: [0, 1] - L1 regularization (log scale)
+        - reg_lambda: [0, 10] - L2 regularization (log scale)
+        
+        **Installation Requirements:**
+        
+        To use this function, install the required packages:
+        
+        .. code-block:: bash
+        
+            pip install xgboost optuna
+        
+        **Performance Tips:**
+        
+        - Increase n_iter (e.g., 200-500) for better optimization on complex problems
+        - Use higher cv (e.g., 10) for more robust evaluation with sufficient data
+        - Monitor the Optuna study object to understand optimization progress
+        - Consider using GPU acceleration for XGBoost on large datasets
+        
+        Examples
+        --------
+        Train with XGBoost-Optuna (via train_sub_sages):
+        
+        >>> sage.train_sub_sages(sage_type='xgboost_optuna', n_iter=200, cv=10)
+        
+        See Also
+        --------
+        _sage_mlp : MLP sub-sage with grid search
+        _sage_random_forest : Random Forest sub-sage with randomized search
+        train_sub_sages : Main training function that calls this method
+        
+        References
+        ----------
+        .. [1] Chen, T., & Guestrin, C. (2016). XGBoost: A scalable tree boosting system.
+               In Proceedings of the 22nd ACM SIGKDD International Conference on Knowledge
+               Discovery and Data Mining (pp. 785-794).
+        .. [2] Akiba, T., Sano, S., Yanase, T., Ohta, T., & Koyama, M. (2019). Optuna:
+               A next-generation hyperparameter optimization framework. In Proceedings of
+               the 25th ACM SIGKDD International Conference on Knowledge Discovery & Data
+               Mining (pp. 2623-2631).
+        """
+
+        from sklearn.model_selection import cross_val_score
+        
+        # Preprocess data
+        X_train = X_train.astype(np.float64)
+        X_test = X_test.astype(np.float64)
+        X_train = X_train.replace([np.inf, -np.inf], np.nan).fillna(0)
+        X_test = X_test.replace([np.inf, -np.inf], np.nan).fillna(0)
+        
+        # Define objective function for Optuna
+        def objective(trial):
+            """Optuna objective function for hyperparameter optimization."""
+            # Suggest hyperparameters
+            params = {
+                'n_estimators': trial.suggest_int('n_estimators', 50, 500),
+                'max_depth': trial.suggest_int('max_depth', 3, 10),
+                'learning_rate': trial.suggest_float('learning_rate', 0.001, 0.3, log=True),
+                'subsample': trial.suggest_float('subsample', 0.6, 1.0),
+                'colsample_bytree': trial.suggest_float('colsample_bytree', 0.6, 1.0),
+                'min_child_weight': trial.suggest_int('min_child_weight', 1, 10),
+                'gamma': trial.suggest_float('gamma', 0, 5),
+                'reg_alpha': trial.suggest_float('reg_alpha', 1e-8, 1.0, log=True),
+                'reg_lambda': trial.suggest_float('reg_lambda', 1e-8, 10.0, log=True),
+                'random_state': self._seed,
+                'n_jobs': -1,
+                'verbosity': 0
+            }
+            
+            # Create model with suggested parameters
+            model = xgb.XGBRegressor(**params)
+            
+            # Evaluate with cross-validation
+            scores = cross_val_score(
+                model, X_train, y_train,
+                cv=cv,
+                scoring='r2',
+                n_jobs=-1
+            )
+            
+            return scores.mean()
+        
+        # Create Optuna study with pruning
+        study = optuna.create_study(
+            direction='maximize',
+            sampler=optuna.samplers.TPESampler(seed=self._seed),
+            pruner=optuna.pruners.MedianPruner(n_startup_trials=10, n_warmup_steps=5)
+        )
+        
+        # Suppress Optuna's verbose output
+        optuna.logging.set_verbosity(optuna.logging.WARNING)
+        
+        # Optimize hyperparameters
+        study.optimize(objective, n_trials=n_iter, show_progress_bar=False)
+        
+        # Get best parameters
+        best_params = study.best_params
+        best_params['random_state'] = self._seed
+        best_params['n_jobs'] = -1
+        best_params['verbosity'] = 0
+        
+        # Train final model with best parameters
+        best_model = xgb.XGBRegressor(**best_params)
+        best_model.fit(X_train, y_train)
+        
+        # Make predictions
+        preds = best_model.predict(X_test)
+        
+        # Evaluate on test set
+        mae = mean_absolute_error(y_test, preds)
+        mse = mean_squared_error(y_test, preds)
+        rmse = np.sqrt(mse)
+        r2 = r2_score(y_test, preds)
+        
+        result = {
+            'fit_model': best_model,
+            'preds': preds,
+            'y_test': y_test,
+            'params': best_params,
+            'mae': mae,
+            'mse': mse,
+            'rmse': rmse,
+            'r2': r2,
+            'study': study  # Include study for analysis
+        }
+        
         return result
 
 
@@ -584,18 +800,18 @@ def main():
         description='QSage: Quantum-inspired model selection oracle',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
-Examples:
-  # Train QSage on profiler results
-  qsage --input compiled_results.csv --output sage_results/
-  
-  # Train with specific metric and iterations
-  qsage --input data.csv --output results/ --metric accuracy --n-iter 200
-  
-  # Train with custom seed
-  qsage --input data.csv --output results/ --seed 123
-  
-For more information, see: https://ibm.github.io/QBioCode/apps/sage.html
-        """
+        Examples:
+        # Train QSage on profiler results
+        qsage --input compiled_results.csv --output sage_results/
+        
+        # Train with specific metric and iterations
+        qsage --input data.csv --output results/ --metric accuracy --n-iter 200
+        
+        # Train with custom seed
+        qsage --input data.csv --output results/ --seed 123
+        
+        For more information, see: https://ibm.github.io/QBioCode/apps/sage.html
+                """
     )
     
     parser.add_argument(
@@ -620,8 +836,9 @@ For more information, see: https://ibm.github.io/QBioCode/apps/sage.html
     parser.add_argument(
         '--model-type',
         default='random_forest',
-        choices=['rf', 'mlp', 'random_forest'],
-        help='Type of sub-sage model to train: rf/random_forest (Random Forest) or mlp (MLP). '
+        choices=['rf', 'mlp', 'random_forest', 'xgboost', 'xgboost_optuna'],
+        help='Type of sub-sage model to train: rf/random_forest (Random Forest), mlp (MLP), '
+             'or xgboost/xgboost_optuna (XGBoost with Optuna - state-of-the-art). '
              'Default: random_forest. Only one type can be trained per run.'
     )
     
@@ -637,7 +854,8 @@ For more information, see: https://ibm.github.io/QBioCode/apps/sage.html
         type=int,
         default=None,
         help='For Random Forest: number of hyperparameter search iterations (default: 50). '
-             'For MLP: maximum training epochs (default: 1000)'
+             'For MLP: maximum training epochs (default: 1000). '
+             'For XGBoost-Optuna: number of Optuna trials (default: 100)'
     )
     
     parser.add_argument(
@@ -669,14 +887,18 @@ For more information, see: https://ibm.github.io/QBioCode/apps/sage.html
     if args.n_iter is not None:
         if args.model_type in ['rf', 'random_forest']:
             print(f"Hyperparameter search iterations: {args.n_iter}")
-        else:
+        elif args.model_type == 'mlp':
             print(f"Maximum training epochs: {args.n_iter}")
+        elif args.model_type in ['xgboost', 'xgboost_optuna']:
+            print(f"Optuna optimization trials: {args.n_iter}")
     print("="*80)
     
     # Load data
     print("\nLoading data...")
     try:
         data = pd.read_csv(args.input)
+        # data['Model_Parameters'] = [ 'None' if str(x) == 'nan' else x for x in data['Model_Parameters'] ]
+        data['embeddings'] = [ 'None' if str(x) == 'nan' else x for x in data['embeddings'] ]
         print(f"Loaded {len(data)} rows with {len(data.columns)} columns")
     except Exception as e:
         print(f"Error loading data: {e}", file=sys.stderr)
@@ -701,7 +923,9 @@ For more information, see: https://ibm.github.io/QBioCode/apps/sage.html
         sage_type_map = {
             'rf': 'random_forest',
             'random_forest': 'random_forest',
-            'mlp': 'mlp'
+            'mlp': 'mlp',
+            'xgboost': 'xgboost_optuna',
+            'xgboost_optuna': 'xgboost_optuna'
         }
         sage_type = sage_type_map[args.model_type]
         
@@ -718,6 +942,9 @@ For more information, see: https://ibm.github.io/QBioCode/apps/sage.html
         print(f"Error training sub-sages: {e}", file=sys.stderr)
         sys.exit(1)
     
+    # Save Sage model
+    pickle.dump(sage, open(os.path.join(args.output, 'trained_sage.pkl'), 'wb'))
+
     # Generate and save plots
     print(f"\nGenerating plots...")
     try:
