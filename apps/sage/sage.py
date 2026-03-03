@@ -760,7 +760,7 @@ def calculate_SLGH(df, train_pct = 0.7):
     id_col = 'Intrinsic_Dimension'
     fdr_col = 'Fisher Discriminant Ratio'
     num_samples = '# Samples'
-    n_train = num_samples * train_pct
+    n_train = np.ceil(df[num_samples] * train_pct)
     eps = 1e-8
 
     df = pd.DataFrame(df)
