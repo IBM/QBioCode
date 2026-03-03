@@ -57,7 +57,6 @@ class QuantumSage():
 
         self.set_seed()
 
-
     # TODO: trained sage should predict over every metric so that the user can decide what they want predicted
     def predict(self, input_data, metric = 'f1_score'):
         '''
@@ -208,6 +207,10 @@ class QuantumSage():
                 
                 print(f"Working on {model}")
                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state = self._seed)
+
+                # Calculate SLGH (Scaled Latent Geometric Hardness)
+                X_train = calculate_SLGH(X_train, len(X_train))
+                X_test = calculate_SLGH(X_test, len(X_train))
 
                 if sage_type == 'random_forest':
                     # Use default n_iter=50 for Random Forest if not specified
@@ -752,6 +755,16 @@ class QuantumSage():
     def set_seed(self, seed=42):
         self._seed = seed
 
+
+def calculate_SLGH(df, n_train):
+    id_col = 'Intrinsic_Dimension'
+    fdr_col = 'Fisher Discriminant Ratio'
+
+    eps = 1e-8
+
+    df = pd.DataFrame(df)
+    df['SLGH'] = (-np.log(df[id_col] + eps) - np.log(1.0 + df[fdr_col] * n_train))
+    return(df)
 
 
 def main():
