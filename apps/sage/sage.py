@@ -209,8 +209,8 @@ class QuantumSage():
                 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size, random_state = self._seed)
 
                 # Calculate SLGH (Scaled Latent Geometric Hardness)
-                X_train = calculate_SLGH(X_train, len(X_train))
-                X_test = calculate_SLGH(X_test, len(X_train))
+                X_train = calculate_SLGH(X_train)
+                X_test = calculate_SLGH(X_test)
 
                 if sage_type == 'random_forest':
                     # Use default n_iter=50 for Random Forest if not specified
@@ -756,10 +756,11 @@ class QuantumSage():
         self._seed = seed
 
 
-def calculate_SLGH(df, n_train):
+def calculate_SLGH(df, train_pct = 0.7):
     id_col = 'Intrinsic_Dimension'
     fdr_col = 'Fisher Discriminant Ratio'
-
+    num_samples = '# Samples'
+    n_train = num_samples * train_pct
     eps = 1e-8
 
     df = pd.DataFrame(df)
