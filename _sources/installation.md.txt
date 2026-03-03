@@ -206,9 +206,7 @@ After upgrading, you may need to restart your Jupyter kernel for changes to take
 
 ### Step 4: Run QBioCode Tutorials
 
-1. **Navigate to the tutorial directory**:
-
-2. **Open a tutorial notebook**:
+1. **Open a tutorial notebook**:
    - In the Jupyter file browser, navigate to `QBioCode/tutorial/`
    - Click on any tutorial notebook to open it:
      - `Artificial_data_generation/example_data_generation.ipynb`
@@ -216,7 +214,7 @@ After upgrading, you may need to restart your Jupyter kernel for changes to take
      - `QSage/qsage.ipynb`
      - `Quantum_Projection_Learning/QPL_example.ipynb`
 
-3. **Run the tutorial**:
+2. **Run the tutorial**:
    - Execute cells sequentially using **Shift+Enter**
    - Follow the instructions in each notebook
 
