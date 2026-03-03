@@ -131,18 +131,17 @@ If you prefer not to install QBioCode on your local or personal machine, you can
 4. Click **"Create"** to complete registration
 5. Verify your email address (check your inbox for confirmation link)
 
-### Step 2: Launch a Jupyter Notebook Server
+### Step 2: Launch a Qiskit Jupyter Notebook (Recommended - Pre-installed QBioCode)
 
 1. **Log in** to your Galaxy account at [https://usegalaxy.org/](https://usegalaxy.org/)
 
-2. From the top menu, select **"Interactive Tools"**
+2. From the left menu, select **"Interactive Tools"**
 
-3. Search for **"Jupyter Notebook"** or **"JupyterLab"**
+3. Search for **"Qiskit Jupyter notebook"**
 
-4. Click on the Jupyter tool to launch it
+4. Click on the Qiskit Jupyter tool to launch it
 
 5. Configure the notebook environment:
-   - **Select Python version**: Choose Python 3.9, 3.10, 3.11, or 3.12
    - **Allocate resources**: Default settings are usually sufficient
    - Click **"Execute"** or **"Run Tool"**
 
@@ -150,58 +149,71 @@ If you prefer not to install QBioCode on your local or personal machine, you can
 
 7. Once ready, click the **link** to open your Jupyter environment in a new tab
 
-### Step 3: Install QBioCode in Galaxy Jupyter
+```{admonition} Pre-installed QBioCode
+:class: tip
+The **Qiskit Jupyter notebook** in Galaxy comes with QBioCode pre-installed! You can start using it immediately without any installation steps. However, note that this may not be the latest version of the code.
+```
 
-Once your Jupyter notebook server is running:
+### Step 3: Using QBioCode (Pre-installed Version)
+
+Once your Qiskit Jupyter notebook server is running:
+
+1. **Verify QBioCode is available**:
+   
+   Open a new notebook or terminal and run:
+   ```python
+   import qbiocode as qbc
+   print(f"QBioCode version: {qbc.__version__}")
+   ```
+
+2. **Access the tutorials**:
+   
+   The tutorials should be available in the file browser. Navigate to the QBioCode tutorial directory and open any notebook:
+   - `Artificial_data_generation/example_data_generation.ipynb`
+   - `QProfiler/example_qprofiler.ipynb`
+   - `QSage/qsage.ipynb`
+   - `Quantum_Projection_Learning/QPL_example.ipynb`
+
+### Step 3b: Install Latest Version (Optional)
+
+If you need the latest version of QBioCode with the most recent features and bug fixes:
 
 1. **Open a new terminal** in Jupyter:
    - Click **"File" → "New" → "Terminal"** (in JupyterLab)
    - Or use the **"New" → "Terminal"** button (in classic Jupyter)
 
-2. **Install QBioCode** using Option 1 (pip install):
+2. **Install the latest QBioCode from GitHub**:
 
    ```bash
    # Clone the repository
    git clone https://github.com/IBM/QBioCode.git
    cd QBioCode
    
-   # Install QBioCode
-   pip install .
+   # Install QBioCode (this will upgrade the pre-installed version)
+   pip install --upgrade .
    ```
 
-3. **macOS Users: Install OpenMP for XGBoost (if needed)**
-   
-   If you're using macOS and plan to use XGBoost models, you may need OpenMP:
-   ```bash
-   # This may not work in Galaxy's terminal, but try:
-   brew install libomp
-   pip install --force-reinstall xgboost
-   ```
-   
-   ```{note}
-   Galaxy environments may have XGBoost pre-configured. If you encounter XGBoost errors, consider using other models (Random Forest, SVC, etc.) or switch to local installation.
-   ```
-
-4. **Verify installation**:
+3. **Verify the updated installation**:
 
    ```bash
-   python -c "import qbiocode; print('QBioCode installed successfully')"
+   python -c "import qbiocode; print(f'QBioCode version: {qbiocode.__version__}')"
    ```
+
+```{note}
+After upgrading, you may need to restart your Jupyter kernel for changes to take effect:
+**Kernel → Restart Kernel**
+```
 
 ### Step 4: Run QBioCode Tutorials
 
 1. **Navigate to the tutorial directory**:
 
-   ```bash
-   cd tutorial
-   ```
-
 2. **Open a tutorial notebook**:
    - In the Jupyter file browser, navigate to `QBioCode/tutorial/`
    - Click on any tutorial notebook to open it:
+     - `Artificial_data_generation/example_data_generation.ipynb`
      - `QProfiler/example_qprofiler.ipynb`
      - `QSage/qsage.ipynb`
-     - `Artificial_data_generation/example_data_generation.ipynb`
      - `Quantum_Projection_Learning/QPL_example.ipynb`
 
 3. **Run the tutorial**:

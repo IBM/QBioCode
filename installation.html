@@ -543,16 +543,15 @@ Once the virtual enviroment is activated, you can install the required packages 
 <li><p>Verify your email address (check your inbox for confirmation link)</p></li>
 </ol>
 </section>
-<section id="step-2-launch-a-jupyter-notebook-server">
-<h3>Step 2: Launch a Jupyter Notebook Server<a class="headerlink" href="#step-2-launch-a-jupyter-notebook-server" title="Link to this heading">#</a></h3>
+<section id="step-2-launch-a-qiskit-jupyter-notebook-recommended-pre-installed-qbiocode">
+<h3>Step 2: Launch a Qiskit Jupyter Notebook (Recommended - Pre-installed QBioCode)<a class="headerlink" href="#step-2-launch-a-qiskit-jupyter-notebook-recommended-pre-installed-qbiocode" title="Link to this heading">#</a></h3>
 <ol class="arabic simple">
 <li><p><strong>Log in</strong> to your Galaxy account at <a class="reference external" href="https://usegalaxy.org/">https://usegalaxy.org/</a></p></li>
-<li><p>From the top menu, select <strong>“Interactive Tools”</strong></p></li>
-<li><p>Search for <strong>“Jupyter Notebook”</strong> or <strong>“JupyterLab”</strong></p></li>
-<li><p>Click on the Jupyter tool to launch it</p></li>
+<li><p>From the left menu, select <strong>“Interactive Tools”</strong></p></li>
+<li><p>Search for <strong>“Qiskit Jupyter notebook”</strong></p></li>
+<li><p>Click on the Qiskit Jupyter tool to launch it</p></li>
 <li><p>Configure the notebook environment:</p>
 <ul class="simple">
-<li><p><strong>Select Python version</strong>: Choose Python 3.9, 3.10, 3.11, or 3.12</p></li>
 <li><p><strong>Allocate resources</strong>: Default settings are usually sufficient</p></li>
 <li><p>Click <strong>“Execute”</strong> or <strong>“Run Tool”</strong></p></li>
 </ul>
@@ -560,10 +559,36 @@ Once the virtual enviroment is activated, you can install the required packages 
 <li><p>Wait for the notebook server to start (this may take 1-2 minutes)</p></li>
 <li><p>Once ready, click the <strong>link</strong> to open your Jupyter environment in a new tab</p></li>
 </ol>
+<div class="tip admonition">
+<p class="admonition-title">Pre-installed QBioCode</p>
+<p>The <strong>Qiskit Jupyter notebook</strong> in Galaxy comes with QBioCode pre-installed! You can start using it immediately without any installation steps. However, note that this may not be the latest version of the code.</p>
+</div>
 </section>
-<section id="step-3-install-qbiocode-in-galaxy-jupyter">
-<h3>Step 3: Install QBioCode in Galaxy Jupyter<a class="headerlink" href="#step-3-install-qbiocode-in-galaxy-jupyter" title="Link to this heading">#</a></h3>
-<p>Once your Jupyter notebook server is running:</p>
+<section id="step-3-using-qbiocode-pre-installed-version">
+<h3>Step 3: Using QBioCode (Pre-installed Version)<a class="headerlink" href="#step-3-using-qbiocode-pre-installed-version" title="Link to this heading">#</a></h3>
+<p>Once your Qiskit Jupyter notebook server is running:</p>
+<ol class="arabic">
+<li><p><strong>Verify QBioCode is available</strong>:</p>
+<p>Open a new notebook or terminal and run:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qbc</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;QBioCode version: </span><span class="si">{</span><span class="n">qbc</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Access the tutorials</strong>:</p>
+<p>The tutorials should be available in the file browser. Navigate to the QBioCode tutorial directory and open any notebook:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Artificial_data_generation/example_data_generation.ipynb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QProfiler/example_qprofiler.ipynb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">QSage/qsage.ipynb</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Quantum_Projection_Learning/QPL_example.ipynb</span></code></p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="step-3b-install-latest-version-optional">
+<h3>Step 3b: Install Latest Version (Optional)<a class="headerlink" href="#step-3b-install-latest-version-optional" title="Link to this heading">#</a></h3>
+<p>If you need the latest version of QBioCode with the most recent features and bug fixes:</p>
 <ol class="arabic">
 <li><p><strong>Open a new terminal</strong> in Jupyter:</p>
 <ul class="simple">
@@ -571,51 +596,40 @@ Once the virtual enviroment is activated, you can install the required packages 
 <li><p>Or use the <strong>“New” → “Terminal”</strong> button (in classic Jupyter)</p></li>
 </ul>
 </li>
-<li><p><strong>Install QBioCode</strong> using Option 1 (pip install):</p>
+<li><p><strong>Install the latest QBioCode from GitHub</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository</span>
 git<span class="w"> </span>clone<span class="w"> </span>https://github.com/IBM/QBioCode.git
 <span class="nb">cd</span><span class="w"> </span>QBioCode
 
-<span class="c1"># Install QBioCode</span>
-pip<span class="w"> </span>install<span class="w"> </span>.
+<span class="c1"># Install QBioCode (this will upgrade the pre-installed version)</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>.
 </pre></div>
 </div>
 </li>
-<li><p><strong>macOS Users: Install OpenMP for XGBoost (if needed)</strong></p>
-<p>If you’re using macOS and plan to use XGBoost models, you may need OpenMP:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># This may not work in Galaxy&#39;s terminal, but try:</span>
-brew<span class="w"> </span>install<span class="w"> </span>libomp
-pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span class="w"> </span>xgboost
-</pre></div>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Galaxy environments may have XGBoost pre-configured. If you encounter XGBoost errors, consider using other models (Random Forest, SVC, etc.) or switch to local installation.</p>
-</div>
-</li>
-<li><p><strong>Verify installation</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import qbiocode; print(&#39;QBioCode installed successfully&#39;)&quot;</span>
+<li><p><strong>Verify the updated installation</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import qbiocode; print(f&#39;QBioCode version: {qbiocode.__version__}&#39;)&quot;</span>
 </pre></div>
 </div>
 </li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>After upgrading, you may need to restart your Jupyter kernel for changes to take effect:
+<strong>Kernel → Restart Kernel</strong></p>
+</div>
 </section>
 <section id="step-4-run-qbiocode-tutorials">
 <h3>Step 4: Run QBioCode Tutorials<a class="headerlink" href="#step-4-run-qbiocode-tutorials" title="Link to this heading">#</a></h3>
-<ol class="arabic">
-<li><p><strong>Navigate to the tutorial directory</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span><span class="w"> </span>tutorial
-</pre></div>
-</div>
-</li>
+<ol class="arabic simple">
+<li><p><strong>Navigate to the tutorial directory</strong>:</p></li>
 <li><p><strong>Open a tutorial notebook</strong>:</p>
 <ul class="simple">
 <li><p>In the Jupyter file browser, navigate to <code class="docutils literal notranslate"><span class="pre">QBioCode/tutorial/</span></code></p></li>
 <li><p>Click on any tutorial notebook to open it:</p>
 <ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">Artificial_data_generation/example_data_generation.ipynb</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">QProfiler/example_qprofiler.ipynb</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">QSage/qsage.ipynb</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">Artificial_data_generation/example_data_generation.ipynb</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Quantum_Projection_Learning/QPL_example.ipynb</span></code></p></li>
 </ul>
 </li>
@@ -746,8 +760,9 @@ pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-setting-up-a-conda-enviroment">Option 2: Setting up a Conda Enviroment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-3-using-galaxy-cloud-based-no-local-installation">Option 3: Using Galaxy (Cloud-Based, No Local Installation)</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-register-for-a-galaxy-account">Step 1: Register for a Galaxy Account</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-launch-a-jupyter-notebook-server">Step 2: Launch a Jupyter Notebook Server</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-install-qbiocode-in-galaxy-jupyter">Step 3: Install QBioCode in Galaxy Jupyter</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-2-launch-a-qiskit-jupyter-notebook-recommended-pre-installed-qbiocode">Step 2: Launch a Qiskit Jupyter Notebook (Recommended - Pre-installed QBioCode)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3-using-qbiocode-pre-installed-version">Step 3: Using QBioCode (Pre-installed Version)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-3b-install-latest-version-optional">Step 3b: Install Latest Version (Optional)</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-4-run-qbiocode-tutorials">Step 4: Run QBioCode Tutorials</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tips-for-using-galaxy">Tips for Using Galaxy</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting-galaxy-installation">Troubleshooting Galaxy Installation</a></li>
