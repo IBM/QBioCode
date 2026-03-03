@@ -725,10 +725,11 @@ class QuantumSageV2():
     def set_seed(self, seed=42):
         self._seed = seed
 
-def calculate_SLGH(df, n_train):
+def calculate_SLGH(df, train_pct = 0.7):
     id_col = 'Intrinsic_Dimension'
     fdr_col = 'Fisher Discriminant Ratio'
-
+    num_samples = '# Samples'
+    n_train = np.ceil(df[num_samples] * train_pct)
     eps = 1e-8
 
     df = pd.DataFrame(df)
