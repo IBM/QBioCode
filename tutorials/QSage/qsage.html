@@ -551,6 +551,66 @@
 <p><strong>⏱️ Training QSage takes considerable time.</strong> To skip training and use a ready-made model, download the pre-compiled QSage model and load it directly:</p>
 <p><strong>Download the pre-compiled model</strong>: <a class="reference external" href="https://ibm.box.com/s/4vv39mpplq8juhffno114bqkjls38sgm">QSage Pre-compiled Model</a></p>
 <p>After downloading, place the <code class="docutils literal notranslate"><span class="pre">.pkl</span></code> file in your working directory and run the cell below. If you use the pre-compiled model, you can <strong>skip Sections 4 and 5</strong> and proceed directly to Section 6 (Make Predictions).</p>
+</section>
+<section id="3p.-Download-Pre-compiled-Model-(Automated)">
+<h2>3p. Download Pre-compiled Model (Automated)<a class="headerlink" href="#3p.-Download-Pre-compiled-Model-(Automated)" title="Link to this heading">#</a></h2>
+<p><strong>Option 1: Automated Download</strong></p>
+<p>Run the cell below to automatically download the pre-compiled QSage model:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Automated download of pre-compiled QSage model</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib.request</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ssl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># IBM Box direct download link</span>
+<span class="n">model_url</span> <span class="o">=</span> <span class="s1">&#39;https://ibm.box.com/shared/static/4vv39mpplq8juhffno114bqkjls38sgm.pkl&#39;</span>
+<span class="n">model_filename</span> <span class="o">=</span> <span class="s1">&#39;qsage_model.pkl&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading pre-compiled QSage model...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Source: </span><span class="si">{</span><span class="n">model_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Destination: </span><span class="si">{</span><span class="n">model_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Create SSL context that doesn&#39;t verify certificates (for corporate/institutional networks)</span>
+    <span class="n">ssl_context</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">create_default_context</span><span class="p">()</span>
+    <span class="n">ssl_context</span><span class="o">.</span><span class="n">check_hostname</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">ssl_context</span><span class="o">.</span><span class="n">verify_mode</span> <span class="o">=</span> <span class="n">ssl</span><span class="o">.</span><span class="n">CERT_NONE</span>
+
+    <span class="c1"># Download the file with SSL context</span>
+    <span class="k">with</span> <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">model_url</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="n">ssl_context</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">model_filename</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">out_file</span><span class="p">:</span>
+            <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ Download complete! Model saved to: </span><span class="si">{</span><span class="n">model_filename</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File size: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">getsize</span><span class="p">(</span><span class="n">model_filename</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1024</span><span class="o">*</span><span class="mi">1024</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MB&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load the model</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">model_filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">sage</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">✓ Pre-compiled QSage model loaded successfully&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available models: </span><span class="si">{</span><span class="n">sage</span><span class="o">.</span><span class="n">_available_models</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Available metrics: </span><span class="si">{</span><span class="n">sage</span><span class="o">.</span><span class="n">_available_metrics</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">→ You can now skip to Section 6 (Make Predictions)&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Download failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📥 Alternative: Use requests library (if available)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Try running: pip install requests&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Then use the alternative download method below.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Or download manually from:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;https://ibm.box.com/s/4vv39mpplq8juhffno114bqkjls38sgm&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;and save it as &#39;</span><span class="si">{</span><span class="n">model_filename</span><span class="si">}</span><span class="s2">&#39; in your working directory.&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p><strong>Option 2: Manual Download</strong></p>
+<p>If the automated download doesn’t work, manually download from: <a class="reference external" href="https://ibm.box.com/s/4vv39mpplq8juhffno114bqkjls38sgm">QSage Pre-compiled Model</a></p>
+<p>Then run the existing cell in Section 3b to load it.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
@@ -827,6 +887,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2b.-Prepare-QProfiler-Output-for-QSage">2b. Prepare QProfiler Output for QSage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Initialize-QSage">3. Initialize QSage</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3b.-Load-Pre-compiled-Model-(Recommended)">3b. Load Pre-compiled Model (Recommended)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3p.-Download-Pre-compiled-Model-(Automated)">3p. Download Pre-compiled Model (Automated)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#4.-Train-QSage-Sub-Sages-(Optional-—-Skip-if-using-pre-compiled-model)">4. Train QSage Sub-Sages (Optional — Skip if using pre-compiled model)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Visualize-Training-Results-(Optional-—-Skip-if-using-pre-compiled-model)">5. Visualize Training Results (Optional — Skip if using pre-compiled model)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#6.-Make-Predictions">6. Make Predictions</a></li>
