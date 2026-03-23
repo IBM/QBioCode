@@ -38,7 +38,7 @@ class QuantumSage():
                                         'Isomap Reconstruction Error', 'Fractal dimension', 'Entropy',
                                         'std_entropy']
         self._columns_metrics = ['accuracy', 'f1_score', 'auc']
-        self._columns_metadata = ['Dataset', 'embeddings','datatype', 'model_embed_datatype', 'iteration', 'model']
+        self._columns_metadata = ['Dataset', 'embeddings','datatype', 'model_embed_datatype', 'iteration', 'model', 'BestParams_GridSearch', 'Model_Parameters']
 
         self._input_data_features_only = data_input[self._columns_data_features]
         self._input_data_metrics = data_input[self._columns_metrics]
