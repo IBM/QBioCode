@@ -1,16 +1,37 @@
 
- [![Minimum Python Version](https://img.shields.io/badge/Python-%3E=%203.10-blue)](https://www.python.org/downloads/) [![Maximum Python Version Tested](https://img.shields.io/badge/Python-%3C=%203.12-blueviolet)](https://www.python.org/downloads/) [![Supported Python Versions](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
+[![PyPI version](https://badge.fury.io/py/qbiocode.svg)](https://badge.fury.io/py/qbiocode) [![Minimum Python Version](https://img.shields.io/badge/Python-%3E=%203.10-blue)](https://www.python.org/downloads/) [![Maximum Python Version Tested](https://img.shields.io/badge/Python-%3C=%203.12-blueviolet)](https://www.python.org/downloads/) [![Supported Python Versions](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
  
  This project requires **Python 3.10 or higher** and has been tested with Python versions 3.10, 3.11, and 3.12.
 
 **Note:** Python 3.10+ is required for compatibility with the latest Qiskit ecosystem (qiskit-ibm-runtime 0.44.0+).
 
-# Getting Started
+# Installation
 
+QBioCode can be installed via PyPI or from source.
 
-Before you can run this project, you need to have python installed on your system
+## Quick Install from PyPI (Recommended)
 
-## Option 1: Setting up a Python Virtual Enviroment (venv)
+Install the latest stable version:
+
+```bash
+pip install qbiocode
+```
+
+Install with apps support (QProfiler, QSage):
+
+```bash
+pip install qbiocode[apps]
+```
+
+Install with all optional dependencies:
+
+```bash
+pip install qbiocode[all]
+```
+
+## Install from Source
+
+### Option 1: Setting up a Python Virtual Environment (venv)
 
 This is the standard way to create an isolated Python enviroment.
 
@@ -46,11 +67,21 @@ This command creatas a new directory named `venv` (you can choose a different na
   ```
 Once the activated, you'll see `(venv)` at the beginning of your terminal promt.
 
-4. **Install project dependencies:**
-   Once the virtual enviroment is activated, you can install the required packages listed in the `requirements.txt` file:
-  ```bash
-  pip install  .
-  ```
+4. **Install QBioCode:**
+   
+   Once the virtual environment is activated, install QBioCode:
+   
+   ```bash
+   # Clone the repository first
+   git clone https://github.com/IBM/QBioCode.git
+   cd QBioCode
+   
+   # Install in editable mode
+   pip install -e .
+   
+   # Or install with apps support
+   pip install -e ".[apps]"
+   ```
 
 5. **macOS Users: Install OpenMP for XGBoost (Required)**
    

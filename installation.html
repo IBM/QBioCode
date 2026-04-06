@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting Started &#8212; qbiocode 0.0.1 documentation</title>
+    <title>Installation &#8212; qbiocode 0.0.1 documentation</title>
   
   
   
@@ -380,7 +380,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Getting Started</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Installation</span></li>
   </ul>
 </nav>
 </div>
@@ -397,14 +397,31 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <p><a class="reference external" href="https://www.python.org/downloads/"><img alt="Minimum Python Version" src="https://img.shields.io/badge/Python-%3E=%203.10-blue" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Maximum Python Version Tested" src="https://img.shields.io/badge/Python-%3C=%203.12-blueviolet" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Supported Python Versions" src="https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue" /></a></p>
+  <p><a class="reference external" href="https://badge.fury.io/py/qbiocode"><img alt="PyPI version" src="https://badge.fury.io/py/qbiocode.svg" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Minimum Python Version" src="https://img.shields.io/badge/Python-%3E=%203.10-blue" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Maximum Python Version Tested" src="https://img.shields.io/badge/Python-%3C=%203.12-blueviolet" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Supported Python Versions" src="https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue" /></a></p>
 <p>This project requires <strong>Python 3.10 or higher</strong> and has been tested with Python versions 3.10, 3.11, and 3.12.</p>
 <p><strong>Note:</strong> Python 3.10+ is required for compatibility with the latest Qiskit ecosystem (qiskit-ibm-runtime 0.44.0+).</p>
-<section id="getting-started">
-<h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h1>
-<p>Before you can run this project, you need to have python installed on your system</p>
-<section id="option-1-setting-up-a-python-virtual-enviroment-venv">
-<h2>Option 1: Setting up a Python Virtual Enviroment (venv)<a class="headerlink" href="#option-1-setting-up-a-python-virtual-enviroment-venv" title="Link to this heading">#</a></h2>
+<section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
+<p>QBioCode can be installed via PyPI or from source.</p>
+<section id="quick-install-from-pypi-recommended">
+<h2>Quick Install from PyPI (Recommended)<a class="headerlink" href="#quick-install-from-pypi-recommended" title="Link to this heading">#</a></h2>
+<p>Install the latest stable version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qbiocode
+</pre></div>
+</div>
+<p>Install with apps support (QProfiler, QSage):</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qbiocode<span class="o">[</span>apps<span class="o">]</span>
+</pre></div>
+</div>
+<p>Install with all optional dependencies:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qbiocode<span class="o">[</span>all<span class="o">]</span>
+</pre></div>
+</div>
+</section>
+<section id="install-from-source">
+<h2>Install from Source<a class="headerlink" href="#install-from-source" title="Link to this heading">#</a></h2>
+<section id="option-1-setting-up-a-python-virtual-environment-venv">
+<h3>Option 1: Setting up a Python Virtual Environment (venv)<a class="headerlink" href="#option-1-setting-up-a-python-virtual-environment-venv" title="Link to this heading">#</a></h3>
 <p>This is the standard way to create an isolated Python enviroment.</p>
 <p><strong>Steps:</strong></p>
 <ol class="arabic simple">
@@ -447,14 +464,21 @@
 </pre></div>
 </div>
 <p>Once the activated, you’ll see <code class="docutils literal notranslate"><span class="pre">(venv)</span></code> at the beginning of your terminal promt.</p>
-<ol class="arabic simple" start="4">
-<li><p><strong>Install project dependencies:</strong>
-Once the virtual enviroment is activated, you can install the required packages listed in the <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> file:</p></li>
-</ol>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w">  </span>.
+<ol class="arabic" start="4">
+<li><p><strong>Install QBioCode:</strong></p>
+<p>Once the virtual environment is activated, install QBioCode:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clone the repository first</span>
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/IBM/QBioCode.git
+<span class="nb">cd</span><span class="w"> </span>QBioCode
+
+<span class="c1"># Install in editable mode</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+
+<span class="c1"># Or install with apps support</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[apps]&quot;</span>
 </pre></div>
 </div>
-<ol class="arabic" start="5">
+</li>
 <li><p><strong>macOS Users: Install OpenMP for XGBoost (Required)</strong></p>
 <p>On macOS, XGBoost requires the OpenMP library. Install it using Homebrew:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>libomp
@@ -473,6 +497,7 @@ Once the virtual enviroment is activated, you can install the required packages 
 <p>This will return you to your base Python enviroment.</p>
 </li>
 </ol>
+</section>
 </section>
 <section id="option-2-setting-up-a-conda-enviroment">
 <h2>Option 2: Setting up a Conda Enviroment<a class="headerlink" href="#option-2-setting-up-a-conda-enviroment" title="Link to this heading">#</a></h2>
@@ -756,7 +781,11 @@ pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-setting-up-a-python-virtual-enviroment-venv">Option 1: Setting up a Python Virtual Enviroment (venv)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-install-from-pypi-recommended">Quick Install from PyPI (Recommended)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-from-source">Install from Source</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-setting-up-a-python-virtual-environment-venv">Option 1: Setting up a Python Virtual Environment (venv)</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-2-setting-up-a-conda-enviroment">Option 2: Setting up a Conda Enviroment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#option-3-using-galaxy-cloud-based-no-local-installation">Option 3: Using Galaxy (Cloud-Based, No Local Installation)</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#step-1-register-for-a-galaxy-account">Step 1: Register for a Galaxy Account</a></li>
