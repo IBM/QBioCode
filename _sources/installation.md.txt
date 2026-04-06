@@ -1,7 +1,9 @@
 
- [![Minimum Python Version](https://img.shields.io/badge/Python-%3E=%203.9-blue)](https://www.python.org/downloads/) [![Maximum Python Version Tested](https://img.shields.io/badge/Python-%3C=%203.12-blueviolet)](https://www.python.org/downloads/) [![Supported Python Versions](https://img.shields.io/badge/Python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
+ [![Minimum Python Version](https://img.shields.io/badge/Python-%3E=%203.10-blue)](https://www.python.org/downloads/) [![Maximum Python Version Tested](https://img.shields.io/badge/Python-%3C=%203.12-blueviolet)](https://www.python.org/downloads/) [![Supported Python Versions](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/)
  
- This project has been tested and is compatible with Python versions 3.9, 3.10, 3.11, and 3.12. While it might work on other versions, these are the officially supported and tested ones.
+ This project requires **Python 3.10 or higher** and has been tested with Python versions 3.10, 3.11, and 3.12.
+
+**Note:** Python 3.10+ is required for compatibility with the latest Qiskit ecosystem (qiskit-ibm-runtime 0.44.0+).
 
 # Getting Started
 
