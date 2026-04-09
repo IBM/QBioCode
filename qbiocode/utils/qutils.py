@@ -306,3 +306,109 @@ def get_optimizer( type = 'COBYLA', max_iter = 100, learning_rate_a = None,
         optimizer == L_BFGS_B(maxiter=max_iter)
         
     return optimizer
+
+
+
+def retrieve_probabilities(counts: dict) -> list:
+    """
+    Extract probability predictions from measurement counts.
+    
+    Converts raw measurement counts from quantum circuit execution into
+    probability predictions for binary classification. Handles edge cases
+    where only one outcome is observed.
+    
+    Parameters
+    ----------
+    counts : dict
+        Measurement counts with keys '0' and/or '1'
+        Example: {'0': 4123, '1': 4069}
+    
+    Returns
+    -------
+    list of float
+        [p0, p1] where p0 is probability of class 0 and p1 is probability
+        of class 1. Always sums to 1.0.
+    
+    Notes
+    -----
+    - Handles missing keys gracefully (assigns probability 0 or 1)
+    - If only '0' observed: returns [1.0, 0.0]
+    - If only '1' observed: returns [0.0, 1.0]
+    - If both observed: returns normalized probabilities
+    
+    Examples
+    --------
+    >>> counts = {'0': 6000, '1': 2000}
+    >>> retrieve_probabilities(counts)
+    [0.75, 0.25]
+    
+    >>> counts = {'0': 8192}  # Only one outcome
+    >>> retrieve_probabilities(counts)
+    [1.0, 0.0]
+    """
+    state_zero = '0'
+    state_one = '1'
+    
+    try:
+        p0 = counts[state_zero] / (counts[state_zero] + counts[state_one])
+        p1 = 1 - p0
+    except KeyError:
+        if list(counts.keys())[0] == state_zero:
+            p0, p1 = 1.0, 0.0
+        else:
+            p0, p1 = 0.0, 1.0
+    
+    return [p0, p1]
+
+
+def execute_circuit(qc, n_shots: int = 8192, device: str = 'CPU'):
+    """
+    Execute quantum circuit on Aer simulator.
+    
+    General-purpose function for executing quantum circuits using the Qiskit
+    Aer simulator with statevector method. Useful for custom quantum algorithms
+    that need direct circuit execution without the full runtime service setup.
+    
+    Parameters
+    ----------
+    qc : QuantumCircuit
+        Quantum circuit to execute
+    n_shots : int, optional
+        Number of measurement shots (default: 8192)
+    device : str, optional
+        Device type: 'CPU' or 'GPU' (default: 'CPU')
+        Note: GPU requires qiskit-aer-gpu installation
+    
+    Returns
+    -------
+    dict
+        Measurement counts dictionary with bitstring keys and count values
+        Example: {'0': 4123, '1': 4069}
+    
+    Notes
+    -----
+    - Uses statevector simulation method for exact state evolution
+    - Automatically transpiles circuit with optimization level 3
+    - Parallel threshold set to 50 qubits for statevector parallelization
+    - For hardware execution, use get_backend_session() instead
+    
+    Examples
+    --------
+    >>> from qiskit import QuantumCircuit
+    >>> from qbiocode.utils import execute_circuit
+    >>> qc = QuantumCircuit(2, 2)
+    >>> qc.h(0)
+    >>> qc.cx(0, 1)
+    >>> qc.measure([0, 1], [0, 1])
+    >>> counts = execute_circuit(qc, n_shots=1024)
+    >>> print(counts)
+    {'00': 512, '11': 512}
+    """
+    from qiskit.compiler import transpile
+    from qiskit_aer import AerSimulator
+    
+    backend = AerSimulator(method='statevector', device=device, 
+                          statevector_parallel_threshold=50)
+    tqc = transpile(qc, backend, optimization_level=3)
+    result = backend.run([tqc], shots=n_shots).result()
+    return result.get_counts(tqc)

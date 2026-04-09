@@ -44,6 +44,14 @@ qbiocode.learning.compute\_pqk module
    :show-inheritance:
    :undoc-members:
 
+qbiocode.learning.compute\_qensemble module
+-------------------------------------------
+
+.. automodule:: qbiocode.learning.compute_qensemble
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 qbiocode.learning.compute\_qnn module
 -------------------------------------
 

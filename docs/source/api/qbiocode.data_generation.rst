@@ -12,6 +12,14 @@ qbiocode.data\_generation.generator module
    :show-inheritance:
    :undoc-members:
 
+qbiocode.data\_generation.make\_blobs module
+--------------------------------------------
+
+.. automodule:: qbiocode.data_generation.make_blobs
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 qbiocode.data\_generation.make\_circles module
 ----------------------------------------------
 

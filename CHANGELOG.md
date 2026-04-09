@@ -4,6 +4,43 @@ All notable changes to QBioCode will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [Unreleased]
+
+### Added
+- **Data Generation**: New blob dataset generator
+  - `generate_blobs_datasets()`: Create isotropic Gaussian blob datasets
+  - `generate_default_blobs_datasets()`: Quick generation with default parameters
+  - Follows QBioCode data generation patterns
+  - Useful for clustering and classification benchmarks
+
+- **Evaluation Metrics**: Added generalized `evaluation_metrics()` function to `qbiocode.evaluation.model_evaluation`
+  - Supports multiple metrics: accuracy, brier, f1, precision, recall, auc
+  - Configurable via `metrics` parameter (default: ['accuracy', 'brier'])
+  - Backward compatible: returns (accuracy, brier) tuple by default
+  - Supports both binary and multi-class classification
+  - Provides calibration quality assessment via Brier score
+  - Handles edge cases (e.g., single class in test set)
+  - Now available in main API (previously only in tutorial helpers)
+
+- **Quantum Ensemble Learning**: New unified quantum ensemble classifier
+  - `compute_qensemble()`: Quantum ensemble with configurable construction methods
+    - Implements quantum ensemble using controlled operations and superposition
+    - Two ensemble methods via `ensemble_method` parameter:
+      - `"swap"` (default): Fixed controlled-SWAP operations (faster, deterministic)
+      - `"random_unitary"`: Haar-random unitaries (more general, potentially better generalization)
+    - Three ensemble modes: balanced, unbalanced, and pair_sample
+    - Support for configurable ensemble depth (d) and operations per qubit (n_swap)
+    - Quantum cosine similarity classifier using SWAP test
+  - New utility functions in `qbiocode.utils`:
+    - `normalize_data()`: Normalize data for quantum state encoding
+    - `label_to_array()`: Convert binary labels to one-hot encoding
+    - `prepare_training_set()`: Prepare balanced training subsets
+    - `retrieve_probabilities()`: Extract probabilities from measurement counts (generic quantum utility)
+    - `execute_circuit()`: General-purpose Aer simulator execution (reusable across quantum algorithms)
+  - Based on Macaluso et al., "A variational algorithm for quantum ensemble learning" (2023)
+  - Integrated from tutorial/QEnsemble with full API compatibility
+  - Code organization: Extracted reusable functions to utils for broader applicability
+
 
 ## [0.1.0] - 2026-04-06
 

@@ -22,14 +22,20 @@ Quantum Algorithms
 - Quantum Support Vector Classifier (QSVC)
 - Variational Quantum Classifier (VQC)
 - Projected Quantum Kernel (PQK)
+- Quantum Ensemble (QEnsemble) - supports both fixed swap and random unitary methods
 
 Usage
 -----
->>> from qbiocode.learning import compute_rf, compute_qsvc
+>>> from qbiocode.learning import compute_rf, compute_qsvc, compute_qensemble
 >>> # Train classical model
 >>> results = compute_rf(X_train, y_train, X_test, y_test)
 >>> # Train quantum model
 >>> qresults = compute_qsvc(X_train, y_train, X_test, y_test)
+>>> # Train quantum ensemble with fixed swaps (default)
+>>> qens_results = compute_qensemble(X_train, X_test, y_train, y_test, args)
+>>> # Train quantum ensemble with random unitaries
+>>> qens_random = compute_qensemble(X_train, X_test, y_train, y_test, args,
+...                                 ensemble_method="random_unitary")
 """
 
 # Classical ML algorithms
@@ -51,6 +57,7 @@ from .compute_qnn import compute_qnn
 from .compute_qsvc import compute_qsvc
 from .compute_vqc import compute_vqc
 from .compute_pqk import compute_pqk
+from .compute_qensemble import compute_qensemble
 
 __all__ = [
     # Classical algorithms
@@ -74,4 +81,5 @@ __all__ = [
     'compute_qsvc',
     'compute_vqc',
     'compute_pqk',
+    'compute_qensemble',
 ]
