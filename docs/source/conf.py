@@ -142,7 +142,8 @@ html_theme = 'pydata_sphinx_theme' #'sphinx_rtd_theme' # 'furo'
 html_show_sourcelink = False
 
 html_logo = "_static/QBioCode_logo.png"
-html_favicon = "_static/favicon.ico"
+if os.path.exists(os.path.join(os.path.dirname(__file__), "_static", "favicon.ico")):
+    html_favicon = "_static/favicon.ico"
 
 html_theme_options = {
     "icon_links": [

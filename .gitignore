@@ -18,6 +18,13 @@ dist/
 build/
 *.whl
 
+# Testing results
+.coverage
+htmlcov/
+.coverage.*
+nosetests.xml
+coverage.xml
+
 # IDE
 .DS_Store
 .vscode/

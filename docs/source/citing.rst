@@ -1,10 +1,7 @@
 .. _citing:
 
-Citing 
-===============
-
 Citing qbiocode
---------------
+===============
 
 If qbiocode is integral to a scientific publication, please cite it.
 A paper describing qbiocode has been published in the :

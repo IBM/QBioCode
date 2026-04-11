@@ -2,23 +2,44 @@
 
 import time
 
-# ====== Scikit-learn imports ======
-
-from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
+from sklearn.svm import SVC
 
 # ====== Additional local imports ======
 from qbiocode.evaluation.model_evaluation import modeleval
-    
-def compute_svc(X_train, X_test, y_train, y_test, args, model='SVC', data_key = '', C=1.0, kernel='rbf', 
-                degree=3, gamma='scale', coef0=0.0, shrinking=True, probability=False, tol=0.001, cache_size=200, 
-                class_weight=None, verbose=False, max_iter=-1, decision_function_shape='ovr', break_ties=False, random_state=None):
-        
-    """ This function generates a model using a Support Vector Classifier (SVC) method as implemented in
-    `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`_.
+
+# ====== Scikit-learn imports ======
+
+
+def compute_svc(
+    X_train,
+    X_test,
+    y_train,
+    y_test,
+    args,
+    model="SVC",
+    data_key="",
+    C=1.0,
+    kernel="rbf",
+    degree=3,
+    gamma="scale",
+    coef0=0.0,
+    shrinking=True,
+    probability=False,
+    tol=0.001,
+    cache_size=200,
+    class_weight=None,
+    verbose=False,
+    max_iter=-1,
+    decision_function_shape="ovr",
+    break_ties=False,
+    random_state=None,
+):
+    """This function generates a model using a Support Vector Classifier (SVC) method as implemented in
+    `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`__.
     It takes in parameter arguments specified in the config.yaml file, but will use the default parameters specified above if none are passed.
-    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset. 
+    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset.
     The function returns the evaluation of the model on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model.
     This function is designed to be used in a supervised learning context, where the goal is to classify data points.
 
@@ -47,29 +68,56 @@ def compute_svc(X_train, X_test, y_train, y_test, args, model='SVC', data_key = 
         random_state (int or None): Controls the randomness of the estimator, default is None.
     Returns:
         modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken to train and validate the model.
-    """    
-        
+    """
+
     beg_time = time.time()
-    svc = OneVsOneClassifier(SVC(C=C, kernel=kernel, degree=degree, gamma=gamma, coef0=coef0, shrinking=shrinking, 
-                                 probability=probability, tol=tol, cache_size=cache_size, class_weight=class_weight, 
-                                 max_iter=max_iter, decision_function_shape=decision_function_shape, 
-                                 break_ties=break_ties, random_state=random_state))
+    svc = OneVsOneClassifier(
+        SVC(
+            C=C,
+            kernel=kernel,
+            degree=degree,
+            gamma=gamma,
+            coef0=coef0,
+            shrinking=shrinking,
+            probability=probability,
+            tol=tol,
+            cache_size=cache_size,
+            class_weight=class_weight,
+            max_iter=max_iter,
+            decision_function_shape=decision_function_shape,
+            break_ties=break_ties,
+            random_state=random_state,
+        )
+    )
     # Fit the training datset
     model_fit = svc.fit(X_train, y_train)
     model_params = model_fit.get_params()
     # Validate the model in test dataset and calculate accuracy
-    y_predicted = svc.predict(X_test) 
-    return(modeleval(y_test, y_predicted, beg_time, model_params, args, model=model, verbose=verbose))
+    y_predicted = svc.predict(X_test)
+    return modeleval(
+        y_test, y_predicted, beg_time, model_params, args, model=model, verbose=verbose
+    )
 
-def compute_svc_opt(X_train, X_test, y_train, y_test, args, verbose=False, cv=5, model='SVC',
-                    C=[], gamma=[], kernel=[]):
-        
-    """ This function generates a model using a Support Vector Classifier (SVC) method as implemented in
-    `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`_.
+
+def compute_svc_opt(
+    X_train,
+    X_test,
+    y_train,
+    y_test,
+    args,
+    verbose=False,
+    cv=5,
+    model="SVC",
+    C=[],
+    gamma=[],
+    kernel=[],
+):
+    """This function generates a model using a Support Vector Classifier (SVC) method as implemented in
+    `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`__.
     It takes in parameter arguments specified in the config.yaml file, but will use the default parameters specified above if none are passed. The
     combination of parameters that led to the best performance is saved and returned as best_params, which can then be used on similar
     datasets, without having to run the grid search.
-    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset. 
+    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset.
     The function returns the evaluation of the model on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model across the grid search.
     This function is designed to be used in a supervised learning context, where the goal is to classify data points.
 
@@ -87,13 +135,10 @@ def compute_svc_opt(X_train, X_test, y_train, y_test, args, verbose=False, cv=5,
         kernel (list or str): Specifies the kernel type(s) to be used in the algorithm, default is an empty list.
      Returns:
         modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken to train and validate the model across the grid search.
-    """   
+    """
 
     beg_time = time.time()
-    params={'C': C,
-            'gamma': gamma,
-            'kernel': kernel
-            }
+    params = {"C": C, "gamma": gamma, "kernel": kernel}
     # Perform Grid Search to find the best parameters
     grid_search = GridSearchCV(SVC(), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
@@ -105,4 +150,4 @@ def compute_svc_opt(X_train, X_test, y_train, y_test, args, verbose=False, cv=5,
 
     # Make predictions and calculate accuracy
     y_predicted = best_svc.predict(X_test)
-    return(modeleval(y_test, y_predicted, beg_time, best_params, args, model=model, verbose=verbose))
+    return modeleval(y_test, y_predicted, beg_time, best_params, args, model=model, verbose=verbose)

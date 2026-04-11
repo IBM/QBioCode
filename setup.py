@@ -107,6 +107,7 @@ setup(
             'black>=23.0',
             'flake8>=6.0',
             'mypy>=1.0',
+            'types-PyYAML',
         ],
         'all': docs_require + [
             'hydra-core',
@@ -116,6 +117,7 @@ setup(
             'black>=23.0',
             'flake8>=6.0',
             'mypy>=1.0',
+            'types-PyYAML',
         ],
     },
     

@@ -84,8 +84,10 @@ dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "black>=23.0",
+    "isort>=5.0",
     "flake8>=6.0",
     "mypy>=1.0",
+    "types-PyYAML",
 ]
 all = [
     "hydra-core",
@@ -104,8 +106,10 @@ all = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "black>=23.0",
+    "isort>=5.0",
     "flake8>=6.0",
     "mypy>=1.0",
+    "types-PyYAML",
 ]
 
 [project.scripts]
@@ -133,6 +137,10 @@ qbiocode = ["py.typed"]
 line-length = 100
 target-version = ['py310', 'py311', 'py312']
 include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+line_length = 100
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -7,12 +7,12 @@ machine learning. It includes functions for computing various embeddings
 and quantum feature maps.
 
 Available Functions
-------------------
+-------------------
 - get_embeddings: Compute embeddings using various methods (PCA, t-SNE, UMAP, etc.)
 - pqk: Projected Quantum Kernel embedding
 
 Available Classes
-----------------
+-----------------
 - ConvAutoencoder: Convolutional autoencoder for dimensionality reduction
 
 Usage
@@ -24,11 +24,11 @@ Usage
 >>> X_pqk = pqk(X, n_components=4)
 """
 
-from .embed import get_embeddings, pqk
 from .compute_autoencoder import ConvAutoencoder
+from .embed import get_embeddings, pqk
 
 __all__ = [
-    'get_embeddings',
-    'pqk',
-    'ConvAutoencoder',
+    "get_embeddings",
+    "pqk",
+    "ConvAutoencoder",
 ]

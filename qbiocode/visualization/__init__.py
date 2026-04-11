@@ -7,7 +7,7 @@ machine learning results, including correlation analysis and performance
 comparisons between classical and quantum models.
 
 Available Functions
-------------------
+-------------------
 - compute_results_correlation: Compute Spearman correlation between metrics
 - plot_results_correlation: Create correlation plots and visualizations
 
@@ -21,6 +21,6 @@ Usage
 from .visualize_correlation import compute_results_correlation, plot_results_correlation
 
 __all__ = [
-    'compute_results_correlation',
-    'plot_results_correlation',
+    "compute_results_correlation",
+    "plot_results_correlation",
 ]

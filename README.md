@@ -90,6 +90,18 @@ pip install --force-reinstall xgboost
 
 For detailed installation instructions, see the [Installation Guide](https://ibm.github.io/QBioCode/installation.html).
 
+### Running Tests
+
+```bash
+# Install the package with development dependencies
+pip install -e ".[dev]"
+
+# Run the test suite
+python -m pytest
+```
+
+The current test suite focuses on utility modules and data-generation helpers that do not require a full runtime setup for all optional quantum workflows.
+
 ### Basic Usage
 
 ```python

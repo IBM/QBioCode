@@ -140,6 +140,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Testing Infrastructure**: Comprehensive test suite for core functionality
+  - `tests/test_data_generation.py`: Tests for data generation utilities
+  - `tests/test_file_utilities.py`: Tests for file operations and utilities
+  - `tests/test_generator_dispatch.py`: Tests for generator dispatch logic
+  - `tests/conftest.py`: Pytest configuration and fixtures
+  - Test coverage for utility modules and data generation helpers
+  
+- **Code Quality Tools**: Enhanced development tooling
+  - `isort` integration for consistent import ordering
+  - Configuration in `pyproject.toml` for isort settings
+  - Added to `dev` and `all` dependency groups
+
+- **Documentation**: Testing instructions in README
+  - Added "Running Tests" section with pytest usage
+  - Instructions for installing development dependencies
+
+### Changed
+- **Code Formatting**: Applied consistent code style across entire codebase
+  - Ran `black` formatter on all Python files
+  - Ran `isort` for standardized import ordering
+  - Fixed invalid escape sequences in visualization module
+  - Improved code readability and maintainability
+
+- **CI/CD Improvements**: Stabilized continuous integration pipeline
+  - Updated GitHub Actions workflows to Node.js 24
+  - Fixed CI code quality checks for import ordering
+  - Fixed CI type-check issues
+  - Fixed documentation build process
+  - Fixed Pandoc compatibility issues
+  - Enhanced workflow reliability across all platforms
+
+- **Testing**: Improved test reliability
+  - Fixed path-order assumptions in duplicate-file tests
+  - Tests now work consistently across different file systems
+
+### Fixed
+- Invalid escape sequence in `qbiocode/visualization/visualize_correlation.py`
+- Import ordering issues throughout codebase
+- Type-check errors in CI pipeline
+- Documentation build failures
+- Path handling in cross-platform tests
+
 ### Planned Features
 - Additional quantum ML algorithms
 - Enhanced meta-learning capabilities

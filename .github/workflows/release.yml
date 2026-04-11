@@ -1,5 +1,8 @@
 name: Release
 
+permissions:
+  contents: write
+
 on:
   release:
     types: [published]
@@ -12,10 +15,10 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: '3.10'
     
@@ -39,14 +42,9 @@ jobs:
     
     - name: Upload release assets
       if: github.event_name == 'release'
-      uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ github.event.release.upload_url }}
-        asset_path: ./dist/*.whl
-        asset_name: qbiocode-${{ github.event.release.tag_name }}-py3-none-any.whl
-        asset_content_type: application/zip
+      run: gh release upload "${{ github.event.release.tag_name }}" dist/*.whl --clobber
       continue-on-error: true
 
   create-zenodo-release:
@@ -57,7 +55,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     
     - name: Zenodo release notification
       run: |

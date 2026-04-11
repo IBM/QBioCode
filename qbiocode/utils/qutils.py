@@ -6,15 +6,20 @@ import re
 import numpy as np
 import pandas as pd
 from qiskit.circuit.equivalence_library import SessionEquivalenceLibrary as sel
-from qiskit.circuit.library import (EfficientSU2, PauliFeatureMap,
-                                    RealAmplitudes, TwoLocal, XGate, YGate,
-                                    ZFeatureMap, ZZFeatureMap)
-from qiskit.primitives import StatevectorEstimator
-from qiskit.primitives import StatevectorSampler
+from qiskit.circuit.library import (
+    EfficientSU2,
+    PauliFeatureMap,
+    RealAmplitudes,
+    TwoLocal,
+    XGate,
+    YGate,
+    ZFeatureMap,
+    ZZFeatureMap,
+)
+from qiskit.primitives import StatevectorEstimator, StatevectorSampler
 from qiskit.quantum_info import SparsePauliOp
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
-from qiskit_algorithms.optimizers import (COBYLA, L_BFGS_B, NFT, SPSA,
-                                          GradientDescent, spsa)
+from qiskit_algorithms.optimizers import COBYLA, L_BFGS_B, NFT, SPSA, GradientDescent, spsa
 from qiskit_ibm_runtime import EstimatorOptions
 from qiskit_ibm_runtime import EstimatorV2 as Estimator
 from qiskit_ibm_runtime import SamplerOptions
@@ -25,7 +30,7 @@ from qiskit_ibm_transpiler.transpiler_service import TranspilerService
 from qbiocode.utils.ibm_account import instantiate_runtime_service
 
 
-def get_backend_session( args: dict, primitive : str, num_qubits : int ):
+def get_backend_session(args: dict, primitive: str, num_qubits: int):
     """
     This function to get the backend and session for the specified primitive.
 
@@ -42,35 +47,33 @@ def get_backend_session( args: dict, primitive : str, num_qubits : int ):
     backend = None
     session = None
     prim = None
-    
-    if args['backend'] == 'simulator':
 
-        if primitive == 'estimator':
+    if args["backend"] == "simulator":
+
+        if primitive == "estimator":
             # Estimator primitive
-            prim = StatevectorEstimator(seed=args['seed'])
+            prim = StatevectorEstimator(seed=args["seed"])
         else:
-            prim = StatevectorSampler(seed = args['seed'], default_shots=args['shots'])           
-    elif 'ibm' in args['backend']:
+            prim = StatevectorSampler(seed=args["seed"], default_shots=args["shots"])
+    elif "ibm" in args["backend"]:
         service = instantiate_runtime_service(args)
-        if args['backend'] == 'ibm_least':
-                backend = service.least_busy(simulator=False, operational=True, min_num_qubits=num_qubits)
+        if args["backend"] == "ibm_least":
+            backend = service.least_busy(
+                simulator=False, operational=True, min_num_qubits=num_qubits
+            )
         else:
-            backend = service.backend(name=args['backend'])
+            backend = service.backend(name=args["backend"])
 
         session = Session(backend=backend)
-            
-        if primitive == 'sampler':
-            prim = get_sampler(mode = session,
-                               shots = args['shots'])
+
+        if primitive == "sampler":
+            prim = get_sampler(mode=session, shots=args["shots"])
         else:
-            prim = get_estimator(mode = session, 
-                                 shots = args['shots'],
-                                 resil_level=args['resil_level'])               
+            prim = get_estimator(mode=session, shots=args["shots"], resil_level=args["resil_level"])
     return backend, session, prim
 
 
-def transpile_circuit( circuit, opt_level, backend, initial_layout, PT = False, 
-                      dd_sequence = 'XpXm'):
+def transpile_circuit(circuit, opt_level, backend, initial_layout, PT=False, dd_sequence="XpXm"):
     """
     This function transpiles the given quantum circuit based on the optimization level and backend.
 
@@ -85,7 +88,7 @@ def transpile_circuit( circuit, opt_level, backend, initial_layout, PT = False,
     Returns:
         t_qc (QuantumCircuit): The transpiled quantum circuit.
     """
-    if str(opt_level) == 'AI':
+    if str(opt_level) == "AI":
         pm = TranspilerService(
             backend_name=backend,
             ai="true",
@@ -100,23 +103,24 @@ def transpile_circuit( circuit, opt_level, backend, initial_layout, PT = False,
         )
     t_qc = pm.run(circuit)
 
-    return( t_qc) 
+    return t_qc
+
+
 def get_observable(circuit, backend):
     observable = SparsePauliOp.from_list([("Z" * circuit.num_qubits, 1)])
     # observable = SparsePauliOp.from_list([("Z" + "I" * (int(circuit.num_qubits) - 1), 0.5)])
-    if 'ibm' in backend.name:
-        observable = observable.apply_layout(circuit.layout)#, num_qubits=backend.num_qubits)
+    if "ibm" in backend.name:
+        observable = observable.apply_layout(circuit.layout)  # , num_qubits=backend.num_qubits)
     return observable
 
 
 def get_sampler(
-    mode = None,
-    shots = 1024,
-    dd = True,
-    dd_seq = 'XpXm',
-    PT = True,
-    ):
-
+    mode=None,
+    shots=1024,
+    dd=True,
+    dd_seq="XpXm",
+    PT=True,
+):
     """
     This function creates a Sampler instance with specified options.
 
@@ -130,7 +134,7 @@ def get_sampler(
     Returns:
         Sampler: An instance of the Sampler with the specified options.
     """
-    
+
     sampler_options = SamplerOptions()
 
     ## ERROR SUPPRESSION TESTING ###
@@ -138,30 +142,28 @@ def get_sampler(
     if dd:
         sampler_options.dynamical_decoupling.enable = dd
         sampler_options.dynamical_decoupling.sequence_type = dd_seq
-        sampler_options.dynamical_decoupling.extra_slack_distribution = 'middle'
-        sampler_options.dynamical_decoupling.scheduling_method = 'alap'
+        sampler_options.dynamical_decoupling.extra_slack_distribution = "middle"
+        sampler_options.dynamical_decoupling.scheduling_method = "alap"
     if PT:
         sampler_options.twirling.enable_gates = True
         sampler_options.twirling.enable_measure = False
-        sampler_options.twirling.num_randomizations = 'auto'
-        sampler_options.twirling.shots_per_randomization = 'auto'
-        sampler_options.twirling.strategy = (
-            "active-accum"  ### TRY VARYING THIS ###
-        )
-    
+        sampler_options.twirling.num_randomizations = "auto"
+        sampler_options.twirling.shots_per_randomization = "auto"
+        sampler_options.twirling.strategy = "active-accum"  ### TRY VARYING THIS ###
 
     sampler = Sampler(mode=mode, options=sampler_options)
-    
+
     return sampler
 
+
 def get_estimator(
-    mode = None,
-    shots = 1024,
-    resil_level = 2,
-    dd = True,
-    dd_seq = 'XpXm',
-    PT = True,
-    ):
+    mode=None,
+    shots=1024,
+    resil_level=2,
+    dd=True,
+    dd_seq="XpXm",
+    PT=True,
+):
     """
     This function creates an Estimator instance with specified options.
 
@@ -175,11 +177,11 @@ def get_estimator(
     Returns:
         Estimator: An instance of the Estimator with the specified options.
     """
-    
+
     experimental_opts = {}
     # experimental_opts["execution_path"] = "gen3-turbo"
 
-    estimator_options = EstimatorOptions(experimental = experimental_opts)
+    estimator_options = EstimatorOptions(experimental=experimental_opts)
 
     ## ERROR SUPPRESSION TESTING ###
     estimator_options.default_shots = shots
@@ -187,24 +189,23 @@ def get_estimator(
     if dd:
         estimator_options.dynamical_decoupling.enable = dd
         estimator_options.dynamical_decoupling.sequence_type = dd_seq
-        estimator_options.dynamical_decoupling.extra_slack_distribution = 'middle'
-        estimator_options.dynamical_decoupling.scheduling_method = 'alap'
+        estimator_options.dynamical_decoupling.extra_slack_distribution = "middle"
+        estimator_options.dynamical_decoupling.scheduling_method = "alap"
     if PT:
         estimator_options.twirling.enable_gates = True
         estimator_options.twirling.enable_measure = False
-        estimator_options.twirling.num_randomizations = 'auto'
-        estimator_options.twirling.shots_per_randomization = 'auto'
-        estimator_options.twirling.strategy = (
-            "active-accum"  ### TRY VARYING THIS ###
-        )
-        
+        estimator_options.twirling.num_randomizations = "auto"
+        estimator_options.twirling.shots_per_randomization = "auto"
+        estimator_options.twirling.strategy = "active-accum"  ### TRY VARYING THIS ###
+
     estimator = Estimator(mode=mode, options=estimator_options)
     return estimator
 
-def get_ansatz( ansatz_type, feat_dimension, reps = 1, entanglement = 'linear'):
+
+def get_ansatz(ansatz_type, feat_dimension, reps=1, entanglement="linear"):
     """
     This function returns an ansatz based on the specified type and parameters.
-    It supports 'esu2', 'amp', and 'twolocal' ansatz types, constructing it using the specified feature dimension, 
+    It supports 'esu2', 'amp', and 'twolocal' ansatz types, constructing it using the specified feature dimension,
     number of repetitions, and entanglement type.
 
     Args:
@@ -215,16 +216,16 @@ def get_ansatz( ansatz_type, feat_dimension, reps = 1, entanglement = 'linear'):
     Returns:
         ansatz: An instance of the specified ansatz type.
     """
-    if(ansatz_type=='esu2'):
-        ansatz = EfficientSU2(feat_dimension, ['ry', 'rz'], entanglement, reps=reps)
-    elif ansatz_type == 'amp':
-        ansatz = RealAmplitudes(num_qubits=feat_dimension, reps=reps)        
-    elif ansatz_type == 'twolocal':
-        ansatz = TwoLocal(feat_dimension, ['ry', 'rz'], 'cz', entanglement, reps=reps)
+    if ansatz_type == "esu2":
+        ansatz = EfficientSU2(feat_dimension, ["ry", "rz"], entanglement, reps=reps)
+    elif ansatz_type == "amp":
+        ansatz = RealAmplitudes(num_qubits=feat_dimension, reps=reps)
+    elif ansatz_type == "twolocal":
+        ansatz = TwoLocal(feat_dimension, ["ry", "rz"], "cz", entanglement, reps=reps)
     return ansatz
 
 
-def get_feature_map( feature_map, feat_dimension, reps = 1, entanglement = 'linear', data_map_func = None ):
+def get_feature_map(feature_map, feat_dimension, reps=1, entanglement="linear", data_map_func=None):
     """
     This function returns a feature map based on the specified type and parameters.
     It supports 'Z', 'ZZ', and 'P' feature maps, constructing it using the specified feature dimension,
@@ -240,29 +241,35 @@ def get_feature_map( feature_map, feat_dimension, reps = 1, entanglement = 'line
         feat_dimension (int): The number of qubits in the feature map.
     """
     # Get Feature Map
-    if feature_map == 'Z':
-        feature_map = ZFeatureMap(feat_dimension,reps=reps, parameter_prefix='a', data_map_func = data_map_func)
-    elif feature_map == 'ZZ':
-        feature_map = ZZFeatureMap(feature_dimension=feat_dimension, 
-                                    reps=reps, 
-                                    entanglement=entanglement,
-                                    parameter_prefix='a',
-                                    data_map_func = data_map_func)
-    elif feature_map == 'P':
-        feature_map = PauliFeatureMap(feature_dimension=feat_dimension, 
-                                      reps=reps, 
-                                      entanglement=entanglement,
-                                      data_map_func = data_map_func)
+    if feature_map == "Z":
+        feature_map = ZFeatureMap(
+            feat_dimension, reps=reps, parameter_prefix="a", data_map_func=data_map_func
+        )
+    elif feature_map == "ZZ":
+        feature_map = ZZFeatureMap(
+            feature_dimension=feat_dimension,
+            reps=reps,
+            entanglement=entanglement,
+            parameter_prefix="a",
+            data_map_func=data_map_func,
+        )
+    elif feature_map == "P":
+        feature_map = PauliFeatureMap(
+            feature_dimension=feat_dimension,
+            reps=reps,
+            entanglement=entanglement,
+            data_map_func=data_map_func,
+        )
 
     # print("The number of qubits is:", feature_map.num_qubits)
     # print("The number of parameters is:", feature_map.num_parameters)
-        
+
     return feature_map, feat_dimension
 
 
-
-def get_optimizer( type = 'COBYLA', max_iter = 100, learning_rate_a = None, 
-                  perturbation_gamma = None, prior_iter = 0 ):
+def get_optimizer(
+    type="COBYLA", max_iter=100, learning_rate_a=None, perturbation_gamma=None, prior_iter=0
+):
     """
     This function returns an optimizer based on the specified type and parameters.
     It supports 'SPSA', 'COBYLA', 'GradientDescent', and 'L_BFGS_B' optimizer types,
@@ -278,33 +285,35 @@ def get_optimizer( type = 'COBYLA', max_iter = 100, learning_rate_a = None,
     Returns:
         optimizer: An instance of the specified optimizer type.
     """
-    if type == 'SPSA':
+    if type == "SPSA":
         if (learning_rate_a != None) & (perturbation_gamma != None):
             # set up the power series
             def learning_rate():
                 return spsa.powerseries(learning_rate_a, 0.602, 0)
+
             gen = learning_rate()
             learning_rates = np.array([next(gen) for _ in range(max_iter + prior_iter)])
-            learning_rates = learning_rates[prior_iter:(max_iter + prior_iter)]
+            learning_rates = learning_rates[prior_iter : (max_iter + prior_iter)]
 
             def perturbation():
                 return spsa.powerseries(0.2, perturbation_gamma)
+
             gen = perturbation()
             perturbations = np.array([next(gen) for _ in range(max_iter + prior_iter)])
-            perturbations = perturbations[prior_iter:(max_iter + prior_iter)]
+            perturbations = perturbations[prior_iter : (max_iter + prior_iter)]
 
-            optimizer=SPSA(maxiter=max_iter, 
-                        learning_rate= learning_rates,
-                        perturbation= perturbations)
+            optimizer = SPSA(
+                maxiter=max_iter, learning_rate=learning_rates, perturbation=perturbations
+            )
         else:
-            optimizer=SPSA(maxiter=max_iter)
-    elif type == 'COBYLA':
-        optimizer=COBYLA(maxiter=max_iter)
-    elif type == 'GradientDescent':
-        optimizer=GradientDescent(maxiter=max_iter)
-    elif type == 'L_BFGS_B':
+            optimizer = SPSA(maxiter=max_iter)
+    elif type == "COBYLA":
+        optimizer = COBYLA(maxiter=max_iter)
+    elif type == "GradientDescent":
+        optimizer = GradientDescent(maxiter=max_iter)
+    elif type == "L_BFGS_B":
         optimizer == L_BFGS_B(maxiter=max_iter)
-        
+
     return optimizer
 
 

@@ -56,7 +56,7 @@ This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participatin
 
 4. **Install Development Dependencies** (optional)
    ```bash
-   pip install pytest pytest-cov black flake8 mypy
+   pip install -e ".[dev]"
    ```
 
 5. **Verify Installation**
@@ -164,7 +164,7 @@ from qbiocode.learning import compute_qsvc
 3. **Test Your Changes**
    ```bash
    # Run existing tests
-   pytest tests/
+   python -m pytest
    
    # Check code style
    black qbiocode/
