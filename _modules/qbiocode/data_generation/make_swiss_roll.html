@@ -398,18 +398,19 @@
 <span class="sd">dimensionality reduction and manifold learning algorithms.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_swiss_roll</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_swiss_roll</span>
 
 <span class="c1"># parameters to vary across the configurations</span>
 <span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
 <span class="n">NOISE</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
 <span class="n">HOLE</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+
 
 <div class="viewcode-block" id="generate_swiss_roll_datasets">
 <a class="viewcode-back" href="../../../api/qbiocode.data_generation.html#qbiocode.generate_swiss_roll_datasets">[docs]</a>
@@ -422,12 +423,12 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate multiple 3D Swiss roll datasets with varying parameters.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Creates a series of 3D datasets where samples lie on a Swiss roll manifold,</span>
 <span class="sd">    a classic benchmark for manifold learning and dimensionality reduction algorithms.</span>
 <span class="sd">    Each configuration varies the number of samples, noise level, and whether the</span>
 <span class="sd">    roll has a hole in the center.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_samples : list of int, default=range(100, 300, 20)</span>
@@ -440,20 +441,20 @@
 <span class="sd">        Directory path where datasets and configuration files will be saved.</span>
 <span class="sd">    random_state : int, default=42</span>
 <span class="sd">        Random seed for reproducibility.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    None</span>
 <span class="sd">        Saves CSV files for each dataset configuration and a JSON file with</span>
 <span class="sd">        all configuration parameters.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    - Each dataset is saved as &#39;swiss_roll_data-{i}.csv&#39; where i is the configuration number</span>
 <span class="sd">    - Configuration parameters are saved in &#39;dataset_config.json&#39;</span>
 <span class="sd">    - The last column &#39;class&#39; contains the position along the manifold (continuous values)</span>
 <span class="sd">    - Swiss roll is a standard benchmark for testing manifold learning algorithms</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from qbiocode.data_generation import generate_swiss_roll_datasets</span>
@@ -461,12 +462,12 @@
 <span class="sd">    Generating swiss roll dataset...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating swiss roll dataset...&quot;</span><span class="p">)</span>
-    
+
     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">save_path</span> <span class="o">=</span> <span class="s1">&#39;swiss_roll_data&#39;</span>
-    
+        <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;swiss_roll_data&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_path</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span>
 
@@ -480,35 +481,38 @@
 
     <span class="c1"># populate all the configs with the corresponding argument values</span>
     <span class="k">for</span> <span class="n">n_s</span><span class="p">,</span> <span class="n">n_n</span><span class="p">,</span> <span class="n">n_h</span> <span class="ow">in</span> <span class="n">configurations</span><span class="p">:</span>
-            <span class="n">config</span> <span class="o">=</span> <span class="s2">&quot;n_samples=</span><span class="si">{}</span><span class="s2">, noise=</span><span class="si">{}</span><span class="s2">, hole=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">n_s</span><span class="p">,</span> <span class="n">n_n</span><span class="p">,</span> <span class="n">n_h</span>
-            <span class="p">)</span>
-            <span class="c1"># print(count_configs)</span>
-    
-            
+        <span class="n">config</span> <span class="o">=</span> <span class="s2">&quot;n_samples=</span><span class="si">{}</span><span class="s2">, noise=</span><span class="si">{}</span><span class="s2">, hole=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">n_n</span><span class="p">,</span> <span class="n">n_h</span><span class="p">)</span>
+        <span class="c1"># print(count_configs)</span>
+
         <span class="c1"># iteratively run the function for each combination of arguments</span>
-            <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_swiss_roll</span><span class="p">(</span>
-                <span class="n">n_samples</span><span class="o">=</span><span class="n">n_s</span><span class="p">,</span>
-                <span class="n">noise</span><span class="o">=</span><span class="n">n_n</span><span class="p">,</span>
-                <span class="n">hole</span><span class="o">=</span><span class="n">n_h</span><span class="p">,</span>
-                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_swiss_roll</span><span class="p">(</span>
+            <span class="n">n_samples</span><span class="o">=</span><span class="n">n_s</span><span class="p">,</span>
+            <span class="n">noise</span><span class="o">=</span><span class="n">n_n</span><span class="p">,</span>
+            <span class="n">hole</span><span class="o">=</span><span class="n">n_h</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># print(&quot;Configuration {}/{}: {}&quot;.format(count_configs, len(configurations), config))</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;dataset_config.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">dataset_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;swiss_roll_data-</span><span class="si">{}</span><span class="s2">.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">):</span> <span class="p">{</span>
+                        <span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="n">n_s</span><span class="p">,</span>
+                        <span class="s2">&quot;noise&quot;</span><span class="p">:</span> <span class="n">n_n</span><span class="p">,</span>
+                        <span class="s2">&quot;hole&quot;</span><span class="p">:</span> <span class="n">n_h</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
             <span class="p">)</span>
-            <span class="c1"># print(&quot;Configuration {}/{}: {}&quot;.format(count_configs, len(configurations), config))</span>
-            <span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;dataset_config.json&#39;</span> <span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
-                <span class="n">dataset_config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;swiss_roll_data-</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">):</span>
-                <span class="p">{</span><span class="s1">&#39;n_samples&#39;</span><span class="p">:</span> <span class="n">n_s</span><span class="p">,</span>
-                <span class="s1">&#39;noise&#39;</span><span class="p">:</span> <span class="n">n_n</span><span class="p">,</span>
-                <span class="s1">&#39;hole&#39;</span><span class="p">:</span> <span class="n">n_h</span><span class="p">}})</span>  
-                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset_config</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> 
-            <span class="n">new_dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;swiss_roll_data-</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">count_configs</span> <span class="o">+=</span> <span class="mi">1</span>
-            <span class="c1"># print(X.shape)</span>
-            <span class="c1"># print(y.shape)</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset_config</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">new_dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;swiss_roll_data-</span><span class="si">{}</span><span class="s2">.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">count_configs</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="c1"># print(X.shape)</span>
+        <span class="c1"># print(y.shape)</span>
     <span class="k">return</span></div>
 
-                
 </pre></div>
 
                 </article>

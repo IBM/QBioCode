@@ -496,7 +496,7 @@ number of input datasets to determine how many remain to be processed.</p>
 <li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates a dataset has been fully processed.
 Default is ‘RawDataEvaluation.csv’.</p></li>
 <li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to skip from the beginning of directory names
-when extracting dataset identifiers. Default is 8 (e.g., skips ‘<a href="#id1"><span class="problematic" id="id2">dataset_</span></a>’
+when extracting dataset identifiers. Default is 8 (e.g., skips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code>
 prefix).</p></li>
 <li><p><strong>input_extension</strong> (<em>str</em><em>, </em><em>optional</em>) – File extension of input datasets (without dot). Default is ‘csv’.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, prints progress information. Default is True.</p></li>
@@ -561,7 +561,7 @@ Each subdirectory should correspond to one dataset.</p></li>
 <li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates successful completion of a dataset.
 Default is ‘RawDataEvaluation.csv’ (used by QProfiler).</p></li>
 <li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to strip from the beginning of directory names to get
-the dataset name. Default is 8 (strips ‘<a href="#id3"><span class="problematic" id="id4">dataset_</span></a>’ prefix used by QProfiler).
+the dataset name. Default is 8 (strips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code> prefix used by QProfiler).
 Set to 0 to use the full directory name.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print the list of completed datasets and count. Default is False.</p></li>
 </ul>
@@ -623,7 +623,7 @@ These can be excluded when restarting the batch job.</p>
 not its contents or validity</p></li>
 <li><p>When restarting, you may need to manually combine results from the previous
 and current runs</p></li>
-<li><p>Directory names are expected to have a consistent prefix (e.g., ‘<a href="#id5"><span class="problematic" id="id6">dataset_</span></a>’)
+<li><p>Directory names are expected to have a consistent prefix (e.g., <code class="docutils literal notranslate"><span class="pre">dataset_</span></code>)
 that can be stripped using the prefix_length parameter</p></li>
 <li><p>Non-directory entries in previous_results_dir are ignored</p></li>
 </ul>
@@ -633,6 +633,109 @@ that can be stripped using the prefix_length parameter</p></li>
 <dt><a class="reference internal" href="qbiocode.evaluation.model_run.html#module-qbiocode.evaluation.model_run" title="qbiocode.evaluation.model_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">qbiocode.evaluation.model_run</span></code></a></dt><dd><p>Main QProfiler batch processing function</p>
 </dd>
 </dl>
+</div>
+</dd></dl>
+
+</section>
+<section id="module-qbiocode.utils.data_encoding">
+<span id="qbiocode-utils-data-encoding-module"></span><h2>qbiocode.utils.data_encoding module<a class="headerlink" href="#module-qbiocode.utils.data_encoding" title="Link to this heading">#</a></h2>
+<section id="quantum-data-encoding-utilities">
+<h3>Quantum Data Encoding Utilities<a class="headerlink" href="#quantum-data-encoding-utilities" title="Link to this heading">#</a></h3>
+<p>This module provides utility functions for encoding classical data into
+quantum states, including normalization, label encoding, and training
+set preparation for quantum machine learning algorithms.</p>
+<p>These functions are generic and can be used across different quantum
+algorithms, not just ensemble learning.</p>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.data_encoding.label_to_array">
+<span class="sig-name descname"><span class="pre">label_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/data_encoding.html#label_to_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.data_encoding.label_to_array" title="Link to this definition">#</a></dt>
+<dd><p>Convert binary labels to one-hot encoded arrays.</p>
+<p>Transforms binary classification labels (0 or 1) into one-hot encoded
+format required by quantum circuits. Label 0 becomes [1, 0] and label
+1 becomes [0, 1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> (<em>np.ndarray</em>) – Binary labels (0 or 1)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One-hot encoded labels, shape (n_samples, 2)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">label_to_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">array([[1, 0],</span>
+<span class="go">       [0, 1],</span>
+<span class="go">       [1, 0]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.data_encoding.normalize_data">
+<span class="sig-name descname"><span class="pre">normalize_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/data_encoding.html#normalize_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.data_encoding.normalize_data" title="Link to this definition">#</a></dt>
+<dd><p>Normalize data vector for quantum state encoding.</p>
+<p>Normalizes a classical data vector to unit L2 norm and converts to
+complex amplitudes suitable for quantum state initialization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.ndarray</em>) – Classical data vector to normalize</p></li>
+<li><p><strong>C</strong> (<em>float</em><em>, </em><em>optional</em>) – Scaling constant (default: 1.0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Normalized vector as list of complex numbers</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[complex]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x_norm</span> <span class="o">=</span> <span class="n">normalize_data</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">x_norm</span><span class="p">])</span>
+<span class="go">[0.6, 0.8]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">x_norm</span><span class="p">]))</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.data_encoding.prepare_training_set">
+<span class="sig-name descname"><span class="pre">prepare_training_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">123</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/data_encoding.html#prepare_training_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.data_encoding.prepare_training_set" title="Link to this definition">#</a></dt>
+<dd><p>Select and prepare balanced training subset for quantum ensemble.</p>
+<p>Creates a balanced training set by selecting equal numbers of samples
+from each class and normalizing them for quantum encoding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training feature data</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Training labels (binary: 0 or 1)</p></li>
+<li><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Total number of training samples to select (must be even, default: 4)</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility (default: 123)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>X_data : Normalized training samples, shape (n, n_features)
+Y_data : One-hot encoded labels, shape (n, 2)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_data</span><span class="p">,</span> <span class="n">Y_data</span> <span class="o">=</span> <span class="n">prepare_training_set</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">X_data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Y_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(4, 4) (4, 2)</span>
+</pre></div>
 </div>
 </dd></dl>
 
@@ -1105,6 +1208,51 @@ the methods.</p>
 <section id="module-qbiocode.utils.qutils">
 <span id="qbiocode-utils-qutils-module"></span><h2>qbiocode.utils.qutils module<a class="headerlink" href="#module-qbiocode.utils.qutils" title="Link to this heading">#</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.qutils.execute_circuit">
+<span class="sig-name descname"><span class="pre">execute_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_shots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8192</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CPU'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/qutils.html#execute_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.qutils.execute_circuit" title="Link to this definition">#</a></dt>
+<dd><p>Execute quantum circuit on Aer simulator.</p>
+<p>General-purpose function for executing quantum circuits using the Qiskit
+Aer simulator with statevector method. Useful for custom quantum algorithms
+that need direct circuit execution without the full runtime service setup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qc</strong> (<em>QuantumCircuit</em>) – Quantum circuit to execute</p></li>
+<li><p><strong>n_shots</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of measurement shots (default: 8192)</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – Device type: ‘CPU’ or ‘GPU’ (default: ‘CPU’)
+Note: GPU requires qiskit-aer-gpu installation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Measurement counts dictionary with bitstring keys and count values
+Example: {‘0’: 4123, ‘1’: 4069}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Uses statevector simulation method for exact state evolution</p></li>
+<li><p>Automatically transpiles circuit with optimization level 3</p></li>
+<li><p>Parallel threshold set to 50 qubits for statevector parallelization</p></li>
+<li><p>For hardware execution, use get_backend_session() instead</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_circuit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qc</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="n">execute_circuit</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">n_shots</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">{&#39;00&#39;: 512, &#39;11&#39;: 512}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="qbiocode.utils.qutils.get_ansatz">
 <span class="sig-name descname"><span class="pre">get_ansatz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ansatz_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feat_dimension</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entanglement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/qutils.html#get_ansatz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.qutils.get_ansatz" title="Link to this definition">#</a></dt>
 <dd><p>This function returns an ansatz based on the specified type and parameters.
@@ -1261,6 +1409,46 @@ constructing it using the specified maximum iterations, learning rate, perturbat
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.qutils.retrieve_probabilities">
+<span class="sig-name descname"><span class="pre">retrieve_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">counts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/qutils.html#retrieve_probabilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.qutils.retrieve_probabilities" title="Link to this definition">#</a></dt>
+<dd><p>Extract probability predictions from measurement counts.</p>
+<p>Converts raw measurement counts from quantum circuit execution into
+probability predictions for binary classification. Handles edge cases
+where only one outcome is observed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>counts</strong> (<em>dict</em>) – Measurement counts with keys ‘0’ and/or ‘1’
+Example: {‘0’: 4123, ‘1’: 4069}</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[p0, p1] where p0 is probability of class 0 and p1 is probability
+of class 1. Always sums to 1.0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Handles missing keys gracefully (assigns probability 0 or 1)</p></li>
+<li><p>If only ‘0’ observed: returns [1.0, 0.0]</p></li>
+<li><p>If only ‘1’ observed: returns [0.0, 1.0]</p></li>
+<li><p>If both observed: returns normalized probabilities</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">retrieve_probabilities</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">[0.75, 0.25]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="mi">8192</span><span class="p">}</span>  <span class="c1"># Only one outcome</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">retrieve_probabilities</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">[1.0, 0.0]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="qbiocode.utils.qutils.transpile_circuit">
 <span class="sig-name descname"><span class="pre">transpile_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opt_level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backend</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initial_layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PT</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dd_sequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'XpXm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/qutils.html#transpile_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.qutils.transpile_circuit" title="Link to this definition">#</a></dt>
 <dd><p>This function transpiles the given quantum circuit based on the optimization level and backend.</p>
@@ -1311,6 +1499,11 @@ model management, IBM Quantum account handling, and result analysis.</p>
 <li><p>get_ansatz: Get quantum ansatz circuit</p></li>
 <li><p>get_feature_map: Get quantum feature map</p></li>
 <li><p>get_optimizer: Get classical optimizer</p></li>
+<li><p>normalize_data: Normalize data for quantum state encoding</p></li>
+<li><p>label_to_array: Convert binary labels to one-hot encoding</p></li>
+<li><p>prepare_training_set: Prepare balanced training subset</p></li>
+<li><p>retrieve_probabilities: Extract probabilities from measurement counts</p></li>
+<li><p>execute_circuit: Execute quantum circuit on Aer simulator</p></li>
 </ul>
 </section>
 <section id="usage">
@@ -1320,6 +1513,10 @@ model management, IBM Quantum account handling, and result analysis.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X_scaled</span> <span class="o">=</span> <span class="n">scaler_fn</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="s1">&#39;StandardScaler&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Encode features for quantum circuits</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X_encoded</span> <span class="o">=</span> <span class="n">feature_encoding</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">feature_encoding</span><span class="o">=</span><span class="s1">&#39;OneHotEncoder&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Prepare data for quantum ensemble</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">normalize_data</span><span class="p">,</span> <span class="n">prepare_training_set</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_norm</span> <span class="o">=</span> <span class="n">normalize_data</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_train</span><span class="p">,</span> <span class="n">Y_train</span> <span class="o">=</span> <span class="n">prepare_training_set</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1343,7 +1540,7 @@ Each subdirectory should correspond to one dataset.</p></li>
 <li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates successful completion of a dataset.
 Default is ‘RawDataEvaluation.csv’ (used by QProfiler).</p></li>
 <li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to strip from the beginning of directory names to get
-the dataset name. Default is 8 (strips ‘<a href="#id7"><span class="problematic" id="id8">dataset_</span></a>’ prefix used by QProfiler).
+the dataset name. Default is 8 (strips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code> prefix used by QProfiler).
 Set to 0 to use the full directory name.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print the list of completed datasets and count. Default is False.</p></li>
 </ul>
@@ -1405,7 +1602,7 @@ These can be excluded when restarting the batch job.</p>
 not its contents or validity</p></li>
 <li><p>When restarting, you may need to manually combine results from the previous
 and current runs</p></li>
-<li><p>Directory names are expected to have a consistent prefix (e.g., ‘<a href="#id9"><span class="problematic" id="id10">dataset_</span></a>’)
+<li><p>Directory names are expected to have a consistent prefix (e.g., <code class="docutils literal notranslate"><span class="pre">dataset_</span></code>)
 that can be stripped using the prefix_length parameter</p></li>
 <li><p>Non-directory entries in previous_results_dir are ignored</p></li>
 </ul>
@@ -1480,6 +1677,51 @@ Default is True.</p></li>
 - prev_results_dir to contain subdirectories, each with individual CSV files
 - recent_results_dir to contain combined CSV files at the top level
 - Files are identified by their prefix (eval_file_prefix, results_file_prefix)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.execute_circuit">
+<span class="sig-name descname"><span class="pre">execute_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_shots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8192</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CPU'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/qutils.html#execute_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.execute_circuit" title="Link to this definition">#</a></dt>
+<dd><p>Execute quantum circuit on Aer simulator.</p>
+<p>General-purpose function for executing quantum circuits using the Qiskit
+Aer simulator with statevector method. Useful for custom quantum algorithms
+that need direct circuit execution without the full runtime service setup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qc</strong> (<em>QuantumCircuit</em>) – Quantum circuit to execute</p></li>
+<li><p><strong>n_shots</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of measurement shots (default: 8192)</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – Device type: ‘CPU’ or ‘GPU’ (default: ‘CPU’)
+Note: GPU requires qiskit-aer-gpu installation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Measurement counts dictionary with bitstring keys and count values
+Example: {‘0’: 4123, ‘1’: 4069}</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Uses statevector simulation method for exact state evolution</p></li>
+<li><p>Automatically transpiles circuit with optimization level 3</p></li>
+<li><p>Parallel threshold set to 50 qubits for statevector parallelization</p></li>
+<li><p>For hardware execution, use get_backend_session() instead</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_circuit</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qc</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qc</span><span class="o">.</span><span class="n">h</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qc</span><span class="o">.</span><span class="n">cx</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qc</span><span class="o">.</span><span class="n">measure</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="n">execute_circuit</span><span class="p">(</span><span class="n">qc</span><span class="p">,</span> <span class="n">n_shots</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">{&#39;00&#39;: 512, &#39;11&#39;: 512}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2015,6 +2257,98 @@ It returns an instance of the QiskitRuntimeService class, which can be used to i
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.label_to_array">
+<span class="sig-name descname"><span class="pre">label_to_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/data_encoding.html#label_to_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.label_to_array" title="Link to this definition">#</a></dt>
+<dd><p>Convert binary labels to one-hot encoded arrays.</p>
+<p>Transforms binary classification labels (0 or 1) into one-hot encoded
+format required by quantum circuits. Label 0 becomes [1, 0] and label
+1 becomes [0, 1].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>y</strong> (<em>np.ndarray</em>) – Binary labels (0 or 1)</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>One-hot encoded labels, shape (n_samples, 2)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">label_to_array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="go">array([[1, 0],</span>
+<span class="go">       [0, 1],</span>
+<span class="go">       [1, 0]])</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.normalize_data">
+<span class="sig-name descname"><span class="pre">normalize_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/data_encoding.html#normalize_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.normalize_data" title="Link to this definition">#</a></dt>
+<dd><p>Normalize data vector for quantum state encoding.</p>
+<p>Normalizes a classical data vector to unit L2 norm and converts to
+complex amplitudes suitable for quantum state initialization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>np.ndarray</em>) – Classical data vector to normalize</p></li>
+<li><p><strong>C</strong> (<em>float</em><em>, </em><em>optional</em>) – Scaling constant (default: 1.0)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Normalized vector as list of complex numbers</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>List[complex]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x_norm</span> <span class="o">=</span> <span class="n">normalize_data</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span> <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">x_norm</span><span class="p">])</span>
+<span class="go">[0.6, 0.8]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">xi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">xi</span> <span class="ow">in</span> <span class="n">x_norm</span><span class="p">]))</span>
+<span class="go">1.0</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.prepare_training_set">
+<span class="sig-name descname"><span class="pre">prepare_training_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">123</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/data_encoding.html#prepare_training_set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.prepare_training_set" title="Link to this definition">#</a></dt>
+<dd><p>Select and prepare balanced training subset for quantum ensemble.</p>
+<p>Creates a balanced training set by selecting equal numbers of samples
+from each class and normalizing them for quantum encoding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training feature data</p></li>
+<li><p><strong>y</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Training labels (binary: 0 or 1)</p></li>
+<li><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Total number of training samples to select (must be even, default: 4)</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility (default: 123)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>X_data : Normalized training samples, shape (n, n_features)
+Y_data : One-hot encoded labels, shape (n, 2)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tuple[np.ndarray, np.ndarray]</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X_data</span><span class="p">,</span> <span class="n">Y_data</span> <span class="o">=</span> <span class="n">prepare_training_set</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">X_data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">Y_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="go">(4, 4) (4, 2)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="qbiocode.utils.qml_winner">
 <span class="sig-name descname"><span class="pre">qml_winner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rawevals_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/qc_winner_finder.html#qml_winner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.qml_winner" title="Link to this definition">#</a></dt>
 <dd><p>This function finds data sets where QML was beneficial (higher F1 scores than CML) and create new .csv files
@@ -2044,6 +2378,46 @@ the methods.</p>
 <dd class="field-odd"><p>qml_winners (pandas.DataFrame)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.utils.retrieve_probabilities">
+<span class="sig-name descname"><span class="pre">retrieve_probabilities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">counts</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/utils/qutils.html#retrieve_probabilities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.utils.retrieve_probabilities" title="Link to this definition">#</a></dt>
+<dd><p>Extract probability predictions from measurement counts.</p>
+<p>Converts raw measurement counts from quantum circuit execution into
+probability predictions for binary classification. Handles edge cases
+where only one outcome is observed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>counts</strong> (<em>dict</em>) – Measurement counts with keys ‘0’ and/or ‘1’
+Example: {‘0’: 4123, ‘1’: 4069}</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>[p0, p1] where p0 is probability of class 0 and p1 is probability
+of class 1. Always sums to 1.0.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of float</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Handles missing keys gracefully (assigns probability 0 or 1)</p></li>
+<li><p>If only ‘0’ observed: returns [1.0, 0.0]</p></li>
+<li><p>If only ‘1’ observed: returns [0.0, 1.0]</p></li>
+<li><p>If both observed: returns normalized probabilities</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="mi">6000</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">retrieve_probabilities</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">[0.75, 0.25]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">counts</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;0&#39;</span><span class="p">:</span> <span class="mi">8192</span><span class="p">}</span>  <span class="c1"># Only one outcome</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">retrieve_probabilities</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
+<span class="go">[1.0, 0.0]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2113,7 +2487,7 @@ number of input datasets to determine how many remain to be processed.</p>
 <li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates a dataset has been fully processed.
 Default is ‘RawDataEvaluation.csv’.</p></li>
 <li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to skip from the beginning of directory names
-when extracting dataset identifiers. Default is 8 (e.g., skips ‘<a href="#id11"><span class="problematic" id="id12">dataset_</span></a>’
+when extracting dataset identifiers. Default is 8 (e.g., skips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code>
 prefix).</p></li>
 <li><p><strong>input_extension</strong> (<em>str</em><em>, </em><em>optional</em>) – File extension of input datasets (without dot). Default is ‘csv’.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, prints progress information. Default is True.</p></li>
@@ -2195,6 +2569,13 @@ prefix).</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.dataset_checkpoint.checkpoint_restart"><code class="docutils literal notranslate"><span class="pre">checkpoint_restart()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.data_encoding">qbiocode.utils.data_encoding module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-data-encoding-utilities">Quantum Data Encoding Utilities</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.data_encoding.label_to_array"><code class="docutils literal notranslate"><span class="pre">label_to_array()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.data_encoding.normalize_data"><code class="docutils literal notranslate"><span class="pre">normalize_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.data_encoding.prepare_training_set"><code class="docutils literal notranslate"><span class="pre">prepare_training_set()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.find_duplicates">qbiocode.utils.find_duplicates module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.find_duplicates.find_duplicate_files"><code class="docutils literal notranslate"><span class="pre">find_duplicate_files()</span></code></a></li>
 </ul>
@@ -2220,6 +2601,7 @@ prefix).</p></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.qutils">qbiocode.utils.qutils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.execute_circuit"><code class="docutils literal notranslate"><span class="pre">execute_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.get_ansatz"><code class="docutils literal notranslate"><span class="pre">get_ansatz()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.get_backend_session"><code class="docutils literal notranslate"><span class="pre">get_backend_session()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.get_estimator"><code class="docutils literal notranslate"><span class="pre">get_estimator()</span></code></a></li>
@@ -2227,6 +2609,7 @@ prefix).</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.get_observable"><code class="docutils literal notranslate"><span class="pre">get_observable()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.get_optimizer"><code class="docutils literal notranslate"><span class="pre">get_optimizer()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.get_sampler"><code class="docutils literal notranslate"><span class="pre">get_sampler()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.retrieve_probabilities"><code class="docutils literal notranslate"><span class="pre">retrieve_probabilities()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.transpile_circuit"><code class="docutils literal notranslate"><span class="pre">transpile_circuit()</span></code></a></li>
 </ul>
 </li>
@@ -2238,6 +2621,7 @@ prefix).</p></li>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.checkpoint_restart"><code class="docutils literal notranslate"><span class="pre">checkpoint_restart()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.combine_results"><code class="docutils literal notranslate"><span class="pre">combine_results()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.execute_circuit"><code class="docutils literal notranslate"><span class="pre">execute_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.feature_encoding"><code class="docutils literal notranslate"><span class="pre">feature_encoding()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.find_duplicate_files"><code class="docutils literal notranslate"><span class="pre">find_duplicate_files()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.find_string_in_files"><code class="docutils literal notranslate"><span class="pre">find_string_in_files()</span></code></a></li>
@@ -2250,7 +2634,11 @@ prefix).</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.get_optimizer"><code class="docutils literal notranslate"><span class="pre">get_optimizer()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.get_sampler"><code class="docutils literal notranslate"><span class="pre">get_sampler()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.instantiate_runtime_service"><code class="docutils literal notranslate"><span class="pre">instantiate_runtime_service()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.label_to_array"><code class="docutils literal notranslate"><span class="pre">label_to_array()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.normalize_data"><code class="docutils literal notranslate"><span class="pre">normalize_data()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.prepare_training_set"><code class="docutils literal notranslate"><span class="pre">prepare_training_set()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qml_winner"><code class="docutils literal notranslate"><span class="pre">qml_winner()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.retrieve_probabilities"><code class="docutils literal notranslate"><span class="pre">retrieve_probabilities()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.scaler_fn"><code class="docutils literal notranslate"><span class="pre">scaler_fn()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.track_progress"><code class="docutils literal notranslate"><span class="pre">track_progress()</span></code></a></li>
 </ul>

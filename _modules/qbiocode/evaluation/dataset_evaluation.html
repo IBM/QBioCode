@@ -391,25 +391,26 @@
                   
   <h1>Source code for qbiocode.evaluation.dataset_evaluation</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ====== Base class imports ======</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hfda</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">hfda</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">eigvals</span><span class="p">,</span> <span class="n">inv</span><span class="p">,</span> <span class="n">norm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvexHull</span> <span class="k">as</span> <span class="n">CH</span>
 
 <span class="c1"># ====== Scipy imports ======</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">scipy.stats</span><span class="w"> </span><span class="kn">import</span> <span class="n">entropy</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.linalg</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span><span class="p">,</span> <span class="n">inv</span><span class="p">,</span> <span class="n">eigvals</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConvexHull</span> <span class="k">as</span> <span class="n">CH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skdim</span><span class="w"> </span><span class="kn">import</span> <span class="nb">id</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">skdim.id</span><span class="w"> </span><span class="kn">import</span> <span class="n">lPCA</span>
 
 <span class="c1"># ====== Scikit-learn imports ======</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn</span><span class="w"> </span><span class="kn">import</span> <span class="n">datasets</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">skdim</span><span class="w"> </span><span class="kn">import</span> <span class="nb">id</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">skdim.id</span><span class="w"> </span><span class="kn">import</span> <span class="n">lPCA</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.discriminant_analysis</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearDiscriminantAnalysis</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">mutual_info_classif</span><span class="p">,</span> <span class="n">VarianceThreshold</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KernelDensity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">VarianceThreshold</span><span class="p">,</span> <span class="n">mutual_info_classif</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isomap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.neighbors</span><span class="w"> </span><span class="kn">import</span> <span class="n">KernelDensity</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="c1"># df = pd.DataFrame(X)</span>
 <div class="viewcode-block" id="get_dimensions">
@@ -423,15 +424,16 @@
 <span class="sd">            - num_features (int): Number of features in the DataFrame</span>
 <span class="sd">            - num_samples (int): Number of samples in the DataFrame</span>
 <span class="sd">            - ratio (float): Feature-to-sample ratio</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># number of features</span>
     <span class="n">num_features</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="c1"># of samples</span>
     <span class="n">num_samples</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># feature-to-sample ratio </span>
-    <span class="n">ratio</span> <span class="o">=</span> <span class="n">num_features</span><span class="o">/</span><span class="n">num_samples</span>
-    
-    <span class="k">return</span> <span class="n">num_features</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">ratio</span> </div>
+    <span class="c1"># feature-to-sample ratio</span>
+    <span class="n">ratio</span> <span class="o">=</span> <span class="n">num_features</span> <span class="o">/</span> <span class="n">num_samples</span>
+
+    <span class="k">return</span> <span class="n">num_features</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">ratio</span></div>
+
 
 
 <div class="viewcode-block" id="get_intrinsic_dim">
@@ -442,91 +444,97 @@
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        float: Intrinsic dimension of the data</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Intrinsic dimension, calculated via scikit-dimension&#39;s PCA method</span>
-    <span class="n">pca</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">lPCA</span><span class="p">()</span> <span class="c1"># Initialize the PCA estimator from skdim</span>
-    <span class="n">pca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="c1"># Fit the estimator to your data</span>
-    <span class="k">return</span> <span class="n">pca</span><span class="o">.</span><span class="n">dimension_</span> </div>
+    <span class="n">pca</span> <span class="o">=</span> <span class="nb">id</span><span class="o">.</span><span class="n">lPCA</span><span class="p">()</span>  <span class="c1"># Initialize the PCA estimator from skdim</span>
+    <span class="n">pca</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>  <span class="c1"># Fit the estimator to your data</span>
+    <span class="k">return</span> <span class="n">pca</span><span class="o">.</span><span class="n">dimension_</span></div>
+
 
 
 <div class="viewcode-block" id="get_condition_number">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_condition_number">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_condition_number</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get condition number of a matrix.</span>
-<span class="sd">        A function with a high condition number is said to be ill-conditioned. </span>
-<span class="sd">        Ill conditioned matrices produce large errors in its output even with small errors in its input. </span>
-<span class="sd">        Low condition number means more stable errors. </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the condition number of a matrix.</span>
+
+<span class="sd">    A high condition number indicates that the matrix is ill-conditioned and</span>
+<span class="sd">    can produce large output errors even for small input perturbations. A low</span>
+<span class="sd">    condition number indicates a more stable matrix.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        float: condition number of the matrix represented in df</span>
+<span class="sd">        float: Condition number of the matrix represented in ``df``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># In general,  </span>
-    <span class="c1"># meaning that it can produce large errors in its output even with small errors in its input. </span>
+    <span class="c1"># In general,</span>
+    <span class="c1"># meaning that it can produce large errors in its output even with small errors in its input.</span>
     <span class="c1"># Conversely, a function with a low condition number is well-conditioned and more stable in terms of its output.</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">cond</span><span class="p">(</span><span class="n">df</span><span class="p">)</span></div>
 
 
+
 <div class="viewcode-block" id="get_fdr">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_fdr">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_fdr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">y</span><span class="p">):</span> 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Fisher Discriminant Ratio for a given dataset. </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_fdr</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Fisher Discriminant Ratio for a given dataset.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 <span class="sd">        y (int): supervised binary class label</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        float: Fisher Discriminant ratio</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">values</span>
     <span class="n">class_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
     <span class="n">n_classes</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">class_labels</span><span class="p">)</span>
-    <span class="n">FDR</span> <span class="o">=</span> <span class="mi">0</span> 
-    
-    <span class="k">if</span> <span class="n">n_classes</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span> 
+    <span class="n">FDR</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="n">n_classes</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;WARNING: Fisher Discriminant Ratio is only defined for binary classes. &quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="n">mean1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="n">class_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#mean for class1 </span>
-        <span class="n">mean2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="n">class_labels</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="c1">#mean for class2</span>
-        
-        <span class="c1">#calculate within-class scatter matrices</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">mean1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="n">class_labels</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># mean for class1</span>
+        <span class="n">mean2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="n">class_labels</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># mean for class2</span>
+
+        <span class="c1"># calculate within-class scatter matrices</span>
         <span class="n">scatter_within</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">class_labels</span><span class="p">:</span> 
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">class_labels</span><span class="p">:</span>
             <span class="n">X_class</span> <span class="o">=</span> <span class="n">X</span><span class="p">[</span><span class="n">y</span> <span class="o">==</span> <span class="n">label</span><span class="p">]</span>
             <span class="n">scatter_within</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">X_class</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
-        
-        <span class="c1">#calculate between-class scatter matrix</span>
-        <span class="n">scatter_between</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">mean1</span> <span class="o">-</span> <span class="n">mean2</span><span class="p">,</span> <span class="n">mean1</span> <span class="o">-</span> <span class="n">mean2</span><span class="p">)</span>
-        
-        <span class="c1">#compute FDR</span>
-        <span class="n">FDR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">scatter_between</span><span class="p">)</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">scatter_within</span><span class="p">)</span>
-        
-    <span class="k">return</span> <span class="n">FDR</span>        </div>
 
-        
+        <span class="c1"># calculate between-class scatter matrix</span>
+        <span class="n">scatter_between</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">mean1</span> <span class="o">-</span> <span class="n">mean2</span><span class="p">,</span> <span class="n">mean1</span> <span class="o">-</span> <span class="n">mean2</span><span class="p">)</span>
+
+        <span class="c1"># compute FDR</span>
+        <span class="n">FDR</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">scatter_between</span><span class="p">)</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">scatter_within</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">FDR</span></div>
+
+
+
 <div class="viewcode-block" id="get_total_correlation">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_total_correlation">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_total_correlation</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Total Correlation </span>
-<span class="sd">    </span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate Total Correlation</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        float: Total correlation</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">corr_matrix</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span> <span class="c1">#correlation matrix </span>
-    <span class="c1">#total correlation by subtracting diagonal values to remove self-correlation</span>
-    <span class="n">total_correlation</span> <span class="o">=</span> <span class="n">corr_matrix</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> 
-    
+    <span class="n">corr_matrix</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>  <span class="c1"># correlation matrix</span>
+    <span class="c1"># total correlation by subtracting diagonal values to remove self-correlation</span>
+    <span class="n">total_correlation</span> <span class="o">=</span> <span class="n">corr_matrix</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">total_correlation</span></div>
+
 
 
 <div class="viewcode-block" id="get_mutual_information">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_mutual_information">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_mutual_information</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">get_mutual_information</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate mutual information via sklearn</span>
 
 <span class="sd">    Args:</span>
@@ -537,13 +545,14 @@
 <span class="sd">        float: Mutual information</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mutual_info</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">mutual_info_classif</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
-    
+
     <span class="k">return</span> <span class="n">mutual_info</span></div>
+
 
 
 <div class="viewcode-block" id="get_variance">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_variance">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_variance</span><span class="p">(</span><span class="n">df</span><span class="p">):</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">get_variance</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get variance</span>
 
 <span class="sd">    Args:</span>
@@ -556,13 +565,14 @@
     <span class="n">variations</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">var</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
     <span class="n">avg_var</span> <span class="o">=</span> <span class="n">variations</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">std_var</span> <span class="o">=</span> <span class="n">variations</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-    
+
     <span class="k">return</span> <span class="n">avg_var</span><span class="p">,</span> <span class="n">std_var</span></div>
+
 
 
 <div class="viewcode-block" id="get_coefficient_var">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_coefficient_var">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_coefficient_var</span><span class="p">(</span><span class="n">df</span><span class="p">):</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">get_coefficient_var</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get coefficient of variance</span>
 
 <span class="sd">    Args:</span>
@@ -575,54 +585,57 @@
     <span class="n">co_of_v</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">std</span><span class="p">()</span> <span class="o">/</span> <span class="n">df</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="n">avg_co_of_v</span> <span class="o">=</span> <span class="n">co_of_v</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">std_co_of_v</span> <span class="o">=</span> <span class="n">co_of_v</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-    
+
     <span class="k">return</span> <span class="n">avg_co_of_v</span><span class="p">,</span> <span class="n">std_co_of_v</span></div>
+
 
 
 <div class="viewcode-block" id="get_nnz">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_nnz">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_nnz</span><span class="p">(</span><span class="n">df</span><span class="p">):</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">get_nnz</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate nonzero values in the data</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        int: nonzero count </span>
+<span class="sd">        int: nonzero count</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">)</span></div>
 
 
+
 <div class="viewcode-block" id="get_low_var_features">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_low_var_features">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_low_var_features</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">num_features</span><span class="p">):</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">get_low_var_features</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">num_features</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate get count of low variance features</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 <span class="sd">        num_features (int): number of features in the dataset</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: If no feature is strong enough to keep</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        int: count of features with low variance</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="n">threshold</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">percentile</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">var</span><span class="p">(),</span> <span class="mi">25</span><span class="p">)</span>
-    
+
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">low_var_features</span> <span class="o">=</span>  <span class="n">num_features</span> <span class="o">-</span> <span class="n">VarianceThreshold</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">get_support</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> 
+        <span class="n">low_var_features</span> <span class="o">=</span> <span class="n">num_features</span> <span class="o">-</span> <span class="n">VarianceThreshold</span><span class="p">(</span><span class="n">threshold</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="o">.</span><span class="n">get_support</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No feature is strong enough to keep&quot;</span><span class="p">)</span>
         <span class="n">low_var_features</span> <span class="o">=</span> <span class="kc">None</span>
-    
+
     <span class="k">return</span> <span class="n">low_var_features</span></div>
+
 
 
 <div class="viewcode-block" id="get_log_density">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_log_density">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_log_density</span><span class="p">(</span><span class="n">df</span><span class="p">):</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">get_log_density</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the mean log density of the data</span>
 
 <span class="sd">    Args:</span>
@@ -631,34 +644,37 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        float: mean log kernel density</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">kde</span> <span class="o">=</span> <span class="n">KernelDensity</span><span class="p">(</span><span class="n">bandwidth</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="c1"># Create a KernelDensity estimator and fit the estimator to the data</span>
+    <span class="n">kde</span> <span class="o">=</span> <span class="n">KernelDensity</span><span class="p">(</span><span class="n">bandwidth</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;gaussian&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+        <span class="n">df</span>
+    <span class="p">)</span>  <span class="c1"># Create a KernelDensity estimator and fit the estimator to the data</span>
     <span class="n">log_density</span> <span class="o">=</span> <span class="n">kde</span><span class="o">.</span><span class="n">score_samples</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">log_density</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span></div>
+
 
 
 <div class="viewcode-block" id="get_fractal_dim">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_fractal_dim">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_fractal_dim</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">k_max</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the fractal dimension of the data using Higuchi&#39;s method</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 <span class="sd">        k_max (int): Maximum number of k values to use in the calculation</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        float: Fractal dimension of the data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">FD</span> <span class="o">=</span> <span class="n">hfda</span><span class="o">.</span><span class="n">measure</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">k_max</span><span class="p">)</span>
-    
-    <span class="k">return</span> <span class="n">FD</span> </div>
+
+    <span class="k">return</span> <span class="n">FD</span></div>
 
 
 
 <div class="viewcode-block" id="get_moments">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_moments">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_moments</span><span class="p">(</span><span class="n">df</span><span class="p">):</span> 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute third and fourth order moments of the data </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_moments</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute third and fourth order moments of the data</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
@@ -677,92 +693,95 @@
     <span class="n">kurt</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">()</span>
     <span class="n">avg_kurt</span> <span class="o">=</span> <span class="n">kurt</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">std_kurt</span> <span class="o">=</span> <span class="n">kurt</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-    
-    <span class="k">return</span> <span class="n">avg_skew</span><span class="p">,</span> <span class="n">std_skew</span><span class="p">,</span> <span class="n">avg_kurt</span><span class="p">,</span> <span class="n">std_kurt</span> </div>
+
+    <span class="k">return</span> <span class="n">avg_skew</span><span class="p">,</span> <span class="n">std_skew</span><span class="p">,</span> <span class="n">avg_kurt</span><span class="p">,</span> <span class="n">std_kurt</span></div>
+
 
 
 <div class="viewcode-block" id="get_entropy">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_entropy">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_entropy</span><span class="p">(</span><span class="n">y</span><span class="p">):</span> 
+<span class="k">def</span><span class="w"> </span><span class="nf">get_entropy</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate entropy of the target variable</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        y (int): supervised binary class label </span>
-<span class="sd">        </span>
-<span class="sd">    Returns: </span>
-<span class="sd">        avg_y_entropy (float): mean entropy </span>
-<span class="sd">        std_y_entropy (flat): standard deviation of entropy </span>
+<span class="sd">        y (int): supervised binary class label</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        avg_y_entropy (float): mean entropy</span>
+<span class="sd">        std_y_entropy (flat): standard deviation of entropy</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">y_entropy</span> <span class="o">=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Compute the entropy of the target variable (y)</span>
+    <span class="n">y_entropy</span> <span class="o">=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>  <span class="c1"># Compute the entropy of the target variable (y)</span>
     <span class="n">avg_y_entropy</span> <span class="o">=</span> <span class="n">y_entropy</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
     <span class="n">std_y_entropy</span> <span class="o">=</span> <span class="n">y_entropy</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-    
+
     <span class="k">return</span> <span class="n">avg_y_entropy</span><span class="p">,</span> <span class="n">std_y_entropy</span></div>
+
 
 
 <div class="viewcode-block" id="get_volume">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_volume">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_volume</span><span class="p">(</span><span class="n">df</span><span class="p">):</span> 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get volume of the data from Convex Hull </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_volume</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get volume of the data from Convex Hull</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
-<span class="sd">        </span>
-<span class="sd">    Returns: </span>
-<span class="sd">        volume (float): Volume of the space spanned by the features of the data </span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        volume (float): Volume of the space spanned by the features of the data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="n">vol</span> <span class="o">=</span> <span class="mi">0</span> 
-    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span> 
+
+    <span class="n">vol</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Convex Hull requires number of observations &gt; number of features&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="n">vol</span> <span class="o">=</span> <span class="n">CH</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">qhull_options</span><span class="o">=</span><span class="s1">&#39;QJ&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">volume</span> 
-    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">vol</span> <span class="o">=</span> <span class="n">CH</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">qhull_options</span><span class="o">=</span><span class="s2">&quot;QJ&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">volume</span>
+
     <span class="k">return</span> <span class="n">vol</span></div>
+
 
 
 <div class="viewcode-block" id="get_complexity">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.get_complexity">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_complexity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span> 
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; Measure the manifold complexity by fitting Isomap and analyzing the geodesic vs. Euclidean distances.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_complexity</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Measure the manifold complexity by fitting Isomap and analyzing the geodesic vs. Euclidean distances.</span>
 <span class="sd">    This function computes the reconstruction error of the Isomap algorithm, which serves as an indicator of the complexity of the manifold represented by the data.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 <span class="sd">        n_neighbors: Number of neighbors for the Isomap algorithm. Default value 10</span>
 <span class="sd">        n_components: Number of components (dimensions) for Isomap projection.  Default value 2</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        - reconstruction_error: float</span>
 <span class="sd">            The reconstruction error of the Isomap model, which indicates the complexity of the manifold.</span>
 <span class="sd">        - reconstruction_error: The residual error of geodesic distances</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="n">isomap</span> <span class="o">=</span> <span class="n">Isomap</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">isomap</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
-    
-    <span class="c1">#reconstruction error - an indicator of complexity </span>
+
+    <span class="c1"># reconstruction error - an indicator of complexity</span>
     <span class="n">reconstruction_error</span> <span class="o">=</span> <span class="n">isomap</span><span class="o">.</span><span class="n">reconstruction_error</span><span class="p">()</span>
-    
+
     <span class="k">return</span> <span class="n">reconstruction_error</span></div>
 
-    
+
 
 <div class="viewcode-block" id="evaluate">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.evaluate">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">file</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function evaluates a dataset and returns a transposed summary DataFrame with various statistical measures, derived from the dataset.</span>
-<span class="sd">    Using the functions defined above, it computes intrinsic dimension, condition number, Fisher Discriminant Ratio, total correlation, mutual information, variance, coefficient of variation, </span>
+<span class="sd">    Using the functions defined above, it computes intrinsic dimension, condition number, Fisher Discriminant Ratio, total correlation, mutual information, variance, coefficient of variation,</span>
 <span class="sd">    data sparsity, low variance features, data density, fractal dimension, data distributions (skewness and kurtosis), entropy of the target variable, and manifold complexity.</span>
 <span class="sd">    The summary DataFrame is transposed for easier readability and contains the dataset name, number of features, number of samples, feature-to-sample ratio, and various statistical measures.</span>
-<span class="sd">    This function is useful for quickly summarizing the characteristics of a dataset, especially in the context of machine learning and data analysis, allowing you to correlate the dataset&#39;s </span>
+<span class="sd">    This function is useful for quickly summarizing the characteristics of a dataset, especially in the context of machine learning and data analysis, allowing you to correlate the dataset&#39;s</span>
 <span class="sd">    properties with its performance in predictive modeling tasks.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        df (pandas.DataFrame): Dataset in pandas with observation in rows, features in columns</span>
 <span class="sd">        y (int): supervised binary class label</span>
 <span class="sd">        file (str): Name of the dataset file for identification in the summary DataFrame</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        transposed (pandas.DataFrame): Summary DataFrame containing various statistical measures of the dataset</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -771,17 +790,17 @@
 
     <span class="c1"># Calculate statistical measures</span>
     <span class="n">n_features</span><span class="p">,</span> <span class="n">n_samples</span><span class="p">,</span> <span class="n">feature_sample_ratio</span> <span class="o">=</span> <span class="n">get_dimensions</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
-    
-    <span class="c1"># get intrinsic dimension </span>
+
+    <span class="c1"># get intrinsic dimension</span>
     <span class="n">intrinsic_dim</span> <span class="o">=</span> <span class="n">get_intrinsic_dim</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
-    
+
     <span class="c1"># Condition number</span>
     <span class="n">condition_number</span> <span class="o">=</span> <span class="n">get_condition_number</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
 
     <span class="c1"># Class imbalance ratio via Fischer Discriminant</span>
     <span class="n">fdr</span> <span class="o">=</span> <span class="n">get_fdr</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-    <span class="c1"># Total correlation </span>
+    <span class="c1"># Total correlation</span>
     <span class="n">total_correlation</span> <span class="o">=</span> <span class="n">get_total_correlation</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
 
     <span class="c1"># Mutual information</span>
@@ -790,12 +809,12 @@
     <span class="c1"># Variance</span>
     <span class="n">avg_var</span><span class="p">,</span> <span class="n">std_var</span> <span class="o">=</span> <span class="n">get_variance</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
 
-    <span class="c1"># Coefficient of variance </span>
+    <span class="c1"># Coefficient of variance</span>
     <span class="n">avg_co_of_v</span><span class="p">,</span> <span class="n">std_co_of_v</span> <span class="o">=</span> <span class="n">get_coefficient_var</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
-    
+
     <span class="c1"># Data sparsity</span>
     <span class="n">count_nonzero</span> <span class="o">=</span> <span class="n">get_nnz</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-    
+
     <span class="c1"># Get the number of low variance features</span>
     <span class="n">num_low_variance_features</span> <span class="o">=</span> <span class="n">get_low_var_features</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">,</span> <span class="n">n_features</span><span class="p">)</span>
 
@@ -808,82 +827,70 @@
 
     <span class="c1"># Data distributions</span>
     <span class="n">avg_skew</span><span class="p">,</span> <span class="n">std_skew</span><span class="p">,</span> <span class="n">avg_kurt</span><span class="p">,</span> <span class="n">std_kurt</span> <span class="o">=</span> <span class="n">get_moments</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
-    
+
     <span class="c1"># entropy</span>
     <span class="n">avg_y_entropy</span><span class="p">,</span> <span class="n">std_y_entropy</span> <span class="o">=</span> <span class="n">get_entropy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 
-    <span class="c1">#volume of data</span>
+    <span class="c1"># volume of data</span>
     <span class="c1"># volume = get_volume(df_numeric)</span>
-    
-    <span class="c1">#manifold complexity</span>
-    <span class="n">complexity</span> <span class="o">=</span> <span class="n">get_complexity</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
-    
-    <span class="c1"># Create summary DataFrame</span>
-    <span class="n">summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">({</span>
-                                        <span class="c1"># Data set</span>
-                                        <span class="s1">&#39;Dataset&#39;</span><span class="p">:</span> <span class="n">file</span><span class="p">,</span>
-                                        
-                                        <span class="c1"># Dimensions</span>
-                                        <span class="s1">&#39;# Features&#39;</span><span class="p">:</span> <span class="n">n_features</span><span class="p">,</span>
-                                        <span class="s1">&#39;# Samples&#39;</span><span class="p">:</span> <span class="n">n_samples</span><span class="p">,</span>
-                                        <span class="s1">&#39;Feature_Samples_ratio&#39;</span><span class="p">:</span> <span class="n">feature_sample_ratio</span><span class="p">,</span>
-                                        
-                                        <span class="c1"># Intrinsic dimension</span>
-                                        <span class="s1">&#39;Intrinsic_Dimension&#39;</span><span class="p">:</span> <span class="n">intrinsic_dim</span><span class="p">,</span>
-                                    
-                                        <span class="c1"># Condition number</span>
-                                        <span class="s1">&#39;Condition number&#39;</span><span class="p">:</span> <span class="n">condition_number</span><span class="p">,</span>
-                                        
-                                        <span class="c1"># Class imbalance ratio</span>
-                                        <span class="s1">&#39;Fisher Discriminant Ratio&#39;</span><span class="p">:</span> <span class="n">fdr</span><span class="p">,</span> 
-                                        
-                                        <span class="c1"># Feature Correlations</span>
-                                        <span class="s1">&#39;Total Correlations&#39;</span><span class="p">:</span> <span class="n">total_correlation</span><span class="p">,</span> <span class="c1"># Total Correlations</span>
-                                        <span class="s1">&#39;Mutual information&#39;</span><span class="p">:</span> <span class="n">mutual_info</span><span class="p">,</span><span class="c1"># Mutual information</span>
-                                        
-                                        <span class="c1"># Data sparsity</span>
-                                        <span class="s1">&#39;# Non-zero entries&#39;</span><span class="p">:</span> <span class="n">count_nonzero</span><span class="p">,</span>
-                                        <span class="s1">&#39;# Low variance features&#39;</span><span class="p">:</span> <span class="n">num_low_variance_features</span><span class="p">,</span>
-                                        
-                                        <span class="c1">#&#39;Variation&#39;: variations,</span>
-                                        <span class="s1">&#39;Variation&#39;</span><span class="p">:</span> <span class="n">avg_var</span><span class="p">,</span>
-                                        <span class="s1">&#39;std_var&#39;</span><span class="p">:</span> <span class="n">std_var</span><span class="p">,</span>
-                                        
-                                        <span class="c1">#&#39;Coefficient of Variation %&#39;: co_of_v,</span>
-                                        <span class="s1">&#39;Coefficient of Variation %&#39;</span><span class="p">:</span> <span class="n">avg_co_of_v</span><span class="p">,</span>
-                                        <span class="s1">&#39;std_co_of_v&#39;</span><span class="p">:</span> <span class="n">std_co_of_v</span><span class="p">,</span>
-                                        
-                                        <span class="c1"># Data distributions</span>
-                                        <span class="c1">#&#39;Skewness&#39;: skew,</span>
-                                        <span class="s1">&#39;Skewness&#39;</span><span class="p">:</span> <span class="n">avg_skew</span><span class="p">,</span>
-                                        <span class="s1">&#39;std_skew&#39;</span><span class="p">:</span> <span class="n">std_skew</span><span class="p">,</span>
-                                        
-                                        <span class="c1">#&#39;Kurtosis&#39;: kurt,</span>
-                                        <span class="s1">&#39;Kurtosis&#39;</span><span class="p">:</span> <span class="n">avg_kurt</span><span class="p">,</span>
-                                        <span class="s1">&#39;std_kurt&#39;</span><span class="p">:</span> <span class="n">std_kurt</span><span class="p">,</span>
-                                        
-                                        <span class="c1"># Data density</span>
-                                        <span class="s1">&#39;Mean Log Kernel Density&#39;</span><span class="p">:</span> <span class="n">mean_log_density</span><span class="p">,</span> 
-                                        
-                                        <span class="c1"># volume of feature space</span>
-                                        <span class="c1">#&#39;Volume&#39;: volume, </span>
-                                        
-                                        <span class="c1"># Manifold complexity</span>
-                                        <span class="s1">&#39;Isomap Reconstruction Error&#39;</span><span class="p">:</span> <span class="n">complexity</span><span class="p">,</span> 
-                                        
-                                        <span class="c1"># Fractal dimension</span>
-                                        <span class="s1">&#39;Fractal dimension&#39;</span><span class="p">:</span> <span class="n">fractal_dim</span><span class="p">,</span> <span class="c1"># calculated via Higuchi Dimension</span>
 
-                                        <span class="c1">#&#39;Entropy&#39;: y_entropy,</span>
-                                        <span class="s1">&#39;Entropy&#39;</span><span class="p">:</span> <span class="n">avg_y_entropy</span><span class="p">,</span>
-                                        <span class="s1">&#39;std_entropy&#39;</span><span class="p">:</span> <span class="n">std_y_entropy</span>
-                                        <span class="p">},</span>
-                                        <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;index&#39;</span><span class="p">)</span>
+    <span class="c1"># manifold complexity</span>
+    <span class="n">complexity</span> <span class="o">=</span> <span class="n">get_complexity</span><span class="p">(</span><span class="n">df_numeric</span><span class="p">)</span>
+
+    <span class="c1"># Create summary DataFrame</span>
+    <span class="n">summary_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="c1"># Data set</span>
+            <span class="s2">&quot;Dataset&quot;</span><span class="p">:</span> <span class="n">file</span><span class="p">,</span>
+            <span class="c1"># Dimensions</span>
+            <span class="s2">&quot;# Features&quot;</span><span class="p">:</span> <span class="n">n_features</span><span class="p">,</span>
+            <span class="s2">&quot;# Samples&quot;</span><span class="p">:</span> <span class="n">n_samples</span><span class="p">,</span>
+            <span class="s2">&quot;Feature_Samples_ratio&quot;</span><span class="p">:</span> <span class="n">feature_sample_ratio</span><span class="p">,</span>
+            <span class="c1"># Intrinsic dimension</span>
+            <span class="s2">&quot;Intrinsic_Dimension&quot;</span><span class="p">:</span> <span class="n">intrinsic_dim</span><span class="p">,</span>
+            <span class="c1"># Condition number</span>
+            <span class="s2">&quot;Condition number&quot;</span><span class="p">:</span> <span class="n">condition_number</span><span class="p">,</span>
+            <span class="c1"># Class imbalance ratio</span>
+            <span class="s2">&quot;Fisher Discriminant Ratio&quot;</span><span class="p">:</span> <span class="n">fdr</span><span class="p">,</span>
+            <span class="c1"># Feature Correlations</span>
+            <span class="s2">&quot;Total Correlations&quot;</span><span class="p">:</span> <span class="n">total_correlation</span><span class="p">,</span>  <span class="c1"># Total Correlations</span>
+            <span class="s2">&quot;Mutual information&quot;</span><span class="p">:</span> <span class="n">mutual_info</span><span class="p">,</span>  <span class="c1"># Mutual information</span>
+            <span class="c1"># Data sparsity</span>
+            <span class="s2">&quot;# Non-zero entries&quot;</span><span class="p">:</span> <span class="n">count_nonzero</span><span class="p">,</span>
+            <span class="s2">&quot;# Low variance features&quot;</span><span class="p">:</span> <span class="n">num_low_variance_features</span><span class="p">,</span>
+            <span class="c1">#&#39;Variation&#39;: variations,</span>
+            <span class="s2">&quot;Variation&quot;</span><span class="p">:</span> <span class="n">avg_var</span><span class="p">,</span>
+            <span class="s2">&quot;std_var&quot;</span><span class="p">:</span> <span class="n">std_var</span><span class="p">,</span>
+            <span class="c1">#&#39;Coefficient of Variation %&#39;: co_of_v,</span>
+            <span class="s2">&quot;Coefficient of Variation %&quot;</span><span class="p">:</span> <span class="n">avg_co_of_v</span><span class="p">,</span>
+            <span class="s2">&quot;std_co_of_v&quot;</span><span class="p">:</span> <span class="n">std_co_of_v</span><span class="p">,</span>
+            <span class="c1"># Data distributions</span>
+            <span class="c1">#&#39;Skewness&#39;: skew,</span>
+            <span class="s2">&quot;Skewness&quot;</span><span class="p">:</span> <span class="n">avg_skew</span><span class="p">,</span>
+            <span class="s2">&quot;std_skew&quot;</span><span class="p">:</span> <span class="n">std_skew</span><span class="p">,</span>
+            <span class="c1">#&#39;Kurtosis&#39;: kurt,</span>
+            <span class="s2">&quot;Kurtosis&quot;</span><span class="p">:</span> <span class="n">avg_kurt</span><span class="p">,</span>
+            <span class="s2">&quot;std_kurt&quot;</span><span class="p">:</span> <span class="n">std_kurt</span><span class="p">,</span>
+            <span class="c1"># Data density</span>
+            <span class="s2">&quot;Mean Log Kernel Density&quot;</span><span class="p">:</span> <span class="n">mean_log_density</span><span class="p">,</span>
+            <span class="c1"># volume of feature space</span>
+            <span class="c1">#&#39;Volume&#39;: volume,</span>
+            <span class="c1"># Manifold complexity</span>
+            <span class="s2">&quot;Isomap Reconstruction Error&quot;</span><span class="p">:</span> <span class="n">complexity</span><span class="p">,</span>
+            <span class="c1"># Fractal dimension</span>
+            <span class="s2">&quot;Fractal dimension&quot;</span><span class="p">:</span> <span class="n">fractal_dim</span><span class="p">,</span>  <span class="c1"># calculated via Higuchi Dimension</span>
+            <span class="c1">#&#39;Entropy&#39;: y_entropy,</span>
+            <span class="s2">&quot;Entropy&quot;</span><span class="p">:</span> <span class="n">avg_y_entropy</span><span class="p">,</span>
+            <span class="s2">&quot;std_entropy&quot;</span><span class="p">:</span> <span class="n">std_y_entropy</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="n">transposed</span> <span class="o">=</span> <span class="n">summary_df</span><span class="o">.</span><span class="n">T</span>
-    <span class="c1">#transposed.to_csv(&#39;DataSetEvaluation.csv&#39;, sep=&#39;\t&#39;, index=False)</span>
-    <span class="c1">#print(transposed)</span>
+    <span class="c1"># transposed.to_csv(&#39;DataSetEvaluation.csv&#39;, sep=&#39;\t&#39;, index=False)</span>
+    <span class="c1"># print(transposed)</span>
     <span class="k">return</span> <span class="n">transposed</span></div>
+
 
 
 <span class="c1"># evaluate(df,y)</span>

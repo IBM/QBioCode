@@ -50,7 +50,40 @@ Explore QSage, an intelligent meta-learning system that predicts which machine l
 
 ---
 
-### 4. Quantum Projection Learning (QPL)
+### 4. Quantum Ensemble Learning
+
+Learn how to use quantum ensemble methods to improve classification performance by leveraging quantum superposition to evaluate multiple training set configurations simultaneously. This tutorial demonstrates two quantum ensemble approaches.
+
+<a href="tutorials/QEnsemble/QEnsemble_example_blobs.html">📓 <strong>View Tutorial Notebook</strong></a>
+
+**What You'll Learn:**
+- Generate blob datasets for binary classification
+- Implement fixed swap-based quantum ensemble method
+- Implement random unitary-based quantum ensemble method
+- Use quantum SWAP test for cosine similarity measurement
+- Compare quantum ensemble with classical baselines (Random Forest, XGBoost)
+- Evaluate performance using accuracy and Brier score metrics
+- Understand quantum superposition for ensemble learning
+
+**Key Concepts:**
+- Quantum ensemble learning via superposition
+- SWAP test for quantum state comparison
+- Controlled-SWAP operations for deterministic data rearrangement
+- Haar-random unitaries for general mixing
+- One-hot encoding for quantum state preparation
+- Quantum advantage in ensemble methods
+
+**Methods:**
+1. **Swap Method**: Uses fixed controlled-SWAP operations to create deterministic permutations of training data
+2. **Random Unitary Method**: Applies Haar-random unitary transformations for more general data mixing
+
+**References:**
+- Macaluso et al. (2023) - "A variational algorithm for quantum neural networks"
+- Rhrissorrakrai et al. (2025) - "Quantum Ensemble Learning" (arXiv:2506.02213)
+
+---
+
+### 5. Quantum Projection Learning (QPL)
 
 Learn about Quantum Projection Learning (QPL), a technique that combines quantum feature maps with multiple classical machine learning algorithms. This comprehensive tutorial demonstrates how to systematically evaluate quantum-enhanced features across different learners.
 
@@ -82,7 +115,7 @@ Learn about Quantum Projection Learning (QPL), a technique that combines quantum
 
 ---
 
-### 5. Projected Quantum Kernel (PQK) - Ovarian Cancer Survival Prediction
+### 6. Projected Quantum Kernel (PQK) - Ovarian Cancer Survival Prediction
 
 Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics data for survival prediction. This advanced tutorial demonstrates quantum-enhanced machine learning on multi-omics ovarian cancer data from the Multi-Omics Cancer Benchmark (TCGA preprocessed data).
 

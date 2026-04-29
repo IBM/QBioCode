@@ -398,12 +398,13 @@
 <span class="sd">machine learning algorithms on complex non-linearly separable patterns.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 
 <div class="viewcode-block" id="make_spirals">
@@ -411,10 +412,10 @@
 <span class="k">def</span><span class="w"> </span><span class="nf">make_spirals</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate an n-dimensional dataset of intertwined spirals.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Creates spiral patterns in n-dimensional space where each class forms</span>
 <span class="sd">    a distinct spiral arm. Supports dimensions 3, 6, 9, and 12.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_samples : int, default=5000</span>
@@ -425,7 +426,7 @@
 <span class="sd">        Standard deviation of Gaussian noise added to each dimension.</span>
 <span class="sd">    dim : int, default=3</span>
 <span class="sd">        Dimensionality of the output space (must be 3, 6, 9, or 12).</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    X : ndarray of shape (n_samples, dim)</span>
@@ -442,30 +443,36 @@
         <span class="n">x</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
         <span class="n">y_</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
         <span class="n">z</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">dim</span><span class="o">==</span><span class="mi">3</span><span class="p">:</span>
-            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">z</span><span class="p">]))</span> <span class="c1"># any new dimensions need to be added to this list</span>
-        
-        <span class="c1"># to add more dimensions, apparently you would just keep adding &#39;t&#39; variable from above, to each new dimension, </span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">z</span><span class="p">])</span>
+            <span class="p">)</span>  <span class="c1"># any new dimensions need to be added to this list</span>
+
+        <span class="c1"># to add more dimensions, apparently you would just keep adding &#39;t&#39; variable from above, to each new dimension,</span>
         <span class="c1"># as seen below. The question is, how can we iteratively do this while maintaining the binary classification</span>
-        <span class="c1"># that this for loop is creating? </span>
+        <span class="c1"># that this for loop is creating?</span>
         <span class="c1"># nesting a loop iterating over the number of dimensions doesn&#39;t really work from what I&#39;m seeing. so far</span>
         <span class="c1"># However, manually adding repeats of the same 3Ds, does work, as seen below -- is this correct?</span>
-        
-    <span class="c1"># for j in range(dim-3): # for anything above the first 3D</span>
-        <span class="k">if</span> <span class="n">dim</span><span class="o">==</span><span class="mi">6</span><span class="p">:</span>
+
+        <span class="c1"># for j in range(dim-3): # for anything above the first 3D</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
             <span class="n">new_d1</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d2</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d3</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
-            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">new_d1</span><span class="p">,</span> <span class="n">new_d2</span><span class="p">,</span> <span class="n">new_d3</span><span class="p">]))</span> <span class="c1"># any new dimensions need to be added to this list</span>
-        <span class="k">if</span> <span class="n">dim</span><span class="o">==</span><span class="mi">9</span><span class="p">:</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">new_d1</span><span class="p">,</span> <span class="n">new_d2</span><span class="p">,</span> <span class="n">new_d3</span><span class="p">])</span>
+            <span class="p">)</span>  <span class="c1"># any new dimensions need to be added to this list</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
             <span class="n">new_d1</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d2</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d3</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d4</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d5</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d6</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
-            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">new_d1</span><span class="p">,</span> <span class="n">new_d2</span><span class="p">,</span> <span class="n">new_d3</span><span class="p">,</span> <span class="n">new_d4</span><span class="p">,</span> <span class="n">new_d5</span><span class="p">,</span> <span class="n">new_d6</span><span class="p">]))</span> <span class="c1"># any new dimensions need to be added to this list</span>
-        <span class="k">if</span> <span class="n">dim</span><span class="o">==</span><span class="mi">12</span><span class="p">:</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">new_d1</span><span class="p">,</span> <span class="n">new_d2</span><span class="p">,</span> <span class="n">new_d3</span><span class="p">,</span> <span class="n">new_d4</span><span class="p">,</span> <span class="n">new_d5</span><span class="p">,</span> <span class="n">new_d6</span><span class="p">])</span>
+            <span class="p">)</span>  <span class="c1"># any new dimensions need to be added to this list</span>
+        <span class="k">if</span> <span class="n">dim</span> <span class="o">==</span> <span class="mi">12</span><span class="p">:</span>
             <span class="n">new_d1</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d2</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d3</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
@@ -475,7 +482,24 @@
             <span class="n">new_d7</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d8</span> <span class="o">=</span> <span class="n">t</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
             <span class="n">new_d9</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">noise</span><span class="p">,</span> <span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">)</span>
-            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">([</span><span class="n">x</span><span class="p">,</span> <span class="n">y_</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">new_d1</span><span class="p">,</span> <span class="n">new_d2</span><span class="p">,</span> <span class="n">new_d3</span><span class="p">,</span> <span class="n">new_d4</span><span class="p">,</span> <span class="n">new_d5</span><span class="p">,</span> <span class="n">new_d6</span><span class="p">,</span> <span class="n">new_d7</span><span class="p">,</span> <span class="n">new_d8</span><span class="p">,</span> <span class="n">new_d9</span><span class="p">]))</span>
+            <span class="n">X</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">(</span>
+                    <span class="p">[</span>
+                        <span class="n">x</span><span class="p">,</span>
+                        <span class="n">y_</span><span class="p">,</span>
+                        <span class="n">z</span><span class="p">,</span>
+                        <span class="n">new_d1</span><span class="p">,</span>
+                        <span class="n">new_d2</span><span class="p">,</span>
+                        <span class="n">new_d3</span><span class="p">,</span>
+                        <span class="n">new_d4</span><span class="p">,</span>
+                        <span class="n">new_d5</span><span class="p">,</span>
+                        <span class="n">new_d6</span><span class="p">,</span>
+                        <span class="n">new_d7</span><span class="p">,</span>
+                        <span class="n">new_d8</span><span class="p">,</span>
+                        <span class="n">new_d9</span><span class="p">,</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
         <span class="n">y</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">n_samples</span> <span class="o">//</span> <span class="n">n_classes</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">X</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></div>
@@ -487,6 +511,7 @@
 <span class="n">N_CLASSES</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
 <span class="n">NOISE</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">]</span>
 <span class="n">DIM</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">]</span>
+
 
 <div class="viewcode-block" id="generate_spirals_datasets">
 <a class="viewcode-back" href="../../../api/qbiocode.data_generation.html#qbiocode.generate_spirals_datasets">[docs]</a>
@@ -500,12 +525,12 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate multiple n-dimensional spiral datasets with varying parameters.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Creates a series of high-dimensional datasets where samples form intertwined</span>
 <span class="sd">    spiral patterns, providing challenging non-linearly separable multi-class</span>
 <span class="sd">    classification problems. Each configuration varies the number of samples,</span>
 <span class="sd">    classes, noise level, and dimensionality.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_s : list of int, default=range(100, 300, 50)</span>
@@ -520,20 +545,20 @@
 <span class="sd">        Directory path where datasets and configuration files will be saved.</span>
 <span class="sd">    random_state : int, default=42</span>
 <span class="sd">        Random seed for reproducibility.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    None</span>
 <span class="sd">        Saves CSV files for each dataset configuration and a JSON file with</span>
 <span class="sd">        all configuration parameters.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    - Each dataset is saved as &#39;spirals_data-{i}.csv&#39; where i is the configuration number</span>
 <span class="sd">    - Configuration parameters are saved in &#39;dataset_config.json&#39;</span>
 <span class="sd">    - The last column &#39;class&#39; contains class labels</span>
 <span class="sd">    - Spiral patterns become increasingly complex in higher dimensions</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from qbiocode.data_generation import generate_spirals_datasets</span>
@@ -541,12 +566,12 @@
 <span class="sd">    Generating spirals dataset...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating spirals dataset...&quot;</span><span class="p">)</span>
-    
+
     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">save_path</span> <span class="o">=</span> <span class="s1">&#39;spirals_data&#39;</span>
-    
+        <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;spirals_data&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_path</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span>
 
@@ -558,41 +583,39 @@
 
     <span class="n">dataset_config</span> <span class="o">=</span> <span class="p">{}</span>
 
-      <span class="c1"># populate all the configs with the corresponding argument values</span>
+    <span class="c1"># populate all the configs with the corresponding argument values</span>
     <span class="k">for</span> <span class="n">n_s</span><span class="p">,</span> <span class="n">n_c</span><span class="p">,</span> <span class="n">n_n</span><span class="p">,</span> <span class="n">n_d</span> <span class="ow">in</span> <span class="n">configurations</span><span class="p">:</span>
-            <span class="n">config</span> <span class="o">=</span> <span class="s2">&quot;samples=</span><span class="si">{}</span><span class="s2">, classes=</span><span class="si">{}</span><span class="s2">, noise=</span><span class="si">{}</span><span class="s2">, dimensions=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">n_s</span><span class="p">,</span> <span class="n">n_c</span><span class="p">,</span> <span class="n">n_n</span><span class="p">,</span> <span class="n">n_d</span>
-            <span class="p">)</span>
-            <span class="c1"># print(count_configs)</span>
-            
-            <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_spirals</span><span class="p">(</span>
-                <span class="n">n_samples</span><span class="o">=</span><span class="n">n_s</span><span class="p">,</span>
-                <span class="n">n_classes</span><span class="o">=</span><span class="n">n_c</span><span class="p">,</span>
-                <span class="n">noise</span><span class="o">=</span><span class="n">n_n</span><span class="p">,</span>
-                <span class="n">dim</span><span class="o">=</span><span class="n">n_d</span>
-            <span class="p">)</span>
-            <span class="c1"># print(&quot;Configuration {}/{}: {}&quot;.format(count_configs, len(configurations), config))</span>
-            <span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">dataset</span><span class="p">[</span><span class="s1">&#39;class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;dataset_config.json&#39;</span> <span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
-                <span class="n">dataset_config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;spirals_data-</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">):</span>
-                <span class="p">{</span><span class="s1">&#39;n_samples&#39;</span><span class="p">:</span> <span class="n">n_s</span><span class="p">,</span>
-                <span class="s1">&#39;noise&#39;</span><span class="p">:</span> <span class="n">n_n</span><span class="p">,</span>
-                <span class="s1">&#39;dimensions&#39;</span><span class="p">:</span> <span class="n">n_d</span>
-                <span class="p">}})</span>  
-                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset_config</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> 
-            <span class="n">new_dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;spirals_data-</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">count_configs</span> <span class="o">+=</span> <span class="mi">1</span>
-            
-            <span class="c1"># plot the last 3 dimensions in each case</span>
-            <span class="c1"># fig = plt.figure()</span>
-            <span class="c1"># ax = fig.add_subplot(111, projection=&#39;3d&#39;)</span>
-            <span class="c1"># ax.scatter(X[:, n_d-3], X[:, n_d-2],X[:, n_d-1], c=y, cmap=&#39;viridis&#39;)</span>
-            <span class="c1"># plt.savefig(&#39;spirals_data/spirals_data-{}.png&#39;.format(count_configs))</span>
-            <span class="c1">#print(X.shape)</span>
-            <span class="c1">#print(y.shape)</span>
-    <span class="k">return</span></div>
+        <span class="n">config</span> <span class="o">=</span> <span class="s2">&quot;samples=</span><span class="si">{}</span><span class="s2">, classes=</span><span class="si">{}</span><span class="s2">, noise=</span><span class="si">{}</span><span class="s2">, dimensions=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">n_c</span><span class="p">,</span> <span class="n">n_n</span><span class="p">,</span> <span class="n">n_d</span><span class="p">)</span>
+        <span class="c1"># print(count_configs)</span>
 
+        <span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">make_spirals</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_s</span><span class="p">,</span> <span class="n">n_classes</span><span class="o">=</span><span class="n">n_c</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">n_n</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">n_d</span><span class="p">)</span>
+        <span class="c1"># print(&quot;Configuration {}/{}: {}&quot;.format(count_configs, len(configurations), config))</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="p">[</span><span class="s2">&quot;class&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;dataset_config.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">dataset_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;spirals_data-</span><span class="si">{}</span><span class="s2">.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">):</span> <span class="p">{</span>
+                        <span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="n">n_s</span><span class="p">,</span>
+                        <span class="s2">&quot;noise&quot;</span><span class="p">:</span> <span class="n">n_n</span><span class="p">,</span>
+                        <span class="s2">&quot;dimensions&quot;</span><span class="p">:</span> <span class="n">n_d</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset_config</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">new_dataset</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;spirals_data-</span><span class="si">{}</span><span class="s2">.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">count_configs</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># plot the last 3 dimensions in each case</span>
+        <span class="c1"># fig = plt.figure()</span>
+        <span class="c1"># ax = fig.add_subplot(111, projection=&#39;3d&#39;)</span>
+        <span class="c1"># ax.scatter(X[:, n_d-3], X[:, n_d-2],X[:, n_d-1], c=y, cmap=&#39;viridis&#39;)</span>
+        <span class="c1"># plt.savefig(&#39;spirals_data/spirals_data-{}.png&#39;.format(count_configs))</span>
+        <span class="c1"># print(X.shape)</span>
+        <span class="c1"># print(y.shape)</span>
+    <span class="k">return</span></div>
 
 </pre></div>
 

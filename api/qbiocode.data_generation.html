@@ -460,6 +460,142 @@ by varying the specified parameters.</p>
 </dd></dl>
 
 </section>
+<section id="module-qbiocode.data_generation.make_blobs">
+<span id="qbiocode-data-generation-make-blobs-module"></span><h2>qbiocode.data_generation.make_blobs module<a class="headerlink" href="#module-qbiocode.data_generation.make_blobs" title="Link to this heading">#</a></h2>
+<p>Generate synthetic blob (Gaussian cluster) datasets.</p>
+<p>This module creates multiple configurations of blob datasets with varying
+numbers of samples, features, centers, and cluster standard deviations,
+useful for testing clustering and classification algorithms.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.data_generation.make_blobs.generate_blobs_datasets">
+<span class="sig-name descname"><span class="pre">generate_blobs_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_std</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/data_generation/make_blobs.html#generate_blobs_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.data_generation.make_blobs.generate_blobs_datasets" title="Link to this definition">#</a></dt>
+<dd><p>Generate multiple blob (Gaussian cluster) datasets with varying parameters.</p>
+<p>Creates a series of synthetic datasets consisting of isotropic Gaussian blobs
+for clustering and classification tasks. Each configuration varies the number
+of samples, features, cluster centers, and cluster spread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_samples</strong> (<em>list</em><em> of </em><em>int</em>) – List of sample sizes to generate for each configuration.
+Example: [100, 200, 300]</p></li>
+<li><p><strong>n_features</strong> (<em>list</em><em> of </em><em>int</em>) – List of feature dimensions to generate.
+Example: [2, 4, 8]</p></li>
+<li><p><strong>centers</strong> (<em>list</em><em> of </em><em>int</em>) – List of numbers of cluster centers (classes).
+Example: [2, 3, 4]</p></li>
+<li><p><strong>cluster_std</strong> (<em>list</em><em> of </em><em>float</em>) – List of standard deviations of the clusters.
+Example: [0.5, 1.0, 1.5, 2.0]</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory path to save generated datasets. If None, datasets are not saved.
+Default: None</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility.
+Default: 42</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Dictionary containing generated datasets with keys as configuration strings
+and values as tuples of (X, y) where:
+- X : pd.DataFrame, shape (n_samples, n_features)</p>
+<blockquote>
+<div><p>Feature matrix</p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>y<span class="classifier">pd.Series, shape (n_samples,)</span></dt><dd><p>Target labels</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Generates all combinations of input parameters</p></li>
+<li><p>Each blob is an isotropic Gaussian distribution</p></li>
+<li><p>Useful for testing classification and clustering algorithms</p></li>
+<li><p>Blobs are well-separated when cluster_std is small relative to center distances</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.data_generation</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_blobs_datasets</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate simple blob datasets</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datasets</span> <span class="o">=</span> <span class="n">generate_blobs_datasets</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">n_features</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">centers</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">cluster_std</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access a specific configuration</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">datasets</span><span class="p">[</span><span class="s1">&#39;n_samples_100_n_features_2_centers_2_cluster_std_1.0&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, Classes: </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">Shape: (100, 2), Classes: 2</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save datasets to disk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datasets</span> <span class="o">=</span> <span class="n">generate_blobs_datasets</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">n_features</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">centers</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">cluster_std</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;./data/blobs&#39;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_circles_datasets</span></code></dt><dd><p>Generate concentric circles</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_moons_datasets</span></code></dt><dd><p>Generate interleaving half-circles</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_classification_datasets</span></code></dt><dd><p>Generate high-dimensional classification data</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id1" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>Pedregosa et al., “Scikit-learn: Machine Learning in Python”,
+JMLR 12, pp. 2825-2830, 2011.</p>
+</aside>
+</aside>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.data_generation.make_blobs.generate_default_blobs_datasets">
+<span class="sig-name descname"><span class="pre">generate_default_blobs_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/data_generation/make_blobs.html#generate_default_blobs_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.data_generation.make_blobs.generate_default_blobs_datasets" title="Link to this definition">#</a></dt>
+<dd><p>Generate blob datasets with default parameter configurations.</p>
+<p>Convenience function that generates a standard set of blob datasets
+using predefined parameter ranges suitable for most testing scenarios.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory path to save generated datasets. If None, datasets are not saved.
+Default: None</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility.
+Default: 42</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing generated datasets.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.data_generation</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_default_blobs_datasets</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datasets</span> <span class="o">=</span> <span class="n">generate_default_blobs_datasets</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span><span class="si">}</span><span class="s2"> dataset configurations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
 <section id="module-qbiocode.data_generation.make_circles">
 <span id="qbiocode-data-generation-make-circles-module"></span><h2>qbiocode.data_generation.make_circles module<a class="headerlink" href="#module-qbiocode.data_generation.make_circles" title="Link to this heading">#</a></h2>
 <p>Generate synthetic concentric circles datasets for binary classification tasks.</p>
@@ -851,6 +987,7 @@ all configuration parameters.</p>
 machine learning algorithms. Each function creates multiple dataset configurations
 with varying parameters, useful for benchmarking and evaluation.</p>
 <p>Available dataset generators:
+- generate_blobs_datasets: Isotropic Gaussian blobs (clusters)
 - generate_circles_datasets: 2D concentric circles
 - generate_moons_datasets: 2D interleaving half-circles
 - generate_classification_datasets: High-dimensional multi-class data
@@ -858,6 +995,105 @@ with varying parameters, useful for benchmarking and evaluation.</p>
 - generate_spheres_datasets: N-dimensional concentric spheres
 - generate_spirals_datasets: N-dimensional intertwined spirals
 - generate_swiss_roll_datasets: 3D Swiss roll manifold</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.data_generation.generate_blobs_datasets">
+<span class="sig-name descname"><span class="pre">generate_blobs_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_features</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">centers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster_std</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/data_generation/make_blobs.html#generate_blobs_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.data_generation.generate_blobs_datasets" title="Link to this definition">#</a></dt>
+<dd><p>Generate multiple blob (Gaussian cluster) datasets with varying parameters.</p>
+<p>Creates a series of synthetic datasets consisting of isotropic Gaussian blobs
+for clustering and classification tasks. Each configuration varies the number
+of samples, features, cluster centers, and cluster spread.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_samples</strong> (<em>list</em><em> of </em><em>int</em>) – List of sample sizes to generate for each configuration.
+Example: [100, 200, 300]</p></li>
+<li><p><strong>n_features</strong> (<em>list</em><em> of </em><em>int</em>) – List of feature dimensions to generate.
+Example: [2, 4, 8]</p></li>
+<li><p><strong>centers</strong> (<em>list</em><em> of </em><em>int</em>) – List of numbers of cluster centers (classes).
+Example: [2, 3, 4]</p></li>
+<li><p><strong>cluster_std</strong> (<em>list</em><em> of </em><em>float</em>) – List of standard deviations of the clusters.
+Example: [0.5, 1.0, 1.5, 2.0]</p></li>
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory path to save generated datasets. If None, datasets are not saved.
+Default: None</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility.
+Default: 42</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><p>Dictionary containing generated datasets with keys as configuration strings
+and values as tuples of (X, y) where:
+- X : pd.DataFrame, shape (n_samples, n_features)</p>
+<blockquote>
+<div><p>Feature matrix</p>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>y<span class="classifier">pd.Series, shape (n_samples,)</span></dt><dd><p>Target labels</p>
+</dd>
+</dl>
+</li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>Generates all combinations of input parameters</p></li>
+<li><p>Each blob is an isotropic Gaussian distribution</p></li>
+<li><p>Useful for testing classification and clustering algorithms</p></li>
+<li><p>Blobs are well-separated when cluster_std is small relative to center distances</p></li>
+</ul>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.data_generation</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_blobs_datasets</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Generate simple blob datasets</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datasets</span> <span class="o">=</span> <span class="n">generate_blobs_datasets</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">n_features</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">centers</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">cluster_std</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Access a specific configuration</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">datasets</span><span class="p">[</span><span class="s1">&#39;n_samples_100_n_features_2_centers_2_cluster_std_1.0&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Shape: </span><span class="si">{</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, Classes: </span><span class="si">{</span><span class="n">y</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">Shape: (100, 2), Classes: 2</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Save datasets to disk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datasets</span> <span class="o">=</span> <span class="n">generate_blobs_datasets</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">n_samples</span><span class="o">=</span><span class="p">[</span><span class="mi">100</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">n_features</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">centers</span><span class="o">=</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">cluster_std</span><span class="o">=</span><span class="p">[</span><span class="mf">1.0</span><span class="p">],</span>
+<span class="gp">... </span>    <span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;./data/blobs&#39;</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#qbiocode.data_generation.generate_circles_datasets" title="qbiocode.data_generation.generate_circles_datasets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_circles_datasets</span></code></a></dt><dd><p>Generate concentric circles</p>
+</dd>
+<dt><a class="reference internal" href="#qbiocode.data_generation.generate_moons_datasets" title="qbiocode.data_generation.generate_moons_datasets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_moons_datasets</span></code></a></dt><dd><p>Generate interleaving half-circles</p>
+</dd>
+<dt><a class="reference internal" href="#qbiocode.data_generation.generate_classification_datasets" title="qbiocode.data_generation.generate_classification_datasets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_classification_datasets</span></code></a></dt><dd><p>Generate high-dimensional classification data</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">References</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></span>
+<p>Pedregosa et al., “Scikit-learn: Machine Learning in Python”,
+JMLR 12, pp. 2825-2830, 2011.</p>
+</aside>
+</aside>
+</dd></dl>
+
 <dl class="py function">
 <dt class="sig sig-object py" id="qbiocode.data_generation.generate_circles_datasets">
 <span class="sig-name descname"><span class="pre">generate_circles_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[100,</span> <span class="pre">120,</span> <span class="pre">140,</span> <span class="pre">160,</span> <span class="pre">180,</span> <span class="pre">200,</span> <span class="pre">220,</span> <span class="pre">240,</span> <span class="pre">260,</span> <span class="pre">280]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">noise</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.1,</span> <span class="pre">0.2,</span> <span class="pre">0.3,</span> <span class="pre">0.4,</span> <span class="pre">0.5,</span> <span class="pre">0.6,</span> <span class="pre">0.7,</span> <span class="pre">0.8,</span> <span class="pre">0.9]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/data_generation/make_circles.html#generate_circles_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.data_generation.generate_circles_datasets" title="Link to this definition">#</a></dt>
@@ -940,6 +1176,36 @@ all configuration parameters.</p>
 <span class="gp">... </span>    <span class="n">weights</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]],</span> <span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;data&#39;</span>
 <span class="gp">... </span><span class="p">)</span>
 <span class="go">Generating classes dataset...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.data_generation.generate_default_blobs_datasets">
+<span class="sig-name descname"><span class="pre">generate_default_blobs_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">save_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">random_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">42</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/data_generation/make_blobs.html#generate_default_blobs_datasets"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.data_generation.generate_default_blobs_datasets" title="Link to this definition">#</a></dt>
+<dd><p>Generate blob datasets with default parameter configurations.</p>
+<p>Convenience function that generates a standard set of blob datasets
+using predefined parameter ranges suitable for most testing scenarios.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory path to save generated datasets. If None, datasets are not saved.
+Default: None</p></li>
+<li><p><strong>random_state</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility.
+Default: 42</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing generated datasets.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.data_generation</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_default_blobs_datasets</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">datasets</span> <span class="o">=</span> <span class="n">generate_default_blobs_datasets</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Generated </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">datasets</span><span class="p">)</span><span class="si">}</span><span class="s2"> dataset configurations&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1183,6 +1449,11 @@ all configuration parameters.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.generator.generate_data"><code class="docutils literal notranslate"><span class="pre">generate_data()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.data_generation.make_blobs">qbiocode.data_generation.make_blobs module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.make_blobs.generate_blobs_datasets"><code class="docutils literal notranslate"><span class="pre">generate_blobs_datasets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.make_blobs.generate_default_blobs_datasets"><code class="docutils literal notranslate"><span class="pre">generate_default_blobs_datasets()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.data_generation.make_circles">qbiocode.data_generation.make_circles module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.make_circles.generate_circles_datasets"><code class="docutils literal notranslate"><span class="pre">generate_circles_datasets()</span></code></a></li>
 </ul>
@@ -1214,8 +1485,10 @@ all configuration parameters.</p>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.data_generation">Module contents</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.generate_blobs_datasets"><code class="docutils literal notranslate"><span class="pre">generate_blobs_datasets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.generate_circles_datasets"><code class="docutils literal notranslate"><span class="pre">generate_circles_datasets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.generate_classification_datasets"><code class="docutils literal notranslate"><span class="pre">generate_classification_datasets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.generate_default_blobs_datasets"><code class="docutils literal notranslate"><span class="pre">generate_default_blobs_datasets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.generate_moons_datasets"><code class="docutils literal notranslate"><span class="pre">generate_moons_datasets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.generate_s_curve_datasets"><code class="docutils literal notranslate"><span class="pre">generate_s_curve_datasets()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.data_generation.generate_spheres_datasets"><code class="docutils literal notranslate"><span class="pre">generate_spheres_datasets()</span></code></a></li>

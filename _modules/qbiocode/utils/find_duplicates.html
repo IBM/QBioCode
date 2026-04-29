@@ -397,9 +397,9 @@
 <span class="sd">useful for cleaning up redundant configuration files or identifying duplicate datasets.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Optional</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 
 <div class="viewcode-block" id="find_duplicate_files">
@@ -409,22 +409,22 @@
     <span class="n">file_pattern</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">ignore_empty_lines</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">case_sensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Find files with identical content in a directory.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Scans the specified directory for files and compares their content line by line.</span>
 <span class="sd">    Identifies files that have identical content, even if they have different names.</span>
 <span class="sd">    Optionally filters files by pattern and provides various comparison options.</span>
-<span class="sd">    </span>
+
 <span class="sd">    This is particularly useful for:</span>
-<span class="sd">    </span>
+
 <span class="sd">    - Finding duplicate configuration files (e.g., YAML, JSON)</span>
 <span class="sd">    - Identifying redundant experiment configurations</span>
 <span class="sd">    - Cleaning up duplicate datasets before batch processing</span>
 <span class="sd">    - Validating file uniqueness in automated workflows</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    directory : str</span>
@@ -438,13 +438,13 @@
 <span class="sd">        If True, comparison is case-sensitive. Default is True.</span>
 <span class="sd">    verbose : bool, optional</span>
 <span class="sd">        If True, print progress information during comparison. Default is False.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    List[Tuple[str, str]]</span>
 <span class="sd">        List of tuples, where each tuple contains paths of two duplicate files.</span>
 <span class="sd">        Returns empty list if no duplicates are found.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    FileNotFoundError</span>
@@ -453,17 +453,17 @@
 <span class="sd">        If the specified path is not a directory.</span>
 <span class="sd">    PermissionError</span>
 <span class="sd">        If files cannot be read due to permission issues.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Find all duplicate files in a directory:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; duplicates = find_duplicate_files(&quot;configs/&quot;)</span>
 <span class="sd">    &gt;&gt;&gt; if duplicates:</span>
 <span class="sd">    ...     print(f&quot;Found {len(duplicates)} duplicate pairs&quot;)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Find duplicate YAML configuration files:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; duplicates = find_duplicate_files(</span>
 <span class="sd">    ...     &quot;configs/qml_gridsearch/&quot;,</span>
 <span class="sd">    ...     file_pattern=&#39;.yaml&#39;,</span>
@@ -471,17 +471,17 @@
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; for file1, file2 in duplicates:</span>
 <span class="sd">    ...     print(f&quot;Duplicate: {file1} == {file2}&quot;)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Case-insensitive comparison:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; duplicates = find_duplicate_files(</span>
 <span class="sd">    ...     &quot;data/&quot;,</span>
 <span class="sd">    ...     file_pattern=&#39;.txt&#39;,</span>
 <span class="sd">    ...     case_sensitive=False</span>
 <span class="sd">    ... )</span>
-<span class="sd">    </span>
+
 <span class="sd">    Integration with QProfiler workflow:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; # Check for duplicate configs before batch processing</span>
 <span class="sd">    &gt;&gt;&gt; config_dir = &quot;configs/experiments/&quot;</span>
 <span class="sd">    &gt;&gt;&gt; duplicates = find_duplicate_files(config_dir, file_pattern=&#39;.yaml&#39;)</span>
@@ -491,7 +491,7 @@
 <span class="sd">    ...     for f1, f2 in duplicates:</span>
 <span class="sd">    ...         print(f&quot;  {os.path.basename(f1)} == {os.path.basename(f2)}&quot;)</span>
 <span class="sd">    ...     # Optionally remove duplicates or warn user</span>
-<span class="sd">    </span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    - Files are compared line by line after sorting (order-independent)</span>
@@ -499,7 +499,7 @@
 <span class="sd">    - Large files may consume significant memory during comparison</span>
 <span class="sd">    - Symbolic links are followed and treated as regular files</span>
 <span class="sd">    - Hidden files (starting with &#39;.&#39;) are included in comparison</span>
-<span class="sd">    </span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    find_string_in_files : Search for specific strings across multiple files</span>
@@ -508,10 +508,10 @@
     <span class="c1"># Validate input directory</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directory not found: </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path is not a directory: </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+
     <span class="c1"># Collect files to compare</span>
     <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
@@ -519,55 +519,57 @@
             <span class="c1"># Apply file pattern filter if specified</span>
             <span class="k">if</span> <span class="n">file_pattern</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">file_pattern</span><span class="p">):</span>
                 <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Comparing </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s2"> files in </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">file_pattern</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Filtering by pattern: </span><span class="si">{</span><span class="n">file_pattern</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+
     <span class="c1"># Find duplicates by comparing all pairs</span>
     <span class="n">duplicates</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">total_comparisons</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
-    
+
     <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">file1</span><span class="p">,</span> <span class="n">file2</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">verbose</span> <span class="ow">and</span> <span class="n">idx</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Progress: </span><span class="si">{</span><span class="n">idx</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">total_comparisons</span><span class="si">}</span><span class="s2"> comparisons&quot;</span><span class="p">)</span>
-        
+
         <span class="k">try</span><span class="p">:</span>
             <span class="c1"># Read and process file contents</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file1</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f1</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file1</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f1</span><span class="p">:</span>
                 <span class="n">content1</span> <span class="o">=</span> <span class="n">f1</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file2</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file2</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
                 <span class="n">content2</span> <span class="o">=</span> <span class="n">f2</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-            
+
             <span class="c1"># Filter empty lines if requested</span>
             <span class="k">if</span> <span class="n">ignore_empty_lines</span><span class="p">:</span>
                 <span class="n">content1</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">content1</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
                 <span class="n">content2</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">content2</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
-            
+
             <span class="c1"># Apply case sensitivity</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">case_sensitive</span><span class="p">:</span>
                 <span class="n">content1</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">content1</span><span class="p">]</span>
                 <span class="n">content2</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">content2</span><span class="p">]</span>
-            
+
             <span class="c1"># Sort for order-independent comparison</span>
             <span class="n">content1_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">content1</span><span class="p">)</span>
             <span class="n">content2_sorted</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">content2</span><span class="p">)</span>
-            
+
             <span class="c1"># Compare contents</span>
             <span class="k">if</span> <span class="n">content1_sorted</span> <span class="o">==</span> <span class="n">content2_sorted</span><span class="p">:</span>
                 <span class="n">duplicates</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">file1</span><span class="p">,</span> <span class="n">file2</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Duplicate found: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span><span class="si">}</span><span class="s2"> == </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;  Duplicate found: </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file1</span><span class="p">)</span><span class="si">}</span><span class="s2"> == </span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file2</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="p">)</span>
+
         <span class="k">except</span> <span class="p">(</span><span class="ne">UnicodeDecodeError</span><span class="p">,</span> <span class="ne">PermissionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Warning: Could not read </span><span class="si">{</span><span class="n">file1</span><span class="si">}</span><span class="s2"> or </span><span class="si">{</span><span class="n">file2</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
-    
+
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Found </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">duplicates</span><span class="p">)</span><span class="si">}</span><span class="s2"> duplicate file pairs&quot;</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">duplicates</span></div>
 
 </pre></div>

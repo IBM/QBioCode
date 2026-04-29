@@ -394,25 +394,46 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="c1"># ====== Scikit-learn imports ======</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.multiclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneVsOneClassifier</span><span class="p">,</span> <span class="n">OneVsRestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.svm</span><span class="w"> </span><span class="kn">import</span> <span class="n">SVC</span>
 
 <span class="c1"># ====== Additional local imports ======</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.evaluation.model_evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">modeleval</span>
-    
+
+<span class="c1"># ====== Scikit-learn imports ======</span>
+
+
 <div class="viewcode-block" id="compute_svc">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_svc">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_svc</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;SVC&#39;</span><span class="p">,</span> <span class="n">data_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="s1">&#39;rbf&#39;</span><span class="p">,</span> 
-                <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="s1">&#39;scale&#39;</span><span class="p">,</span> <span class="n">coef0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">shrinking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">probability</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">cache_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> 
-                <span class="n">class_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">decision_function_shape</span><span class="o">=</span><span class="s1">&#39;ovr&#39;</span><span class="p">,</span> <span class="n">break_ties</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">        </span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; This function generates a model using a Support Vector Classifier (SVC) method as implemented in</span>
-<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html&gt;`_.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_svc</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SVC&quot;</span><span class="p">,</span>
+    <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">C</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;rbf&quot;</span><span class="p">,</span>
+    <span class="n">degree</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="s2">&quot;scale&quot;</span><span class="p">,</span>
+    <span class="n">coef0</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">shrinking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">probability</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">tol</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span>
+    <span class="n">cache_size</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+    <span class="n">class_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">max_iter</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">decision_function_shape</span><span class="o">=</span><span class="s2">&quot;ovr&quot;</span><span class="p">,</span>
+    <span class="n">break_ties</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function generates a model using a Support Vector Classifier (SVC) method as implemented in</span>
+<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html&gt;`__.</span>
 <span class="sd">    It takes in parameter arguments specified in the config.yaml file, but will use the default parameters specified above if none are passed.</span>
-<span class="sd">    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset. </span>
+<span class="sd">    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset.</span>
 <span class="sd">    The function returns the evaluation of the model on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model.</span>
 <span class="sd">    This function is designed to be used in a supervised learning context, where the goal is to classify data points.</span>
 
@@ -441,32 +462,59 @@
 <span class="sd">        random_state (int or None): Controls the randomness of the estimator, default is None.</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken to train and validate the model.</span>
-<span class="sd">    &quot;&quot;&quot;</span>    
-        
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">svc</span> <span class="o">=</span> <span class="n">OneVsOneClassifier</span><span class="p">(</span><span class="n">SVC</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="n">kernel</span><span class="p">,</span> <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span> <span class="n">coef0</span><span class="o">=</span><span class="n">coef0</span><span class="p">,</span> <span class="n">shrinking</span><span class="o">=</span><span class="n">shrinking</span><span class="p">,</span> 
-                                 <span class="n">probability</span><span class="o">=</span><span class="n">probability</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">cache_size</span><span class="o">=</span><span class="n">cache_size</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="n">class_weight</span><span class="p">,</span> 
-                                 <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span> <span class="n">decision_function_shape</span><span class="o">=</span><span class="n">decision_function_shape</span><span class="p">,</span> 
-                                 <span class="n">break_ties</span><span class="o">=</span><span class="n">break_ties</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">))</span>
+    <span class="n">svc</span> <span class="o">=</span> <span class="n">OneVsOneClassifier</span><span class="p">(</span>
+        <span class="n">SVC</span><span class="p">(</span>
+            <span class="n">C</span><span class="o">=</span><span class="n">C</span><span class="p">,</span>
+            <span class="n">kernel</span><span class="o">=</span><span class="n">kernel</span><span class="p">,</span>
+            <span class="n">degree</span><span class="o">=</span><span class="n">degree</span><span class="p">,</span>
+            <span class="n">gamma</span><span class="o">=</span><span class="n">gamma</span><span class="p">,</span>
+            <span class="n">coef0</span><span class="o">=</span><span class="n">coef0</span><span class="p">,</span>
+            <span class="n">shrinking</span><span class="o">=</span><span class="n">shrinking</span><span class="p">,</span>
+            <span class="n">probability</span><span class="o">=</span><span class="n">probability</span><span class="p">,</span>
+            <span class="n">tol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span>
+            <span class="n">cache_size</span><span class="o">=</span><span class="n">cache_size</span><span class="p">,</span>
+            <span class="n">class_weight</span><span class="o">=</span><span class="n">class_weight</span><span class="p">,</span>
+            <span class="n">max_iter</span><span class="o">=</span><span class="n">max_iter</span><span class="p">,</span>
+            <span class="n">decision_function_shape</span><span class="o">=</span><span class="n">decision_function_shape</span><span class="p">,</span>
+            <span class="n">break_ties</span><span class="o">=</span><span class="n">break_ties</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
     <span class="c1"># Fit the training datset</span>
     <span class="n">model_fit</span> <span class="o">=</span> <span class="n">svc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
     <span class="n">model_params</span> <span class="o">=</span> <span class="n">model_fit</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
     <span class="c1"># Validate the model in test dataset and calculate accuracy</span>
-    <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">svc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span> 
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">svc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span>
+        <span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
+    <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="compute_svc_opt">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_svc_opt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_svc_opt</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;SVC&#39;</span><span class="p">,</span>
-                    <span class="n">C</span><span class="o">=</span><span class="p">[],</span> <span class="n">gamma</span><span class="o">=</span><span class="p">[],</span> <span class="n">kernel</span><span class="o">=</span><span class="p">[]):</span>
-<span class="w">        </span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; This function generates a model using a Support Vector Classifier (SVC) method as implemented in</span>
-<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html&gt;`_.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_svc_opt</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;SVC&quot;</span><span class="p">,</span>
+    <span class="n">C</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">kernel</span><span class="o">=</span><span class="p">[],</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function generates a model using a Support Vector Classifier (SVC) method as implemented in</span>
+<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html&gt;`__.</span>
 <span class="sd">    It takes in parameter arguments specified in the config.yaml file, but will use the default parameters specified above if none are passed. The</span>
 <span class="sd">    combination of parameters that led to the best performance is saved and returned as best_params, which can then be used on similar</span>
 <span class="sd">    datasets, without having to run the grid search.</span>
-<span class="sd">    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset. </span>
+<span class="sd">    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset.</span>
 <span class="sd">    The function returns the evaluation of the model on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model across the grid search.</span>
 <span class="sd">    This function is designed to be used in a supervised learning context, where the goal is to classify data points.</span>
 
@@ -484,13 +532,10 @@
 <span class="sd">        kernel (list or str): Specifies the kernel type(s) to be used in the algorithm, default is an empty list.</span>
 <span class="sd">     Returns:</span>
 <span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken to train and validate the model across the grid search.</span>
-<span class="sd">    &quot;&quot;&quot;</span>   
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span>
-            <span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="n">gamma</span><span class="p">,</span>
-            <span class="s1">&#39;kernel&#39;</span><span class="p">:</span> <span class="n">kernel</span>
-            <span class="p">}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="n">C</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="n">gamma</span><span class="p">,</span> <span class="s2">&quot;kernel&quot;</span><span class="p">:</span> <span class="n">kernel</span><span class="p">}</span>
     <span class="c1"># Perform Grid Search to find the best parameters</span>
     <span class="n">grid_search</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">SVC</span><span class="p">(),</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
     <span class="n">grid_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
@@ -502,7 +547,7 @@
 
     <span class="c1"># Make predictions and calculate accuracy</span>
     <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">best_svc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">best_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">best_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 </pre></div>
 

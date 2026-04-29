@@ -397,13 +397,14 @@
 <span class="sd">for systematic hyperparameter tuning of quantum machine learning models.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">cast</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
 
 
 <div class="viewcode-block" id="generate_qml_experiment_configs">
@@ -424,15 +425,15 @@
     <span class="n">embeddings</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">data_sample_fraction</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
     <span class="n">used_files_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">random_seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">random_seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate YAML configuration files for quantum ML hyperparameter grid search.</span>
-<span class="sd">    </span>
+
 <span class="sd">    This function creates multiple configuration files by combining different</span>
 <span class="sd">    hyperparameter values for quantum machine learning models (QNN, VQC, QSVC).</span>
 <span class="sd">    Each configuration file can be used with QProfiler to run systematic experiments.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    template_config_path : str</span>
@@ -467,16 +468,16 @@
 <span class="sd">        Path to CSV file tracking previously used data files.</span>
 <span class="sd">    random_seed : int, optional</span>
 <span class="sd">        Random seed for reproducible file sampling.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Tuple[int, str]</span>
 <span class="sd">        Number of configuration files generated and path to used files CSV.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from qbiocode.utils import generate_qml_experiment_configs</span>
-<span class="sd">    &gt;&gt;&gt; </span>
+<span class="sd">    &gt;&gt;&gt;</span>
 <span class="sd">    &gt;&gt;&gt; # Generate configs for quantum model grid search</span>
 <span class="sd">    &gt;&gt;&gt; num_configs, used_files = generate_qml_experiment_configs(</span>
 <span class="sd">    ...     template_config_path=&#39;configs/config.yaml&#39;,</span>
@@ -488,7 +489,7 @@
 <span class="sd">    ...     data_sample_fraction=0.1  # Use 10% of files for testing</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; print(f&quot;Generated {num_configs} configuration files&quot;)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    - Quantum models (QNN, VQC, QSVC) don&#39;t support automated grid search</span>
@@ -498,24 +499,24 @@
 <span class="sd">        * QSVC uses only &#39;amp&#39; ansatz and &#39;COBYLA&#39; optimizer</span>
 <span class="sd">        * QNN/VQC don&#39;t use the C parameter</span>
 <span class="sd">    - Embedding is set to &#39;none&#39; when n_components &gt;= original feature count</span>
-<span class="sd">    </span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    qbiocode.apps.qprofiler : Main profiling application</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Set default hyperparameter values</span>
     <span class="k">if</span> <span class="n">qmethods</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">qmethods</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;qnn&#39;</span><span class="p">,</span> <span class="s1">&#39;vqc&#39;</span><span class="p">,</span> <span class="s1">&#39;qsvc&#39;</span><span class="p">]</span>
+        <span class="n">qmethods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;qnn&quot;</span><span class="p">,</span> <span class="s2">&quot;vqc&quot;</span><span class="p">,</span> <span class="s2">&quot;qsvc&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">reps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">reps</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">optimizers</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">optimizers</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;COBYLA&#39;</span><span class="p">,</span> <span class="s1">&#39;SPSA&#39;</span><span class="p">]</span>
+        <span class="n">optimizers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;COBYLA&quot;</span><span class="p">,</span> <span class="s2">&quot;SPSA&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">entanglements</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">entanglements</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="s1">&#39;full&#39;</span><span class="p">]</span>
+        <span class="n">entanglements</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;full&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">feature_maps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">feature_maps</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;ZZ&#39;</span><span class="p">]</span>
+        <span class="n">feature_maps</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;ZZ&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">ansatz_types</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">ansatz_types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;amp&#39;</span><span class="p">,</span> <span class="s1">&#39;esu2&#39;</span><span class="p">]</span>
+        <span class="n">ansatz_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;amp&quot;</span><span class="p">,</span> <span class="s2">&quot;esu2&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">n_components</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">n_components</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">Cs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -523,133 +524,154 @@
     <span class="k">if</span> <span class="n">max_iters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">max_iters</span> <span class="o">=</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">embeddings</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;pca&#39;</span><span class="p">,</span> <span class="s1">&#39;lle&#39;</span><span class="p">,</span> <span class="s1">&#39;isomap&#39;</span><span class="p">,</span> <span class="s1">&#39;spectral&#39;</span><span class="p">,</span> <span class="s1">&#39;umap&#39;</span><span class="p">,</span> <span class="s1">&#39;nmf&#39;</span><span class="p">]</span>
-    
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;pca&quot;</span><span class="p">,</span> <span class="s2">&quot;lle&quot;</span><span class="p">,</span> <span class="s2">&quot;isomap&quot;</span><span class="p">,</span> <span class="s2">&quot;spectral&quot;</span><span class="p">,</span> <span class="s2">&quot;umap&quot;</span><span class="p">,</span> <span class="s2">&quot;nmf&quot;</span><span class="p">]</span>
+
     <span class="c1"># Set random seed if provided</span>
     <span class="k">if</span> <span class="n">random_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_seed</span><span class="p">)</span>
-    
+
     <span class="c1"># Create output directory if it doesn&#39;t exist</span>
     <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    
+
     <span class="c1"># Set up used files tracking</span>
     <span class="k">if</span> <span class="n">used_files_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">used_files_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s1">&#39;used_data_files.csv&#39;</span><span class="p">)</span>
-    
+        <span class="n">used_files_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="s2">&quot;used_data_files.csv&quot;</span><span class="p">)</span>
+
     <span class="c1"># Generate all hyperparameter combinations</span>
-    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">[</span><span class="n">qmethods</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">optimizers</span><span class="p">,</span> <span class="n">entanglements</span><span class="p">,</span> <span class="n">feature_maps</span><span class="p">,</span> 
-                  <span class="n">ansatz_types</span><span class="p">,</span> <span class="n">n_components</span><span class="p">,</span> <span class="n">Cs</span><span class="p">,</span> <span class="n">max_iters</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">]</span>
-    
+    <span class="n">param_grid</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">qmethods</span><span class="p">,</span>
+        <span class="n">reps</span><span class="p">,</span>
+        <span class="n">optimizers</span><span class="p">,</span>
+        <span class="n">entanglements</span><span class="p">,</span>
+        <span class="n">feature_maps</span><span class="p">,</span>
+        <span class="n">ansatz_types</span><span class="p">,</span>
+        <span class="n">n_components</span><span class="p">,</span>
+        <span class="n">Cs</span><span class="p">,</span>
+        <span class="n">max_iters</span><span class="p">,</span>
+        <span class="n">embeddings</span><span class="p">,</span>
+    <span class="p">]</span>
+
     <span class="n">param_combinations</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-        <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="n">param_grid</span><span class="p">)),</span>
-        <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">,</span> <span class="s1">&#39;reps&#39;</span><span class="p">,</span> <span class="s1">&#39;local_optimizer&#39;</span><span class="p">,</span> <span class="s1">&#39;entanglement&#39;</span><span class="p">,</span> 
-                <span class="s1">&#39;feature_map&#39;</span><span class="p">,</span> <span class="s1">&#39;ansatz_type&#39;</span><span class="p">,</span> <span class="s1">&#39;n_components&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> 
-                <span class="s1">&#39;max_iter&#39;</span><span class="p">,</span> <span class="s1">&#39;embedding&#39;</span><span class="p">]</span>
+        <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">values</span><span class="p">)</span> <span class="k">for</span> <span class="n">values</span> <span class="ow">in</span> <span class="n">param_grid</span><span class="p">))),</span>
+        <span class="n">columns</span><span class="o">=</span><span class="p">[</span>
+            <span class="s2">&quot;method&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;reps&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;local_optimizer&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;entanglement&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;feature_map&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ansatz_type&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;n_components&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;C&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;max_iter&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;embedding&quot;</span><span class="p">,</span>
+        <span class="p">],</span>
     <span class="p">)</span>
-    
+
     <span class="c1"># Apply model-specific constraints</span>
-    <span class="n">param_combinations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">param_combinations</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;qnn&#39;</span><span class="p">,</span> <span class="s1">&#39;vqc&#39;</span><span class="p">]),</span> <span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
-    <span class="n">param_combinations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">param_combinations</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;qsvc&#39;</span><span class="p">]),</span> <span class="s1">&#39;ansatz_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;amp&#39;</span>
-    <span class="n">param_combinations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">param_combinations</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;qsvc&#39;</span><span class="p">]),</span> <span class="s1">&#39;max_iter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
-    <span class="n">param_combinations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">param_combinations</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s1">&#39;qsvc&#39;</span><span class="p">]),</span> <span class="s1">&#39;local_optimizer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;COBYLA&#39;</span>
-    
+    <span class="n">param_combinations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">param_combinations</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;qnn&quot;</span><span class="p">,</span> <span class="s2">&quot;vqc&quot;</span><span class="p">]),</span> <span class="s2">&quot;C&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">param_combinations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">param_combinations</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;qsvc&quot;</span><span class="p">]),</span> <span class="s2">&quot;ansatz_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;amp&quot;</span>
+    <span class="n">param_combinations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">param_combinations</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;qsvc&quot;</span><span class="p">]),</span> <span class="s2">&quot;max_iter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">param_combinations</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">param_combinations</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="s2">&quot;qsvc&quot;</span><span class="p">]),</span> <span class="s2">&quot;local_optimizer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s2">&quot;COBYLA&quot;</span>
+    <span class="p">)</span>
+
     <span class="c1"># Remove duplicates and apply filtering rules</span>
     <span class="n">param_combinations</span> <span class="o">=</span> <span class="n">param_combinations</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
     <span class="n">param_combinations</span> <span class="o">=</span> <span class="n">param_combinations</span><span class="p">[</span>
-        <span class="o">~</span><span class="p">((</span><span class="n">param_combinations</span><span class="p">[</span><span class="s1">&#39;n_components&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">param_combinations</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">))</span>
+        <span class="o">~</span><span class="p">((</span><span class="n">param_combinations</span><span class="p">[</span><span class="s2">&quot;n_components&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">param_combinations</span><span class="p">[</span><span class="s2">&quot;max_iter&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">500</span><span class="p">))</span>
     <span class="p">]</span>
     <span class="n">param_combinations</span> <span class="o">=</span> <span class="n">param_combinations</span><span class="p">[</span>
-        <span class="o">~</span><span class="p">((</span><span class="n">param_combinations</span><span class="p">[</span><span class="s1">&#39;reps&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">param_combinations</span><span class="p">[</span><span class="s1">&#39;n_components&#39;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">))</span>
+        <span class="o">~</span><span class="p">((</span><span class="n">param_combinations</span><span class="p">[</span><span class="s2">&quot;reps&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">param_combinations</span><span class="p">[</span><span class="s2">&quot;n_components&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">10</span><span class="p">))</span>
     <span class="p">]</span>
-    
+
     <span class="c1"># Load template configuration</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_config_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_config_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">cfg_template</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-    
+
     <span class="c1"># Load or initialize used files list</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">used_files_path</span><span class="p">):</span>
         <span class="n">used_files</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">used_files_path</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">used_files</span> <span class="o">=</span> <span class="p">[]</span>
-    
+
     <span class="c1"># Generate configuration files</span>
     <span class="n">config_idx</span> <span class="o">=</span> <span class="mi">1</span>
-    
+
     <span class="k">for</span> <span class="n">data_dir</span> <span class="ow">in</span> <span class="n">data_dirs</span><span class="p">:</span>
         <span class="c1"># Get all CSV files in directory</span>
-        <span class="n">csv_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">)]</span>
+        <span class="n">csv_files</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">data_dir</span><span class="p">)</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.csv&quot;</span><span class="p">)]</span>
         <span class="n">csv_files</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
-        
+
         <span class="c1"># Remove previously used files</span>
         <span class="n">csv_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">csv_files</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">used_files</span><span class="p">))</span>
-        
+
         <span class="c1"># Sample files if requested</span>
         <span class="k">if</span> <span class="n">data_sample_fraction</span> <span class="o">&lt;</span> <span class="mf">1.0</span><span class="p">:</span>
             <span class="n">n_files</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">csv_files</span><span class="p">)</span> <span class="o">*</span> <span class="n">data_sample_fraction</span><span class="p">))</span>
             <span class="n">csv_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">csv_files</span><span class="p">,</span> <span class="n">n_files</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
-        
+
         <span class="c1"># Update used files list</span>
         <span class="n">used_files</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">csv_files</span><span class="p">)</span>
-        
+
         <span class="c1"># Filter parameter combinations based on data type</span>
         <span class="n">param_subset</span> <span class="o">=</span> <span class="n">param_combinations</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;moons&#39;</span> <span class="ow">in</span> <span class="n">data_dir</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s1">&#39;circles&#39;</span> <span class="ow">in</span> <span class="n">data_dir</span><span class="p">):</span>
-            <span class="n">param_subset</span> <span class="o">=</span> <span class="n">param_subset</span><span class="p">[</span><span class="n">param_subset</span><span class="p">[</span><span class="s1">&#39;embedding&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;none&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;moons&quot;</span> <span class="ow">in</span> <span class="n">data_dir</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;circles&quot;</span> <span class="ow">in</span> <span class="n">data_dir</span><span class="p">):</span>
+            <span class="n">param_subset</span> <span class="o">=</span> <span class="n">param_subset</span><span class="p">[</span><span class="n">param_subset</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">param_subset</span> <span class="o">=</span> <span class="n">param_subset</span><span class="p">[</span><span class="n">param_subset</span><span class="p">[</span><span class="s1">&#39;embedding&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;none&#39;</span><span class="p">]</span>
-        
+            <span class="n">param_subset</span> <span class="o">=</span> <span class="n">param_subset</span><span class="p">[</span><span class="n">param_subset</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;none&quot;</span><span class="p">]</span>
+
         <span class="c1"># Generate config for each combination and file</span>
         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">param_subset</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">csv_file</span> <span class="ow">in</span> <span class="n">csv_files</span><span class="p">:</span>
-                <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;exp_</span><span class="si">{</span><span class="n">config_idx</span><span class="si">}</span><span class="s1">.yaml&#39;</span><span class="p">)</span>
+                <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;exp_</span><span class="si">{</span><span class="n">config_idx</span><span class="si">}</span><span class="s2">.yaml&quot;</span><span class="p">)</span>
                 <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">csv_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.csv&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
-                
+
                 <span class="c1"># Create config from template</span>
                 <span class="n">config</span> <span class="o">=</span> <span class="n">cfg_template</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;yaml&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_path</span>
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]]</span>
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;file_dataset&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">csv_file</span>
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;folder_path&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_dir</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;data/&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hydra&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;hydra&#39;</span><span class="p">,</span> <span class="p">{})</span>
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hydra&#39;</span><span class="p">][</span><span class="s1">&#39;run&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hydra&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;run&#39;</span><span class="p">,</span> <span class="p">{})</span>
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;hydra&#39;</span><span class="p">][</span><span class="s1">&#39;run&#39;</span><span class="p">][</span><span class="s1">&#39;dir&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;results&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;qmlgridsearch_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;yaml&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_path</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]]</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_dataset&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">csv_file</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;folder_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data_dir</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;data/&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;hydra&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hydra&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;hydra&quot;</span><span class="p">][</span><span class="s2">&quot;run&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;hydra&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;run&quot;</span><span class="p">,</span> <span class="p">{})</span>
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;hydra&quot;</span><span class="p">][</span><span class="s2">&quot;run&quot;</span><span class="p">][</span><span class="s2">&quot;dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s2">&quot;results&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;qmlgridsearch_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
                 <span class="c1"># Check if embedding should be &#39;none&#39; based on feature count</span>
                 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="n">csv_file</span><span class="p">))</span>
                 <span class="n">orig_features</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>  <span class="c1"># Subtract label column</span>
-                
-                <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;n_components&#39;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">orig_features</span><span class="p">:</span>
-                    <span class="n">config</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;none&#39;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_components&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">orig_features</span><span class="p">:</span>
+                    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;embeddings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">config</span><span class="p">[</span><span class="s1">&#39;embeddings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;embedding&#39;</span><span class="p">]]</span>
-                
-                <span class="n">config</span><span class="p">[</span><span class="s1">&#39;n_components&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;n_components&#39;</span><span class="p">]</span>
-                
+                    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;embeddings&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]]</span>
+
+                <span class="n">config</span><span class="p">[</span><span class="s2">&quot;n_components&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;n_components&quot;</span><span class="p">]</span>
+
                 <span class="c1"># Set method-specific parameters</span>
                 <span class="n">method_args_key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">_args&quot;</span>
                 <span class="k">if</span> <span class="n">method_args_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
                     <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-                
-                <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s1">&#39;reps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;reps&#39;</span><span class="p">])</span>
-                <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s1">&#39;entanglement&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;entanglement&#39;</span><span class="p">]</span>
-                <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s1">&#39;encoding&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;feature_map&#39;</span><span class="p">]</span>
-                
-                <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;method&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;qsvc&#39;</span><span class="p">:</span>
-                    <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s1">&#39;ansatz_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;ansatz_type&#39;</span><span class="p">]</span>
-                    <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s1">&#39;maxiter&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;max_iter&#39;</span><span class="p">])</span>
+
+                <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s2">&quot;reps&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;reps&quot;</span><span class="p">])</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s2">&quot;entanglement&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;entanglement&quot;</span><span class="p">]</span>
+                <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s2">&quot;encoding&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;feature_map&quot;</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;qsvc&quot;</span><span class="p">:</span>
+                    <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s2">&quot;ansatz_type&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;ansatz_type&quot;</span><span class="p">]</span>
+                    <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s2">&quot;maxiter&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;max_iter&quot;</span><span class="p">])</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">])</span>
-                    <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s1">&#39;local_optimizer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s1">&#39;local_optimizer&#39;</span><span class="p">]</span>
-                
+                    <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s2">&quot;C&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;C&quot;</span><span class="p">])</span>
+                    <span class="n">config</span><span class="p">[</span><span class="n">method_args_key</span><span class="p">][</span><span class="s2">&quot;local_optimizer&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;local_optimizer&quot;</span><span class="p">]</span>
+
                 <span class="c1"># Write configuration file</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">yaml</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">default_flow_style</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                
+
                 <span class="n">config_idx</span> <span class="o">+=</span> <span class="mi">1</span>
-    
+
     <span class="c1"># Save used files list</span>
-    <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">used_files</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">used_files_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;filename&#39;</span><span class="p">])</span>
-    
+    <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">used_files</span><span class="p">)</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">used_files_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;filename&quot;</span><span class="p">])</span>
+
     <span class="n">num_configs</span> <span class="o">=</span> <span class="n">config_idx</span> <span class="o">-</span> <span class="mi">1</span>
     <span class="k">return</span> <span class="n">num_configs</span><span class="p">,</span> <span class="n">used_files_path</span></div>
 

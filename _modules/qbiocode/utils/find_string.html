@@ -399,7 +399,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
 
 
 <div class="viewcode-block" id="find_string_in_files">
@@ -410,16 +410,16 @@
     <span class="n">file_pattern</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">case_sensitive</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">return_lines</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Search for a specific string in all files within a directory.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Scans files in the specified directory and identifies which files contain</span>
 <span class="sd">    the search string. Optionally returns the matching lines with line numbers.</span>
 <span class="sd">    Useful for auditing configurations, finding specific parameters, or</span>
 <span class="sd">    validating settings across multiple files.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    directory : str</span>
@@ -435,33 +435,33 @@
 <span class="sd">        If True, return matching lines with line numbers. Default is False.</span>
 <span class="sd">    verbose : bool, optional</span>
 <span class="sd">        If True, print progress and results. Default is True.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    Dict[str, List[Tuple[int, str]]]</span>
 <span class="sd">        Dictionary mapping file paths to list of (line_number, line_content) tuples</span>
 <span class="sd">        for files containing the search string. If return_lines is False, the list</span>
 <span class="sd">        contains empty tuples.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    FileNotFoundError</span>
 <span class="sd">        If the specified directory does not exist.</span>
 <span class="sd">    NotADirectoryError</span>
 <span class="sd">        If the specified path is not a directory.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    Basic search for a string:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; results = find_string_in_files(</span>
 <span class="sd">    ...     &#39;configs/&#39;,</span>
 <span class="sd">    ...     &#39;embeddings: none&#39;</span>
 <span class="sd">    ... )</span>
 <span class="sd">    &gt;&gt;&gt; print(f&quot;Found in {len(results)} files&quot;)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Search with line numbers returned:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; results = find_string_in_files(</span>
 <span class="sd">    ...     &#39;configs/qml_gridsearch/&#39;,</span>
 <span class="sd">    ...     &#39;n_qubits: 4&#39;,</span>
@@ -472,18 +472,18 @@
 <span class="sd">    ...     print(f&quot;{filepath}:&quot;)</span>
 <span class="sd">    ...     for line_num, line_content in matches:</span>
 <span class="sd">    ...         print(f&quot;  Line {line_num}: {line_content.strip()}&quot;)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Case-insensitive search:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; results = find_string_in_files(</span>
 <span class="sd">    ...     &#39;logs/&#39;,</span>
 <span class="sd">    ...     &#39;error&#39;,</span>
 <span class="sd">    ...     file_pattern=&#39;.log&#39;,</span>
 <span class="sd">    ...     case_sensitive=False</span>
 <span class="sd">    ... )</span>
-<span class="sd">    </span>
+
 <span class="sd">    Integration with QProfiler workflow:</span>
-<span class="sd">    </span>
+
 <span class="sd">    &gt;&gt;&gt; # Find all configs using a specific embedding</span>
 <span class="sd">    &gt;&gt;&gt; config_dir = &quot;configs/experiments/&quot;</span>
 <span class="sd">    &gt;&gt;&gt; results = find_string_in_files(</span>
@@ -497,14 +497,14 @@
 <span class="sd">    ...     print(f&quot;Found {len(results)} configs using PCA embedding&quot;)</span>
 <span class="sd">    ...     for config_file in results.keys():</span>
 <span class="sd">    ...         print(f&quot;  - {os.path.basename(config_file)}&quot;)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    - Only text files are supported; binary files will be skipped</span>
 <span class="sd">    - Large files may consume significant memory if return_lines=True</span>
 <span class="sd">    - Symbolic links are followed and treated as regular files</span>
 <span class="sd">    - Hidden files (starting with &#39;.&#39;) are included in search</span>
-<span class="sd">    </span>
+
 <span class="sd">    See Also</span>
 <span class="sd">    --------</span>
 <span class="sd">    find_duplicate_files : Find files with identical content</span>
@@ -513,44 +513,44 @@
     <span class="c1"># Validate input directory</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Directory not found: </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotADirectoryError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Path is not a directory: </span><span class="si">{</span><span class="n">directory</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+
     <span class="c1"># Prepare search string for case-insensitive search</span>
     <span class="n">search_str</span> <span class="o">=</span> <span class="n">search_string</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="n">search_string</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-    
+
     <span class="c1"># Results dictionary</span>
     <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">total_files</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">files_with_match</span> <span class="o">=</span> <span class="mi">0</span>
-    
+
     <span class="c1"># Scan directory</span>
     <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">scandir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">entry</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="c1"># Apply file pattern filter if specified</span>
             <span class="k">if</span> <span class="n">file_pattern</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">entry</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">file_pattern</span><span class="p">):</span>
                 <span class="k">continue</span>
-            
+
             <span class="n">total_files</span> <span class="o">+=</span> <span class="mi">1</span>
-            
+
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                     <span class="n">matches</span> <span class="o">=</span> <span class="p">[]</span>
                     <span class="k">for</span> <span class="n">line_num</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
                         <span class="c1"># Apply case sensitivity</span>
                         <span class="n">line_to_search</span> <span class="o">=</span> <span class="n">line</span> <span class="k">if</span> <span class="n">case_sensitive</span> <span class="k">else</span> <span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-                        
+
                         <span class="k">if</span> <span class="n">search_str</span> <span class="ow">in</span> <span class="n">line_to_search</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">return_lines</span><span class="p">:</span>
                                 <span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">line_num</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span>
                             <span class="k">else</span><span class="p">:</span>
-                                <span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>  <span class="c1"># Placeholder</span>
-                    
+                                <span class="n">matches</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>  <span class="c1"># Placeholder</span>
+
                     <span class="k">if</span> <span class="n">matches</span><span class="p">:</span>
                         <span class="n">results</span><span class="p">[</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="n">matches</span>
                         <span class="n">files_with_match</span> <span class="o">+=</span> <span class="mi">1</span>
-                        
+
                         <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                             <span class="k">if</span> <span class="n">return_lines</span><span class="p">:</span>
                                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> contains &#39;</span><span class="si">{</span><span class="n">search_string</span><span class="si">}</span><span class="s2">&#39;:&quot;</span><span class="p">)</span>
@@ -558,12 +558,12 @@
                                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Line </span><span class="si">{</span><span class="n">line_num</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">line_content</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2"> contains &#39;</span><span class="si">{</span><span class="n">search_string</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
-            
+
             <span class="k">except</span> <span class="p">(</span><span class="ne">UnicodeDecodeError</span><span class="p">,</span> <span class="ne">PermissionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
                     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Warning: Could not read </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="k">continue</span>
-    
+
     <span class="c1"># Print summary</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">60</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
@@ -573,7 +573,7 @@
         <span class="k">if</span> <span class="n">file_pattern</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  File pattern filter: </span><span class="si">{</span><span class="n">file_pattern</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">60</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">results</span></div>
 
 </pre></div>

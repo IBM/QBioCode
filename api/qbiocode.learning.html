@@ -845,6 +845,137 @@ Default is [‘rf’, ‘mlp’, ‘svc’, ‘lr’, ‘xgb’].</p></li>
 <dd></dd></dl>
 
 </section>
+<section id="module-qbiocode.learning.compute_qensemble">
+<span id="qbiocode-learning-compute-qensemble-module"></span><h2>qbiocode.learning.compute_qensemble module<a class="headerlink" href="#module-qbiocode.learning.compute_qensemble" title="Link to this heading">#</a></h2>
+<section id="quantum-ensemble-learning-module">
+<h3>Quantum Ensemble Learning Module<a class="headerlink" href="#quantum-ensemble-learning-module" title="Link to this heading">#</a></h3>
+<p>This module implements quantum ensemble learning algorithms using controlled
+swap operations and quantum superposition to create ensembles of training data
+arrangements. The ensemble leverages quantum superposition to evaluate multiple
+training set configurations simultaneously.</p>
+<p>Supports two ensemble construction methods:
+- Fixed swap patterns: Deterministic controlled-SWAP operations
+- Random unitaries: Haar-random unitary transformations</p>
+<p class="rubric">References</p>
+<ul class="simple">
+<li><p>Macaluso et al., “A variational algorithm for quantum ensemble learning”
+IET Quantum Communication (2023)</p></li>
+<li><p>Rhrissorrakrai et al., “Quantum Ensembling Methods for Healthcare and Life Science”
+arXiv:2506.02213 (2025)
+https://arxiv.org/abs/2506.02213</p></li>
+</ul>
+</section>
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.learning.compute_qensemble.build_cosine_classifier">
+<span class="sig-name descname"><span class="pre">build_cosine_classifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_train</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/learning/compute_qensemble.html#build_cosine_classifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.learning.compute_qensemble.build_cosine_classifier" title="Link to this definition">#</a></dt>
+<dd><p>Build quantum cosine similarity classifier circuit.</p>
+<p>Implements a quantum cosine similarity classifier using controlled swap
+operations and Hadamard gates to measure similarity between training
+and test data points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>train</strong> (<em>np.ndarray</em>) – Training data point as normalized vector (length must be power of 2)</p></li>
+<li><p><strong>test</strong> (<em>np.ndarray</em>) – Test data point as normalized vector</p></li>
+<li><p><strong>label_train</strong> (<em>np.ndarray</em>) – Training label as normalized probability vector [p0, p1]</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quantum circuit implementing the cosine classifier</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QuantumCircuit</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The circuit computes P(0) = 1/2 + 1/2 * <a href="#id1"><span class="problematic" id="id2">|</span></a>&lt;train|test&gt;|^2</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.learning.compute_qensemble.build_ensemble_circuit">
+<span class="sig-name descname"><span class="pre">build_ensemble_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Y_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_swap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'balanced'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'swap'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">barriers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/learning/compute_qensemble.html#build_ensemble_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.learning.compute_qensemble.build_ensemble_circuit" title="Link to this definition">#</a></dt>
+<dd><p>Build quantum ensemble classifier circuit.</p>
+<p>Creates a quantum ensemble learning circuit using either fixed swap
+operations or random unitary transformations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_data</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training data points (normalized, n_features must be power of 2)</p></li>
+<li><p><strong>Y_data</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>2</em><em>)</em>) – Training labels as one-hot encoded vectors</p></li>
+<li><p><strong>x_test</strong> (<em>List</em><em>[</em><em>complex</em><em>]</em>) – Test data point to classify (normalized)</p></li>
+<li><p><strong>n_swap</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of swap/unitary operations per control qubit (default: 1)</p></li>
+<li><p><strong>d</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of control qubits, creates 2^d ensemble members (default: 2)</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – Sampling strategy: “balanced”, “unbalanced”, or “pair_sample” (default: “balanced”)</p></li>
+<li><p><strong>ensemble_method</strong> (<em>{&quot;swap&quot;</em><em>, </em><em>&quot;random_unitary&quot;}</em><em>, </em><em>optional</em>) – Method for ensemble construction:
+- “swap”: Fixed controlled-SWAP operations (faster, deterministic)
+- “random_unitary”: Haar-random unitaries (more general, slower)
+(default: “swap”)</p></li>
+<li><p><strong>barriers</strong> (<em>bool</em><em>, </em><em>optional</em>) – Add barrier gates for visualization (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Quantum circuit implementing the ensemble classifier</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QuantumCircuit</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Total qubits: d + 2*n_samples*log2(n_features) + n_samples + 1 (+ 1 for random_unitary)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.learning.compute_qensemble.compute_qensemble">
+<span class="sig-name descname"><span class="pre">compute_qensemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'QEnsemble'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_swap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'balanced'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'swap'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_shots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8192</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">123</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CPU'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/learning/compute_qensemble.html#compute_qensemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.learning.compute_qensemble.compute_qensemble" title="Link to this definition">#</a></dt>
+<dd><p>Compute quantum ensemble classifier predictions.</p>
+<p>This function implements a quantum ensemble learning algorithm using
+either fixed swap operations or random unitary transformations to create
+superpositions of different training data arrangements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_train</strong> (<em>np.ndarray</em>) – Training feature set</p></li>
+<li><p><strong>X_test</strong> (<em>np.ndarray</em>) – Testing feature set</p></li>
+<li><p><strong>y_train</strong> (<em>np.ndarray</em>) – Training labels</p></li>
+<li><p><strong>y_test</strong> (<em>np.ndarray</em>) – Testing labels</p></li>
+<li><p><strong>args</strong> (<em>dict</em>) – Dictionary containing arguments for backend and settings</p></li>
+<li><p><strong>model</strong> (<em>str</em><em>, </em><em>optional</em>) – Model type (default: ‘QEnsemble’)</p></li>
+<li><p><strong>data_key</strong> (<em>str</em><em>, </em><em>optional</em>) – Key for the dataset (default: ‘’)</p></li>
+<li><p><strong>n_train</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of training samples to use (must be even, default: 4)</p></li>
+<li><p><strong>n_swap</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of swap/unitary operations per control qubit (default: 1)</p></li>
+<li><p><strong>d</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of control qubits, creates 2^d ensemble members (default: 2)</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – Sampling strategy: “balanced”, “unbalanced”, or “pair_sample” (default: “balanced”)</p></li>
+<li><p><strong>ensemble_method</strong> (<em>{&quot;swap&quot;</em><em>, </em><em>&quot;random_unitary&quot;}</em><em>, </em><em>optional</em>) – Method for ensemble construction:
+- “swap”: Fixed controlled-SWAP operations (faster, deterministic)
+- “random_unitary”: Haar-random unitaries (more general, slower)
+(default: “swap”)</p></li>
+<li><p><strong>n_shots</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of measurement shots (default: 8192)</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility (default: 123)</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – Device type: ‘CPU’ or ‘GPU’ (default: ‘CPU’)</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print additional information (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing evaluation results including accuracy, runtime,
+model parameters, and other relevant metrics</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_qensemble</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fixed swap ensemble (standard)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">compute_qensemble</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">n_train</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensemble_method</span><span class="o">=</span><span class="s2">&quot;swap&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Random unitary ensemble (advanced)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">compute_qensemble</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">n_train</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensemble_method</span><span class="o">=</span><span class="s2">&quot;random_unitary&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
 <section id="module-qbiocode.learning.compute_qnn">
 <span id="qbiocode-learning-compute-qnn-module"></span><h2>qbiocode.learning.compute_qnn module<a class="headerlink" href="#module-qbiocode.learning.compute_qnn" title="Link to this heading">#</a></h2>
 <dl class="py function">
@@ -1229,15 +1360,21 @@ optimized versions (where applicable) with hyperparameter tuning.</p>
 <li><p>Quantum Support Vector Classifier (QSVC)</p></li>
 <li><p>Variational Quantum Classifier (VQC)</p></li>
 <li><p>Projected Quantum Kernel (PQK)</p></li>
+<li><p>Quantum Ensemble (QEnsemble) - supports both fixed swap and random unitary methods</p></li>
 </ul>
 </section>
 <section id="usage">
 <h4>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h4>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_rf</span><span class="p">,</span> <span class="n">compute_qsvc</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_rf</span><span class="p">,</span> <span class="n">compute_qsvc</span><span class="p">,</span> <span class="n">compute_qensemble</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train classical model</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">compute_rf</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train quantum model</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">qresults</span> <span class="o">=</span> <span class="n">compute_qsvc</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train quantum ensemble with fixed swaps (default)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qens_results</span> <span class="o">=</span> <span class="n">compute_qensemble</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train quantum ensemble with random unitaries</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qens_random</span> <span class="o">=</span> <span class="n">compute_qensemble</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span>
+<span class="gp">... </span>                                <span class="n">ensemble_method</span><span class="o">=</span><span class="s2">&quot;random_unitary&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1637,6 +1774,57 @@ Default is [‘rf’, ‘mlp’, ‘svc’, ‘lr’, ‘xgb’].</p></li>
 <dd class="field-odd"><p>modeleval (pd.DataFrame)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.learning.compute_qensemble">
+<span class="sig-name descname"><span class="pre">compute_qensemble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'QEnsemble'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_train</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_swap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'balanced'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ensemble_method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'swap'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_shots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8192</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">123</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'CPU'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/learning/compute_qensemble.html#compute_qensemble"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.learning.compute_qensemble" title="Link to this definition">#</a></dt>
+<dd><p>Compute quantum ensemble classifier predictions.</p>
+<p>This function implements a quantum ensemble learning algorithm using
+either fixed swap operations or random unitary transformations to create
+superpositions of different training data arrangements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X_train</strong> (<em>np.ndarray</em>) – Training feature set</p></li>
+<li><p><strong>X_test</strong> (<em>np.ndarray</em>) – Testing feature set</p></li>
+<li><p><strong>y_train</strong> (<em>np.ndarray</em>) – Training labels</p></li>
+<li><p><strong>y_test</strong> (<em>np.ndarray</em>) – Testing labels</p></li>
+<li><p><strong>args</strong> (<em>dict</em>) – Dictionary containing arguments for backend and settings</p></li>
+<li><p><strong>model</strong> (<em>str</em><em>, </em><em>optional</em>) – Model type (default: ‘QEnsemble’)</p></li>
+<li><p><strong>data_key</strong> (<em>str</em><em>, </em><em>optional</em>) – Key for the dataset (default: ‘’)</p></li>
+<li><p><strong>n_train</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of training samples to use (must be even, default: 4)</p></li>
+<li><p><strong>n_swap</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of swap/unitary operations per control qubit (default: 1)</p></li>
+<li><p><strong>d</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of control qubits, creates 2^d ensemble members (default: 2)</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – Sampling strategy: “balanced”, “unbalanced”, or “pair_sample” (default: “balanced”)</p></li>
+<li><p><strong>ensemble_method</strong> (<em>{&quot;swap&quot;</em><em>, </em><em>&quot;random_unitary&quot;}</em><em>, </em><em>optional</em>) – Method for ensemble construction:
+- “swap”: Fixed controlled-SWAP operations (faster, deterministic)
+- “random_unitary”: Haar-random unitaries (more general, slower)
+(default: “swap”)</p></li>
+<li><p><strong>n_shots</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of measurement shots (default: 8192)</p></li>
+<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility (default: 123)</p></li>
+<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – Device type: ‘CPU’ or ‘GPU’ (default: ‘CPU’)</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Print additional information (default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Dictionary containing evaluation results including accuracy, runtime,
+model parameters, and other relevant metrics</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_qensemble</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Fixed swap ensemble (standard)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">compute_qensemble</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">n_train</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensemble_method</span><span class="o">=</span><span class="s2">&quot;swap&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Random unitary ensemble (advanced)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">compute_qensemble</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span>
+<span class="gp">... </span>                            <span class="n">n_train</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ensemble_method</span><span class="o">=</span><span class="s2">&quot;random_unitary&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -2041,6 +2229,13 @@ This function is designed to be used in a supervised learning context, where the
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_pqk.create_xgb_model"><code class="docutils literal notranslate"><span class="pre">create_xgb_model()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.learning.compute_qensemble">qbiocode.learning.compute_qensemble module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-ensemble-learning-module">Quantum Ensemble Learning Module</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_qensemble.build_cosine_classifier"><code class="docutils literal notranslate"><span class="pre">build_cosine_classifier()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_qensemble.build_ensemble_circuit"><code class="docutils literal notranslate"><span class="pre">build_ensemble_circuit()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_qensemble.compute_qensemble"><code class="docutils literal notranslate"><span class="pre">compute_qensemble()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.learning.compute_qnn">qbiocode.learning.compute_qnn module</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_qnn.compute_qnn"><code class="docutils literal notranslate"><span class="pre">compute_qnn()</span></code></a></li>
 </ul>
@@ -2084,6 +2279,7 @@ This function is designed to be used in a supervised learning context, where the
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_nb"><code class="docutils literal notranslate"><span class="pre">compute_nb()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_nb_opt"><code class="docutils literal notranslate"><span class="pre">compute_nb_opt()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_pqk"><code class="docutils literal notranslate"><span class="pre">compute_pqk()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_qensemble"><code class="docutils literal notranslate"><span class="pre">compute_qensemble()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_qnn"><code class="docutils literal notranslate"><span class="pre">compute_qnn()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_qsvc"><code class="docutils literal notranslate"><span class="pre">compute_qsvc()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.learning.compute_rf"><code class="docutils literal notranslate"><span class="pre">compute_rf()</span></code></a></li>

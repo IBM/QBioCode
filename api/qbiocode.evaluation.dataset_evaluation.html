@@ -408,7 +408,7 @@
 <td><p>Measure the manifold complexity by fitting Isomap and analyzing the geodesic vs. Euclidean distances.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#qbiocode.evaluation.dataset_evaluation.get_condition_number" title="qbiocode.evaluation.dataset_evaluation.get_condition_number"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_condition_number</span></code></a></p></td>
-<td><p>Get condition number of a matrix.</p></td>
+<td><p>Get the condition number of a matrix.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#qbiocode.evaluation.dataset_evaluation.get_dimensions" title="qbiocode.evaluation.dataset_evaluation.get_dimensions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_dimensions</span></code></a></p></td>
 <td><p>Get the number of features, samples, and feature-to-sample ratio from a DataFrame.</p></td>
@@ -501,18 +501,16 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="qbiocode.evaluation.dataset_evaluation.get_condition_number">
 <span class="sig-name descname"><span class="pre">get_condition_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/evaluation/dataset_evaluation.html#get_condition_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.evaluation.dataset_evaluation.get_condition_number" title="Link to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>Get condition number of a matrix.</dt><dd><p>A function with a high condition number is said to be ill-conditioned.
-Ill conditioned matrices produce large errors in its output even with small errors in its input.
-Low condition number means more stable errors.</p>
-</dd>
-</dl>
+<dd><p>Get the condition number of a matrix.</p>
+<p>A high condition number indicates that the matrix is ill-conditioned and
+can produce large output errors even for small input perturbations. A low
+condition number indicates a more stable matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Dataset in pandas with observation in rows, features in columns</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>condition number of the matrix represented in df</p>
+<dd class="field-even"><p>Condition number of the matrix represented in <code class="docutils literal notranslate"><span class="pre">df</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>

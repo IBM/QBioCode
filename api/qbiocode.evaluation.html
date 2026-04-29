@@ -489,18 +489,16 @@ This function computes the reconstruction error of the Isomap algorithm, which s
 <dl class="py function">
 <dt class="sig sig-object py" id="qbiocode.evaluation.dataset_evaluation.get_condition_number">
 <span class="sig-name descname"><span class="pre">get_condition_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">df</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/evaluation/dataset_evaluation.html#get_condition_number"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.evaluation.dataset_evaluation.get_condition_number" title="Link to this definition">#</a></dt>
-<dd><dl class="simple">
-<dt>Get condition number of a matrix.</dt><dd><p>A function with a high condition number is said to be ill-conditioned.
-Ill conditioned matrices produce large errors in its output even with small errors in its input.
-Low condition number means more stable errors.</p>
-</dd>
-</dl>
+<dd><p>Get the condition number of a matrix.</p>
+<p>A high condition number indicates that the matrix is ill-conditioned and
+can produce large output errors even for small input perturbations. A low
+condition number indicates a more stable matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>df</strong> (<em>pandas.DataFrame</em>) – Dataset in pandas with observation in rows, features in columns</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>condition number of the matrix represented in df</p>
+<dd class="field-even"><p>Condition number of the matrix represented in <code class="docutils literal notranslate"><span class="pre">df</span></code>.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>float</p>
@@ -761,6 +759,66 @@ std_var (float): Standard deviation of variance</p>
 <section id="module-qbiocode.evaluation.model_evaluation">
 <span id="qbiocode-evaluation-model-evaluation-module"></span><h2>qbiocode.evaluation.model_evaluation module<a class="headerlink" href="#module-qbiocode.evaluation.model_evaluation" title="Link to this heading">#</a></h2>
 <dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.evaluation.model_evaluation.evaluation_metrics">
+<span class="sig-name descname"><span class="pre">evaluation_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['accuracy',</span> <span class="pre">'brier']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/evaluation/model_evaluation.html#evaluation_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.evaluation.model_evaluation.evaluation_metrics" title="Link to this definition">#</a></dt>
+<dd><p>Calculate evaluation metrics for classification predictions.</p>
+<p>Computes specified metrics for model predictions. Supports accuracy, Brier score,
+F1 score, precision, recall, and AUC-ROC. The Brier score measures the mean
+squared difference between predicted probabilities and actual outcomes, providing
+a measure of calibration quality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>predictions</strong> (<em>np.ndarray</em>) – Predicted probabilities, shape (n_samples, n_classes)</p></li>
+<li><p><strong>y_test</strong> (<em>np.ndarray</em>) – True labels, shape (n_samples,)</p></li>
+<li><p><strong>metrics</strong> (<em>list</em><em> of </em><em>str</em><em>, </em><em>optional</em>) – List of metrics to compute. Options: ‘accuracy’, ‘brier’, ‘f1’,
+‘precision’, ‘recall’, ‘auc’ (default: [‘accuracy’, ‘brier’])</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save results (reserved for future use, default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If metrics=[‘accuracy’, ‘brier’] (default): returns (accuracy, brier_score)
+Otherwise: returns dict with requested metrics as keys</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple or dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluation_metrics</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Binary classification example - default metrics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">accuracy</span><span class="p">,</span> <span class="n">brier</span> <span class="o">=</span> <span class="n">evaluation_metrics</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, Brier Score: </span><span class="si">{</span><span class="n">brier</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">Accuracy: 1.00, Brier Score: 0.060</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Multiple metrics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">evaluation_metrics</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span>
+<span class="gp">... </span>                             <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;brier&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;auc&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="go">{&#39;accuracy&#39;: 1.0, &#39;brier&#39;: 0.06, &#39;f1&#39;: 1.0, &#39;auc&#39;: 1.0}</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>For binary classification, Brier score is computed using the probability
+of the positive class</p></li>
+<li><p>For multi-class classification, the average Brier score across all classes
+is returned</p></li>
+<li><p>F1, precision, and recall use weighted averaging for multi-class</p></li>
+<li><p>AUC uses one-vs-rest for multi-class</p></li>
+<li><p>Lower Brier scores indicate better calibrated probability predictions</p></li>
+</ul>
+<p class="rubric">References</p>
+<p>Brier, G. W. (1950). “Verification of forecasts expressed in terms of probability”.
+Monthly Weather Review, 78(1), 1-3.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="qbiocode.evaluation.model_evaluation.modeleval">
 <span class="sig-name descname"><span class="pre">modeleval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_predicted</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beg_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">average</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'weighted'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/evaluation/model_evaluation.html#modeleval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.evaluation.model_evaluation.modeleval" title="Link to this definition">#</a></dt>
 <dd><p>Evaluates the model performance using accuracy, F1 score, and AUC.</p>
@@ -838,6 +896,7 @@ dataset complexity analysis, and automated model execution.</p>
 <h4>Available Functions<a class="headerlink" href="#available-functions" title="Link to this heading">#</a></h4>
 <ul class="simple">
 <li><p>modeleval: Evaluate model performance with multiple metrics</p></li>
+<li><p>evaluation_metrics: Calculate accuracy and Brier score from predictions</p></li>
 <li><p>evaluate: Comprehensive dataset complexity evaluation</p></li>
 <li><p>model_run: Automated model training and evaluation pipeline</p></li>
 </ul>
@@ -877,6 +936,66 @@ properties with its performance in predictive modeling tasks.</p>
 <dd class="field-odd"><p>transposed (pandas.DataFrame)</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="qbiocode.evaluation.evaluation_metrics">
+<span class="sig-name descname"><span class="pre">evaluation_metrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predictions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['accuracy',</span> <span class="pre">'brier']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/evaluation/model_evaluation.html#evaluation_metrics"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.evaluation.evaluation_metrics" title="Link to this definition">#</a></dt>
+<dd><p>Calculate evaluation metrics for classification predictions.</p>
+<p>Computes specified metrics for model predictions. Supports accuracy, Brier score,
+F1 score, precision, recall, and AUC-ROC. The Brier score measures the mean
+squared difference between predicted probabilities and actual outcomes, providing
+a measure of calibration quality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>predictions</strong> (<em>np.ndarray</em>) – Predicted probabilities, shape (n_samples, n_classes)</p></li>
+<li><p><strong>y_test</strong> (<em>np.ndarray</em>) – True labels, shape (n_samples,)</p></li>
+<li><p><strong>metrics</strong> (<em>list</em><em> of </em><em>str</em><em>, </em><em>optional</em>) – List of metrics to compute. Options: ‘accuracy’, ‘brier’, ‘f1’,
+‘precision’, ‘recall’, ‘auc’ (default: [‘accuracy’, ‘brier’])</p></li>
+<li><p><strong>save</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to save results (reserved for future use, default: False)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>If metrics=[‘accuracy’, ‘brier’] (default): returns (accuracy, brier_score)
+Otherwise: returns dict with requested metrics as keys</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple or dict</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">evaluation_metrics</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Binary classification example - default metrics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">predictions</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">accuracy</span><span class="p">,</span> <span class="n">brier</span> <span class="o">=</span> <span class="n">evaluation_metrics</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Accuracy: </span><span class="si">{</span><span class="n">accuracy</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, Brier Score: </span><span class="si">{</span><span class="n">brier</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="go">Accuracy: 1.00, Brier Score: 0.060</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Multiple metrics</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">evaluation_metrics</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span>
+<span class="gp">... </span>                             <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;accuracy&#39;</span><span class="p">,</span> <span class="s1">&#39;brier&#39;</span><span class="p">,</span> <span class="s1">&#39;f1&#39;</span><span class="p">,</span> <span class="s1">&#39;auc&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="go">{&#39;accuracy&#39;: 1.0, &#39;brier&#39;: 0.06, &#39;f1&#39;: 1.0, &#39;auc&#39;: 1.0}</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>For binary classification, Brier score is computed using the probability
+of the positive class</p></li>
+<li><p>For multi-class classification, the average Brier score across all classes
+is returned</p></li>
+<li><p>F1, precision, and recall use weighted averaging for multi-class</p></li>
+<li><p>AUC uses one-vs-rest for multi-class</p></li>
+<li><p>Lower Brier scores indicate better calibrated probability predictions</p></li>
+</ul>
+<p class="rubric">References</p>
+<p>Brier, G. W. (1950). “Verification of forecasts expressed in terms of probability”.
+Monthly Weather Review, 78(1), 1-3.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -996,6 +1115,7 @@ Default is ‘weighted’.</p></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.evaluation.model_evaluation">qbiocode.evaluation.model_evaluation module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.evaluation.model_evaluation.evaluation_metrics"><code class="docutils literal notranslate"><span class="pre">evaluation_metrics()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.evaluation.model_evaluation.modeleval"><code class="docutils literal notranslate"><span class="pre">modeleval()</span></code></a></li>
 </ul>
 </li>
@@ -1010,6 +1130,7 @@ Default is ‘weighted’.</p></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.evaluation.evaluate"><code class="docutils literal notranslate"><span class="pre">evaluate()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.evaluation.evaluation_metrics"><code class="docutils literal notranslate"><span class="pre">evaluation_metrics()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.evaluation.model_run"><code class="docutils literal notranslate"><span class="pre">model_run()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.evaluation.modeleval"><code class="docutils literal notranslate"><span class="pre">modeleval()</span></code></a></li>
 </ul>

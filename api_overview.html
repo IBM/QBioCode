@@ -514,7 +514,7 @@ of the metrics.</p>
 <td><p>This function takes in as input a Pandas Dataframe containing the results and data evaluations for a given dataset.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="api/qbiocode.visualization.visualize_correlation.html#qbiocode.visualization.visualize_correlation.plot_results_correlation" title="qbiocode.visualization.visualize_correlation.plot_results_correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_results_correlation</span></code></a>(correlations_df[, ...])</p></td>
-<td><p>This function plots the spearman correlation dot plots using the previously generated correlations_df dataframe.</p></td>
+<td><p>This function plots publication-quality correlation dot plots using the previously generated correlations_df dataframe.</p></td>
 </tr>
 </tbody>
 </table>
@@ -522,7 +522,7 @@ of the metrics.</p>
 </section>
 </section>
 <section id="datasets">
-<span id="id8"></span><h2>Datasets<a class="headerlink" href="#datasets" title="Link to this heading">#</a></h2>
+<span id="id2"></span><h2>Datasets<a class="headerlink" href="#datasets" title="Link to this heading">#</a></h2>
 <p>QBioCode provides a comprehensive suite of synthetic dataset generators for testing and benchmarking machine learning algorithms. These datasets are particularly useful for:</p>
 <ul class="simple">
 <li><p><strong>Algorithm Development</strong>: Test new quantum and classical ML algorithms</p></li>
@@ -533,11 +533,11 @@ of the metrics.</p>
 <section id="data-generation-module">
 <h3>Data Generation Module<a class="headerlink" href="#data-generation-module" title="Link to this heading">#</a></h3>
 <p>The <a class="reference internal" href="api/qbiocode.data_generation.html#module-qbiocode.data_generation" title="qbiocode.data_generation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.data_generation</span></code></a> module provides functions to generate various types of synthetic datasets with configurable parameters. QBioCode supports a diverse collection of dataset types, each designed to test specific aspects of machine learning algorithms, from simple 2D geometric patterns to complex high-dimensional manifolds.</p>
-<figure class="align-center" id="id9">
+<figure class="align-center" id="id3">
 <a class="reference internal image-reference" href="_images/ArtificialDatatypes.png"><img alt="_images/ArtificialDatatypes.png" src="_images/ArtificialDatatypes.png" style="width: 95%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Overview of artificial dataset types available in QBioCode: The figure showcases the variety of synthetic datasets that can be generated, including 2D geometric patterns (Circles, Moons), 3D manifolds (S-Curve, Swiss Roll), and high-dimensional datasets (Spheres, Spirals, Classification). Each dataset type is designed to challenge different aspects of machine learning algorithms, from handling non-linear decision boundaries to learning complex manifold structures.</span><a class="headerlink" href="#id9" title="Link to this image">#</a></p>
+<p><span class="caption-text">Overview of artificial dataset types available in QBioCode: The figure showcases the variety of synthetic datasets that can be generated, including 2D geometric patterns (Circles, Moons), 3D manifolds (S-Curve, Swiss Roll), and high-dimensional datasets (Spheres, Spirals, Classification). Each dataset type is designed to challenge different aspects of machine learning algorithms, from handling non-linear decision boundaries to learning complex manifold structures.</span><a class="headerlink" href="#id3" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <section id="main-generator-function">
@@ -571,11 +571,11 @@ of the metrics.</p>
 <li><p><strong>Circles</strong>: Concentric circles with adjustable noise and separation</p></li>
 <li><p><strong>Moons</strong>: Interleaving half-circles (two moons) with controllable noise</p></li>
 </ul>
-<figure class="align-center" id="id10">
+<figure class="align-center" id="id4">
 <a class="reference internal image-reference" href="_images/NoiseLevels.png"><img alt="_images/NoiseLevels.png" src="_images/NoiseLevels.png" style="width: 90%;" />
 </a>
 <figcaption>
-<p><span class="caption-text">Effect of noise parameter on 2D geometric patterns: Circles (top row) and Moons (bottom row) datasets with increasing noise levels from left to right. The noise parameter controls the standard deviation of Gaussian noise added to the data points, affecting class separability.</span><a class="headerlink" href="#id10" title="Link to this image">#</a></p>
+<p><span class="caption-text">Effect of noise parameter on 2D geometric patterns: Circles (top row) and Moons (bottom row) datasets with increasing noise levels from left to right. The noise parameter controls the standard deviation of Gaussian noise added to the data points, affecting class separability.</span><a class="headerlink" href="#id4" title="Link to this image">#</a></p>
 </figcaption>
 </figure>
 <p><strong>3D Manifolds</strong></p>

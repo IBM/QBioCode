@@ -400,8 +400,8 @@
 <span class="c1">### Imports ###</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_circles</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">circles</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_moons</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">moons</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_class</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">make_class</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_moons</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">moons</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_s_curve</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">s_curve</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_spheres</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spheres</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.data_generation.make_spirals</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">spirals</span>
@@ -426,28 +426,28 @@
 <div class="viewcode-block" id="generate_data">
 <a class="viewcode-back" href="../../../api/qbiocode.data_generation.generator.html#qbiocode.generate_data">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">generate_data</span><span class="p">(</span>
-        <span class="n">type_of_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-        <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
-        <span class="n">noise</span><span class="o">=</span><span class="n">NOISE</span><span class="p">,</span>
-        <span class="n">hole</span><span class="o">=</span><span class="n">HOLE</span><span class="p">,</span>
-        <span class="n">n_classes</span><span class="o">=</span><span class="n">N_CLASSES</span><span class="p">,</span>
-        <span class="n">dim</span><span class="o">=</span><span class="n">DIM</span><span class="p">,</span>
-        <span class="n">rad</span><span class="o">=</span><span class="n">RAD</span><span class="p">,</span>
-        <span class="n">n_features</span><span class="o">=</span><span class="n">N_FEATURES</span><span class="p">,</span>
-        <span class="n">n_informative</span><span class="o">=</span><span class="n">N_INFORMATIVE</span><span class="p">,</span>
-        <span class="n">n_redundant</span><span class="o">=</span><span class="n">N_REDUNDANT</span><span class="p">,</span>
-        <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="n">N_CLUSTERS_PER_CLASS</span><span class="p">,</span>
-        <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span><span class="p">,</span>
-        <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+    <span class="n">type_of_data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">save_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="n">N_SAMPLES</span><span class="p">,</span>
+    <span class="n">noise</span><span class="o">=</span><span class="n">NOISE</span><span class="p">,</span>
+    <span class="n">hole</span><span class="o">=</span><span class="n">HOLE</span><span class="p">,</span>
+    <span class="n">n_classes</span><span class="o">=</span><span class="n">N_CLASSES</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="n">DIM</span><span class="p">,</span>
+    <span class="n">rad</span><span class="o">=</span><span class="n">RAD</span><span class="p">,</span>
+    <span class="n">n_features</span><span class="o">=</span><span class="n">N_FEATURES</span><span class="p">,</span>
+    <span class="n">n_informative</span><span class="o">=</span><span class="n">N_INFORMATIVE</span><span class="p">,</span>
+    <span class="n">n_redundant</span><span class="o">=</span><span class="n">N_REDUNDANT</span><span class="p">,</span>
+    <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="n">N_CLUSTERS_PER_CLASS</span><span class="p">,</span>
+    <span class="n">weights</span><span class="o">=</span><span class="n">WEIGHTS</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate synthetic datasets for machine learning benchmarking.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Unified interface to generate various types of synthetic datasets with</span>
 <span class="sd">    configurable parameters. Each dataset type creates multiple configurations</span>
 <span class="sd">    by varying the specified parameters.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    type_of_data : str</span>
@@ -479,17 +479,17 @@
 <span class="sd">        Class weight distributions (for classes only).</span>
 <span class="sd">    random_state : int, default=42</span>
 <span class="sd">        Random seed for reproducibility.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    None</span>
 <span class="sd">        Saves generated datasets to the specified path.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises</span>
 <span class="sd">    ------</span>
 <span class="sd">    ValueError</span>
 <span class="sd">        If type_of_data is not one of the supported types.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from qbiocode.data_generation import generate_data</span>
@@ -498,68 +498,65 @@
 <span class="sd">    Dataset generation complete.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;circles&#39;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s2">&quot;circles&quot;</span><span class="p">:</span>
         <span class="c1"># Generate circles dataset</span>
-        <span class="n">circles</span><span class="o">.</span><span class="n">generate_circles_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                                       <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
-                                       <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
-                                       <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;moons&#39;</span><span class="p">:</span>
-        <span class="c1"># Generate moons dataset</span>
-        <span class="n">moons</span><span class="o">.</span><span class="n">generate_moons_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                                     <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
-                                     <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
-                                     <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;classes&#39;</span><span class="p">:</span>
-        <span class="c1"># Generate higher-dimensional classification dataset</span>
-        <span class="n">make_class</span><span class="o">.</span><span class="n">generate_classification_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                                            <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
-                                            <span class="n">n_informative</span><span class="o">=</span><span class="n">n_informative</span><span class="p">,</span>
-                                            <span class="n">n_redundant</span><span class="o">=</span><span class="n">n_redundant</span><span class="p">,</span>
-                                            <span class="n">n_classes</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span>
-                                            <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="n">n_clusters_per_class</span><span class="p">,</span>
-                                            <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
-                                            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
-                                            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
+        <span class="n">circles</span><span class="o">.</span><span class="n">generate_circles_datasets</span><span class="p">(</span>
+            <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
         <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;s_curve&#39;</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s2">&quot;moons&quot;</span><span class="p">:</span>
+        <span class="c1"># Generate moons dataset</span>
+        <span class="n">moons</span><span class="o">.</span><span class="n">generate_moons_datasets</span><span class="p">(</span>
+            <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s2">&quot;classes&quot;</span><span class="p">:</span>
+        <span class="c1"># Generate higher-dimensional classification dataset</span>
+        <span class="n">make_class</span><span class="o">.</span><span class="n">generate_classification_datasets</span><span class="p">(</span>
+            <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+            <span class="n">n_features</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span>
+            <span class="n">n_informative</span><span class="o">=</span><span class="n">n_informative</span><span class="p">,</span>
+            <span class="n">n_redundant</span><span class="o">=</span><span class="n">n_redundant</span><span class="p">,</span>
+            <span class="n">n_classes</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span>
+            <span class="n">n_clusters_per_class</span><span class="o">=</span><span class="n">n_clusters_per_class</span><span class="p">,</span>
+            <span class="n">weights</span><span class="o">=</span><span class="n">weights</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s2">&quot;s_curve&quot;</span><span class="p">:</span>
         <span class="c1"># Generate S-curve dataset</span>
-        <span class="n">s_curve</span><span class="o">.</span><span class="n">generate_s_curve_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                                <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
-                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
-                                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
-                                <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;spheres&#39;</span><span class="p">:</span>
+        <span class="n">s_curve</span><span class="o">.</span><span class="n">generate_s_curve_datasets</span><span class="p">(</span>
+            <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s2">&quot;spheres&quot;</span><span class="p">:</span>
         <span class="c1"># Generate spheres dataset</span>
-        <span class="n">spheres</span><span class="o">.</span><span class="n">generate_spheres_datasets</span><span class="p">(</span><span class="n">n_s</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                                <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span>
-                                <span class="n">radius</span><span class="o">=</span><span class="n">rad</span><span class="p">,</span>
-                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
-                                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
-                                <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;spirals&#39;</span><span class="p">:</span>
+        <span class="n">spheres</span><span class="o">.</span><span class="n">generate_spheres_datasets</span><span class="p">(</span>
+            <span class="n">n_s</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">rad</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s2">&quot;spirals&quot;</span><span class="p">:</span>
         <span class="c1"># Generate spirals dataset</span>
-        <span class="n">spirals</span><span class="o">.</span><span class="n">generate_spirals_datasets</span><span class="p">(</span><span class="n">n_s</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                                <span class="n">n_c</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span>
-                                <span class="n">n_n</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
-                                <span class="n">n_d</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span>
-                                <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
-                                <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
-                                <span class="p">)</span>
-    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s1">&#39;swiss_roll&#39;</span><span class="p">:</span>
+        <span class="n">spirals</span><span class="o">.</span><span class="n">generate_spirals_datasets</span><span class="p">(</span>
+            <span class="n">n_s</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+            <span class="n">n_c</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span>
+            <span class="n">n_n</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
+            <span class="n">n_d</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">elif</span> <span class="n">type_of_data</span> <span class="o">==</span> <span class="s2">&quot;swiss_roll&quot;</span><span class="p">:</span>
         <span class="c1"># Generate Swiss roll dataset</span>
-        <span class="n">swiss_roll</span><span class="o">.</span><span class="n">generate_swiss_roll_datasets</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
-                                    <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
-                                    <span class="n">hole</span><span class="o">=</span><span class="n">hole</span><span class="p">,</span>
-                                    <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
-                                    <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span>
-                                    <span class="p">)</span>
+        <span class="n">swiss_roll</span><span class="o">.</span><span class="n">generate_swiss_roll_datasets</span><span class="p">(</span>
+            <span class="n">n_samples</span><span class="o">=</span><span class="n">n_samples</span><span class="p">,</span>
+            <span class="n">noise</span><span class="o">=</span><span class="n">noise</span><span class="p">,</span>
+            <span class="n">hole</span><span class="o">=</span><span class="n">hole</span><span class="p">,</span>
+            <span class="n">save_path</span><span class="o">=</span><span class="n">save_path</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+        <span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid type_of_data. Choose from &#39;circles&#39;, &#39;moons&#39;, &#39;classes&#39;, &#39;s_curve&#39;, &#39;spheres&#39;, &#39;spirals&#39;, or &#39;swiss_roll&#39;.&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Invalid type_of_data. Choose from &#39;circles&#39;, &#39;moons&#39;, &#39;classes&#39;, &#39;s_curve&#39;, &#39;spheres&#39;, &#39;spirals&#39;, or &#39;swiss_roll&#39;.&quot;</span>
+        <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Dataset generation complete.&quot;</span><span class="p">)</span>
     <span class="k">return</span></div>
-
 
 </pre></div>
 

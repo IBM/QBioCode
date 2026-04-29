@@ -402,7 +402,7 @@
 <p><strong>Note:</strong> Python 3.10+ is required for compatibility with the latest Qiskit ecosystem (qiskit-ibm-runtime 0.44.0+).</p>
 <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
-<p>QBioCode can be installed via PyPI or from source.</p>
+<p>QBioCode can be installed via PyPI, conda, or from source.</p>
 <section id="quick-install-from-pypi-recommended">
 <h2>Quick Install from PyPI (Recommended)<a class="headerlink" href="#quick-install-from-pypi-recommended" title="Link to this heading">#</a></h2>
 <p>Install the latest stable version:</p>
@@ -410,13 +410,51 @@
 </pre></div>
 </div>
 <p>Install with apps support (QProfiler, QSage):</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qbiocode<span class="o">[</span>apps<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;qbiocode[apps]&#39;</span>
 </pre></div>
 </div>
 <p>Install with all optional dependencies:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>qbiocode<span class="o">[</span>all<span class="o">]</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;qbiocode[all]&#39;</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>For zsh users:</strong> The quotes around <code class="docutils literal notranslate"><span class="pre">'qbiocode[apps]'</span></code> are required because zsh interprets square brackets as glob patterns. Bash users can omit quotes, but using them works in both shells.</p>
+</div>
+</section>
+<section id="install-with-conda">
+<h2>Install with Conda<a class="headerlink" href="#install-with-conda" title="Link to this heading">#</a></h2>
+<p>QBioCode will be available on conda-forge and bioconda channels after the initial release review process.</p>
+<section id="once-available-on-conda-forge">
+<h3>Once Available on Conda-forge<a class="headerlink" href="#once-available-on-conda-forge" title="Link to this heading">#</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install from conda-forge (recommended)</span>
+conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>qbiocode
+
+<span class="c1"># Or from bioconda (includes bioinformatics dependencies)</span>
+conda<span class="w"> </span>install<span class="w"> </span>-c<span class="w"> </span>bioconda<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>qbiocode
+
+<span class="c1"># Create a new environment with qbiocode</span>
+conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>qbiocode<span class="w"> </span>-c<span class="w"> </span>conda-forge<span class="w"> </span>qbiocode
+conda<span class="w"> </span>activate<span class="w"> </span>qbiocode
+</pre></div>
+</div>
+</section>
+<section id="current-workaround">
+<h3>Current Workaround<a class="headerlink" href="#current-workaround" title="Link to this heading">#</a></h3>
+<p>While conda packages are pending submission, you can use pip within a conda environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a conda environment with Python 3.10+</span>
+conda<span class="w"> </span>create<span class="w"> </span>-n<span class="w"> </span>qbiocode<span class="w"> </span><span class="nv">python</span><span class="o">=</span><span class="m">3</span>.10
+conda<span class="w"> </span>activate<span class="w"> </span>qbiocode
+
+<span class="c1"># Install QBioCode from PyPI</span>
+pip<span class="w"> </span>install<span class="w"> </span>qbiocode
+
+<span class="c1"># Or with apps support</span>
+pip<span class="w"> </span>install<span class="w"> </span><span class="s1">&#39;qbiocode[apps]&#39;</span>
+</pre></div>
+</div>
+<p><strong>Note</strong>: See <span class="xref myst">docs/CONDA_SUBMISSION.md</span> for information about the conda submission process.</p>
+</section>
 </section>
 <section id="install-from-source">
 <h2>Install from Source<a class="headerlink" href="#install-from-source" title="Link to this heading">#</a></h2>
@@ -782,6 +820,11 @@ pip<span class="w"> </span>install<span class="w"> </span>--force-reinstall<span
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-install-from-pypi-recommended">Quick Install from PyPI (Recommended)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-with-conda">Install with Conda</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#once-available-on-conda-forge">Once Available on Conda-forge</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#current-workaround">Current Workaround</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install-from-source">Install from Source</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#option-1-setting-up-a-python-virtual-environment-venv">Option 1: Setting up a Python Virtual Environment (venv)</a></li>
 </ul>

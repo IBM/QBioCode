@@ -394,26 +394,36 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="c1"># ====== Scikit-learn imports ======</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianNB</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.multiclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneVsOneClassifier</span><span class="p">,</span> <span class="n">OneVsRestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">GaussianNB</span>
 
 <span class="c1"># ====== Additional local imports ======</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.evaluation.model_evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">modeleval</span>
 
+<span class="c1"># ====== Scikit-learn imports ======</span>
+
+
 <div class="viewcode-block" id="compute_nb">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_nb">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_nb</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;Naive Bayes&#39;</span><span class="p">,</span>  <span class="n">data_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">var_smoothing</span><span class="o">=</span><span class="mf">1e-09</span><span class="p">):</span>
-<span class="w">    </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_nb</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Naive Bayes&quot;</span><span class="p">,</span>
+    <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">var_smoothing</span><span class="o">=</span><span class="mf">1e-09</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function generates a model using a Gaussian Naive Bayes (NB) Classifier method as implemented in</span>
-<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html&gt;`_.</span>
+<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html&gt;`__.</span>
 <span class="sd">    It takes in parameter arguments specified in the config.yaml file, but will use the default parameters specified above if none are passed.</span>
-<span class="sd">    The model is trained on the training dataset and validated on the test dataset. The function returns the evaluation of the model </span>
+<span class="sd">    The model is trained on the training dataset and validated on the test dataset. The function returns the evaluation of the model</span>
 <span class="sd">    on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model.</span>
 <span class="sd">    This function is designed to be used in a supervised learning context, where the goal is to classify data points.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        X_train (numpy.ndarray): Training features.</span>
 <span class="sd">        X_test (numpy.ndarray): Test features.</span>
@@ -426,9 +436,9 @@
 <span class="sd">        var_smoothing (float): Portion of the largest variance of all features added to variances for calculation stability.</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics of the model on the test dataset, including accuracy, AUC, F1 score,</span>
-<span class="sd">                          and the time taken to train and validate the model, along with the model parameters. </span>
-<span class="sd">    &quot;&quot;&quot;</span> 
-    
+<span class="sd">                          and the time taken to train and validate the model, along with the model parameters.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
     <span class="n">nb</span> <span class="o">=</span> <span class="n">OneVsOneClassifier</span><span class="p">(</span><span class="n">GaussianNB</span><span class="p">(</span><span class="n">var_smoothing</span><span class="o">=</span><span class="n">var_smoothing</span><span class="p">))</span>
     <span class="c1"># Fit the training datset</span>
@@ -436,19 +446,30 @@
     <span class="n">model_params</span> <span class="o">=</span> <span class="n">model_fit</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
     <span class="c1"># Validate the model in test dataset and calculate accuracy</span>
     <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span>
+        <span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
+    <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="compute_nb_opt">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_nb_opt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_nb_opt</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;Naive Bayes&#39;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
-                   <span class="n">var_smoothing</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e-09</span><span class="p">,</span> <span class="mf">1e-08</span><span class="p">,</span> <span class="mf">1e-07</span><span class="p">,</span> <span class="mf">1e-06</span><span class="p">,</span> <span class="mf">1e-05</span><span class="p">,</span> <span class="mf">1e-04</span><span class="p">,</span> <span class="mf">1e-03</span><span class="p">,</span> <span class="mf">1e-02</span><span class="p">]):</span>
-<span class="w">    </span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; This function generates a model using a Gaussian Naive Bayes (NB) Classifier method as implemented in</span>
-<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html&gt;`_.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_nb_opt</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Naive Bayes&quot;</span><span class="p">,</span>
+    <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">var_smoothing</span><span class="o">=</span><span class="p">[</span><span class="mf">1e-09</span><span class="p">,</span> <span class="mf">1e-08</span><span class="p">,</span> <span class="mf">1e-07</span><span class="p">,</span> <span class="mf">1e-06</span><span class="p">,</span> <span class="mf">1e-05</span><span class="p">,</span> <span class="mf">1e-04</span><span class="p">,</span> <span class="mf">1e-03</span><span class="p">,</span> <span class="mf">1e-02</span><span class="p">],</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This function generates a model using a Gaussian Naive Bayes (NB) Classifier method as implemented in</span>
+<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html&gt;`__.</span>
 <span class="sd">    It takes in parameter arguments specified in the config.yaml file, but will use the default parameters specified above if none are passed. The</span>
 <span class="sd">    combination of parameters that led to the best performance is saved and returned as best_params, which can then be used on similar</span>
-<span class="sd">    datasets, without having to run the grid search.  The model is trained on the training dataset and validated on the test dataset. The function returns the evaluation of the model </span>
+<span class="sd">    datasets, without having to run the grid search.  The model is trained on the training dataset and validated on the test dataset. The function returns the evaluation of the model</span>
 <span class="sd">    on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model across the grid search.</span>
 <span class="sd">    This function is designed to be used in a supervised learning context, where the goal is to classify data points.</span>
 <span class="sd">    Args:</span>
@@ -464,10 +485,10 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics of the model on the test dataset, including accuracy, AUC, F1 score,</span>
 <span class="sd">                          and the time taken to train and validate the model, along with the best parameters found during grid search.</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
-    
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;var_smoothing&#39;</span><span class="p">:</span> <span class="n">var_smoothing</span><span class="p">}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;var_smoothing&quot;</span><span class="p">:</span> <span class="n">var_smoothing</span><span class="p">}</span>
     <span class="c1"># Perform Grid Search to find the best parameters</span>
     <span class="n">grid_search</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">GaussianNB</span><span class="p">(),</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
     <span class="n">grid_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
@@ -479,7 +500,7 @@
 
     <span class="c1"># Make predictions and calculate accuracy</span>
     <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">best_nb</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">best_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">best_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 </pre></div>
 

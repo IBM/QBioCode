@@ -390,39 +390,45 @@
                 <article class="bd-article">
                   
   <h1>Source code for qbiocode.embeddings.embed</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-
-
-<span class="c1"># ====== Embedding functions imports ======</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span> 
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">Isomap</span><span class="p">,</span>
-    <span class="n">LocallyLinearEmbedding</span><span class="p">,</span>
-    <span class="n">SpectralEmbedding</span><span class="p">,</span>
-<span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">umap</span><span class="w"> </span><span class="kn">import</span> <span class="n">UMAP</span>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">reduce</span>
 
-<span class="c1"># ====== Qiskit imports ======</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
+<span class="c1"># ====== Qiskit imports ======</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit</span><span class="w"> </span><span class="kn">import</span> <span class="n">QuantumCircuit</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.utils.qutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qutils</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.quantum_info</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pauli</span>
+
+<span class="c1"># ====== Embedding functions imports ======</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">NMF</span><span class="p">,</span> <span class="n">PCA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.manifold</span><span class="w"> </span><span class="kn">import</span> <span class="n">Isomap</span><span class="p">,</span> <span class="n">LocallyLinearEmbedding</span><span class="p">,</span> <span class="n">SpectralEmbedding</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">umap</span><span class="w"> </span><span class="kn">import</span> <span class="n">UMAP</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.utils.qutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qutils</span>
+
 
 <div class="viewcode-block" id="pqk">
 <a class="viewcode-back" href="../../../api/qbiocode.embeddings.html#qbiocode.pqk">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">pqk</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">store</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">data_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>  
-                 <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">data_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">primitive</span> <span class="o">=</span> <span class="s1">&#39;estimator&#39;</span><span class="p">,</span> <span class="n">entanglement</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span> <span class="mi">2</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pqk</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">store</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span>
+    <span class="n">data_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">primitive</span><span class="o">=</span><span class="s2">&quot;estimator&quot;</span><span class="p">,</span>
+    <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="n">reps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function generates quantum circuits, computes projections of the data onto these circuits.</span>
 <span class="sd">    It uses a feature map to encode the data into quantum states and then measures the expectation values</span>
-<span class="sd">    of Pauli operators to obtain the features.  </span>
+<span class="sd">    of Pauli operators to obtain the features.</span>
 <span class="sd">    This function requires a quantum backend (simulator or real quantum hardware) for execution.</span>
 <span class="sd">    It supports various configurations such as encoding methods, entanglement strategies, and repetitions</span>
 <span class="sd">    of the feature map. Optionally the results are saved to files for training and test projections.</span>
-<span class="sd">   </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        X_train (np.ndarray): Training data features.</span>
 <span class="sd">        X_test (np.ndarray): Test data features.</span>
@@ -441,8 +447,8 @@
 
     <span class="n">feat_dimension</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-    <span class="k">if</span> <span class="n">data_map</span><span class="p">:</span> 
-    <span class="c1">#  This function ensures that all multiplicative factors of data features inside single qubit gates are 1.0</span>
+    <span class="k">if</span> <span class="n">data_map</span><span class="p">:</span>
+        <span class="c1">#  This function ensures that all multiplicative factors of data features inside single qubit gates are 1.0</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">data_map_func</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">            Define a function map from R^n to R.</span>
@@ -454,70 +460,82 @@
 <span class="sd">                float: the mapped value</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">coeff</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="mi">2</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="p">(</span><span class="n">m</span> <span class="o">*</span> <span class="n">n</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">coeff</span>
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>
+
     <span class="k">else</span><span class="p">:</span>
         <span class="n">data_map_func</span> <span class="o">=</span> <span class="kc">None</span>
-    
-     <span class="c1"># choose a method for mapping your features onto the circuit</span>
-    <span class="n">feature_map</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_feature_map</span><span class="p">(</span><span class="n">feature_map</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
-                                         <span class="n">feat_dimension</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> 
-                                         <span class="n">reps</span> <span class="o">=</span> <span class="n">reps</span><span class="p">,</span>
-                                         <span class="n">entanglement</span><span class="o">=</span><span class="n">entanglement</span><span class="p">,</span>
-                                         <span class="n">data_map_func</span> <span class="o">=</span> <span class="n">data_map_func</span><span class="p">)</span>
+
+    <span class="c1"># choose a method for mapping your features onto the circuit</span>
+    <span class="n">feature_map</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_feature_map</span><span class="p">(</span>
+        <span class="n">feature_map</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
+        <span class="n">feat_dimension</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">reps</span><span class="o">=</span><span class="n">reps</span><span class="p">,</span>
+        <span class="n">entanglement</span><span class="o">=</span><span class="n">entanglement</span><span class="p">,</span>
+        <span class="n">data_map_func</span><span class="o">=</span><span class="n">data_map_func</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1"># Build quantum circuit</span>
     <span class="n">circuit</span> <span class="o">=</span> <span class="n">QuantumCircuit</span><span class="p">(</span><span class="n">feature_map</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span>
     <span class="n">circuit</span><span class="o">.</span><span class="n">compose</span><span class="p">(</span><span class="n">feature_map</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">num_qubits</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">num_qubits</span>
 
-    
     <span class="c1">#  Generate the backend, session and primitive</span>
-    <span class="n">backend</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">prim</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_backend_session</span><span class="p">(</span><span class="n">args</span><span class="p">,</span>
-                                                            <span class="s1">&#39;estimator&#39;</span><span class="p">,</span>
-                                                            <span class="n">num_qubits</span><span class="o">=</span><span class="n">num_qubits</span><span class="p">)</span>
+    <span class="n">backend</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">prim</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_backend_session</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="s2">&quot;estimator&quot;</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">num_qubits</span><span class="p">)</span>
 
     <span class="c1"># Transpile</span>
-    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;backend&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;simulator&#39;</span><span class="p">:</span>
-        <span class="n">circuit</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">transpile_circuit</span><span class="p">(</span> <span class="n">circuit</span><span class="p">,</span> <span class="n">opt_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">backend</span> <span class="o">=</span> <span class="n">backend</span><span class="p">,</span> 
-                                        <span class="n">PT</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">initial_layout</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;simulator&quot;</span><span class="p">:</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">transpile_circuit</span><span class="p">(</span>
+            <span class="n">circuit</span><span class="p">,</span> <span class="n">opt_level</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">PT</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">initial_layout</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">f_tr</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;train&#39;</span><span class="p">,</span> <span class="s1">&#39;test&#39;</span><span class="p">]:</span>
-        
-        <span class="k">if</span> <span class="s1">&#39;train&#39;</span> <span class="ow">in</span> <span class="n">f_tr</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">f_tr</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;train&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]:</span>
+
+        <span class="k">if</span> <span class="s2">&quot;train&quot;</span> <span class="ow">in</span> <span class="n">f_tr</span><span class="p">:</span>
             <span class="n">dat</span> <span class="o">=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">dat</span> <span class="o">=</span> <span class="n">X_test</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        
+
         <span class="c1"># Identity operator on all qubits</span>
-        <span class="nb">id</span> <span class="o">=</span> <span class="s1">&#39;I&#39;</span> <span class="o">*</span> <span class="n">feat_dimension</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="s2">&quot;I&quot;</span> <span class="o">*</span> <span class="n">feat_dimension</span>
 
         <span class="c1"># We group all commuting observables</span>
         <span class="c1"># These groups are the Pauli X, Y and Z operators on individual qubits</span>
         <span class="c1"># Apply the circuit layout to the observable if mapped to device</span>
-        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;backend&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;simulator&#39;</span><span class="p">:</span>
-            <span class="n">observables_x</span> <span class="o">=</span><span class="p">[]</span>
-            <span class="n">observables_y</span> <span class="o">=</span><span class="p">[]</span>
-            <span class="n">observables_z</span> <span class="o">=</span><span class="p">[]</span>
+        <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;simulator&quot;</span><span class="p">:</span>
+            <span class="n">observables_x</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">observables_y</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">observables_z</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">feat_dimension</span><span class="p">):</span>
-                <span class="n">observables_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;X&#39;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):])</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span> <span class="p">)</span>
-                <span class="n">observables_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Y&#39;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):])</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span> <span class="p">)</span>
-                <span class="n">observables_z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):])</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span> <span class="p">)</span>
+                <span class="n">observables_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;X&quot;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:])</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span>
+                        <span class="n">circuit</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">num_qubits</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">observables_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;Y&quot;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:])</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span>
+                        <span class="n">circuit</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">num_qubits</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="n">observables_z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                    <span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:])</span><span class="o">.</span><span class="n">apply_layout</span><span class="p">(</span>
+                        <span class="n">circuit</span><span class="o">.</span><span class="n">layout</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">backend</span><span class="o">.</span><span class="n">num_qubits</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">observables_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;X&#39;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">feat_dimension</span><span class="p">)]</span>
-            <span class="n">observables_y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Y&#39;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">feat_dimension</span><span class="p">)]</span>
-            <span class="n">observables_z</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;Z&#39;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">feat_dimension</span><span class="p">)]</span>
-            
-                                                    
+            <span class="n">observables_x</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;X&quot;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">feat_dimension</span><span class="p">)]</span>
+            <span class="n">observables_y</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;Y&quot;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">feat_dimension</span><span class="p">)]</span>
+            <span class="n">observables_z</span> <span class="o">=</span> <span class="p">[</span><span class="n">Pauli</span><span class="p">(</span><span class="nb">id</span><span class="p">[:</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;Z&quot;</span> <span class="o">+</span> <span class="nb">id</span><span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="p">:])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">feat_dimension</span><span class="p">)]</span>
+
         <span class="c1"># projections[i][j][k] will be the expectation value of the j-th Pauli operator (0: X, 1: Y, 2: Z)</span>
         <span class="c1"># of datapoint i on qubit k</span>
         <span class="n">projections</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dat</span><span class="p">)):</span>
-          
-            <span class="c1"># Get training sample </span>
+
+            <span class="c1"># Get training sample</span>
             <span class="n">parameters</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-            <span class="c1"># We define the primitive unified blocs (PUBs) consisting of the embedding circuit, </span>
+            <span class="c1"># We define the primitive unified blocs (PUBs) consisting of the embedding circuit,</span>
             <span class="c1"># set of observables and the circuit parameters</span>
             <span class="n">pub_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">observables_x</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
             <span class="n">pub_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="n">observables_y</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
@@ -529,31 +547,33 @@
             <span class="n">job_result_z</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">result</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">evs</span>
 
             <span class="c1"># Record &lt;X&gt;, &lt;Y&gt; and &lt;Z&gt; on all qubits for the current datapoint</span>
-            <span class="n">projections</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">job_result_x</span><span class="p">,</span> <span class="n">job_result_y</span><span class="p">,</span> <span class="n">job_result_z</span><span class="p">])</span>                                    
-        
+            <span class="n">projections</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">job_result_x</span><span class="p">,</span> <span class="n">job_result_y</span><span class="p">,</span> <span class="n">job_result_z</span><span class="p">])</span>
+
         <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span> <span class="s1">&#39;pqk_projections&#39;</span><span class="p">):</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;pqk_projections&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s2">&quot;pqk_projections&quot;</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;pqk_projections&quot;</span><span class="p">)</span>
 
-            <span class="n">file_projection</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="s1">&#39;pqk_projections&#39;</span><span class="p">,</span> <span class="s1">&#39;pqk_projection_&#39;</span> <span class="o">+</span> <span class="n">data_key</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span><span class="o">+</span><span class="n">f_tr</span><span class="o">+</span><span class="s1">&#39;.npy&#39;</span><span class="p">)</span>
-            
-            <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span> <span class="n">file_projection</span><span class="p">,</span> <span class="n">projections</span> <span class="p">)</span>
+            <span class="n">file_projection</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="s2">&quot;pqk_projections&quot;</span><span class="p">,</span> <span class="s2">&quot;pqk_projection_&quot;</span> <span class="o">+</span> <span class="n">data_key</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">f_tr</span> <span class="o">+</span> <span class="s2">&quot;.npy&quot;</span>
+            <span class="p">)</span>
 
-        <span class="k">if</span> <span class="s1">&#39;train&#39;</span> <span class="ow">in</span> <span class="n">f_tr</span><span class="p">:</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">file_projection</span><span class="p">,</span> <span class="n">projections</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;train&quot;</span> <span class="ow">in</span> <span class="n">f_tr</span><span class="p">:</span>
             <span class="n">X_train_prj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">projections</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">projections</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">X_test_prj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">projections</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">projections</span><span class="p">),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-             
+
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
         <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">return</span> <span class="n">X_train_prj</span><span class="p">,</span> <span class="n">X_test_prj</span></div>
 
 
+
 <div class="viewcode-block" id="get_embeddings">
 <a class="viewcode-back" href="../../../api/qbiocode.embeddings.embed.html#qbiocode.get_embeddings">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_embeddings</span><span class="p">(</span><span class="n">embedding</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">n_neighbors</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function applies the specified embedding technique to the training and test datasets.</span>
 
 <span class="sd">    Args:</span>
@@ -563,57 +583,52 @@
 <span class="sd">        n_neighbors (int, optional): Number of neighbors for certain embeddings. Defaults to 30.</span>
 <span class="sd">        n_components (int, optional): Number of components for the embedding. If None, it defaults to the number of features in X_train.</span>
 <span class="sd">        method (str, optional): Method for Locally Linear Embedding. Defaults to None.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        tuple: Transformed training and test datasets.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>    
-    <span class="n">valid_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="s1">&#39;pca&#39;</span><span class="p">,</span> <span class="s1">&#39;lle&#39;</span><span class="p">,</span> <span class="s1">&#39;isomap&#39;</span><span class="p">,</span> <span class="s1">&#39;spectral&#39;</span><span class="p">,</span> <span class="s1">&#39;umap&#39;</span><span class="p">,</span> <span class="s1">&#39;nmf&#39;</span><span class="p">]</span>
+    <span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">valid_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;none&quot;</span><span class="p">,</span> <span class="s2">&quot;pca&quot;</span><span class="p">,</span> <span class="s2">&quot;lle&quot;</span><span class="p">,</span> <span class="s2">&quot;isomap&quot;</span><span class="p">,</span> <span class="s2">&quot;spectral&quot;</span><span class="p">,</span> <span class="s2">&quot;umap&quot;</span><span class="p">,</span> <span class="s2">&quot;nmf&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">embedding</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_modes</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid mode: </span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s2">. Mode must be one of </span><span class="si">{</span><span class="n">valid_modes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-
-    <span class="k">assert</span> <span class="n">n_components</span> <span class="o">&lt;=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;number of components greater than number of feature in the dataset&quot;</span>
-    <span class="k">if</span> <span class="s1">&#39;none&#39;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="p">(</span>
+        <span class="n">n_components</span> <span class="o">&lt;=</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="p">),</span> <span class="s2">&quot;number of components greater than number of feature in the dataset&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;none&quot;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">embedding_model</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="s1">&#39;pca&#39;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
-            <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span>
-                                <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">&#39;nmf&#39;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
-            <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">NMF</span><span class="p">(</span>
-                                <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">&#39;lle&#39;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">method</span><span class="o">==</span><span class="kc">None</span><span class="p">:</span> 
+        <span class="k">if</span> <span class="s2">&quot;pca&quot;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
+            <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;nmf&quot;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
+            <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">NMF</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;lle&quot;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">LocallyLinearEmbedding</span><span class="p">(</span>
-                                    <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span>
-                                    <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> 
-                                    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;standard&#39;</span><span class="p">)</span>   
-            <span class="k">else</span><span class="p">:</span> 
+                    <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;standard&quot;</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">LocallyLinearEmbedding</span><span class="p">(</span>
-                                    <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span>
-                                    <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> 
-                                    <span class="n">method</span><span class="o">=</span><span class="s1">&#39;modified&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">&#39;isomap&#39;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span> 
+                    <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span> <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;modified&quot;</span>
+                <span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;isomap&quot;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
             <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">Isomap</span><span class="p">(</span>
-                                <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span>
-                                <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> 
-                                <span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">&#39;spectral&#39;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span> 
-            <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">SpectralEmbedding</span><span class="p">(</span>
-                                <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> 
-                                <span class="n">eigen_solver</span><span class="o">=</span><span class="s2">&quot;arpack&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="s1">&#39;umap&#39;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span> 
+                <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span>
+                <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;spectral&quot;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
+            <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">SpectralEmbedding</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> <span class="n">eigen_solver</span><span class="o">=</span><span class="s2">&quot;arpack&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;umap&quot;</span> <span class="o">==</span> <span class="n">embedding</span><span class="p">:</span>
             <span class="n">embedding_model</span> <span class="o">=</span> <span class="n">UMAP</span><span class="p">(</span>
-                                <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span>
-                                <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span> 
-                                <span class="p">)</span>
+                <span class="n">n_neighbors</span><span class="o">=</span><span class="n">n_neighbors</span><span class="p">,</span>
+                <span class="n">n_components</span><span class="o">=</span><span class="n">n_components</span><span class="p">,</span>
+            <span class="p">)</span>
 
         <span class="n">X_train</span> <span class="o">=</span> <span class="n">embedding_model</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
         <span class="n">X_test</span> <span class="o">=</span> <span class="n">embedding_model</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    
+
     <span class="k">return</span> <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span></div>
 
 </pre></div>

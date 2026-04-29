@@ -394,28 +394,48 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
-<span class="c1"># ====== Scikit-learn imports ======</span>
-
-<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.multiclass</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneVsOneClassifier</span><span class="p">,</span> <span class="n">OneVsRestClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span>
 
 <span class="c1"># ====== Additional local imports ======</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.evaluation.model_evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">modeleval</span>
 
+<span class="c1"># ====== Scikit-learn imports ======</span>
+
+
 <span class="c1"># ====== Begin functions ======</span>
+
 
 <div class="viewcode-block" id="compute_dt">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_dt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_dt</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;Decision Tree&#39;</span><span class="p">,</span> <span class="n">data_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">criterion</span><span class="o">=</span><span class="s1">&#39;gini&#39;</span><span class="p">,</span> <span class="n">splitter</span><span class="o">=</span><span class="s1">&#39;best&#39;</span><span class="p">,</span> 
-               <span class="n">max_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_samples_split</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_weight_fraction_leaf</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
-               <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_leaf_nodes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_impurity_decrease</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ccp_alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> 
-               <span class="n">monotonic_cst</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="w">    </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_dt</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Decision Tree&quot;</span><span class="p">,</span>
+    <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;gini&quot;</span><span class="p">,</span>
+    <span class="n">splitter</span><span class="o">=</span><span class="s2">&quot;best&quot;</span><span class="p">,</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_samples_split</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">min_samples_leaf</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">min_weight_fraction_leaf</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">max_features</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">max_leaf_nodes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">min_impurity_decrease</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">class_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">ccp_alpha</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">monotonic_cst</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function generates a model using a Decision Tree (DT) Classifier method as implemented in</span>
-<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html&gt;`_.</span>
+<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html&gt;`__.</span>
 <span class="sd">    It takes in parameter arguments specified in the config.yaml file, but will use the default parameters specified above if none are passed.</span>
-<span class="sd">    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset. </span>
+<span class="sd">    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset.</span>
 <span class="sd">    The function returns the evaluation of the model on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model.</span>
 <span class="sd">    This function is designed to be used in a supervised learning context, where the goal is to classify data points.</span>
 
@@ -443,37 +463,63 @@
 <span class="sd">        monotonic_cst: Monotonic constraints for tree nodes, if applicable. Default is None.</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics, model parameters, and time taken for training and validation.</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
-    
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">dt</span> <span class="o">=</span> <span class="n">OneVsOneClassifier</span><span class="p">(</span><span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">criterion</span><span class="o">=</span><span class="n">criterion</span><span class="p">,</span> <span class="n">splitter</span><span class="o">=</span><span class="n">splitter</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span> 
-                                                   <span class="n">min_samples_split</span><span class="o">=</span><span class="n">min_samples_split</span><span class="p">,</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="n">min_samples_leaf</span><span class="p">,</span> 
-                                                   <span class="n">min_weight_fraction_leaf</span><span class="o">=</span><span class="n">min_weight_fraction_leaf</span><span class="p">,</span> <span class="n">max_features</span><span class="o">=</span><span class="n">max_features</span><span class="p">,</span> 
-                                                   <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span> <span class="n">max_leaf_nodes</span><span class="o">=</span><span class="n">max_leaf_nodes</span><span class="p">,</span> 
-                                                   <span class="n">min_impurity_decrease</span><span class="o">=</span><span class="n">min_impurity_decrease</span><span class="p">,</span> <span class="n">class_weight</span><span class="o">=</span><span class="n">class_weight</span><span class="p">,</span> 
-                                                   <span class="n">ccp_alpha</span><span class="o">=</span><span class="n">ccp_alpha</span><span class="p">,</span> <span class="n">monotonic_cst</span><span class="o">=</span><span class="n">monotonic_cst</span><span class="p">))</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="n">OneVsOneClassifier</span><span class="p">(</span>
+        <span class="n">DecisionTreeClassifier</span><span class="p">(</span>
+            <span class="n">criterion</span><span class="o">=</span><span class="n">criterion</span><span class="p">,</span>
+            <span class="n">splitter</span><span class="o">=</span><span class="n">splitter</span><span class="p">,</span>
+            <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span>
+            <span class="n">min_samples_split</span><span class="o">=</span><span class="n">min_samples_split</span><span class="p">,</span>
+            <span class="n">min_samples_leaf</span><span class="o">=</span><span class="n">min_samples_leaf</span><span class="p">,</span>
+            <span class="n">min_weight_fraction_leaf</span><span class="o">=</span><span class="n">min_weight_fraction_leaf</span><span class="p">,</span>
+            <span class="n">max_features</span><span class="o">=</span><span class="n">max_features</span><span class="p">,</span>
+            <span class="n">random_state</span><span class="o">=</span><span class="n">random_state</span><span class="p">,</span>
+            <span class="n">max_leaf_nodes</span><span class="o">=</span><span class="n">max_leaf_nodes</span><span class="p">,</span>
+            <span class="n">min_impurity_decrease</span><span class="o">=</span><span class="n">min_impurity_decrease</span><span class="p">,</span>
+            <span class="n">class_weight</span><span class="o">=</span><span class="n">class_weight</span><span class="p">,</span>
+            <span class="n">ccp_alpha</span><span class="o">=</span><span class="n">ccp_alpha</span><span class="p">,</span>
+            <span class="n">monotonic_cst</span><span class="o">=</span><span class="n">monotonic_cst</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
     <span class="c1"># Fit the training datset</span>
     <span class="n">model_fit</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
     <span class="n">model_params</span> <span class="o">=</span> <span class="n">model_fit</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
     <span class="c1"># Validate the model in test dataset and calculate accuracy</span>
-    <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span> 
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">dt</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span>
+        <span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
+    <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="compute_dt_opt">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_dt_opt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_dt_opt</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;Decision Tree&#39;</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> 
-                   <span class="n">criterion</span><span class="o">=</span><span class="p">[],</span> <span class="n">max_depth</span><span class="o">=</span><span class="p">[],</span> <span class="n">min_samples_split</span><span class="o">=</span><span class="p">[],</span> <span class="n">min_samples_leaf</span><span class="o">=</span><span class="p">[],</span> <span class="n">max_features</span><span class="o">=</span><span class="p">[]):</span>
-<span class="w">    </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_dt_opt</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;Decision Tree&quot;</span><span class="p">,</span>
+    <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">min_samples_split</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">min_samples_leaf</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">max_features</span><span class="o">=</span><span class="p">[],</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function also generates a model using a Decision Tree (DT) Classifier method as implemented in</span>
-<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html&gt;`_.</span>
+<span class="sd">    `scikit-learn &lt;https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html&gt;`__.</span>
 <span class="sd">    The difference here is that this function runs a grid search. The range of the grid search for each parameter is specified in the config.yaml file. The</span>
 <span class="sd">    combination of parameters that led to the best performance is saved and returned as best_params, which can then be used on similar</span>
-<span class="sd">    datasets, without having to run the grid search. </span>
-<span class="sd">    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset. </span>
+<span class="sd">    datasets, without having to run the grid search.</span>
+<span class="sd">    The model is trained on the training dataset and validated on the test dataset.  The model is trained on the training dataset and validated on the test dataset.</span>
 <span class="sd">    The function returns the evaluation of the model on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model across the grid search.</span>
 <span class="sd">    This function is designed to be used in a supervised learning context, where the goal is to classify data points.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        X_train (array-like): Training data features.</span>
 <span class="sd">        X_test (array-like): Test data features.</span>
@@ -488,18 +534,19 @@
 <span class="sd">        min_samples_split (list): List of minimum samples required to split an internal node. Default is empty list.</span>
 <span class="sd">        min_samples_leaf (list): List of minimum samples required to be at a leaf node. Default is empty list.</span>
 <span class="sd">        max_features (list): List of maximum features to consider when looking for the best split. Default is empty list.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics, best parameters, and time taken for training and validation.</span>
-<span class="sd">    &quot;&quot;&quot;</span> 
-    
+<span class="sd">    &quot;&quot;&quot;</span>
+
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;criterion&#39;</span><span class="p">:</span> <span class="n">criterion</span><span class="p">,</span>
-              <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="n">max_depth</span><span class="p">,</span>
-              <span class="s1">&#39;min_samples_split&#39;</span><span class="p">:</span> <span class="n">min_samples_split</span><span class="p">,</span>
-              <span class="s1">&#39;min_samples_leaf&#39;</span><span class="p">:</span> <span class="n">min_samples_leaf</span><span class="p">,</span>
-              <span class="s1">&#39;max_features&#39;</span><span class="p">:</span> <span class="n">max_features</span>
-              <span class="p">}</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;criterion&quot;</span><span class="p">:</span> <span class="n">criterion</span><span class="p">,</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="n">max_depth</span><span class="p">,</span>
+        <span class="s2">&quot;min_samples_split&quot;</span><span class="p">:</span> <span class="n">min_samples_split</span><span class="p">,</span>
+        <span class="s2">&quot;min_samples_leaf&quot;</span><span class="p">:</span> <span class="n">min_samples_leaf</span><span class="p">,</span>
+        <span class="s2">&quot;max_features&quot;</span><span class="p">:</span> <span class="n">max_features</span><span class="p">,</span>
+    <span class="p">}</span>
     <span class="c1"># Perform Grid Search to find the best parameters</span>
     <span class="n">grid_search</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">DecisionTreeClassifier</span><span class="p">(),</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>
     <span class="n">grid_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
@@ -511,7 +558,7 @@
 
     <span class="c1"># Make predictions and calculate accuracy</span>
     <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">best_dt</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">best_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">best_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 </pre></div>
 

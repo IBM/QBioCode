@@ -398,21 +398,21 @@
 <span class="sd">machine learning algorithms on high-dimensional non-linearly separable data.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 
 <div class="viewcode-block" id="generate_points_in_nd_sphere">
 <a class="viewcode-back" href="../../../api/qbiocode.data_generation.make_spheres.html#qbiocode.generate_points_in_nd_sphere">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">generate_points_in_nd_sphere</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">generate_points_in_nd_sphere</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate random points within an n-dimensional spherical shell.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_s : int</span>
@@ -423,7 +423,7 @@
 <span class="sd">        Outer radius of the spherical shell.</span>
 <span class="sd">    thresh : float, default=0.9</span>
 <span class="sd">        Inner radius threshold as fraction of outer radius (creates shell).</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    points : ndarray of shape (n_s, dim)</span>
@@ -434,17 +434,19 @@
     <span class="k">while</span> <span class="n">cnt</span> <span class="o">&lt;</span> <span class="n">n_s</span><span class="p">:</span>
         <span class="n">pnts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">radius</span> <span class="o">-</span> <span class="n">radius</span>
         <span class="n">pnts_nrm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">pnts</span><span class="p">)</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">pnts_nrm</span> <span class="o">&lt;=</span> <span class="n">radius</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pnts_nrm</span> <span class="o">&gt;=</span> <span class="n">radius</span><span class="o">*</span><span class="n">thresh</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pnts_nrm</span> <span class="o">&lt;=</span> <span class="n">radius</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">pnts_nrm</span> <span class="o">&gt;=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">thresh</span><span class="p">):</span>
             <span class="n">points</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pnts</span><span class="p">)</span>
             <span class="n">cnt</span> <span class="o">+=</span> <span class="mi">1</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">points</span></div>
 
 
+
 <span class="c1"># parameters to vary across the configurations</span>
 <span class="n">N_SAMPLES</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">300</span><span class="p">,</span> <span class="mi">25</span><span class="p">))</span>
 <span class="n">DIM</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 <span class="n">RAD</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
 
 <div class="viewcode-block" id="generate_spheres_datasets">
 <a class="viewcode-back" href="../../../api/qbiocode.data_generation.html#qbiocode.generate_spheres_datasets">[docs]</a>
@@ -457,12 +459,12 @@
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate multiple concentric n-dimensional spheres datasets with varying parameters.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Creates a series of high-dimensional datasets where samples form two concentric</span>
 <span class="sd">    spherical shells, providing a challenging non-linearly separable binary classification</span>
 <span class="sd">    problem in high dimensions. Each configuration varies the number of samples,</span>
 <span class="sd">    dimensionality, and sphere radii.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    n_s : list of int, default=range(100, 300, 25)</span>
@@ -475,20 +477,20 @@
 <span class="sd">        Directory path where datasets and configuration files will be saved.</span>
 <span class="sd">    random_state : int, default=42</span>
 <span class="sd">        Random seed for reproducibility.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
 <span class="sd">    None</span>
 <span class="sd">        Saves CSV files for each dataset configuration and a JSON file with</span>
 <span class="sd">        all configuration parameters.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Notes</span>
 <span class="sd">    -----</span>
 <span class="sd">    - Each dataset is saved as &#39;spheres_data-{i}.csv&#39; where i is the configuration number</span>
 <span class="sd">    - Configuration parameters are saved in &#39;dataset_config.json&#39;</span>
 <span class="sd">    - The last column &#39;class&#39; contains binary labels (0 for outer, 1 for inner sphere)</span>
 <span class="sd">    - Samples are generated in spherical shells (not solid spheres) for better separation</span>
-<span class="sd">    </span>
+
 <span class="sd">    Examples</span>
 <span class="sd">    --------</span>
 <span class="sd">    &gt;&gt;&gt; from qbiocode.data_generation import generate_spheres_datasets</span>
@@ -496,12 +498,12 @@
 <span class="sd">    Generating spheres dataset...</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Generating spheres dataset...&quot;</span><span class="p">)</span>
-    
+
     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">random_state</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">save_path</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">save_path</span> <span class="o">=</span> <span class="s1">&#39;spheres_data&#39;</span>
-    
+        <span class="n">save_path</span> <span class="o">=</span> <span class="s2">&quot;spheres_data&quot;</span>
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">save_path</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_path</span><span class="p">)</span>
 
@@ -515,41 +517,44 @@
 
     <span class="c1"># populate all the configs with the corresponding argument values</span>
     <span class="k">for</span> <span class="n">n_s</span><span class="p">,</span> <span class="n">n_d</span><span class="p">,</span> <span class="n">n_r</span> <span class="ow">in</span> <span class="n">configurations</span><span class="p">:</span>
-            <span class="n">config</span> <span class="o">=</span> <span class="s2">&quot;samples=</span><span class="si">{}</span><span class="s2">, dimensions=</span><span class="si">{}</span><span class="s2">, radius=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">n_s</span><span class="p">,</span> <span class="n">n_d</span><span class="p">,</span> <span class="n">n_r</span>
-            <span class="p">)</span>
-            <span class="c1"># print(count_configs)</span>
-            <span class="n">radius1</span> <span class="o">=</span> <span class="n">n_r</span>
-            <span class="n">radius2</span> <span class="o">=</span> <span class="n">radius1</span> <span class="o">*</span> <span class="mf">0.5</span>
-            <span class="n">Xa</span> <span class="o">=</span> <span class="n">generate_points_in_nd_sphere</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">n_d</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius1</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">)</span>
-            <span class="n">Xb</span> <span class="o">=</span> <span class="n">generate_points_in_nd_sphere</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="n">n_d</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius2</span><span class="p">,</span> <span class="n">thresh</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">)</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">Xa</span><span class="p">,</span> <span class="n">Xb</span><span class="p">))</span>
-            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">Xa</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">Xb</span><span class="p">)</span>
-            
-            <span class="c1"># print(&quot;Configuration {}/{}: {}&quot;.format(count_configs, len(configurations), config))</span>
-            <span class="n">X_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">y_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;class&#39;</span><span class="p">:</span><span class="n">y</span><span class="p">}</span>
-            <span class="n">y_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">y_dict</span><span class="p">)</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;dataset_config.json&#39;</span> <span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
-                <span class="n">dataset_config</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;spheres_data-</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">):</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="s2">&quot;samples=</span><span class="si">{}</span><span class="s2">, dimensions=</span><span class="si">{}</span><span class="s2">, radius=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">n_d</span><span class="p">,</span> <span class="n">n_r</span><span class="p">)</span>
+        <span class="c1"># print(count_configs)</span>
+        <span class="n">radius1</span> <span class="o">=</span> <span class="n">n_r</span>
+        <span class="n">radius2</span> <span class="o">=</span> <span class="n">radius1</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="n">Xa</span> <span class="o">=</span> <span class="n">generate_points_in_nd_sphere</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">n_d</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius1</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+        <span class="n">Xb</span> <span class="o">=</span> <span class="n">generate_points_in_nd_sphere</span><span class="p">(</span><span class="n">n_s</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="n">n_d</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="n">radius2</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">Xa</span><span class="p">,</span> <span class="n">Xb</span><span class="p">))</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">Xa</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">Xb</span><span class="p">)</span>
+
+        <span class="c1"># print(&quot;Configuration {}/{}: {}&quot;.format(count_configs, len(configurations), config))</span>
+        <span class="n">X_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+        <span class="n">y_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;class&quot;</span><span class="p">:</span> <span class="n">y</span><span class="p">}</span>
+        <span class="n">y_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">y_dict</span><span class="p">)</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">X_df</span><span class="p">,</span> <span class="n">y_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;dataset_config.json&quot;</span><span class="p">),</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
+            <span class="n">dataset_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
                 <span class="p">{</span>
-                <span class="s1">&#39;n_samples&#39;</span><span class="p">:</span><span class="n">n_s</span><span class="p">,</span>
-                <span class="s1">&#39;dimensions&#39;</span><span class="p">:</span> <span class="n">n_d</span><span class="p">,</span>
-                <span class="s1">&#39;radius&#39;</span><span class="p">:</span> <span class="n">n_r</span><span class="p">}})</span>  
-                <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset_config</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span> 
-            <span class="n">new_dataset</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;spheres_data-</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">count_configs</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="s2">&quot;spheres_data-</span><span class="si">{}</span><span class="s2">.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">):</span> <span class="p">{</span>
+                        <span class="s2">&quot;n_samples&quot;</span><span class="p">:</span> <span class="n">n_s</span><span class="p">,</span>
+                        <span class="s2">&quot;dimensions&quot;</span><span class="p">:</span> <span class="n">n_d</span><span class="p">,</span>
+                        <span class="s2">&quot;radius&quot;</span><span class="p">:</span> <span class="n">n_r</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dataset_config</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+        <span class="n">new_dataset</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s2">&quot;spheres_data-</span><span class="si">{}</span><span class="s2">.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">count_configs</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">count_configs</span> <span class="o">+=</span> <span class="mi">1</span>
 
-            <span class="c1"># fig = plt.figure()</span>
-            <span class="c1"># ax = fig.add_subplot(111, projection=&#39;3d&#39;)</span>
-            <span class="c1"># # ax.scatter(X[:, 0], X[:, 1],X[:,2], c= y, cmap=&#39;viridis&#39;)</span>
-            <span class="c1"># ax.scatter(X[:, n_d-3], X[:, n_d-2],X[:, n_d-1], c=y, cmap=&#39;viridis&#39;)</span>
-            <span class="c1"># plt.savefig(&#39;spheres_data/spheres_data-{}.png&#39;.format(count_configs))</span>
-            <span class="c1"># print(X.shape)</span>
-            <span class="c1"># print(y.shape)</span>
+        <span class="c1"># fig = plt.figure()</span>
+        <span class="c1"># ax = fig.add_subplot(111, projection=&#39;3d&#39;)</span>
+        <span class="c1"># # ax.scatter(X[:, 0], X[:, 1],X[:,2], c= y, cmap=&#39;viridis&#39;)</span>
+        <span class="c1"># ax.scatter(X[:, n_d-3], X[:, n_d-2],X[:, n_d-1], c=y, cmap=&#39;viridis&#39;)</span>
+        <span class="c1"># plt.savefig(&#39;spheres_data/spheres_data-{}.png&#39;.format(count_configs))</span>
+        <span class="c1"># print(X.shape)</span>
+        <span class="c1"># print(y.shape)</span>
     <span class="k">return</span></div>
-
 
 </pre></div>
 

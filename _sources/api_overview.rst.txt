@@ -45,7 +45,7 @@ Multiple models can be run via the following
 Classical Models
 """"""""""""""""
 
-QBioCode provides classical machine learning models from `scikit-learn <https://scikit-learn.org/>`_ for baseline comparisons and benchmarking against quantum models.
+QBioCode provides classical machine learning models from `scikit-learn <https://scikit-learn.org/>`__ for baseline comparisons and benchmarking against quantum models.
 
 .. autosummary::
     ~qbiocode.learning.compute_dt.compute_dt
@@ -291,4 +291,3 @@ Generated datasets are saved with:
 
 References
 ^^^^^^^^^^
-

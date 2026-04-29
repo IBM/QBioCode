@@ -391,24 +391,26 @@
                   
   <h1>Source code for qbiocode.evaluation.model_run</h1><div class="highlight"><pre>
 <span></span><span class="c1"># ====== Base class imports ======</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">os</span><span class="o">,</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 
 <span class="c1"># ======= Parallelization =====</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">joblib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parallel</span><span class="p">,</span> <span class="n">delayed</span>
 
-
 <span class="n">current_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
+
 
 <div class="viewcode-block" id="model_run">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.model_run.html#qbiocode.model_run">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">model_run</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">data_key</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function runs the ML methods, with or without a grid search, as specified in the config.yaml file.</span>
 <span class="sd">    It returns a python dictionary contatining these results, which can then be parsed out. It is designed to run</span>
-<span class="sd">    each of the ML methods in parallel, for each data set (this is done by calling the Parallel module in results below). </span>
-<span class="sd">    The arguments X_train, X_test, y_train, y_test are all passed in from the main script (qmlbench.py) as the input </span>
-<span class="sd">    datasets are processed, while the remaining arguments are passed from the config.yaml file. </span>
-<span class="sd">    </span>
+<span class="sd">    each of the ML methods in parallel, for each data set (this is done by calling the Parallel module in results below).</span>
+<span class="sd">    The arguments X_train, X_test, y_train, y_test are all passed in from the main script (qmlbench.py) as the input</span>
+<span class="sd">    datasets are processed, while the remaining arguments are passed from the config.yaml file.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        X_train (pd.DataFrame): Training features.</span>
 <span class="sd">        X_test (pd.DataFrame): Testing features.</span>
@@ -422,69 +424,69 @@
 <span class="sd">            - cross_validation: Cross-validation strategy.</span>
 <span class="sd">            - gridsearch_&lt;model&gt;_args: Arguments for grid search for each model.</span>
 <span class="sd">            - &lt;model&gt;_args: Additional arguments for each model.</span>
-<span class="sd">        </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        model_total_result (dict): A dictionary containing the results of the models run, with keys as model names and values as their respective results.</span>
 <span class="sd">        This dictionary can readily be converted to a Pandas Dataframe, as seen in the &#39;ModelResults.csv&#39; files that are produced in the results directory</span>
 <span class="sd">        when the main profiler is run (qbiocode-profiler.py).</span>
-<span class="sd">    </span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="c1"># Lazy imports to avoid circular dependency</span>
     <span class="c1"># These imports happen inside the function, not at module level</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_svc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_svc</span><span class="p">,</span> <span class="n">compute_svc_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_dt</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_dt</span><span class="p">,</span> <span class="n">compute_dt_opt</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_nb</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_nb</span><span class="p">,</span> <span class="n">compute_nb_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_lr</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_lr</span><span class="p">,</span> <span class="n">compute_lr_opt</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_rf</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_rf</span><span class="p">,</span> <span class="n">compute_rf_opt</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_xgb</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_xgb</span><span class="p">,</span> <span class="n">compute_xgb_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_mlp</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_mlp</span><span class="p">,</span> <span class="n">compute_mlp_opt</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_nb</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_nb</span><span class="p">,</span> <span class="n">compute_nb_opt</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_pqk</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_pqk</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_qnn</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_qnn</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_qsvc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_qsvc</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_rf</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_rf</span><span class="p">,</span> <span class="n">compute_rf_opt</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_svc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_svc</span><span class="p">,</span> <span class="n">compute_svc_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_vqc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_vqc</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_pqk</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_pqk</span>
-    
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_xgb</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_xgb</span><span class="p">,</span> <span class="n">compute_xgb_opt</span>
+
     <span class="c1"># Build model dictionary</span>
     <span class="n">compute_ml_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;svc_opt&#39;</span><span class="p">:</span> <span class="n">compute_svc_opt</span><span class="p">,</span>
-        <span class="s1">&#39;svc&#39;</span><span class="p">:</span> <span class="n">compute_svc</span><span class="p">,</span>
-        <span class="s1">&#39;dt_opt&#39;</span><span class="p">:</span> <span class="n">compute_dt_opt</span><span class="p">,</span>
-        <span class="s1">&#39;dt&#39;</span><span class="p">:</span> <span class="n">compute_dt</span><span class="p">,</span>
-        <span class="s1">&#39;lr_opt&#39;</span><span class="p">:</span> <span class="n">compute_lr_opt</span><span class="p">,</span>
-        <span class="s1">&#39;lr&#39;</span><span class="p">:</span> <span class="n">compute_lr</span><span class="p">,</span>
-        <span class="s1">&#39;nb_opt&#39;</span><span class="p">:</span> <span class="n">compute_nb_opt</span><span class="p">,</span>
-        <span class="s1">&#39;nb&#39;</span><span class="p">:</span> <span class="n">compute_nb</span><span class="p">,</span>
-        <span class="s1">&#39;rf_opt&#39;</span><span class="p">:</span> <span class="n">compute_rf_opt</span><span class="p">,</span>
-        <span class="s1">&#39;rf&#39;</span><span class="p">:</span> <span class="n">compute_rf</span><span class="p">,</span>
-        <span class="s1">&#39;xgb_opt&#39;</span><span class="p">:</span> <span class="n">compute_xgb_opt</span><span class="p">,</span>
-        <span class="s1">&#39;xgb&#39;</span><span class="p">:</span> <span class="n">compute_xgb</span><span class="p">,</span>
-        <span class="s1">&#39;mlp_opt&#39;</span><span class="p">:</span> <span class="n">compute_mlp_opt</span><span class="p">,</span>
-        <span class="s1">&#39;mlp&#39;</span><span class="p">:</span> <span class="n">compute_mlp</span><span class="p">,</span>
-        <span class="s1">&#39;qsvc&#39;</span><span class="p">:</span> <span class="n">compute_qsvc</span><span class="p">,</span>
-        <span class="s1">&#39;vqc&#39;</span><span class="p">:</span> <span class="n">compute_vqc</span><span class="p">,</span>
-        <span class="s1">&#39;qnn&#39;</span><span class="p">:</span> <span class="n">compute_qnn</span><span class="p">,</span>
-        <span class="s1">&#39;pqk&#39;</span><span class="p">:</span> <span class="n">compute_pqk</span>
+        <span class="s2">&quot;svc_opt&quot;</span><span class="p">:</span> <span class="n">compute_svc_opt</span><span class="p">,</span>
+        <span class="s2">&quot;svc&quot;</span><span class="p">:</span> <span class="n">compute_svc</span><span class="p">,</span>
+        <span class="s2">&quot;dt_opt&quot;</span><span class="p">:</span> <span class="n">compute_dt_opt</span><span class="p">,</span>
+        <span class="s2">&quot;dt&quot;</span><span class="p">:</span> <span class="n">compute_dt</span><span class="p">,</span>
+        <span class="s2">&quot;lr_opt&quot;</span><span class="p">:</span> <span class="n">compute_lr_opt</span><span class="p">,</span>
+        <span class="s2">&quot;lr&quot;</span><span class="p">:</span> <span class="n">compute_lr</span><span class="p">,</span>
+        <span class="s2">&quot;nb_opt&quot;</span><span class="p">:</span> <span class="n">compute_nb_opt</span><span class="p">,</span>
+        <span class="s2">&quot;nb&quot;</span><span class="p">:</span> <span class="n">compute_nb</span><span class="p">,</span>
+        <span class="s2">&quot;rf_opt&quot;</span><span class="p">:</span> <span class="n">compute_rf_opt</span><span class="p">,</span>
+        <span class="s2">&quot;rf&quot;</span><span class="p">:</span> <span class="n">compute_rf</span><span class="p">,</span>
+        <span class="s2">&quot;xgb_opt&quot;</span><span class="p">:</span> <span class="n">compute_xgb_opt</span><span class="p">,</span>
+        <span class="s2">&quot;xgb&quot;</span><span class="p">:</span> <span class="n">compute_xgb</span><span class="p">,</span>
+        <span class="s2">&quot;mlp_opt&quot;</span><span class="p">:</span> <span class="n">compute_mlp_opt</span><span class="p">,</span>
+        <span class="s2">&quot;mlp&quot;</span><span class="p">:</span> <span class="n">compute_mlp</span><span class="p">,</span>
+        <span class="s2">&quot;qsvc&quot;</span><span class="p">:</span> <span class="n">compute_qsvc</span><span class="p">,</span>
+        <span class="s2">&quot;vqc&quot;</span><span class="p">:</span> <span class="n">compute_vqc</span><span class="p">,</span>
+        <span class="s2">&quot;qnn&quot;</span><span class="p">:</span> <span class="n">compute_qnn</span><span class="p">,</span>
+        <span class="s2">&quot;pqk&quot;</span><span class="p">:</span> <span class="n">compute_pqk</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="c1"># Quantum models don&#39;t have _opt versions (use separate configs for hyperparameter tuning)</span>
-    <span class="n">quantum_models</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;qsvc&#39;</span><span class="p">,</span> <span class="s1">&#39;qnn&#39;</span><span class="p">,</span> <span class="s1">&#39;vqc&#39;</span><span class="p">,</span> <span class="s1">&#39;pqk&#39;</span><span class="p">}</span>
-    
+    <span class="n">quantum_models</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;qsvc&quot;</span><span class="p">,</span> <span class="s2">&quot;qnn&quot;</span><span class="p">,</span> <span class="s2">&quot;vqc&quot;</span><span class="p">,</span> <span class="s2">&quot;pqk&quot;</span><span class="p">}</span>
+
     <span class="c1"># Run classical and quantum models</span>
-    <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">])</span>
-    <span class="k">if</span> <span class="s1">&#39;n_jobs&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;n_jobs&#39;</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]))</span>
-    
+    <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="s2">&quot;n_jobs&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;n_jobs&quot;</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]))</span>
+
     <span class="n">grid_search</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">if</span> <span class="s1">&#39;grid_search&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="n">grid_search</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;grid_search&#39;</span><span class="p">]</span>
-    
+    <span class="k">if</span> <span class="s2">&quot;grid_search&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">grid_search</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;grid_search&quot;</span><span class="p">]</span>
+
     <span class="c1"># Check if any quantum models are in the model list when grid_search is enabled</span>
     <span class="k">if</span> <span class="n">grid_search</span><span class="p">:</span>
-        <span class="n">quantum_in_models</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">quantum_models</span><span class="p">]</span>
+        <span class="n">quantum_in_models</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">quantum_models</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">quantum_in_models</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING: Grid search is enabled with quantum models:&quot;</span><span class="p">,</span> <span class="n">quantum_in_models</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Quantum models do not support automated grid search.&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;For hyperparameter tuning of quantum models, you should:&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  1. Create multiple configuration files with different hyperparameters&quot;</span><span class="p">)</span>
@@ -498,41 +500,59 @@
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;      data_dirs=[&#39;data/your_data_dir&#39;]&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  )&quot;</span><span class="p">)</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">See documentation: qbiocode.utils.generate_qml_experiment_configs&quot;</span><span class="p">)</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="o">*</span><span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">80</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">grid_search</span><span class="p">:</span>
         <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]:</span>
+        <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">quantum_models</span><span class="p">:</span>
                 <span class="c1"># Quantum models don&#39;t have _opt versions, use regular function</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">delayed</span><span class="p">(</span><span class="n">compute_ml_dict</span><span class="p">[</span><span class="n">method</span><span class="p">])(</span>
-                    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span>
+                    <span class="n">X_train</span><span class="p">,</span>
+                    <span class="n">X_test</span><span class="p">,</span>
+                    <span class="n">y_train</span><span class="p">,</span>
+                    <span class="n">y_test</span><span class="p">,</span>
+                    <span class="n">args</span><span class="p">,</span>
                     <span class="n">model</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
                     <span class="n">data_key</span><span class="o">=</span><span class="n">data_key</span><span class="p">,</span>
-                    <span class="o">**</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span> <span class="o">+</span> <span class="s1">&#39;_args&#39;</span><span class="p">,</span> <span class="p">{}),</span>
-                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+                    <span class="o">**</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span> <span class="o">+</span> <span class="s2">&quot;_args&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Classical models have _opt versions with grid search</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">delayed</span><span class="p">(</span><span class="n">compute_ml_dict</span><span class="p">[</span><span class="n">method</span> <span class="o">+</span> <span class="s1">&#39;_opt&#39;</span><span class="p">])(</span>
-                    <span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span>
-                    <span class="n">model</span><span class="o">=</span><span class="n">method</span> <span class="o">+</span> <span class="s1">&#39;_opt&#39;</span><span class="p">,</span>
-                    <span class="n">cv</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s1">&#39;cross_validation&#39;</span><span class="p">],</span>
-                    <span class="o">**</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;gridsearch_&#39;</span> <span class="o">+</span> <span class="n">method</span> <span class="o">+</span> <span class="s1">&#39;_args&#39;</span><span class="p">,</span> <span class="p">{}),</span>
-                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">delayed</span><span class="p">(</span><span class="n">compute_ml_dict</span><span class="p">[</span><span class="n">method</span> <span class="o">+</span> <span class="s2">&quot;_opt&quot;</span><span class="p">])(</span>
+                    <span class="n">X_train</span><span class="p">,</span>
+                    <span class="n">X_test</span><span class="p">,</span>
+                    <span class="n">y_train</span><span class="p">,</span>
+                    <span class="n">y_test</span><span class="p">,</span>
+                    <span class="n">args</span><span class="p">,</span>
+                    <span class="n">model</span><span class="o">=</span><span class="n">method</span> <span class="o">+</span> <span class="s2">&quot;_opt&quot;</span><span class="p">,</span>
+                    <span class="n">cv</span><span class="o">=</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;cross_validation&quot;</span><span class="p">],</span>
+                    <span class="o">**</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gridsearch_&quot;</span> <span class="o">+</span> <span class="n">method</span> <span class="o">+</span> <span class="s2">&quot;_args&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+                    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">results</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span><span class="n">delayed</span><span class="p">(</span><span class="n">compute_ml_dict</span><span class="p">[</span><span class="n">method</span><span class="p">])(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">method</span><span class="p">,</span> <span class="n">data_key</span> <span class="o">=</span> <span class="n">data_key</span><span class="p">,</span>
-                                                                           <span class="o">**</span><span class="n">args</span><span class="p">[</span><span class="n">method</span><span class="o">+</span><span class="s1">&#39;_args&#39;</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-                                                                           <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">])</span>
-    
+        <span class="n">results</span> <span class="o">=</span> <span class="n">Parallel</span><span class="p">(</span><span class="n">n_jobs</span><span class="o">=</span><span class="n">n_jobs</span><span class="p">)(</span>
+            <span class="n">delayed</span><span class="p">(</span><span class="n">compute_ml_dict</span><span class="p">[</span><span class="n">method</span><span class="p">])(</span>
+                <span class="n">X_train</span><span class="p">,</span>
+                <span class="n">X_test</span><span class="p">,</span>
+                <span class="n">y_train</span><span class="p">,</span>
+                <span class="n">y_test</span><span class="p">,</span>
+                <span class="n">args</span><span class="p">,</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">method</span><span class="p">,</span>
+                <span class="n">data_key</span><span class="o">=</span><span class="n">data_key</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">args</span><span class="p">[</span><span class="n">method</span> <span class="o">+</span> <span class="s2">&quot;_args&quot;</span><span class="p">],</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+
     <span class="n">model_total_result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">results</span><span class="p">))</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
-    <span class="n">model_total_result</span><span class="p">[</span><span class="s1">&#39;i&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">model_total_result</span><span class="p">[</span><span class="s2">&quot;i&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">model_total_result</span> <span class="o">=</span> <span class="n">model_total_result</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s2">&quot;variable&quot;</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s2">&quot;i&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">model_total_result</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span></div>
-
 
 </pre></div>
 

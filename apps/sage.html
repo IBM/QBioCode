@@ -551,22 +551,21 @@ New Dataset → Extract Complexity → Predict Performance → Rank Models
 </ul>
 <p><strong>Examples</strong></p>
 <p>Train with Random Forest only:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qsage<span class="w"> </span>--input<span class="w"> </span>qprofiler_results.csv<span class="w"> </span>--output<span class="w"> </span>results/<span class="w"> </span>--model-type<span class="w"> </span>rf
+
+<span class="c1"># Or train MLP sub-sages</span>
+qsage<span class="w"> </span>--input<span class="w"> </span>qprofiler_results.csv<span class="w"> </span>--output<span class="w"> </span>results/<span class="w"> </span>--model-type<span class="w"> </span>mlp
 </pre></div>
 </div>
-<p>qsage –input qprofiler_results.csv –output results/ –model-type rf</p>
-<p># Or train MLP sub-sages
-qsage –input qprofiler_results.csv –output results/ –model-type mlp</p>
 <p>Train with custom seed and test size:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>qsage<span class="w"> </span>--input<span class="w"> </span>data.csv<span class="w"> </span>--output<span class="w"> </span>results/<span class="w"> </span>--seed<span class="w"> </span><span class="m">123</span><span class="w"> </span>--test-size<span class="w"> </span><span class="m">0</span>.3
 </pre></div>
 </div>
-<p>Train both Random Forest and MLP:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>
+<p>Train with a custom MLP iteration count:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Train MLP with more epochs</span>
+qsage<span class="w"> </span>--input<span class="w"> </span>data.csv<span class="w"> </span>--output<span class="w"> </span>results/<span class="w"> </span>--model-type<span class="w"> </span>mlp<span class="w"> </span>--n-iter<span class="w"> </span><span class="m">2000</span>
 </pre></div>
 </div>
-<p># Train MLP with more epochs
-qsage –input data.csv –output results/ –model-type mlp –n-iter 2000</p>
 <p><strong>Output Files</strong></p>
 <p>QSage generates:</p>
 <ul class="simple">

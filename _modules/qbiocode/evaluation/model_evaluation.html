@@ -404,9 +404,12 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.utils.helper_fn</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_results</span>
 
+
 <div class="viewcode-block" id="modeleval">
 <a class="viewcode-back" href="../../../api/qbiocode.evaluation.model_evaluation.html#qbiocode.modeleval">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">modeleval</span><span class="p">(</span>
+    <span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;weighted&quot;</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Evaluates the model performance using accuracy, F1 score, and AUC.</span>
 
@@ -430,17 +433,169 @@
     <span class="n">f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="n">average</span><span class="p">)</span>
     <span class="n">compile_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">beg_time</span>
     <span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
-    <span class="k">if</span> <span class="n">verbose</span><span class="o">==</span><span class="kc">True</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">verbose</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">print_results</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">accuracy</span><span class="p">,</span> <span class="n">f1</span><span class="p">,</span> <span class="n">compile_time</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-    
-    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;grid_search&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span> 
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y_test_&#39;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span><span class="n">y_test</span><span class="p">],</span> 
-                         <span class="s1">&#39;y_predicted_&#39;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span><span class="n">y_predicted</span><span class="p">],</span>
-                         <span class="s1">&#39;results_&#39;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span><span class="n">model</span><span class="p">,</span><span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span> <span class="s1">&#39;f1_score&#39;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">compile_time</span><span class="p">,</span> <span class="s1">&#39;auc&#39;</span><span class="p">:</span> <span class="n">auc</span><span class="p">,</span> <span class="s1">&#39;BestParams_GridSearch&#39;</span><span class="p">:</span> <span class="n">params</span><span class="p">}]})</span>
-    <span class="k">else</span><span class="p">:</span> 
-        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;y_test_&#39;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span><span class="n">y_test</span><span class="p">],</span> 
-                    <span class="s1">&#39;y_predicted_&#39;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span><span class="n">y_predicted</span><span class="p">],</span>
-                    <span class="s1">&#39;results_&#39;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span><span class="n">model</span><span class="p">,</span><span class="s1">&#39;accuracy&#39;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span> <span class="s1">&#39;f1_score&#39;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span><span class="s1">&#39;time&#39;</span><span class="p">:</span> <span class="n">compile_time</span><span class="p">,</span> <span class="s1">&#39;auc&#39;</span><span class="p">:</span> <span class="n">auc</span><span class="p">,</span> <span class="s1">&#39;Model_Parameters&#39;</span><span class="p">:</span> <span class="n">params</span><span class="p">}]})</span></div>
+
+    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;grid_search&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;y_test_&quot;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span><span class="n">y_test</span><span class="p">],</span>
+                <span class="s2">&quot;y_predicted_&quot;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span><span class="n">y_predicted</span><span class="p">],</span>
+                <span class="s2">&quot;results_&quot;</span>
+                <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span>
+                        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span>
+                        <span class="s2">&quot;f1_score&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+                        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">compile_time</span><span class="p">,</span>
+                        <span class="s2">&quot;auc&quot;</span><span class="p">:</span> <span class="n">auc</span><span class="p">,</span>
+                        <span class="s2">&quot;BestParams_GridSearch&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;y_test_&quot;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span><span class="n">y_test</span><span class="p">],</span>
+                <span class="s2">&quot;y_predicted_&quot;</span> <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span><span class="n">y_predicted</span><span class="p">],</span>
+                <span class="s2">&quot;results_&quot;</span>
+                <span class="o">+</span> <span class="n">model</span><span class="p">:</span> <span class="p">[</span>
+                    <span class="p">{</span>
+                        <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="n">model</span><span class="p">,</span>
+                        <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">,</span>
+                        <span class="s2">&quot;f1_score&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+                        <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">compile_time</span><span class="p">,</span>
+                        <span class="s2">&quot;auc&quot;</span><span class="p">:</span> <span class="n">auc</span><span class="p">,</span>
+                        <span class="s2">&quot;Model_Parameters&quot;</span><span class="p">:</span> <span class="n">params</span><span class="p">,</span>
+                    <span class="p">}</span>
+                <span class="p">],</span>
+            <span class="p">}</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="evaluation_metrics">
+<a class="viewcode-back" href="../../../api/qbiocode.evaluation.html#qbiocode.evaluation_metrics">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluation_metrics</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;brier&quot;</span><span class="p">],</span> <span class="n">save</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate evaluation metrics for classification predictions.</span>
+
+<span class="sd">    Computes specified metrics for model predictions. Supports accuracy, Brier score,</span>
+<span class="sd">    F1 score, precision, recall, and AUC-ROC. The Brier score measures the mean</span>
+<span class="sd">    squared difference between predicted probabilities and actual outcomes, providing</span>
+<span class="sd">    a measure of calibration quality.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    predictions : np.ndarray</span>
+<span class="sd">        Predicted probabilities, shape (n_samples, n_classes)</span>
+<span class="sd">    y_test : np.ndarray</span>
+<span class="sd">        True labels, shape (n_samples,)</span>
+<span class="sd">    metrics : list of str, optional</span>
+<span class="sd">        List of metrics to compute. Options: &#39;accuracy&#39;, &#39;brier&#39;, &#39;f1&#39;,</span>
+<span class="sd">        &#39;precision&#39;, &#39;recall&#39;, &#39;auc&#39; (default: [&#39;accuracy&#39;, &#39;brier&#39;])</span>
+<span class="sd">    save : bool, optional</span>
+<span class="sd">        Whether to save results (reserved for future use, default: False)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    tuple or dict</span>
+<span class="sd">        If metrics=[&#39;accuracy&#39;, &#39;brier&#39;] (default): returns (accuracy, brier_score)</span>
+<span class="sd">        Otherwise: returns dict with requested metrics as keys</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; import numpy as np</span>
+<span class="sd">    &gt;&gt;&gt; from qbiocode.evaluation import evaluation_metrics</span>
+<span class="sd">    &gt;&gt;&gt;</span>
+<span class="sd">    &gt;&gt;&gt; # Binary classification example - default metrics</span>
+<span class="sd">    &gt;&gt;&gt; predictions = np.array([[0.8, 0.2], [0.3, 0.7], [0.9, 0.1]])</span>
+<span class="sd">    &gt;&gt;&gt; y_test = np.array([0, 1, 0])</span>
+<span class="sd">    &gt;&gt;&gt; accuracy, brier = evaluation_metrics(predictions, y_test)</span>
+<span class="sd">    &gt;&gt;&gt; print(f&quot;Accuracy: {accuracy:.2f}, Brier Score: {brier:.3f}&quot;)</span>
+<span class="sd">    Accuracy: 1.00, Brier Score: 0.060</span>
+
+<span class="sd">    &gt;&gt;&gt; # Multiple metrics</span>
+<span class="sd">    &gt;&gt;&gt; results = evaluation_metrics(predictions, y_test,</span>
+<span class="sd">    ...                              metrics=[&#39;accuracy&#39;, &#39;brier&#39;, &#39;f1&#39;, &#39;auc&#39;])</span>
+<span class="sd">    &gt;&gt;&gt; print(results)</span>
+<span class="sd">    {&#39;accuracy&#39;: 1.0, &#39;brier&#39;: 0.06, &#39;f1&#39;: 1.0, &#39;auc&#39;: 1.0}</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    - For binary classification, Brier score is computed using the probability</span>
+<span class="sd">      of the positive class</span>
+<span class="sd">    - For multi-class classification, the average Brier score across all classes</span>
+<span class="sd">      is returned</span>
+<span class="sd">    - F1, precision, and recall use weighted averaging for multi-class</span>
+<span class="sd">    - AUC uses one-vs-rest for multi-class</span>
+<span class="sd">    - Lower Brier scores indicate better calibrated probability predictions</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    Brier, G. W. (1950). &quot;Verification of forecasts expressed in terms of probability&quot;.</span>
+<span class="sd">    Monthly Weather Review, 78(1), 1-3.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+        <span class="n">brier_score_loss</span><span class="p">,</span>
+        <span class="n">f1_score</span><span class="p">,</span>
+        <span class="n">precision_score</span><span class="p">,</span>
+        <span class="n">recall_score</span><span class="p">,</span>
+        <span class="n">roc_auc_score</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Get predicted classes</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Calculate requested metrics</span>
+    <span class="k">if</span> <span class="s2">&quot;accuracy&quot;</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+        <span class="n">results</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;brier&quot;</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># Binary classification: use probability of positive class</span>
+            <span class="n">results</span><span class="p">[</span><span class="s2">&quot;brier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">brier_score_loss</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Multi-class: use average Brier score across all classes</span>
+            <span class="n">results</span><span class="p">[</span><span class="s2">&quot;brier&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="n">brier_score_loss</span><span class="p">(</span><span class="n">y_test</span> <span class="o">==</span> <span class="n">i</span><span class="p">,</span> <span class="n">predictions</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="p">]</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;f1&quot;</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+        <span class="n">results</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;weighted&quot;</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;precision&quot;</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+        <span class="n">results</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;weighted&quot;</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;recall&quot;</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+        <span class="n">results</span><span class="p">[</span><span class="s2">&quot;recall&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;weighted&quot;</span><span class="p">,</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;auc&quot;</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">predictions</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="c1"># Binary classification</span>
+                <span class="n">results</span><span class="p">[</span><span class="s2">&quot;auc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Multi-class: one-vs-rest</span>
+                <span class="n">results</span><span class="p">[</span><span class="s2">&quot;auc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">roc_auc_score</span><span class="p">(</span>
+                    <span class="n">y_test</span><span class="p">,</span> <span class="n">predictions</span><span class="p">,</span> <span class="n">multi_class</span><span class="o">=</span><span class="s2">&quot;ovr&quot;</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s2">&quot;weighted&quot;</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="c1"># Handle cases where AUC cannot be computed (e.g., single class in y_test)</span>
+            <span class="n">results</span><span class="p">[</span><span class="s2">&quot;auc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+    <span class="c1"># For backward compatibility: return tuple if default metrics</span>
+    <span class="k">if</span> <span class="n">metrics</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;brier&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">],</span> <span class="n">results</span><span class="p">[</span><span class="s2">&quot;brier&quot;</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">results</span></div>
 
 </pre></div>
 

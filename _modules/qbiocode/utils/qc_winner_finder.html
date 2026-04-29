@@ -391,101 +391,121 @@
                   
   <h1>Source code for qbiocode.utils.qc_winner_finder</h1><div class="highlight"><pre>
 <span></span><span class="c1">## function to find datasets where QML methods did better than classical</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span> 
-<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
 
 <div class="viewcode-block" id="qml_winner">
 <a class="viewcode-back" href="../../../api/qbiocode.utils.html#qbiocode.qml_winner">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">qml_winner</span><span class="p">(</span><span class="n">results_df</span><span class="p">,</span> <span class="n">rawevals_df</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This function finds data sets where QML was beneficial (higher F1 scores than CML) and create new .csv files</span>
-<span class="sd">    with the relevant evaluation and performance for these specific datasets, for further analysis.  </span>
+<span class="sd">    with the relevant evaluation and performance for these specific datasets, for further analysis.</span>
 <span class="sd">    It also computes the best results per method across all splits and the best results per dataset.</span>
 <span class="sd">    It returns two DataFrames: one with the datasets where QML methods outperformed CML methods, and another with the</span>
 <span class="sd">    evaluation scores for the best QML method for each of these datasets.</span>
 <span class="sd">    It also saves these DataFrames as .csv files in the specified output directory.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        results_df (pandas.DataFrame): Dataset in pandas corresponding to &#39;ModelResults.csv&#39;</span>
 <span class="sd">        rawevals_df (pandas.DataFrame): Dataset in pandas corresponding to &#39;RawDataEvaluation.csv&#39;</span>
-<span class="sd">    Returns: </span>
+<span class="sd">    Returns:</span>
 <span class="sd">        qml_winners (pandas.DataFrame): contais the input datasets for which at least one QML method</span>
 <span class="sd">                                        performed better than CML. DataFrame contains the scores of all</span>
-<span class="sd">                                        the methods. </span>
-<span class="sd">        winner_eval_score (pandas.DataFrame): contains the input datasets, their evaluation, and scores for the </span>
+<span class="sd">                                        the methods.</span>
+<span class="sd">        winner_eval_score (pandas.DataFrame): contains the input datasets, their evaluation, and scores for the</span>
 <span class="sd">                                            specific qml method that yielded the best score.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="c1"># pass in the ML results</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">results_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="c1"># pull in the raw evaluations</span>
     <span class="n">rawevals</span> <span class="o">=</span> <span class="n">rawevals_df</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-    <span class="c1">#first, compute mean across all splits </span>
-    <span class="k">if</span> <span class="s1">&#39;Model_Parameters&#39;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="n">df_across_split</span><span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Dataset&#39;</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;Model_Parameters&#39;</span><span class="p">])[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span> 
+    <span class="c1"># first, compute mean across all splits</span>
+    <span class="k">if</span> <span class="s2">&quot;Model_Parameters&quot;</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="n">df_across_split</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;Dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;embeddings&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;Model_Parameters&quot;</span><span class="p">])[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
         <span class="c1"># if &#39;Model_Parameters&#39; is not present, this means you ran a grid search and this column will be named &#39;BestParams_GridSearch&#39; instead</span>
-        <span class="n">df_across_split</span><span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Dataset&#39;</span><span class="p">,</span> <span class="s1">&#39;embeddings&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">,</span> <span class="s1">&#39;BestParams_GridSearch&#39;</span><span class="p">])[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-    <span class="c1">#now, extract the best results per method across embedding and iteration</span>
-    <span class="n">df_best</span> <span class="o">=</span> <span class="n">df_across_split</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;Dataset&#39;</span><span class="p">,</span> <span class="s1">&#39;model&#39;</span><span class="p">])[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
-    <span class="c1">#df_best = df_across_split.groupby([&#39;Dataset&#39;, &#39;model&#39;, &#39;Model_Parameters&#39;])[&#39;f1_score&#39;].max().reset_index()</span>
-    <span class="n">df_best</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">output_dir</span><span class="p">,</span>  <span class="n">tag</span> <span class="o">+</span><span class="s1">&#39;_best_across_split.csv&#39;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">df_across_split</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;Dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;embeddings&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">,</span> <span class="s2">&quot;BestParams_GridSearch&quot;</span><span class="p">])[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span>
+            <span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+        <span class="p">)</span>
+    <span class="c1"># now, extract the best results per method across embedding and iteration</span>
+    <span class="n">df_best</span> <span class="o">=</span> <span class="n">df_across_split</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;Dataset&quot;</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">])[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="c1"># df_best = df_across_split.groupby([&#39;Dataset&#39;, &#39;model&#39;, &#39;Model_Parameters&#39;])[&#39;f1_score&#39;].max().reset_index()</span>
+    <span class="n">df_best</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot;_best_across_split.csv&quot;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="c1"># get summary accross all datasets</span>
-    <span class="n">df_best_model_mean</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-    <span class="n">df_best_model_median</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
-    <span class="n">df_best_model_max</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-    <span class="n">df_best_model_std</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;model&#39;</span><span class="p">)[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-    <span class="n">df_best_permodel_summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_best_model_mean</span><span class="p">,</span> <span class="n">df_best_model_median</span><span class="p">,</span> <span class="n">df_best_model_max</span><span class="p">,</span> <span class="n">df_best_model_std</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">df_best_permodel_summary</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Mean_F1_Score&#39;</span><span class="p">,</span> <span class="s1">&#39;Median_F1_Score&#39;</span><span class="p">,</span> <span class="s1">&#39;Max_F1_Score&#39;</span><span class="p">,</span> <span class="s1">&#39;StandardDev_F1_Score&#39;</span><span class="p">]</span>
-    <span class="n">df_best_permodel_summary</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">output_dir</span><span class="p">,</span>  <span class="n">tag</span> <span class="o">+</span><span class="s1">&#39;_best_permodel_summary.csv&#39;</span><span class="p">)))</span>
+    <span class="n">df_best_model_mean</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">)[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">df_best_model_median</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">)[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>
+    <span class="n">df_best_model_max</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">)[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">df_best_model_std</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">)[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+    <span class="n">df_best_permodel_summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">df_best_model_mean</span><span class="p">,</span> <span class="n">df_best_model_median</span><span class="p">,</span> <span class="n">df_best_model_max</span><span class="p">,</span> <span class="n">df_best_model_std</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span>
+    <span class="p">)</span>
+    <span class="n">df_best_permodel_summary</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;Mean_F1_Score&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Median_F1_Score&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Max_F1_Score&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;StandardDev_F1_Score&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+    <span class="n">df_best_permodel_summary</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot;_best_permodel_summary.csv&quot;</span><span class="p">)))</span>
     <span class="c1"># print(df_best_permodel_summary)</span>
-    
+
     <span class="c1"># extract the best results per dataset</span>
-    <span class="n">best_per_dataset</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Dataset&#39;</span><span class="p">)[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()]</span>
+    <span class="n">best_per_dataset</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">df_best</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Dataset&quot;</span><span class="p">)[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()]</span>
     <span class="c1"># best_per_dataset = df_across_split.loc[df_across_split.groupby(&#39;Dataset&#39;)[&#39;f1_score&#39;].idxmax()]</span>
     <span class="c1"># create list of qml methods</span>
-    <span class="n">qml_list</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;QSVC&#39;</span><span class="p">,</span> <span class="s1">&#39;QNN&#39;</span><span class="p">,</span> <span class="s1">&#39;VQC&#39;</span><span class="p">,</span> <span class="s1">&#39;PQK&#39;</span><span class="p">]</span>
+    <span class="n">qml_list</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;QSVC&quot;</span><span class="p">,</span> <span class="s2">&quot;QNN&quot;</span><span class="p">,</span> <span class="s2">&quot;VQC&quot;</span><span class="p">,</span> <span class="s2">&quot;PQK&quot;</span><span class="p">]</span>
     <span class="c1"># qml_winner = df_best[df_best[&#39;Dataset&#39;].isin(best_per_dataset[best_per_dataset[&#39;model&#39;].isin(qml_list)][&#39;Dataset&#39;])]</span>
-    <span class="n">qml_winner</span> <span class="o">=</span> <span class="n">df_across_split</span><span class="p">[</span><span class="n">df_across_split</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">best_per_dataset</span><span class="p">[</span><span class="n">best_per_dataset</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">qml_list</span><span class="p">)][</span><span class="s1">&#39;Dataset&#39;</span><span class="p">])]</span>
+    <span class="n">qml_winner</span> <span class="o">=</span> <span class="n">df_across_split</span><span class="p">[</span>
+        <span class="n">df_across_split</span><span class="p">[</span><span class="s2">&quot;Dataset&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span>
+            <span class="n">best_per_dataset</span><span class="p">[</span><span class="n">best_per_dataset</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">qml_list</span><span class="p">)][</span><span class="s2">&quot;Dataset&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+    <span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">qml_winner</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
-        <span class="n">bestmethod</span> <span class="o">=</span> <span class="n">qml_winner</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Dataset&#39;</span><span class="p">)[</span><span class="s1">&#39;f1_score&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
+        <span class="n">bestmethod</span> <span class="o">=</span> <span class="n">qml_winner</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;Dataset&quot;</span><span class="p">)[</span><span class="s2">&quot;f1_score&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">idxmax</span><span class="p">()</span>
         <span class="n">qc_method_and_score</span> <span class="o">=</span> <span class="n">qml_winner</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">bestmethod</span><span class="p">]</span>
-        <span class="n">qml_winner</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">output_dir</span><span class="p">,</span>  <span class="n">tag</span> <span class="o">+</span><span class="s1">&#39;_qml_winners.csv&#39;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">dataset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">qml_winner</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
-        
+        <span class="n">qml_winner</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot;_qml_winners.csv&quot;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">qml_winner</span><span class="p">[</span><span class="s2">&quot;Dataset&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())</span>
+
         <span class="c1">#######</span>
         <span class="c1"># now let&#39;s find the raw data evaluations for the qml winner data sets</span>
         <span class="c1"># this wil produce another csv file that contains scores, evaluation, and qml method</span>
         <span class="c1"># for these &quot;qml winners&quot;.</span>
         <span class="n">winner_evals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
-            <span class="nb">eval</span> <span class="o">=</span> <span class="n">rawevals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rawevals</span><span class="p">[</span><span class="s1">&#39;Dataset&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">file</span><span class="p">]</span>
+            <span class="nb">eval</span> <span class="o">=</span> <span class="n">rawevals</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">rawevals</span><span class="p">[</span><span class="s2">&quot;Dataset&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">file</span><span class="p">]</span>
             <span class="c1"># print(eval)</span>
             <span class="n">winner_evals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">eval</span><span class="p">)</span>
         <span class="n">winner_evals_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">winner_evals</span><span class="p">)</span>
-        <span class="n">winner_evals_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">output_dir</span><span class="p">,</span>  <span class="n">tag</span> <span class="o">+</span><span class="s1">&#39;_winner_evals.csv&#39;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">winner_evals_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot;_winner_evals.csv&quot;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">winner_scores_df</span> <span class="o">=</span> <span class="n">qc_method_and_score</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">3</span><span class="p">:]</span>
-        <span class="n">winner_scores_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">output_dir</span><span class="p">,</span>  <span class="n">tag</span> <span class="o">+</span><span class="s1">&#39;_winner_score.csv&#39;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">winner_scores_df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot;_winner_score.csv&quot;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="nb">print</span><span class="p">(</span><span class="n">winner_scores_df</span><span class="p">)</span>
         <span class="n">winner_eval_score</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">winner_evals_df</span><span class="p">,</span> <span class="n">winner_scores_df</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-        <span class="n">winner_eval_score</span><span class="o">.</span><span class="n">to_csv</span><span class="p">((</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">output_dir</span><span class="p">,</span>  <span class="n">tag</span> <span class="o">+</span><span class="s1">&#39;_winner_eval_score.csv&#39;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># contains dataset, evaluation, qml method, and  average f1 score </span>
+        <span class="n">winner_eval_score</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dir</span><span class="p">,</span> <span class="n">tag</span> <span class="o">+</span> <span class="s2">&quot;_winner_eval_score.csv&quot;</span><span class="p">)),</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>  <span class="c1"># contains dataset, evaluation, qml method, and  average f1 score</span>
         <span class="c1">#######</span>
-        
+
         <span class="c1"># optional print statements</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*** The number of qml winners is&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*** The qml winners are:&#39;</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
-        
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*** The number of qml winners is&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*** The qml winners are:&quot;</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">qml_winner</span><span class="p">,</span> <span class="n">winner_eval_score</span><span class="p">,</span> <span class="n">df_best</span>
-    
+
     <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;*** QML methods were outperformed by CML methods in all datasets ***&#39;</span><span class="p">)</span>
-    
-        <span class="k">return</span> </div>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*** QML methods were outperformed by CML methods in all datasets ***&quot;</span><span class="p">)</span>
 
-
+        <span class="k">return</span></div>
 
 </pre></div>
 

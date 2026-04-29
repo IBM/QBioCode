@@ -393,12 +393,14 @@
 <span></span><span class="c1"># ====== Base class imports ======</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="c1"># ====== Scikit-learn imports ======</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">xgboost</span><span class="w"> </span><span class="kn">import</span> <span class="n">XGBClassifier</span>
+
     <span class="n">XGBOOST_AVAILABLE</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="n">_XGBOOST_ERROR</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
@@ -415,12 +417,27 @@
 
 <span class="c1"># ====== Begin functions ======</span>
 
+
 <div class="viewcode-block" id="compute_xgb">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_xgb">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_xgb</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;xgb&#39;</span><span class="p">,</span> <span class="n">data_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-               <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="s1">&#39;gini&#39;</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">subsample</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-               <span class="n">colsample_bytree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">min_child_weight</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-<span class="w">        </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_xgb</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;xgb&quot;</span><span class="p">,</span>
+    <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">n_estimators</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">criterion</span><span class="o">=</span><span class="s2">&quot;gini&quot;</span><span class="p">,</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">subsample</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">colsample_bytree</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">min_child_weight</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function generates a model using an Extreme Gradient Boositing (xgb) Classifier method as implemented in xgboost. It takes in parameter</span>
 <span class="sd">    arguments specified in the config.yaml file, but will use the default parameters specified above if none are passed.</span>
@@ -445,12 +462,12 @@
 <span class="sd">        min_child_weight (int) : Minimum sum of instance weight (hessian) needed in a child. Default is 1</span>
 <span class="sd">     Returns:</span>
 <span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken for training and validation.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises:</span>
 <span class="sd">        ImportError: If XGBoost is not properly installed or configured.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">XGBOOST_AVAILABLE</span><span class="p">:</span>
         <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s2">&quot;XGBoost is not properly installed or configured.</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -462,31 +479,56 @@
             <span class="s2">&quot;See installation documentation for more details.&quot;</span>
         <span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-    
+
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">xgb</span> <span class="o">=</span> <span class="n">OneVsOneClassifier</span><span class="p">(</span><span class="n">XGBClassifier</span><span class="p">(</span><span class="n">n_estimators</span><span class="o">=</span><span class="n">n_estimators</span><span class="p">,</span> <span class="n">criterion</span><span class="o">=</span><span class="n">criterion</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
-                                          <span class="n">subsample</span><span class="o">=</span><span class="n">subsample</span><span class="p">,</span> <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span> <span class="n">colsample_bytree</span><span class="o">=</span><span class="n">colsample_bytree</span><span class="p">,</span>
-                                          <span class="n">min_child_weight</span><span class="o">=</span><span class="n">min_child_weight</span><span class="p">))</span>
+    <span class="n">xgb</span> <span class="o">=</span> <span class="n">OneVsOneClassifier</span><span class="p">(</span>
+        <span class="n">XGBClassifier</span><span class="p">(</span>
+            <span class="n">n_estimators</span><span class="o">=</span><span class="n">n_estimators</span><span class="p">,</span>
+            <span class="n">criterion</span><span class="o">=</span><span class="n">criterion</span><span class="p">,</span>
+            <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">,</span>  <span class="c1"># type: ignore</span>
+            <span class="n">subsample</span><span class="o">=</span><span class="n">subsample</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">,</span>
+            <span class="n">colsample_bytree</span><span class="o">=</span><span class="n">colsample_bytree</span><span class="p">,</span>
+            <span class="n">min_child_weight</span><span class="o">=</span><span class="n">min_child_weight</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
     <span class="c1"># Fit the training datset</span>
     <span class="n">model_fit</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
     <span class="n">model_params</span> <span class="o">=</span> <span class="n">model_fit</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
     <span class="c1"># Validate the model in test dataset and calculate accuracy</span>
-    <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span> 
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span>
+        <span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
+    <span class="p">)</span></div>
+
 
 
 <div class="viewcode-block" id="compute_xgb_opt">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_xgb_opt">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_xgb_opt</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;xgb&#39;</span><span class="p">,</span>
-                   <span class="n">bootstrap</span><span class="o">=</span> <span class="p">[],</span> <span class="n">max_depth</span><span class="o">=</span> <span class="p">[],</span> <span class="n">max_features</span><span class="o">=</span> <span class="p">[],</span><span class="n">learning_rate</span><span class="o">=</span><span class="p">[],</span><span class="n">subsample</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">colsample_bytree</span> <span class="o">=</span> <span class="p">[]</span>
-                   <span class="p">,</span> <span class="n">n_estimators</span><span class="o">=</span> <span class="p">[],</span> <span class="n">min_child_weight</span> <span class="o">=</span> <span class="p">[]):</span>
-<span class="w">    </span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot; </span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_xgb_opt</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">cv</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;xgb&quot;</span><span class="p">,</span>
+    <span class="n">bootstrap</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">max_features</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">learning_rate</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">subsample</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">colsample_bytree</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">n_estimators</span><span class="o">=</span><span class="p">[],</span>
+    <span class="n">min_child_weight</span><span class="o">=</span><span class="p">[],</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function generates a model using an Extreme Gradient Boositing (xgb) Classifier method as implemented in xgboost.</span>
 <span class="sd">    The difference here is that this function runs a grid search. The range of the grid search for each parameter is specified in the config.yaml file. The</span>
 <span class="sd">    combination of parameters that led to the best performance is saved and returned as best_params, which can then be used on similar</span>
 <span class="sd">    datasets, without having to run the grid search.</span>
-<span class="sd">    The model is trained on the training dataset and validated on the test dataset. The function returns the evaluation of the model </span>
+<span class="sd">    The model is trained on the training dataset and validated on the test dataset. The function returns the evaluation of the model</span>
 <span class="sd">    on the test dataset, including accuracy, AUC, F1 score, and the time taken to train and validate the model across the grid search.</span>
 <span class="sd">    This function is designed to be used in a supervised learning context, where the goal is to classify data points.</span>
 
@@ -508,12 +550,12 @@
 <span class="sd">        min_child_weight (list): List of minimum sum of instance weight (hessian) needed in a childoptions for grid search.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken for training and validation.        </span>
+<span class="sd">        modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken for training and validation.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ImportError: If XGBoost is not properly installed or configured.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">if</span> <span class="ow">not</span> <span class="n">XGBOOST_AVAILABLE</span><span class="p">:</span>
         <span class="n">error_msg</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s2">&quot;XGBoost is not properly installed or configured.</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -525,17 +567,18 @@
             <span class="s2">&quot;See installation documentation for more details.&quot;</span>
         <span class="p">)</span>
         <span class="k">raise</span> <span class="ne">ImportError</span><span class="p">(</span><span class="n">error_msg</span><span class="p">)</span>
-    
+
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;n_estimators&#39;</span><span class="p">:</span> <span class="n">n_estimators</span><span class="p">,</span>
-            <span class="s1">&#39;max_depth&#39;</span><span class="p">:</span> <span class="n">max_depth</span><span class="p">,</span>
-            <span class="s1">&#39;learning_rate&#39;</span> <span class="p">:</span> <span class="n">learning_rate</span><span class="p">,</span>
-            <span class="s1">&#39;subsample&#39;</span> <span class="p">:</span> <span class="n">subsample</span><span class="p">,</span>
-            <span class="s1">&#39;colsample_bytree&#39;</span> <span class="p">:</span> <span class="n">colsample_bytree</span><span class="p">,</span>
-            <span class="s1">&#39;min_child_weight&#39;</span> <span class="p">:</span> <span class="n">min_child_weight</span><span class="p">,</span>
-            <span class="s1">&#39;bootstrap&#39;</span><span class="p">:</span> <span class="n">bootstrap</span>
-            <span class="p">}</span>
-    
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;n_estimators&quot;</span><span class="p">:</span> <span class="n">n_estimators</span><span class="p">,</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="n">max_depth</span><span class="p">,</span>
+        <span class="s2">&quot;learning_rate&quot;</span><span class="p">:</span> <span class="n">learning_rate</span><span class="p">,</span>
+        <span class="s2">&quot;subsample&quot;</span><span class="p">:</span> <span class="n">subsample</span><span class="p">,</span>
+        <span class="s2">&quot;colsample_bytree&quot;</span><span class="p">:</span> <span class="n">colsample_bytree</span><span class="p">,</span>
+        <span class="s2">&quot;min_child_weight&quot;</span><span class="p">:</span> <span class="n">min_child_weight</span><span class="p">,</span>
+        <span class="s2">&quot;bootstrap&quot;</span><span class="p">:</span> <span class="n">bootstrap</span><span class="p">,</span>
+    <span class="p">}</span>
+
     <span class="c1"># Perform Grid Search to find the best parameters</span>
     <span class="n">grid_search</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span><span class="n">XGBClassifier</span><span class="p">(),</span> <span class="n">param_grid</span><span class="o">=</span><span class="n">params</span><span class="p">,</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
     <span class="n">grid_search</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
@@ -547,7 +590,7 @@
 
     <span class="c1"># Make predictions and calculate accuracy</span>
     <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">best_xgb</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">best_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">best_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
 
 </pre></div>
 

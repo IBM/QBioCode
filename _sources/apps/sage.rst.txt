@@ -154,10 +154,11 @@ This trains QSage on historical QProfiler data and generates predictions for all
 Train with Random Forest only:
 
 .. code-block:: bash
-qsage --input qprofiler_results.csv --output results/ --model-type rf
 
-# Or train MLP sub-sages
-qsage --input qprofiler_results.csv --output results/ --model-type mlp
+   qsage --input qprofiler_results.csv --output results/ --model-type rf
+
+   # Or train MLP sub-sages
+   qsage --input qprofiler_results.csv --output results/ --model-type mlp
 
 
 Train with custom seed and test size:
@@ -166,11 +167,12 @@ Train with custom seed and test size:
 
    qsage --input data.csv --output results/ --seed 123 --test-size 0.3
 
-Train both Random Forest and MLP:
+Train with a custom MLP iteration count:
 
 .. code-block:: bash
-# Train MLP with more epochs
-qsage --input data.csv --output results/ --model-type mlp --n-iter 2000
+
+   # Train MLP with more epochs
+   qsage --input data.csv --output results/ --model-type mlp --n-iter 2000
 
 
 **Output Files**

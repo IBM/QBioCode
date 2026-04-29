@@ -394,20 +394,37 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Literal</span>
 
-<span class="c1"># ====== Additional local imports ======</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.evaluation.model_evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">modeleval</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.utils.qutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qutils</span>
+<span class="c1"># from qiskit.primitives import Sampler</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.transpiler.preset_passmanagers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
 
 <span class="c1"># ====== Qiskit imports ======</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">qiskit_machine_learning.algorithms.classifiers</span><span class="w"> </span><span class="kn">import</span> <span class="n">VQC</span>
-<span class="c1">#from qiskit.primitives import Sampler</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">qiskit.transpiler.preset_passmanagers</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_preset_pass_manager</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">qbiocode.utils.qutils</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qutils</span>
+
+<span class="c1"># ====== Additional local imports ======</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.evaluation.model_evaluation</span><span class="w"> </span><span class="kn">import</span> <span class="n">modeleval</span>
+
 
 <div class="viewcode-block" id="compute_vqc">
 <a class="viewcode-back" href="../../../api/qbiocode.learning.html#qbiocode.compute_vqc">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">compute_vqc</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="s1">&#39;VQC&#39;</span><span class="p">,</span> <span class="n">data_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
-                <span class="n">local_optimizer</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s1">&#39;COBYLA&#39;</span><span class="p">,</span> <span class="s1">&#39;L_BFGS_B&#39;</span><span class="p">,</span> <span class="s1">&#39;GradientDescent&#39;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;COBYLA&quot;</span><span class="p">,</span> <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-                <span class="n">encoding</span> <span class="o">=</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="n">entanglement</span> <span class="o">=</span> <span class="s1">&#39;linear&#39;</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span> <span class="mi">2</span><span class="p">,</span><span class="n">primitive</span> <span class="o">=</span> <span class="s1">&#39;sampler&#39;</span><span class="p">,</span> <span class="n">ansatz_type</span><span class="o">=</span><span class="s1">&#39;amp&#39;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">compute_vqc</span><span class="p">(</span>
+    <span class="n">X_train</span><span class="p">,</span>
+    <span class="n">X_test</span><span class="p">,</span>
+    <span class="n">y_train</span><span class="p">,</span>
+    <span class="n">y_test</span><span class="p">,</span>
+    <span class="n">args</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;VQC&quot;</span><span class="p">,</span>
+    <span class="n">data_key</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">local_optimizer</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;COBYLA&quot;</span><span class="p">,</span> <span class="s2">&quot;L_BFGS_B&quot;</span><span class="p">,</span> <span class="s2">&quot;GradientDescent&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;COBYLA&quot;</span><span class="p">,</span>
+    <span class="n">maxiter</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;Z&quot;</span><span class="p">,</span>
+    <span class="n">entanglement</span><span class="o">=</span><span class="s2">&quot;linear&quot;</span><span class="p">,</span>
+    <span class="n">reps</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">primitive</span><span class="o">=</span><span class="s2">&quot;sampler&quot;</span><span class="p">,</span>
+    <span class="n">ansatz_type</span><span class="o">=</span><span class="s2">&quot;amp&quot;</span><span class="p">,</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    This function computes a Variational Quantum Classifier (VQC) using the Qiskit Machine Learning library.</span>
 <span class="sd">    It takes training and testing datasets, along with various parameters to configure the VQC model.</span>
@@ -435,51 +452,62 @@
 <span class="sd">        dict: Evaluation results including accuracy, time taken, and model parameters.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">beg_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-     <span class="c1"># choose a method for mapping your features onto the circuit</span>
-    <span class="n">feature_map</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_feature_map</span><span class="p">(</span><span class="n">feature_map</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span>
-                                         <span class="n">feat_dimension</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> 
-                                         <span class="n">reps</span> <span class="o">=</span> <span class="n">reps</span><span class="p">,</span>
-                                         <span class="n">entanglement</span><span class="o">=</span><span class="n">entanglement</span><span class="p">)</span>
+    <span class="c1"># choose a method for mapping your features onto the circuit</span>
+    <span class="n">feature_map</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_feature_map</span><span class="p">(</span>
+        <span class="n">feature_map</span><span class="o">=</span><span class="n">encoding</span><span class="p">,</span> <span class="n">feat_dimension</span><span class="o">=</span><span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reps</span><span class="o">=</span><span class="n">reps</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="n">entanglement</span>
+    <span class="p">)</span>
 
     <span class="c1"># get ansatz</span>
-    <span class="n">ansatz</span><span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_ansatz</span><span class="p">(</span> <span class="n">ansatz_type</span><span class="o">=</span><span class="n">ansatz_type</span><span class="p">,</span> <span class="n">feat_dimension</span> <span class="o">=</span> <span class="n">feature_map</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span> <span class="n">reps</span><span class="o">=</span><span class="n">reps</span><span class="p">,</span> <span class="n">entanglement</span><span class="o">=</span><span class="n">entanglement</span><span class="p">)</span>
-
+    <span class="n">ansatz</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_ansatz</span><span class="p">(</span>
+        <span class="n">ansatz_type</span><span class="o">=</span><span class="n">ansatz_type</span><span class="p">,</span>
+        <span class="n">feat_dimension</span><span class="o">=</span><span class="n">feature_map</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">,</span>
+        <span class="n">reps</span><span class="o">=</span><span class="n">reps</span><span class="p">,</span>
+        <span class="n">entanglement</span><span class="o">=</span><span class="n">entanglement</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c1">#  Generate the backend, session and primitive</span>
-    <span class="n">backend</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">prim</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_backend_session</span><span class="p">(</span><span class="n">args</span><span class="p">,</span>
-                                                             <span class="n">primitive</span><span class="p">,</span>
-                                                             <span class="n">num_qubits</span><span class="o">=</span><span class="n">feature_map</span><span class="o">.</span><span class="n">num_qubits</span><span class="p">)</span>
-        
-    <span class="c1"># Get Optimizer        </span>
-    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_optimizer</span><span class="p">(</span> <span class="n">local_optimizer</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">)</span>
-    
-     <span class="c1"># instantiate the primitive</span>
-    <span class="k">if</span> <span class="s1">&#39;simulator&#39;</span> <span class="o">==</span> <span class="n">args</span><span class="p">[</span><span class="s1">&#39;backend&#39;</span><span class="p">]:</span>
-        <span class="n">vqc</span><span class="o">=</span> <span class="n">VQC</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">prim</span><span class="p">,</span> <span class="n">feature_map</span><span class="o">=</span><span class="n">feature_map</span><span class="p">,</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
+    <span class="n">backend</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">prim</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_backend_session</span><span class="p">(</span>
+        <span class="n">args</span><span class="p">,</span> <span class="n">primitive</span><span class="p">,</span> <span class="n">num_qubits</span><span class="o">=</span><span class="n">feature_map</span><span class="o">.</span><span class="n">num_qubits</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Get Optimizer</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">qutils</span><span class="o">.</span><span class="n">get_optimizer</span><span class="p">(</span><span class="n">local_optimizer</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="n">maxiter</span><span class="p">)</span>
+
+    <span class="c1"># instantiate the primitive</span>
+    <span class="k">if</span> <span class="s2">&quot;simulator&quot;</span> <span class="o">==</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]:</span>
+        <span class="n">vqc</span> <span class="o">=</span> <span class="n">VQC</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">prim</span><span class="p">,</span> <span class="n">feature_map</span><span class="o">=</span><span class="n">feature_map</span><span class="p">,</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">pm</span> <span class="o">=</span> <span class="n">generate_preset_pass_manager</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span> <span class="n">optimization_level</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">vqc</span><span class="o">=</span> <span class="n">VQC</span><span class="p">(</span><span class="n">sampler</span><span class="o">=</span><span class="n">prim</span><span class="p">,</span> <span class="n">feature_map</span><span class="o">=</span><span class="n">feature_map</span><span class="p">,</span> <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span> <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span> <span class="n">pass_manager</span><span class="o">=</span><span class="n">pm</span><span class="p">)</span>
+        <span class="n">vqc</span> <span class="o">=</span> <span class="n">VQC</span><span class="p">(</span>
+            <span class="n">sampler</span><span class="o">=</span><span class="n">prim</span><span class="p">,</span>
+            <span class="n">feature_map</span><span class="o">=</span><span class="n">feature_map</span><span class="p">,</span>
+            <span class="n">ansatz</span><span class="o">=</span><span class="n">ansatz</span><span class="p">,</span>
+            <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+            <span class="n">pass_manager</span><span class="o">=</span><span class="n">pm</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Currently running a variational quantum classifer (VQC) on this dataset.&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The number of qubits in your circuit is: </span><span class="si">{</span><span class="n">feature_map</span><span class="o">.</span><span class="n">num_qubits</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The number of parameters in your circuit is: </span><span class="si">{</span><span class="n">feature_map</span><span class="o">.</span><span class="n">num_parameters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    
+
     <span class="c1"># fit classifier to data</span>
     <span class="n">model_fit</span> <span class="o">=</span> <span class="n">vqc</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
     <span class="n">hyperparameters</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s1">&#39;feature_map&#39;</span><span class="p">:</span> <span class="n">feature_map</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                        <span class="s1">&#39;ansatz&#39;</span><span class="p">:</span> <span class="n">ansatz</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                        <span class="s1">&#39;optimizer&#39;</span><span class="p">:</span> <span class="n">optimizer</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
-                        <span class="s1">&#39;optimizer_params&#39;</span><span class="p">:</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span>
-                        <span class="c1"># Add other hyperparameters as needed</span>
-                        <span class="p">}</span>
+        <span class="s2">&quot;feature_map&quot;</span><span class="p">:</span> <span class="n">feature_map</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+        <span class="s2">&quot;ansatz&quot;</span><span class="p">:</span> <span class="n">ansatz</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+        <span class="s2">&quot;optimizer&quot;</span><span class="p">:</span> <span class="n">optimizer</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+        <span class="s2">&quot;optimizer_params&quot;</span><span class="p">:</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">settings</span><span class="p">,</span>
+        <span class="c1"># Add other hyperparameters as needed</span>
+    <span class="p">}</span>
     <span class="n">model_params</span> <span class="o">=</span> <span class="n">hyperparameters</span>
     <span class="n">y_predicted</span> <span class="o">=</span> <span class="n">vqc</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
         <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="k">return</span><span class="p">(</span><span class="n">modeleval</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">modeleval</span><span class="p">(</span>
+        <span class="n">y_test</span><span class="p">,</span> <span class="n">y_predicted</span><span class="p">,</span> <span class="n">beg_time</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span>
+    <span class="p">)</span></div>
 
 </pre></div>
 
