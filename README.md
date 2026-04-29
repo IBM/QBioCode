@@ -34,10 +34,10 @@ QBioCode requires Python **3.10 or higher** and has been tested with Python vers
 pip install qbiocode
 
 # Install with apps support (QProfiler, QSage)
-pip install qbiocode[apps]
+pip install 'qbiocode[apps]'
 
 # Install with all optional dependencies
-pip install qbiocode[all]
+pip install 'qbiocode[all]'
 ```
 
 #### Install with Conda
