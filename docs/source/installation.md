@@ -20,13 +20,17 @@ pip install qbiocode
 Install with apps support (QProfiler, QSage):
 
 ```bash
-pip install qbiocode[apps]
+pip install 'qbiocode[apps]'
 ```
 
 Install with all optional dependencies:
 
 ```bash
-pip install qbiocode[all]
+pip install 'qbiocode[all]'
+```
+
+```{note}
+**For zsh users:** The quotes around `'qbiocode[apps]'` are required because zsh interprets square brackets as glob patterns. Bash users can omit quotes, but using them works in both shells.
 ```
 
 ## Install with Conda
@@ -60,7 +64,7 @@ conda activate qbiocode
 pip install qbiocode
 
 # Or with apps support
-pip install qbiocode[apps]
+pip install 'qbiocode[apps]'
 ```
 
 **Note**: See [docs/CONDA_SUBMISSION.md](../CONDA_SUBMISSION.md) for information about the conda submission process.

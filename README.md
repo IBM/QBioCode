@@ -34,10 +34,10 @@ QBioCode requires Python **3.10 or higher** and has been tested with Python vers
 pip install qbiocode
 
 # Install with apps support (QProfiler, QSage)
-pip install qbiocode[apps]
+pip install 'qbiocode[apps]'
 
 # Install with all optional dependencies
-pip install qbiocode[all]
+pip install 'qbiocode[all]'
 ```
 
 #### Install with Conda
@@ -79,7 +79,7 @@ source .env/bin/activate  # On Windows: .env\Scripts\activate
 pip install -e .
 
 # Install with apps support (QProfiler, QSage)
-pip install -e ".[apps]"
+pip install -e '.[apps]'
 ```
 
 **macOS Users:** XGBoost requires OpenMP. Install it using Homebrew:
@@ -94,7 +94,7 @@ For detailed installation instructions, see the [Installation Guide](https://ibm
 
 ```bash
 # Install the package with development dependencies
-pip install -e ".[dev]"
+pip install -e '.[dev]'
 
 # Run the test suite
 python -m pytest
@@ -117,7 +117,7 @@ qbc.generate_data(
 )
 
 # Run QProfiler
-from apps.qprofiler import qprofiler
+from qbiocode.apps.qprofiler import qprofiler
 import yaml
 
 config = yaml.safe_load(open('configs/config.yaml'))
@@ -142,7 +142,7 @@ QProfiler provides a comprehensive benchmarking pipeline that:
 qprofiler --config configs/config.yaml
 
 # Python API
-from apps.qprofiler import qprofiler
+from qbiocode.apps.qprofiler import qprofiler
 qprofiler.main(config)
 ```
 
@@ -164,7 +164,7 @@ QSage uses surrogate models trained on extensive benchmarking data to:
 qsage --data your_data.csv --output predictions.csv
 
 # Python API
-from apps.sage.sage import QuantumSage
+from qbiocode.apps.sage.sage import QuantumSage
 sage = QuantumSage(data=benchmark_df, features=features, metrics=metrics)
 predictions = sage.predict(new_dataset_features)
 ```

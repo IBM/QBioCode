@@ -15,6 +15,7 @@ Main Modules
 - data_generation: Synthetic dataset generators
 - visualization: Result visualization and correlation analysis
 - utils: Helper functions and utilities
+- apps: Command-line applications (QProfiler, QSage)
 
 Quick Start
 -----------
@@ -23,6 +24,9 @@ Quick Start
 >>> generate_data(type_of_data='circles', save_path='data/circles')
 >>> # Train a random forest model
 >>> results = compute_rf(X_train, y_train, X_test, y_test)
+>>> # Use QProfiler programmatically
+>>> from qbiocode.apps.qprofiler import qprofiler
+>>> qprofiler.main(config)
 """
 
 # ====== Import data generation functions ======
@@ -76,6 +80,10 @@ from .visualization.visualize_correlation import (
     plot_results_correlation,
 )
 
+# ====== Expose apps submodule ======
+# Apps are available as qbiocode.apps.qprofiler, qbiocode.apps.sage
+from . import apps  # noqa: F401
+
 __all__ = [
     # Version
     "__version__",
@@ -123,4 +131,6 @@ __all__ = [
     "generate_spheres_datasets",
     "generate_spirals_datasets",
     "generate_swiss_roll_datasets",
+    # Apps submodule
+    "apps",
 ]
