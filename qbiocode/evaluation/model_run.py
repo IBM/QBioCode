@@ -49,7 +49,7 @@ def model_run(X_train, X_test, y_train, y_test, data_key, args):
     from qbiocode.learning.compute_qpl import compute_qpl
     from qbiocode.learning.compute_qnn import compute_qnn
     from qbiocode.learning.compute_qsvc import compute_qsvc
-    from qbiocode.learning.compute_rf import compute_rf, compute_rf_opt
+    from qbiocode.learning.compute_nb import compute_nb, compute_nb_opt
     from qbiocode.learning.compute_svc import compute_svc, compute_svc_opt
     from qbiocode.learning.compute_vqc import compute_vqc
     
