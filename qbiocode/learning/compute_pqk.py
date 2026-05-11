@@ -107,7 +107,13 @@ def compute_pqk(
             the mapped value (float or Parameter expression)
         """
         coeff = x[0] / 2 if len(x) == 1 else reduce(lambda m, n: (m * n) / 2, x)
-        return float(coeff)
+        # Check if coeff is a numeric type before converting to float
+        # If it's a Parameter expression, return it as-is for Qiskit to handle
+        try:
+            return float(coeff)
+        except (TypeError, ValueError):
+            # If conversion fails, it's likely a Parameter expression
+            return coeff
 
     # choose a method for mapping your features onto the circuit
     feature_map, _ = qutils.get_feature_map(
