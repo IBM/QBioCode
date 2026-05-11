@@ -9,6 +9,8 @@ file_dataset: 'ALL'
 # or use a list as below, to only select a few datasets
 # file_dataset: ['file1', 'file2', 'file3', etc]
 
+index_col: False
+
 # choose a backend for the QML methods
 # backend: 'ibm_cleveland'
 # backend: 'ibm_least'
@@ -22,7 +24,7 @@ name: 'account_name_alias'
 # ibm_instance: 
 
 # of ML methods to parallelize
-n_jobs: 9
+n_jobs: 1
 
 # select the embedding method for reducing dimensionality (number of features) in your data set
 embeddings: ['none', 'pca']
@@ -33,7 +35,7 @@ n_components: 3
 
 # ML models to generate
 # model: ['svc', 'dt', 'lr', 'nb', 'rf', 'mlp', 'qsvc', 'vqc', 'qnn', 'pqk']
-model: ['svc',  'pqk']
+model: ['pqk']
 #model: ['xgb']
 
 average: 'weighted'
@@ -181,7 +183,7 @@ qnn_args: {'primitive': 'estimator',
 
 
 # Begin QSVC arguments
-qsvc_args: {'C': 0.01, 
+qsvc_args: {'C': 0.01,  
             'pegasos': False, 
             'encoding': ZZ,
             'entanglement': 'linear',
@@ -200,13 +202,20 @@ vqc_args: {'primitive': 'sampler',
            'ansatz_type' : 'amp'
            }
 
-# Begin PRK arguments
+# Begin PQK arguments
 pqk_args: {'encoding': ZZ,
            'entanglement': 'pairwise',
            'primitive': 'estimator',
            'reps': 4
            }
            
+# Begin QPL arguments
+qpl_args: {'encoding': ZZ,
+           'entanglement': 'pairwise',
+           'primitive': 'estimator',
+           'reps': 4
+           }
+
 # set hydra output directories
 hydra:
   run:

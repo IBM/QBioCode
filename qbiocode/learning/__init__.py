@@ -53,6 +53,9 @@ except Exception:
     compute_xgb = None  # type: ignore
     compute_xgb_opt = None  # type: ignore
 
+from .compute_pqk import compute_pqk
+from .compute_qpl import compute_qpl
+
 # Quantum ML algorithms
 from .compute_pqk import compute_pqk
 from .compute_qensemble import compute_qensemble
@@ -77,10 +80,11 @@ __all__ = [
     "compute_xgb",
     "compute_xgb_opt",
     # Quantum algorithms
-    "compute_qnn",
-    "compute_qsvc",
-    "compute_vqc",
-    "compute_pqk",
-    "compute_qensemble",
+    'compute_qnn',
+    'compute_qsvc',
+    'compute_vqc',
+    'compute_pqk',
+    'compute_qpl',
+    'compute_qensemble',
 ]
 
