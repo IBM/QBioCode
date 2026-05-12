@@ -90,7 +90,7 @@ setup(
     include_package_data=True,
     package_data={
         'qbiocode': ['py.typed'],
-        'apps.qprofiler': ['configs/*.yaml'],
+        'qbiocode.apps.qprofiler': ['configs/*.yaml'],
     },
     
     # Dependencies
@@ -178,9 +178,9 @@ setup(
     # Console scripts for command-line tools
     entry_points={
         'console_scripts': [
-            'qprofiler=apps.qprofiler.cli:main',
-            'qprofiler-batch=apps.qprofiler.qprofiler_batchmode:main',
-            'qsage=apps.sage.sage:main',
+            'qprofiler=qbiocode.apps.qprofiler.cli:main',
+            'qprofiler-batch=qbiocode.apps.qprofiler.qprofiler_batchmode:main',
+            'qsage=qbiocode.apps.sage.sage:main',
         ],
     },
     

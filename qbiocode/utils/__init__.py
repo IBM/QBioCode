@@ -24,6 +24,11 @@ Available Functions
 - get_ansatz: Get quantum ansatz circuit
 - get_feature_map: Get quantum feature map
 - get_optimizer: Get classical optimizer
+- normalize_data: Normalize data for quantum state encoding
+- label_to_array: Convert binary labels to one-hot encoding
+- prepare_training_set: Prepare balanced training subset
+- retrieve_probabilities: Extract probabilities from measurement counts
+- execute_circuit: Execute quantum circuit on Aer simulator
 
 Usage
 -----
@@ -32,6 +37,10 @@ Usage
 >>> X_scaled = scaler_fn(X, scaling='StandardScaler')
 >>> # Encode features for quantum circuits
 >>> X_encoded = feature_encoding(X, feature_encoding='OneHotEncoder')
+>>> # Prepare data for quantum ensemble
+>>> from qbiocode.utils import normalize_data, prepare_training_set
+>>> X_norm = normalize_data(X[0])
+>>> X_train, Y_train = prepare_training_set(X, y, n=4, seed=42)
 """
 
 from .combine_evals_results import combine_results, track_progress
@@ -43,12 +52,19 @@ from .helper_fn import feature_encoding, scaler_fn
 from .ibm_account import get_creds, instantiate_runtime_service
 from .qc_winner_finder import qml_winner
 from .qutils import (
+    execute_circuit,
     get_ansatz,
     get_backend_session,
     get_estimator,
     get_feature_map,
     get_optimizer,
     get_sampler,
+    retrieve_probabilities,
+)
+from .data_encoding import (
+    label_to_array,
+    normalize_data,
+    prepare_training_set,
 )
 
 __all__ = [
@@ -76,4 +92,10 @@ __all__ = [
     "get_ansatz",
     "get_feature_map",
     "get_optimizer",
+    # Ensemble utilities
+    "normalize_data",
+    "label_to_array",
+    "prepare_training_set",
+    "retrieve_probabilities",
+    "execute_circuit",
 ]

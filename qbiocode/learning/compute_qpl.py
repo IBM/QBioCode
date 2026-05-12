@@ -27,6 +27,7 @@ from functools import reduce
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
 from sklearn import svm
+from sklearn.model_selection import GridSearchCV
 
 import qbiocode.utils.qutils as qutils
 
@@ -34,19 +35,20 @@ import qbiocode.utils.qutils as qutils
 from qbiocode.evaluation.model_evaluation import modeleval
 
 
-def compute_pqk(
+def compute_qpl(
     X_train,
     X_test,
     y_train,
     y_test,
     args,
-    model="PQK",
+    model="QPL",
     data_key="",
     verbose=False,
     encoding="Z",
     primitive="estimator",
     entanglement="linear",
     reps=2,
+    classical_models=None,
 ):
     """
     This function generates quantum circuits, computes projections of the data onto these circuits,
@@ -68,31 +70,36 @@ def compute_pqk(
         y_train (np.ndarray): Training data labels.
         y_test (np.ndarray): Test data labels.
         args (dict): Arguments containing backend and other configurations.
-        model (str): Model type, default is 'PQK'.
+        model (str): Model type, default is 'QPL'.
         data_key (str): Key for the dataset, default is ''.
         verbose (bool): If True, print additional information, default is False.
         encoding (str): Encoding method for the quantum circuit, default is 'Z'.
         primitive (str): Primitive type to use, default is 'estimator'.
         entanglement (str): Entanglement strategy, default is 'linear'.
         reps (int): Number of repetitions for the feature map, default is 2.
+        classical_models (list): List of classical models to train on quantum projections.
+                                 Options: 'rf', 'mlp', 'svc', 'lr', 'xgb'.
+                                 Default is ['rf', 'mlp', 'svc', 'lr', 'xgb'].
 
     Returns:
         modeleval (pd.DataFrame): A DataFrame containing evaluation metrics and model parameters for all models.
     """
 
-    classical_models = ["svc"]
+    # Set default classical models if not provided
+    if classical_models is None:
+        classical_models = ["rf", "mlp", "svc", "lr", "xgb"]
 
     beg_time = time.time()
     feat_dimension = X_train.shape[1]
 
-    if not os.path.exists("pqk_projections"):
-        os.makedirs("pqk_projections")
+    if not os.path.exists("qpl_projections"):
+        os.makedirs("qpl_projections")
 
     file_projection_train = os.path.join(
-        "pqk_projections", "pqk_projection_" + data_key + "_train.npy"
+        "qpl_projections", "qpl_projection_" + data_key + "_train.npy"
     )
     file_projection_test = os.path.join(
-        "pqk_projections", "pqk_projection_" + data_key + "_test.npy"
+        "qpl_projections", "qpl_projection_" + data_key + "_test.npy"
     )
 
     #  This function ensures that all multiplicative factors of data features inside single qubit gates are 1.0
@@ -222,27 +229,175 @@ def compute_pqk(
     projections_test = np.load(file_projection_test)
     projections_test = np.array(projections_test).reshape(len(projections_test), -1)
 
-    model = create_svc_model(args["seed"])
+    # Check if XGBoost is requested but not available
+    if "xgb" in classical_models and not XGBOOST_AVAILABLE:
+        warnings.warn(
+            "XGBoost is not properly installed or configured and will be skipped.\n"
+            "On macOS, you may need to install OpenMP:\n"
+            "  brew install libomp\n"
+            "Then reinstall XGBoost:\n"
+            "  pip install --force-reinstall xgboost\n"
+            "See installation documentation for more details.\n"
+            f"Continuing with other models: {[m for m in classical_models if m != 'xgb']}",
+            UserWarning,
+        )
+        # Remove xgb from the list
+        classical_models = [m for m in classical_models if m != "xgb"]
 
-    method_pqk = "pqk"
-    model.fit(projections_train, y_train)
-    y_predicted = model.predict(projections_test)
+    # If no models remain after filtering, raise an error
+    if not classical_models:
+        raise ValueError(
+            "No valid classical models specified. Please provide at least one model from: 'rf', 'mlp', 'svc', 'lr', 'xgb'"
+        )
 
-    hyperparameters = {
-        "feature_map": feature_map.__class__.__name__,
-        "feature_map_reps": reps,
-        "entanglement": entanglement,
-        "best_params": model.best_params_,
-        # Add other hyperparameters as needed
+    model_res = []
+    for method in classical_models:
+        if method == "rf":
+            model = create_rf_model(args["seed"])
+        elif method == "svc":
+            model = create_svc_model(args["seed"])
+        elif method == "mlp":
+            model = create_mlp_model(args["seed"])
+        elif method == "lr":
+            model = create_lr_model(args["seed"])
+        elif method == "xgb":
+            model = create_xgb_model(args["seed"])
+        else:
+            warnings.warn(
+                f"Unknown model type '{method}' skipped. Valid options: 'rf', 'mlp', 'svc', 'lr', 'xgb'",
+                UserWarning,
+            )
+            continue
+
+        method_qpl = "qpl_" + method
+        print(method_qpl)
+        model.fit(projections_train, y_train)
+        y_predicted = model.predict(projections_test)
+
+        hyperparameters = {
+            "feature_map": feature_map.__class__.__name__,
+            "feature_map_reps": reps,
+            "entanglement": entanglement,
+            "best_params": model.best_params_,
+            # Add other hyperparameters as needed
+        }
+        model_params = hyperparameters
+
+        model_res.append(
+            modeleval(
+                y_test, y_predicted, beg_time, model_params, args, model=method_qpl, verbose=verbose
+            )
+        )
+
+    model_res = pd.concat(model_res)
+    return model_res
+
+
+def create_xgb_model(seed):
+    # Initialize the XGBoost Classifier
+    if not XGBOOST_AVAILABLE:
+        raise ImportError(
+            "XGBoost is not properly installed or configured.\n"
+            "On macOS, you may need to install OpenMP:\n"
+            "  brew install libomp\n\n"
+            "Then reinstall XGBoost:\n"
+            "  pip install --force-reinstall xgboost\n\n"
+            "See installation documentation for more details."
+        )
+    xgb = XGBClassifier(objective="binary:logistic", eval_metric="logloss")  # type: ignore
+
+    xgb_param_distributions = {
+        "n_estimators": [100, 200, 300],
+        "learning_rate": [0.01, 0.1, 0.2],
+        "max_depth": [3, 5, 7],
+        "subsample": [0.7, 0.8, 1.0],
+        "colsample_bytree": [0.7, 0.8, 1.0],
+        "min_child_weight": [1, 3, 5],
     }
-    model_params = hyperparameters
 
-    return modeleval(
-        y_test, y_predicted, beg_time, params=model_params, args=args, model=method_pqk, verbose=verbose
+    # Initialize RandomizedSearchCV
+    xgb_model = RandomizedSearchCV(
+        estimator=xgb,
+        param_distributions=xgb_param_distributions,
+        n_iter=40,
+        cv=5,
+        random_state=seed,
+        n_jobs=-1,
     )
 
+    return xgb_model
 
 
+def create_lr_model(seed):
+    # Initialize the Logistic Regression Classifier
+    lr = LogisticRegression(random_state=seed, max_iter=1000)
+
+    lr_param_distributions = {
+        "C": [0.001, 0.01, 0.1, 1, 10, 100],
+        "penalty": ["l1", "l2"],
+        "solver": ["liblinear", "saga"],
+    }
+
+    # Initialize RandomizedSearchCV
+    lr_model = RandomizedSearchCV(
+        estimator=lr,
+        param_distributions=lr_param_distributions,
+        n_iter=40,
+        cv=5,
+        random_state=seed,
+        n_jobs=-1,
+    )
+
+    return lr_model
+
+
+def create_rf_model(seed):
+    # Initialize the Random Forest Classifier
+    rf = RandomForestClassifier(random_state=seed)
+
+    rf_param_distributions = {
+        "n_estimators": np.arange(100, 1000, 100),
+        "max_depth": np.arange(5, 20),
+        "min_samples_split": np.arange(2, 10),
+        "min_samples_leaf": np.arange(1, 5),
+        "bootstrap": [True, False],
+    }
+
+    # Initialize RandomizedSearchCV
+    rf_model = RandomizedSearchCV(
+        estimator=rf,
+        param_distributions=rf_param_distributions,
+        n_iter=40,
+        cv=5,
+        random_state=seed,
+        n_jobs=-1,
+    )
+
+    return rf_model
+
+
+def create_mlp_model(seed):
+    mlp_param_distributions = {
+        "hidden_layer_sizes": [(128, 64, 32, 10), (64, 32, 10), (128, 64, 32)],
+        "activation": ["identity", "logistic", "tanh", "relu"],
+        "solver": ["lbfgs", "sgd", "adam"],
+        "alpha": [0.00005, 0.0005],
+    }
+
+    # Initialize the MLP Classifier
+    mlp = MLPClassifier(random_state=seed)
+
+    # Initialize RandomizedSearchCV
+    mlp_model = RandomizedSearchCV(
+        estimator=mlp,
+        param_distributions=mlp_param_distributions,
+        n_iter=40,
+        cv=5,
+        random_state=seed,
+        n_jobs=-1,
+    )
+
+    return mlp_model
 
 
 def create_svc_model(seed):

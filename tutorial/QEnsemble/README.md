@@ -1,53 +1,78 @@
 # Quantum Ensemble Learning Tutorial
 
-This tutorial demonstrates quantum ensemble learning methods for classification tasks using Qiskit.
+This tutorial demonstrates quantum ensemble learning methods for classification tasks using the QBioCode framework.
 
 ## Overview
 
-Quantum ensemble learning combines multiple quantum classifiers to improve prediction accuracy and robustness. This implementation uses controlled swap operations and quantum superposition to create ensembles of training data arrangements. The tutorial includes both fixed swap-based ensembles and random unitary-based ensembles for more general transformations.
+Quantum ensemble learning combines multiple quantum classifiers to improve prediction accuracy and robustness. This implementation uses controlled swap operations and quantum superposition to create ensembles of training data arrangements.
 
 **Key Innovation**: By leveraging quantum superposition, the ensemble evaluates multiple training set configurations simultaneously, potentially offering advantages over classical ensemble methods.
 
+**Note**: The core quantum ensemble functionality has been integrated into the QBioCode package as `qbiocode.learning.compute_qensemble`. This tutorial now demonstrates how to use the integrated API.
+
 ## Files
 
-### Core Modules
+### Tutorial Files
 
-- **`modeling.py`**: Main quantum ensemble implementation with fixed swap operations
-  - `cos_classifier__legacy()`: Legacy single-qubit cosine classifier using SWAP test
-  - `cos_classifier()`: Multi-qubit quantum cosine similarity classifier
-  - `state_prep()`: Extract unitary matrix for quantum state preparation
-  - `quantum_cosine_classifier()`: Cosine classifier with explicit unitary gates
-  - `ensemble()`: Main quantum ensemble with three modes:
-    - **balanced**: Class-balanced sampling for balanced datasets
-    - **unbalanced**: Random sampling for imbalanced datasets
-    - **pair_sample**: Comprehensive pairwise swaps
-  - `exec_simulator()`: Execute circuits on Aer simulator (CPU/GPU support)
+- **`QEnsemble_example_blobs.ipynb`**: Complete tutorial demonstrating quantum ensemble learning on synthetic blob datasets using the QBioCode API
 
-- **`modeling_random_unitary.py`**: Quantum ensemble using random unitary transformations
-  - Implements Haar-random unitaries sampled from the unitary group
-  - More general transformation approach than fixed swaps
-  - `run_ensemble()`: Complete workflow with training set selection and evaluation
-  - `ensemble()`: Random unitary-based ensemble circuit construction
-  - `state_prep()`: Unitary extraction for state preparation
-  - `label_to_array()`: Convert binary labels to one-hot encoding
-  - `evaluation_metrics()`: Calculate accuracy and Brier score
+- **`README.md`**: This file - tutorial guide
 
-- **`Utils.py`**: Comprehensive utility functions for workflows and analysis
-  - **Data Processing**: `normalize_custom()`, `training_set()`, `label_to_array()`
-  - **Quantum Workflows**: `run_quantum_ensemble()`, `run_quantum_cosine()`, `run_ensemble()`
-  - **Classical Baselines**: `run_random_forest()`, `run_xgboost()`, `run_lazy_predict()`
-  - **Evaluation**: `evaluation_metrics()`, `calculate_f1()`, `retrieve_proba()`
-  - **Visualization**: `plot_figures()`, `post_process_results()`
-  - **IBM Quantum Support**: Hardware execution with error mitigation and dynamic decoupling
+## Using QBioCode API
 
-### Notebooks
+The quantum ensemble functionality is now available through the QBioCode package with a unified interface supporting two construction methods:
 
-- **`QEnsemble_example_blobs.ipynb`**: Complete tutorial demonstrating quantum ensemble learning on synthetic blob datasets
+### Basic Usage
 
-### Documentation
+```python
+from qbiocode.learning import compute_qensemble
 
-- **`README.md`**: This file - comprehensive tutorial guide
-- **`FUNCTIONS.md`**: Quick reference for all functions and parameters
+# Fixed swap ensemble (default, faster)
+results = compute_qensemble(
+    X_train, X_test, y_train, y_test,
+    args={'backend': 'simulator', 'grid_search': False},
+    n_train=4,              # Training samples (must be even)
+    d=2,                    # Ensemble depth (creates 2^2=4 members)
+    n_swap=1,               # Operations per control qubit
+    mode="balanced",        # Sampling strategy
+    ensemble_method="swap", # Fixed swap method (default)
+    n_shots=8192,           # Measurement shots
+    seed=42
+)
+
+# Random unitary ensemble (advanced, more general)
+results = compute_qensemble(
+    X_train, X_test, y_train, y_test,
+    args={'backend': 'simulator', 'grid_search': False},
+    n_train=4,
+    d=2,
+    n_swap=1,
+    mode="balanced",
+    ensemble_method="random_unitary",  # Use Haar-random unitaries
+    n_shots=8192,
+    seed=42
+)
+```
+
+**Ensemble Methods:**
+- **`"swap"`** (default): Uses controlled-SWAP gates for deterministic data rearrangement
+  - Faster execution
+  - Deterministic circuit structure
+  - Good for most applications
+  
+- **`"random_unitary"`**: Uses Haar-random unitaries for more general transformations
+  - More general transformation space
+  - Potentially better generalization
+  - More computationally expensive
+  - Samples from the full unitary group U(N)
+
+### Available Utility Functions
+
+From `qbiocode.utils`:
+- `normalize_data()`: Normalize data vectors for quantum state encoding
+- `label_to_array()`: Convert binary labels to one-hot encoding
+- `prepare_training_set()`: Select and prepare balanced training subsets
+- `retrieve_probabilities()`: Extract probabilities from measurement counts
 
 ## Key Concepts
 
@@ -89,41 +114,6 @@ The quantum cosine classifier measures similarity between quantum states using t
 - Potentially better generalization but computationally more expensive
 - Unitary dimension: 2^(n_obs_qubits + n_obs)
 
-## Usage Example
-
-```python
-from modeling import ensemble, exec_simulator
-from Utils import training_set, normalize_custom, evaluation_metrics
-import numpy as np
-
-# Prepare data
-X_train, y_train = ...  # Your training data
-X_test, y_test = ...    # Your test data
-
-# Select training subset
-X_data, Y_data = training_set(X_train, y_train, n=4, seed=42)
-
-# Run ensemble for each test point
-predictions = []
-for x_test in X_test:
-    x_test_norm = normalize_custom(x_test)
-    
-    # Create quantum circuit
-    qc = ensemble(X_data, Y_data, x_test_norm, 
-                  n_swap=1, d=2, mode="balanced")
-    
-    # Execute on simulator
-    result = exec_simulator(qc, n_shots=8192)
-    
-    # Extract prediction
-    p0 = result['0'] / (result['0'] + result['1'])
-    p1 = 1 - p0
-    predictions.append([p0, p1])
-
-# Evaluate
-accuracy, brier = evaluation_metrics(predictions, y_test)
-print(f"Accuracy: {accuracy:.3f}, Brier Score: {brier:.3f}")
-```
 
 ## Parameters
 
@@ -177,6 +167,9 @@ print(f"Accuracy: {accuracy:.3f}, Brier Score: {brier:.3f}")
 
 ### Primary References
 - **This Tutorial**: Part of QBioCode framework for quantum bioinformatics
-- **Quantum Ensemble Paper**: Macaluso et al., "A variational algorithm for quantum ensemble learning", IET Quantum Communication (2023)
+- **Quantum Ensemble Methods**:
+  - Macaluso et al., "A variational algorithm for quantum ensemble learning", IET Quantum Communication (2023)
+  - Rhrissorrakrai et al., "Quantum Ensembling Methods for Healthcare and Life Science", arXiv:2506.02213 (2025)
+    [https://arxiv.org/abs/2506.02213](https://arxiv.org/abs/2506.02213)
 - **Original Implementation**: [GitHub Repository](https://github.com/amacaluso/Quantum-algorithm-for-ensemble-using-bagging)
 - **QBioCode Documentation**: See main repository for comprehensive guides

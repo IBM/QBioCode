@@ -9,6 +9,7 @@ dataset complexity analysis, and automated model execution.
 Available Functions
 -------------------
 - modeleval: Evaluate model performance with multiple metrics
+- evaluation_metrics: Calculate accuracy and Brier score from predictions
 - evaluate: Comprehensive dataset complexity evaluation
 - model_run: Automated model training and evaluation pipeline
 
@@ -22,11 +23,12 @@ Usage
 """
 
 from .dataset_evaluation import evaluate
-from .model_evaluation import modeleval
+from .model_evaluation import evaluation_metrics, modeleval
 from .model_run import model_run
 
 __all__ = [
     "modeleval",
+    "evaluation_metrics",
     "evaluate",
     "model_run",
 ]

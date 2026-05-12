@@ -1,0 +1,8 @@
+Method,Baseline,Dataset,Metric,Median method,Median baseline,Std. dev. method,Std. dev. baseline,t statistic,p-value
+qcosine,random_forest,blob,Accuracy,0.5,0.75,0.244,0.22,-8.097,1.0
+qensemble,random_forest,blob,Accuracy,0.75,0.75,0.375,0.22,-2.851,0.998
+qensemble_random_unitary,random_forest,blob,Accuracy,0.75,0.75,0.195,0.22,0.716,0.237
+qcosine,random_forest,blob,F1 Score,0.5,0.733,0.256,0.293,-6.24,1.0
+qensemble,random_forest,blob,F1 Score,0.733,0.733,0.392,0.293,-1.844,0.967
+qensemble_random_unitary,random_forest,blob,F1 Score,0.733,0.733,0.237,0.293,1.307,0.096
+qcosine,random_forest,blob,brier,0.411,0.233,0.219,0.105,8.476,1.0

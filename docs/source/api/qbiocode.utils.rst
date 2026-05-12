@@ -20,6 +20,14 @@ qbiocode.utils.dataset\_checkpoint module
    :show-inheritance:
    :undoc-members:
 
+qbiocode.utils.data\_encoding module
+------------------------------------
+
+.. automodule:: qbiocode.utils.data_encoding
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 qbiocode.utils.find\_duplicates module
 --------------------------------------
 

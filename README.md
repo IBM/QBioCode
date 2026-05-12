@@ -13,7 +13,7 @@ QBioCode provides tools for benchmarking quantum and classical machine learning 
 - **QProfiler**: Automated ML benchmarking with data complexity analysis
 - **QSage**: Meta-learning tool for intelligent model selection
 - **Data Generation**: Create artificial datasets with controlled complexity
-- **Quantum ML Support**: QSVC, PQK, VQC, QNN implementations
+- **Quantum ML Support**: QSVC, PQK, VQC, QNN, Quantum Ensemble implementations
 - **Classical ML Baselines**: RF, SVM, LR, DT, NB, MLP, XGBoost
 - **Comprehensive Documentation**: Detailed tutorials and API reference
 
@@ -79,7 +79,7 @@ source .env/bin/activate  # On Windows: .env\Scripts\activate
 pip install -e .
 
 # Install with apps support (QProfiler, QSage)
-pip install -e ".[apps]"
+pip install -e '.[apps]'
 ```
 
 **macOS Users:** XGBoost requires OpenMP. Install it using Homebrew:
@@ -94,7 +94,7 @@ For detailed installation instructions, see the [Installation Guide](https://ibm
 
 ```bash
 # Install the package with development dependencies
-pip install -e ".[dev]"
+pip install -e '.[dev]'
 
 # Run the test suite
 python -m pytest
@@ -117,7 +117,7 @@ qbc.generate_data(
 )
 
 # Run QProfiler
-from apps.qprofiler import qprofiler
+from qbiocode.apps.qprofiler import qprofiler
 import yaml
 
 config = yaml.safe_load(open('configs/config.yaml'))
@@ -142,7 +142,7 @@ QProfiler provides a comprehensive benchmarking pipeline that:
 qprofiler --config configs/config.yaml
 
 # Python API
-from apps.qprofiler import qprofiler
+from qbiocode.apps.qprofiler import qprofiler
 qprofiler.main(config)
 ```
 
@@ -164,7 +164,7 @@ QSage uses surrogate models trained on extensive benchmarking data to:
 qsage --data your_data.csv --output predictions.csv
 
 # Python API
-from apps.sage.sage import QuantumSage
+from qbiocode.apps.sage.sage import QuantumSage
 sage = QuantumSage(data=benchmark_df, features=features, metrics=metrics)
 predictions = sage.predict(new_dataset_features)
 ```
@@ -197,7 +197,14 @@ Learn to use meta-learning for model selection:
 - Analyzing prediction accuracy
 - Understanding feature importance
 
-### 4. [Quantum Projection Learning](tutorial/Quantum_Projection_Learning/QPL_example.ipynb)
+### 4. [Quantum Ensemble Learning](tutorial/QEnsemble/QEnsemble_example_blobs.ipynb)
+Learn quantum ensemble methods for improved classification:
+- Fixed swap-based ensemble approach
+- Random unitary-based ensemble approach
+- Quantum superposition for evaluating multiple training configurations
+- Comparison with classical ensemble methods
+
+### 5. [Quantum Projection Learning](tutorial/Quantum_Projection_Learning/QPL_example.ipynb)
 Advanced quantum ML techniques with classical baselines.
 
 ## 🔧 Core Modules
@@ -228,6 +235,34 @@ qbc.generate_data(type_of_data='classes', ...)
 - Projected Quantum Kernel (PQK)
 - Variational Quantum Classifier (VQC)
 - Quantum Neural Network (QNN)
+- Quantum Ensemble (QEnsemble) - swap and random unitary methods
+
+**Quantum Ensemble Usage:**
+```python
+from qbiocode.learning import compute_qensemble
+from sklearn.datasets import make_blobs
+from sklearn.model_selection import train_test_split
+
+# Generate data
+X, y = make_blobs(n_samples=100, n_features=2, centers=2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+# Run quantum ensemble with swap method
+results_swap = compute_qensemble(
+    X_train, X_test, y_train, y_test,
+    ensemble_method='swap',
+    n_ensemble=4,
+    seed=42
+)
+
+# Run quantum ensemble with random unitary method
+results_random = compute_qensemble(
+    X_train, X_test, y_train, y_test,
+    ensemble_method='random_unitary',
+    n_ensemble=4,
+    seed=42
+)
+```
 
 ### Embeddings
 - PCA, LLE, Isomap, Spectral Embedding
