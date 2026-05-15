@@ -165,6 +165,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../workshops/index.html">
+    Workshops
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -283,6 +290,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../api_overview.html">
     API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../workshops/index.html">
+    Workshops
   </a>
 </li>
 
@@ -436,16 +450,17 @@
     <span class="c1"># These imports happen inside the function, not at module level</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_dt</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_dt</span><span class="p">,</span> <span class="n">compute_dt_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_lr</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_lr</span><span class="p">,</span> <span class="n">compute_lr_opt</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_rf</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_rf</span><span class="p">,</span> <span class="n">compute_rf_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_mlp</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_mlp</span><span class="p">,</span> <span class="n">compute_mlp_opt</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_nb</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_nb</span><span class="p">,</span> <span class="n">compute_nb_opt</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_xgb</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_xgb</span><span class="p">,</span> <span class="n">compute_xgb_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_pqk</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_pqk</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_qpl</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_qpl</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_qnn</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_qnn</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_qsvc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_qsvc</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_rf</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_rf</span><span class="p">,</span> <span class="n">compute_rf_opt</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_nb</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_nb</span><span class="p">,</span> <span class="n">compute_nb_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_svc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_svc</span><span class="p">,</span> <span class="n">compute_svc_opt</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_vqc</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_vqc</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.learning.compute_xgb</span><span class="w"> </span><span class="kn">import</span> <span class="n">compute_xgb</span><span class="p">,</span> <span class="n">compute_xgb_opt</span>
-
+    
     <span class="c1"># Build model dictionary</span>
     <span class="n">compute_ml_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;svc_opt&quot;</span><span class="p">:</span> <span class="n">compute_svc_opt</span><span class="p">,</span>
@@ -466,10 +481,12 @@
         <span class="s2">&quot;vqc&quot;</span><span class="p">:</span> <span class="n">compute_vqc</span><span class="p">,</span>
         <span class="s2">&quot;qnn&quot;</span><span class="p">:</span> <span class="n">compute_qnn</span><span class="p">,</span>
         <span class="s2">&quot;pqk&quot;</span><span class="p">:</span> <span class="n">compute_pqk</span><span class="p">,</span>
+        <span class="s2">&quot;qpl&quot;</span><span class="p">:</span> <span class="n">compute_qpl</span><span class="p">,</span>
+
     <span class="p">}</span>
 
     <span class="c1"># Quantum models don&#39;t have _opt versions (use separate configs for hyperparameter tuning)</span>
-    <span class="n">quantum_models</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;qsvc&quot;</span><span class="p">,</span> <span class="s2">&quot;qnn&quot;</span><span class="p">,</span> <span class="s2">&quot;vqc&quot;</span><span class="p">,</span> <span class="s2">&quot;pqk&quot;</span><span class="p">}</span>
+    <span class="n">quantum_models</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;qsvc&quot;</span><span class="p">,</span> <span class="s2">&quot;qnn&quot;</span><span class="p">,</span> <span class="s2">&quot;vqc&quot;</span><span class="p">,</span> <span class="s2">&quot;pqk&quot;</span><span class="p">,</span> <span class="s2">&quot;qpl&quot;</span><span class="p">}</span>
 
     <span class="c1"># Run classical and quantum models</span>
     <span class="n">n_jobs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">])</span>

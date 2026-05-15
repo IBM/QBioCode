@@ -168,6 +168,13 @@
   </a>
 </li>
 
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../workshops/index.html">
+    Workshops
+  </a>
+</li>
+
   </ul>
 </nav></div>
       
@@ -288,6 +295,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../api_overview.html">
     API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../workshops/index.html">
+    Workshops
   </a>
 </li>
 
@@ -566,11 +580,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="qbiocode.learning.html#module-qbiocode.learning.compute_pqk">qbiocode.learning.compute_pqk module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_pqk.compute_pqk"><code class="docutils literal notranslate"><span class="pre">compute_pqk()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_pqk.create_lr_model"><code class="docutils literal notranslate"><span class="pre">create_lr_model()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_pqk.create_mlp_model"><code class="docutils literal notranslate"><span class="pre">create_mlp_model()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_pqk.create_rf_model"><code class="docutils literal notranslate"><span class="pre">create_rf_model()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_pqk.create_svc_model"><code class="docutils literal notranslate"><span class="pre">create_svc_model()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_pqk.create_xgb_model"><code class="docutils literal notranslate"><span class="pre">create_xgb_model()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="qbiocode.learning.html#module-qbiocode.learning.compute_qensemble">qbiocode.learning.compute_qensemble module</a><ul>
@@ -625,6 +635,7 @@
 <li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_pqk"><code class="docutils literal notranslate"><span class="pre">compute_pqk()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_qensemble"><code class="docutils literal notranslate"><span class="pre">compute_qensemble()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_qnn"><code class="docutils literal notranslate"><span class="pre">compute_qnn()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_qpl"><code class="docutils literal notranslate"><span class="pre">compute_qpl()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_qsvc"><code class="docutils literal notranslate"><span class="pre">compute_qsvc()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_rf"><code class="docutils literal notranslate"><span class="pre">compute_rf()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="qbiocode.learning.html#qbiocode.learning.compute_rf_opt"><code class="docutils literal notranslate"><span class="pre">compute_rf_opt()</span></code></a></li>
@@ -769,6 +780,7 @@ metrics, and visualization utilities.</p>
 <li><p>data_generation: Synthetic dataset generators</p></li>
 <li><p>visualization: Result visualization and correlation analysis</p></li>
 <li><p>utils: Helper functions and utilities</p></li>
+<li><p>apps: Command-line applications (QProfiler, QSage)</p></li>
 </ul>
 </section>
 <section id="quick-start">
@@ -778,6 +790,9 @@ metrics, and visualization utilities.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">generate_data</span><span class="p">(</span><span class="n">type_of_data</span><span class="o">=</span><span class="s1">&#39;circles&#39;</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="s1">&#39;data/circles&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Train a random forest model</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">compute_rf</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Use QProfiler programmatically</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.apps.qprofiler</span><span class="w"> </span><span class="kn">import</span> <span class="n">qprofiler</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">qprofiler</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -1231,7 +1246,7 @@ This function is designed to be used in a supervised learning context, where the
 
 <dl class="py function">
 <dt class="sig sig-object py" id="qbiocode.compute_pqk">
-<span class="sig-name descname"><span class="pre">compute_pqk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PQK'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Z'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'estimator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entanglement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">classical_models</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/learning/compute_pqk.html#compute_pqk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.compute_pqk" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">compute_pqk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">X_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_train</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PQK'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Z'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primitive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'estimator'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entanglement</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/learning/compute_pqk.html#compute_pqk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.compute_pqk" title="Link to this definition">#</a></dt>
 <dd><p>This function generates quantum circuits, computes projections of the data onto these circuits,
 and evaluates the performance of classical machine learning models on the projected data.
 It uses a feature map to encode the data into quantum states and then measures the expectation values
@@ -1259,9 +1274,6 @@ The function returns the performance results, including accuracy, F1-score, AUC,
 <li><p><strong>primitive</strong> (<em>str</em>) – Primitive type to use, default is ‘estimator’.</p></li>
 <li><p><strong>entanglement</strong> (<em>str</em>) – Entanglement strategy, default is ‘linear’.</p></li>
 <li><p><strong>reps</strong> (<em>int</em>) – Number of repetitions for the feature map, default is 2.</p></li>
-<li><p><strong>classical_models</strong> (<em>list</em>) – List of classical models to train on quantum projections.
-Options: ‘rf’, ‘mlp’, ‘svc’, ‘lr’, ‘xgb’.
-Default is [‘rf’, ‘mlp’, ‘svc’, ‘lr’, ‘xgb’].</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
