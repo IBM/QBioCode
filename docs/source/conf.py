@@ -41,7 +41,6 @@ extensions = [ "sphinx.ext.autodoc",
      "nbsphinx",
    "myst_parser",
    "sphinx_design",
-  
   # "myst_nb"
 ]
 

@@ -49,6 +49,12 @@ Ready to dive into the world of quantum healthcare and life sciences?
     API <api_overview>
 
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Community
+
+   workshops/index
+
 
 .. Indices and tables
 .. ==================
