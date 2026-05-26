@@ -149,6 +149,10 @@ def compute_qpl(
                 circuit, opt_level=3, backend=backend, PT=True, initial_layout=None
             )
 
+
+        # Set the global phase to 0 to avoid header size issues
+        circuit.global_phase = 0
+        
         for f_tr in [file_projection_train, file_projection_test]:
             if not os.path.exists(f_tr):
                 projections = []
