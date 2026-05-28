@@ -27,18 +27,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8bc5eb03" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -48,19 +48,24 @@
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/qbiocode.visualization.visualize_correlation';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
-
+  <body data-default-mode="light">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
@@ -92,7 +97,7 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -231,10 +236,6 @@
     </div>
   
 
-  
-    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
-      <span class="fa-solid fa-outdent"></span>
-    </button>
   
 </div>
 
@@ -405,91 +406,8 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="module-qbiocode.visualization.visualize_correlation">
-<span id="qbiocode-visualization-visualize-correlation-module"></span><h1>qbiocode.visualization.visualize_correlation module<a class="headerlink" href="#module-qbiocode.visualization.visualize_correlation" title="Link to this heading">#</a></h1>
-<section id="summary">
-<h2>Summary<a class="headerlink" href="#summary" title="Link to this heading">#</a></h2>
-<p>Functions:</p>
-<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#qbiocode.visualization.visualize_correlation.compute_results_correlation" title="qbiocode.visualization.visualize_correlation.compute_results_correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_results_correlation</span></code></a></p></td>
-<td><p>This function takes in as input a Pandas Dataframe containing the results and data evaluations for a given dataset.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#qbiocode.visualization.visualize_correlation.plot_results_correlation" title="qbiocode.visualization.visualize_correlation.plot_results_correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_results_correlation</span></code></a></p></td>
-<td><p>This function plots publication-quality correlation dot plots using the previously generated correlations_df dataframe.</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-<section id="reference">
-<h2>Reference<a class="headerlink" href="#reference" title="Link to this heading">#</a></h2>
-</section>
-<dl class="py function">
-<dt class="sig sig-object py" id="qbiocode.visualization.visualize_correlation.compute_results_correlation">
-<span class="sig-name descname"><span class="pre">compute_results_correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">results_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'spearman'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresh</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.7</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/visualization/visualize_correlation.html#compute_results_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.visualization.visualize_correlation.compute_results_correlation" title="Link to this definition">#</a></dt>
-<dd><p>This function takes in as input a Pandas Dataframe containing the results and data evaluations for
-a given dataset.  It then produces a spearman correlation between the data evaluation characteristics (features)
-and instances where an F1 score was observed above a certain threshold (thresh).
-The function returns the input DataFrame with additional columns for datatype and model_embed_datatype,
-as well as a new DataFrame containing the computed correlations between metrics and features.
-The correlation is computed for each model-embedding-dataset combination, and the results are aggregated.
-The features considered for correlation include various data characteristics such as ‘Feature_Samples_ratio’, ‘Intrinsic_Dimension’, etc.
-The metrics considered for correlation include ‘accuracy’, ‘f1_score’, ‘time’, and ‘auc’.
-The function also calculates the median metric value and the fraction of instances above the specified threshold for each combination.
-The resulting DataFrame contains the model-embedding-dataset, metric, feature, median metric value, fraction above threshold, and the computed correlation.
-This function is useful for understanding how different data characteristics relate to model performance metrics, particularly in the context of machine learning models applied to datasets.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>results_df</strong> (<em>pd.DataFrame</em>) – A DataFrame containing the results and data evaluations.</p></li>
-<li><p><strong>correlation</strong> (<em>str</em>) – The type of correlation to compute, default is ‘spearman’.</p></li>
-<li><p><strong>thresh</strong> (<em>float</em>) – The threshold for F1 score to consider, default is 0.7.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The input DataFrame with additional columns for datatype and model_embed_datatype.
-correlations_df (pd.DataFrame): A DataFrame containing the computed correlations between metrics and features.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>results_df (pd.DataFrame)</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="qbiocode.visualization.visualize_correlation.plot_results_correlation">
-<span class="sig-name descname"><span class="pre">plot_results_correlation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">correlations_df</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'f1_score'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">correlation_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Spearman</span> <span class="pre">ρ'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(6.5,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_file_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'median_metric'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xticks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'model_embed_datatype'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_plots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colorbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Correlation</span> <span class="pre">coefficient'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Median</span> <span class="pre">metric</span> <span class="pre">value'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/qbiocode/visualization/visualize_correlation.html#plot_results_correlation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#qbiocode.visualization.visualize_correlation.plot_results_correlation" title="Link to this definition">#</a></dt>
-<dd><p>This function plots publication-quality correlation dot plots using the previously generated correlations_df dataframe.
-The larger the circle, the higher the metric value for that particular data set. The circle colors correspond to the
-correlations between the data characteristics (evaluations) and the metric. Red corresponds to a positive
-correlation, while blue indicates an anti-correlation. The strength of either type of correlation is represented by
-the shade of coloring – the darker the circle, the more correlated/anticorrelated that particular characteristic is
-to the model’s performance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>correlations_df</strong> (<em>pd.DataFrame</em>) – A DataFrame containing the computed correlations between metrics and features.</p></li>
-<li><p><strong>metric</strong> (<em>str</em>) – The metric to plot, default is ‘f1_score’.</p></li>
-<li><p><strong>title</strong> (<em>str</em>) – The title of the plot, default is an empty string.</p></li>
-<li><p><strong>correlation_type</strong> (<em>str</em>) – The type of correlation to display in the legend, default is ‘Spearman ρ’.</p></li>
-<li><p><strong>figsize</strong> (<em>tuple</em>) – The size of the figure, default is (14, 9).</p></li>
-<li><p><strong>save_file_path</strong> (<em>str</em>) – The file path to save the plot, default is an empty string.</p></li>
-<li><p><strong>size</strong> (<em>str</em>) – The column name to use for the size of the dots, default is ‘median_metric’.</p></li>
-<li><p><strong>show_plots</strong> (<em>bool</em>) – Whether to display plots, default is True.</p></li>
-<li><p><strong>colorbar_label</strong> (<em>str</em>) – Label for the colorbar, default is ‘Correlation coefficient’.</p></li>
-<li><p><strong>size_label</strong> (<em>str</em>) – Label for the size legend, default is ‘Median metric value’.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>Displays the plot and saves it to the specified file path if provided.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <section id="qbiocode-visualization-visualize-correlation-module">
+<h1>qbiocode.visualization.visualize_correlation module<a class="headerlink" href="#qbiocode-visualization-visualize-correlation-module" title="Link to this heading">#</a></h1>
 </section>
 
 
@@ -509,27 +427,6 @@ to the model’s performance.</p>
             
             
               
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#summary">Summary</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reference">Reference</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.visualization.visualize_correlation.compute_results_correlation"><code class="docutils literal notranslate"><span class="pre">compute_results_correlation()</span></code></a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.visualization.visualize_correlation.plot_results_correlation"><code class="docutils literal notranslate"><span class="pre">plot_results_correlation()</span></code></a></li>
-</ul>
-  </nav></div>
-
-</div></div>
-              
             
           </div>
           <footer class="bd-footer-content">
@@ -541,8 +438,8 @@ to the model’s performance.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -576,7 +473,7 @@ to the model’s performance.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
 </p></div>
       
     </div>

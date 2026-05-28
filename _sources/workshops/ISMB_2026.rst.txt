@@ -82,8 +82,8 @@ Session I — Foundations (09:00–10:45)
 
    **Materials**
 
-   - 📄 Slides: TBD
-   - 📘 Background: TBD
+   - 📄 Slides: `Opening Remarks <../_static/workshops/openingremarks.pdf>`_ 
+
 
 
 .. dropdown:: 2. Quantum computing fundamentals with Qiskit (09:15–09:45)

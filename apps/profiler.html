@@ -27,18 +27,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8bc5eb03" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -50,19 +50,24 @@
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'apps/profiler';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
-
+  <body data-default-mode="light">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
@@ -94,7 +99,7 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -908,7 +913,7 @@ Patient003,0.9,0.1,0.6,0
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <p><strong>For quantum models:</strong> Grid search requires generating separate config files for each parameter combination.
-Use the <a class="reference internal" href="../api/qbiocode.utils.html#qbiocode.utils.generate_qml_experiment_configs" title="qbiocode.utils.generate_qml_experiment_configs"><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.generate_qml_experiment_configs()</span></code></a> utility function:</p>
+Use the <code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.generate_qml_experiment_configs()</span></code> utility function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">qbiocode.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">generate_qml_experiment_configs</span>
 
 <span class="c1"># Generate config files for quantum model hyperparameter tuning</span>
@@ -957,7 +962,7 @@ qprofiler<span class="w"> </span>--config<span class="w"> </span>configs/qml_gri
 <p>For large hyperparameter grids (hundreds of configs), use SLURM array jobs on HPC clusters for parallel execution.
 Adjust <code class="docutils literal notranslate"><span class="pre">--array</span></code> range to match your number of configs and <code class="docutils literal notranslate"><span class="pre">%N</span></code> to control concurrent jobs based on cluster resources.</p>
 </div>
-<p>See <a class="reference internal" href="../api/qbiocode.utils.html#qbiocode.utils.generate_qml_experiment_configs" title="qbiocode.utils.generate_qml_experiment_configs"><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.generate_qml_experiment_configs()</span></code></a> for full documentation and all available parameters.</p>
+<p>See <code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.generate_qml_experiment_configs()</span></code> for full documentation and all available parameters.</p>
 </div>
 </section>
 <section id="detailed-configuration-reference">
@@ -1118,7 +1123,7 @@ Adjust <code class="docutils literal notranslate"><span class="pre">--array</spa
 <ul class="simple">
 <li><p><a class="reference internal" href="../tutorials/QProfiler/example_qprofiler.html"><span class="doc">QProfiler Tutorial</span></a> - Complete workflow examples</p></li>
 <li><p><a class="reference internal" href="config.html"><span class="doc">Configuration Guide</span></a> - Setting up batch processing</p></li>
-<li><p><a class="reference internal" href="../api/qbiocode.utils.html#qbiocode.utils.dataset_checkpoint.checkpoint_restart" title="qbiocode.utils.dataset_checkpoint.checkpoint_restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.dataset_checkpoint.checkpoint_restart()</span></code></a> - Full API documentation</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.dataset_checkpoint.checkpoint_restart()</span></code> - Full API documentation</p></li>
 </ul>
 </div>
 </section>
@@ -1294,9 +1299,9 @@ Adjust <code class="docutils literal notranslate"><span class="pre">--array</spa
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../api/qbiocode.utils.html#qbiocode.utils.find_duplicates.find_duplicate_files" title="qbiocode.utils.find_duplicates.find_duplicate_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.find_duplicates.find_duplicate_files()</span></code></a> - Full API documentation</p></li>
-<li><p><a class="reference internal" href="../api/qbiocode.utils.html#qbiocode.utils.find_string.find_string_in_files" title="qbiocode.utils.find_string.find_string_in_files"><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.find_string.find_string_in_files()</span></code></a> - Full API documentation</p></li>
-<li><p><a class="reference internal" href="../api/qbiocode.utils.html#qbiocode.utils.dataset_checkpoint.checkpoint_restart" title="qbiocode.utils.dataset_checkpoint.checkpoint_restart"><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.dataset_checkpoint.checkpoint_restart()</span></code></a> - Full API documentation</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.find_duplicates.find_duplicate_files()</span></code> - Full API documentation</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.find_string.find_string_in_files()</span></code> - Full API documentation</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">qbiocode.utils.dataset_checkpoint.checkpoint_restart()</span></code> - Full API documentation</p></li>
 </ul>
 </div>
 </section>
@@ -1330,21 +1335,21 @@ Adjust <code class="docutils literal notranslate"><span class="pre">--array</spa
     class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage">Usage</a><ul class="visible nav section-nav flex-column">
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#usage">Usage</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#command-line-interface">Command-Line Interface</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#python-library-usage">Python Library Usage</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-complexity-measures">Data Complexity Measures</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-complexity-measures">Data Complexity Measures</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#dimensionality-metrics">Dimensionality Metrics</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistical-properties">Statistical Properties</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#separability-measures">Separability Measures</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#matrix-properties">Matrix Properties</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration">Configuration</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-overview">Configuration Overview</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#key-configuration-sections">Key Configuration Sections</a></li>
@@ -1353,7 +1358,7 @@ Adjust <code class="docutils literal notranslate"><span class="pre">--array</spa
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checkpoint-and-restart">Checkpoint and Restart</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#checkpoint-and-restart">Checkpoint and Restart</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#how-it-works">How It Works</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#basic-usage">Basic Usage</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#advanced-usage">Advanced Usage</a></li>
@@ -1361,7 +1366,7 @@ Adjust <code class="docutils literal notranslate"><span class="pre">--array</spa
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#returns">Returns</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utility-functions">Utility Functions</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#utility-functions">Utility Functions</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#finding-duplicate-files">Finding Duplicate Files</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#searching-for-strings-in-files">Searching for Strings in Files</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tracking-job-progress">Tracking Job Progress</a></li>
@@ -1385,8 +1390,8 @@ Adjust <code class="docutils literal notranslate"><span class="pre">--array</spa
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1420,7 +1425,7 @@ Adjust <code class="docutils literal notranslate"><span class="pre">--array</spa
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
 </p></div>
       
     </div>
