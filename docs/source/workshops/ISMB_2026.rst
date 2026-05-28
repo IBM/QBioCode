@@ -82,7 +82,7 @@ Session I — Foundations (09:00–10:45)
 
    **Materials**
 
-   - 📄 Slides: `Intro to Quantum <../_static/workshops/openingremarks.pdf>`_ 
+   - 📄 Slides: `Opening Remarks <../_static/workshops/openingremarks.pdf>`_ 
 
 
 
