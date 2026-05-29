@@ -204,7 +204,7 @@ Session III — Hybrid learning for biological networks and multi-omics (14:00�
    Graph-based learning approaches using hybrid QC pipelines.
 
    **Materials**
-   - 📄 Slides: TBD
+   - 📄 Slides: `QuVINE <../_static/workshops/QuVINE.pdf>`_
 
 
 .. dropdown:: 2. QuVINE notebook (14:45–15:00)
@@ -213,7 +213,7 @@ Session III — Hybrid learning for biological networks and multi-omics (14:00�
    Demonstration of the QuVINE workflow.
 
    **Materials**
-   - 💻 Notebook: TBD
+   - 💻 Notebook: `Tutorial QuVINE <../tutorials/quvine_embedding_notebook.ipynb>`_
 
 
 .. dropdown:: 3. Build your own hybrid (Q)ML pipeline (15:00–16:00)
