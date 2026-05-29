@@ -223,7 +223,7 @@ Session III — Hybrid learning for biological networks and multi-omics (14:00�
    Choose from either QML or QuVINE methods on a multi-omics data which have been provided. 
 
    **Materials**
-   - 💻 Notebook: Choose from `Tutorials <../tutorials/>`_
+   - 💻 Notebook: Choose from `Tutorials <https://ibm.github.io/QBioCode/tutorials.html>`_
   
 ----
 
