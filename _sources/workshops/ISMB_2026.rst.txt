@@ -117,7 +117,7 @@ Session I — Foundations (09:00–10:45)
 
    **Materials**
 
-   - 📄 Slides: TBD
+   - 📄 Slides: `Quantum Applications in Healthcare and Life Sciences <../_static/workshops/q4hcls.pdf>`_
    
 
 
@@ -223,7 +223,7 @@ Session III — Hybrid learning for biological networks and multi-omics (14:00�
    Choose from either QML or QuVINE methods on a multi-omics data which have been provided. 
 
    **Materials**
-   - 💻 Notebook: TBD
+   - 💻 Notebook: Choose from `Tutorials <../tutorials/>`_
   
 ----
 
@@ -238,9 +238,6 @@ Session IV — Hands-on + Discussion (16:15–18:00)
    :icon: play
 
    Extend experiments and interpret results with results read-outs.
-
-   **Materials**
-   - 💻 Notebook: TBD
 
 
 .. dropdown:: 2. Interactive Q&A (17:15–17:45)
