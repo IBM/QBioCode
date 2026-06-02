@@ -101,6 +101,51 @@ backend: 'simulator'
 shots: 1024
 ```
 
+Uses the Qiskit statevector simulator for exact, noiseless quantum simulation.
+
+**AerSimulator with Custom Simulation Method:**
+
+```yaml
+backend: 'simulator_aer'
+sim_method: 'statevector'  # Options: statevector, matrix_product_state, tensor_network, etc.
+shots: 1024
+```
+
+Provides access to AerSimulator's various simulation methods. Useful for:
+- **GPU acceleration**: Use `sim_method: 'tensor_network'` with GPU support
+- **Memory efficiency**: Use `sim_method: 'matrix_product_state'` for low-entanglement circuits
+- **Clifford circuits**: Use `sim_method: 'stabilizer'` for fast simulation
+
+**Noisy Simulation Based on IBM Device:**
+
+```yaml
+backend: 'noisy_ibm_cleveland'  # Noisy simulation modeled on IBM device
+sim_method: 'matrix_product_state'  # Simulation method for AerSimulator
+shots: 1024
+```
+
+Simulates quantum circuits with realistic noise models from actual IBM Quantum devices. This feature:
+- Extracts the noise model from a specified IBM device (e.g., `ibm_cleveland`, `ibm_kyoto`)
+- Runs simulation locally using AerSimulator with the device's noise characteristics
+- Allows testing quantum algorithms under realistic noise conditions without queue time
+- Supports any simulation method available in AerSimulator
+
+**Format:** `'noisy_<device_name>'` where `<device_name>` is any IBM Quantum device name.
+
+**Examples:**
+- `'noisy_ibm_cleveland'` - Noise model from IBM Cleveland
+- `'noisy_ibm_kyoto'` - Noise model from IBM Kyoto
+- `'noisy_ibm_sherbrooke'` - Noise model from IBM Sherbrooke
+
+```{tip}
+**Choosing a Simulation Method for Noisy Simulations:**
+
+- **`matrix_product_state`**: Recommended for most quantum machine learning circuits. Efficient for circuits with moderate entanglement.
+- **`tensor_network`**: Best for GPU-accelerated simulations. Requires `qiskit-aer-gpu` installation.
+- **`statevector`**: Most accurate but memory-intensive. Limited to ~20-25 qubits depending on available RAM.
+- **`automatic`**: Let AerSimulator choose the best method based on circuit properties.
+```
+
 **IBM Quantum Hardware:**
 
 ```yaml
@@ -111,6 +156,8 @@ shots: 4096
 resil_level: 1  # Error mitigation level (1-3)
 ```
 
+Runs circuits on actual IBM Quantum hardware.
+
 **IBM Quantum Credentials:**
 
 ```yaml
@@ -119,11 +166,32 @@ name: 'account_qbc'  # Account alias in JSON
 ibm_instance: 'ibm-q/open/main'  # Optional: specific instance
 ```
 
+```{important}
+**IBM Credentials Required for Noisy Simulations:**
+
+When using `noisy_<device_name>` backends, you must provide valid IBM Quantum credentials even though the simulation runs locally. This is because QBioCode needs to:
+1. Connect to IBM Quantum services to retrieve the device's noise model
+2. Download the latest calibration data for accurate noise simulation
+
+The actual circuit execution happens locally on your machine using AerSimulator, so you won't incur queue wait times or consume IBM Quantum compute credits.
+```
+
 ```{note}
 **Backend Options:**
-- `'simulator'`: Local Qiskit Aer simulator
+- `'simulator'`: Local Qiskit statevector simulator (exact, noiseless)
+- `'simulator_aer'`: AerSimulator with configurable simulation method
+- `'noisy_<device_name>'`: Noisy simulation based on IBM device noise model (e.g., `'noisy_ibm_cleveland'`)
 - `'ibm_least'`: Automatically select least busy IBM Quantum device
 - `'ibm_<device_name>'`: Specific IBM Quantum device (e.g., 'ibm_kyoto')
+
+**Simulation Methods (for AerSimulator):**
+When using `'simulator_aer'` or `'noisy_<device_name>'` backends, specify the simulation method via `sim_method`:
+- `'statevector'`: Exact statevector simulation (default, memory intensive)
+- `'matrix_product_state'`: Efficient for low-entanglement circuits
+- `'tensor_network'`: GPU-accelerated tensor network simulation
+- `'stabilizer'`: Fast simulation for Clifford circuits
+- `'extended_stabilizer'`: Approximate simulation for near-Clifford circuits
+- `'automatic'`: Automatically select best method
 
 **Shots:** Number of circuit executions. Higher = more accurate but slower.
 
@@ -332,8 +400,9 @@ output_dir: 'results/experiment_001/'
 seed: 42
 q_seed: 42
 
-# Quantum backend
-backend: 'simulator'
+# Quantum backend - Noisy simulation example
+backend: 'noisy_ibm_cleveland'
+sim_method: 'matrix_product_state'
 shots: 1024
 resil_level: 1
 qiskit_json_path: '~/.qiskit/qiskit-ibm.json'
@@ -372,6 +441,22 @@ gridsearch_svc_args:
 qsvc_args:
   feature_map: 'ZZFeatureMap'
   reps: 2
+```
+
+**Alternative Backend Configurations:**
+
+```yaml
+# For exact noiseless simulation
+backend: 'simulator'
+
+# For AerSimulator with GPU acceleration
+backend: 'simulator_aer'
+sim_method: 'tensor_network'
+
+# For actual IBM Quantum hardware
+backend: 'ibm_kyoto'
+shots: 4096
+resil_level: 2
 ```
 
 ---

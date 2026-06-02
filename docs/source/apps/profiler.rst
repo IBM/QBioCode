@@ -467,15 +467,24 @@ Key Configuration Sections
 
 .. code-block:: yaml
 
-    # Use simulator
+    # Use exact simulator (noiseless)
     backend: 'simulator'
+    
+    # Use AerSimulator with custom simulation method
+    backend: 'simulator_aer'
+    sim_method: 'statevector'  # or matrix_product_state, tensor_network, etc.
+    
+    # Use noisy simulation based on IBM device noise model
+    backend: 'noisy_ibm_cleveland'  # Replace 'ibm_cleveland' with any IBM device name
+    sim_method: 'matrix_product_state'  # Recommended for noisy simulations
+    shots: 1024
     
     # Or use IBM Quantum hardware
     backend: 'ibm_least'  # Least busy device
     shots: 1024
     resil_level: 1        # Error mitigation (1-3)
     
-    # IBM credentials
+    # IBM credentials (required for hardware and noisy simulation)
     qiskit_json_path: '~/.qiskit/qiskit-ibm.json'
     name: 'account_qbc'   # Account alias
     ibm_instance: 'hub/group/project'  # Optional

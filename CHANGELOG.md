@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Quantum Backend**: Noisy simulation support based on IBM device noise models
+  - New backend format: `noisy_<device_name>` (e.g., `noisy_ibm_cleveland`)
+  - Extracts noise model from actual IBM Quantum devices for realistic local simulation
+  - Configurable simulation method via `sim_method` parameter
+  - Supports all AerSimulator methods: `statevector`, `matrix_product_state`, `tensor_network`, etc.
+  - Enables testing quantum algorithms under realistic noise without hardware queue times
+  - No IBM Quantum compute credits consumed (simulation runs locally)
+  - Updated `qbiocode.utils.qutils.get_backend_session()` to support noisy backends
+  - Updated `qbiocode.utils.ibm_account.py` for improved credential handling
+  - Documentation updated with comprehensive examples and best practices
+
 - **Data Generation**: New blob dataset generator
   - `generate_blobs_datasets()`: Create isotropic Gaussian blob datasets
   - `generate_default_blobs_datasets()`: Quick generation with default parameters
