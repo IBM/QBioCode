@@ -59,10 +59,11 @@ def get_backend_session(args: dict, primitive: str, num_qubits: int):
             prim = StatevectorEstimator(seed=args["seed"])
         else:
             prim = StatevectorSampler(seed=args["seed"], default_shots=args["shots"])
-
-    elif "ibm" in args["backend"]:
+    elif ("ibm" in args["backend"]) or (args["backend"] == "simulator_aer"):
         service: QiskitRuntimeService = instantiate_runtime_service(args)
-        if "noisy" in args["backend"]:
+        if args["backend"] == "simulator_aer":
+            backend = AerSimulator.from_backend(method = args['sim_method'])
+        elif "noisy" in args["backend"]:
             noisy_backend_name = re.sub("noisy_", "", args["backend"])
             backend = AerSimulator.from_backend(service.backend(name=noisy_backend_name), method = args['sim_method'])
         else:

@@ -15,6 +15,7 @@ index_col: False
 # backend: 'ibm_cleveland'
 # backend: 'ibm_least'
 # backend: 'simulator' for exact simulation
+# backend: 'simulator_aer' for AerSimulator, which will allow for exact and approxiamte simulation when specifying 'sim_method'
 backend: 'noisy_ibm_cleveland' # noisy simulation based on IBM Device.  Change ibm specific name to change device noise model
 sim_method: 'matrix_product_state' # type of method for the AerSimulator to use
 
