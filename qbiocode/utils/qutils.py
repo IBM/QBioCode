@@ -1,3 +1,6 @@
+from qiskit_ibm_runtime.qiskit_runtime_service import QiskitRuntimeService
+
+
 import logging
 import math
 import os
@@ -26,6 +29,7 @@ from qiskit_ibm_runtime import SamplerOptions
 from qiskit_ibm_runtime import SamplerV2 as Sampler
 from qiskit_ibm_runtime import Session
 from qiskit_ibm_transpiler.transpiler_service import TranspilerService
+from qiskit_aer import AerSimulator
 
 from qbiocode.utils.ibm_account import instantiate_runtime_service
 
@@ -55,14 +59,19 @@ def get_backend_session(args: dict, primitive: str, num_qubits: int):
             prim = StatevectorEstimator(seed=args["seed"])
         else:
             prim = StatevectorSampler(seed=args["seed"], default_shots=args["shots"])
+
     elif "ibm" in args["backend"]:
-        service = instantiate_runtime_service(args)
-        if args["backend"] == "ibm_least":
-            backend = service.least_busy(
-                simulator=False, operational=True, min_num_qubits=num_qubits
-            )
+        service: QiskitRuntimeService = instantiate_runtime_service(args)
+        if "noisy" in args["backend"]:
+            noisy_backend_name = re.sub("noisy_", "", args["backend"])
+            backend = AerSimulator.from_backend(service.backend(name=noisy_backend_name), method = args['sim_method'])
         else:
-            backend = service.backend(name=args["backend"])
+            if args["backend"] == "ibm_least":
+                backend = service.least_busy(
+                    simulator=False, operational=True, min_num_qubits=num_qubits
+                )
+            else:
+                backend = service.backend(name=args["backend"])
 
         session = Session(backend=backend)
 

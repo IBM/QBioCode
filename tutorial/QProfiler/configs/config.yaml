@@ -14,7 +14,9 @@ index_col: False
 # choose a backend for the QML methods
 # backend: 'ibm_cleveland'
 # backend: 'ibm_least'
-backend: 'simulator'
+# backend: 'simulator' for exact simulation
+backend: 'noisy_ibm_cleveland' # noisy simulation based on IBM Device.  Change ibm specific name to change device noise model
+sim_method: 'matrix_product_state' # type of method for the AerSimulator to use
 
 # IBM runtime credentials - they should be in your home directory by default, but if they are elsewhere, please change path below.
 # 'name' should be the account name alias you used when saving your runtime credentials.  This is relevant if you have multiple accounts stored in your json.
@@ -27,7 +29,7 @@ name: 'account_name_alias'
 n_jobs: 1
 
 # select the embedding method for reducing dimensionality (number of features) in your data set
-embeddings: ['none', 'pca']
+embeddings: ['pca']
 #embeddings: ['pca', 'isomap', 'none']
 
 # number of dimensions (features) to embed (reduce) your data down to

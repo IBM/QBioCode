@@ -27,6 +27,7 @@ def get_creds(args):
         "instance": "ibm_instance",
         "token": "ibm_token",
         "url": "ibm_url",
+        "name": "name"
     }
     rval = {}
     for ibm_name, yaml_name in cred_source_dict.items():
@@ -55,6 +56,7 @@ def get_creds(args):
             print(
                 "IBM credentials not found! Please verify that the path to your qiskit-ibm.json file is correct."
             )
+    print(rval)
     return rval
 
 
