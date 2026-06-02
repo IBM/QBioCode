@@ -27,18 +27,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css?v=8bc5eb03" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="_static/jquery.js?v=5d32c60e"></script>
     <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -48,7 +48,6 @@
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api_overview';</script>
-    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Workshops" href="workshops/index.html" />
@@ -56,18 +55,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
-  
-    
-    <script src="_static/searchtools.js"></script>
-    <script src="_static/language_data.js"></script>
-    <script src="searchindex.js"></script>
-  
   </head>
-  <body data-default-mode="light">
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
-
   
   <div id="pst-scroll-pixel-helper"></div>
   
@@ -99,7 +94,7 @@
 </div>
 
   
-    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -350,7 +345,6 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
-
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
@@ -425,21 +419,27 @@
 <p>Depending on the underlying foundations in qbiocode can be….</p>
 <section id="embeddings">
 <h3>Embeddings<a class="headerlink" href="#embeddings" title="Link to this heading">#</a></h3>
-<p>Collection of common embeddings  (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.embeddings</span></code>) functionalities.</p>
+<p>Collection of common embeddings  (<a class="reference internal" href="api/qbiocode.embeddings.html#module-qbiocode.embeddings" title="qbiocode.embeddings"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.embeddings</span></code></a>) functionalities.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.embeddings.embed.html#qbiocode.embeddings.embed.get_embeddings" title="qbiocode.embeddings.embed.get_embeddings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_embeddings</span></code></a>(embedding, X_train, X_test[, ...])</p></td>
+<td><p>This function applies the specified embedding technique to the training and test datasets.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 </section>
 <section id="evaluation">
 <h3>Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">#</a></h3>
-<p>The <code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.evaluation</span></code> submodule of qbiocode computes the evaluation metrics for the input dataset and the models.</p>
+<p>The <a class="reference internal" href="api/qbiocode.evaluation.html#module-qbiocode.evaluation" title="qbiocode.evaluation"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.evaluation</span></code></a> submodule of qbiocode computes the evaluation metrics for the input dataset and the models.</p>
 <section id="data-evaluation">
 <h4>Data Evaluation<a class="headerlink" href="#data-evaluation" title="Link to this heading">#</a></h4>
 <p>Depending on the underlying mathematical foundations, they can be classified into the following categories: (i)..</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.evaluation.dataset_evaluation.html#qbiocode.evaluation.dataset_evaluation.evaluate" title="qbiocode.evaluation.dataset_evaluation.evaluate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">evaluate</span></code></a>(df, y, file)</p></td>
+<td><p>This function evaluates a dataset and returns a transposed summary DataFrame with various statistical measures, derived from the dataset.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -448,6 +448,9 @@
 <h4>Model Evaluation<a class="headerlink" href="#model-evaluation" title="Link to this heading">#</a></h4>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.evaluation.model_evaluation.html#qbiocode.evaluation.model_evaluation.modeleval" title="qbiocode.evaluation.model_evaluation.modeleval"><code class="xref py py-obj docutils literal notranslate"><span class="pre">modeleval</span></code></a>(y_test, y_predicted, beg_time, ...)</p></td>
+<td><p>Evaluates the model performance using accuracy, F1 score, and AUC.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -455,10 +458,13 @@
 </section>
 <section id="model-computation">
 <h3>Model Computation<a class="headerlink" href="#model-computation" title="Link to this heading">#</a></h3>
-<p>qbiocode brings together a number of established machine learning model both from classical and quantum (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.learning</span></code>).
+<p>qbiocode brings together a number of established machine learning model both from classical and quantum (<a class="reference internal" href="api/qbiocode.learning.html#module-qbiocode.learning" title="qbiocode.learning"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.learning</span></code></a>).
 Multiple models can be run via the following</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.evaluation.model_run.html#qbiocode.evaluation.model_run.model_run" title="qbiocode.evaluation.model_run.model_run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">model_run</span></code></a>(X_train, X_test, y_train, y_test, ...)</p></td>
+<td><p>This function runs the ML methods, with or without a grid search, as specified in the config.yaml file.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -467,28 +473,64 @@ Multiple models can be run via the following</p>
 <p>QBioCode provides classical machine learning models from <a class="reference external" href="https://scikit-learn.org/">scikit-learn</a> for baseline comparisons and benchmarking against quantum models.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_dt.compute_dt" title="qbiocode.learning.compute_dt.compute_dt"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_dt</span></code></a>(X_train, X_test, y_train, y_test, ...)</p></td>
+<td><p>This function generates a model using a Decision Tree (DT) Classifier method as implemented in <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html">scikit-learn</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_lr.compute_lr" title="qbiocode.learning.compute_lr.compute_lr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_lr</span></code></a>(X_train, X_test, y_train, y_test, ...)</p></td>
+<td><p>This function generates a model using a Logistic Regression (LR) method as implemented in <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html">scikit-learn</a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_mlp.compute_mlp" title="qbiocode.learning.compute_mlp.compute_mlp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_mlp</span></code></a>(X_train, X_test, y_train, ...[, ...])</p></td>
+<td><p>This function generates a model using a Multi-layer Perceptron (mlp), a neural network, method as implemented in <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPClassifier.html">scikit-learn</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_nb.compute_nb" title="qbiocode.learning.compute_nb.compute_nb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_nb</span></code></a>(X_train, X_test, y_train, y_test, ...)</p></td>
+<td><p>This function generates a model using a Gaussian Naive Bayes (NB) Classifier method as implemented in <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html">scikit-learn</a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_rf.compute_rf" title="qbiocode.learning.compute_rf.compute_rf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_rf</span></code></a>(X_train, X_test, y_train, y_test, ...)</p></td>
+<td><p>This function generates a model using a Random Forest (RF) Classifier method as implemented in <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html">scikit-learn</a>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_svc.compute_svc" title="qbiocode.learning.compute_svc.compute_svc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_svc</span></code></a>(X_train, X_test, y_train, ...[, ...])</p></td>
+<td><p>This function generates a model using a Support Vector Classifier (SVC) method as implemented in <a class="reference external" href="https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html">scikit-learn</a>.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
-<p>Each model has an alternative function with grid search parameters for hyperparameter optimization. Details can be found in the specific <code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.learning</span></code> submodules.</p>
+<p>Each model has an alternative function with grid search parameters for hyperparameter optimization. Details can be found in the specific <a class="reference internal" href="api/qbiocode.learning.html#module-qbiocode.learning" title="qbiocode.learning"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.learning</span></code></a> submodules.</p>
 </section>
 <section id="quantum-models">
 <h4>Quantum Models<a class="headerlink" href="#quantum-models" title="Link to this heading">#</a></h4>
 <p>QBioCode provides quantum machine learning models that leverage quantum computing capabilities for classification and regression tasks. These models can be run on quantum simulators or real quantum hardware.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_qnn.compute_qnn" title="qbiocode.learning.compute_qnn.compute_qnn"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_qnn</span></code></a>(X_train, X_test, y_train, ...[, ...])</p></td>
+<td><p>This function computes a Quantum Neural Network (QNN) model on the provided training data and evaluates it on the test data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_qsvc.compute_qsvc" title="qbiocode.learning.compute_qsvc.compute_qsvc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_qsvc</span></code></a>(X_train, X_test, y_train, ...)</p></td>
+<td><p>This function computes a quantum support vector classifier (QSVC) using the Qiskit Machine Learning library.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_vqc.compute_vqc" title="qbiocode.learning.compute_vqc.compute_vqc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_vqc</span></code></a>(X_train, X_test, y_train, ...[, ...])</p></td>
+<td><p>This function computes a Variational Quantum Classifier (VQC) using the Qiskit Machine Learning library.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qbiocode.learning.html#qbiocode.learning.compute_pqk.compute_pqk" title="qbiocode.learning.compute_pqk.compute_pqk"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_pqk</span></code></a>(X_train, X_test, y_train, ...[, ...])</p></td>
+<td><p>This function generates quantum circuits, computes projections of the data onto these circuits, and evaluates the performance of classical machine learning models on the projected data.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
-<p>Each quantum model has an alternative function where grid search parameters and quantum-specific configurations can be provided as input. Details can be found in the specific <code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.learning</span></code> submodules.</p>
+<p>Each quantum model has an alternative function where grid search parameters and quantum-specific configurations can be provided as input. Details can be found in the specific <a class="reference internal" href="api/qbiocode.learning.html#module-qbiocode.learning" title="qbiocode.learning"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.learning</span></code></a> submodules.</p>
 </section>
 </section>
 <section id="visualisation">
 <h3>Visualisation<a class="headerlink" href="#visualisation" title="Link to this heading">#</a></h3>
-<p>The plotting module (<code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.visualization</span></code>) enables the user to visualise the data and provides out-of-the-box plots for some
+<p>The plotting module (<a class="reference internal" href="api/qbiocode.visualization.html#module-qbiocode.visualization" title="qbiocode.visualization"><code class="xref py py-mod docutils literal notranslate"><span class="pre">qbiocode.visualization</span></code></a>) enables the user to visualise the data and provides out-of-the-box plots for some
 of the metrics.</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/qbiocode.visualization.visualize_correlation.html#qbiocode.visualization.visualize_correlation.compute_results_correlation" title="qbiocode.visualization.visualize_correlation.compute_results_correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compute_results_correlation</span></code></a>(results_df[, ...])</p></td>
+<td><p>This function takes in as input a Pandas Dataframe containing the results and data evaluations for a given dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/qbiocode.visualization.visualize_correlation.html#qbiocode.visualization.visualize_correlation.plot_results_correlation" title="qbiocode.visualization.visualize_correlation.plot_results_correlation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_results_correlation</span></code></a>(correlations_df[, ...])</p></td>
+<td><p>This function plots publication-quality correlation dot plots using the previously generated correlations_df dataframe.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -795,9 +837,9 @@ of the metrics.</p>
     class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#methods">Methods</a><ul class="pst-show_toc_level nav section-nav flex-column">
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#methods">Methods</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#embeddings">Embeddings</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation">Evaluation</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#data-evaluation">Data Evaluation</a></li>
@@ -812,7 +854,7 @@ of the metrics.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisation">Visualisation</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datasets">Datasets</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#datasets">Datasets</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#data-generation-module">Data Generation Module</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#main-generator-function">Main Generator Function</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#available-dataset-types">Available Dataset Types</a></li>
@@ -842,8 +884,8 @@ of the metrics.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -877,7 +919,7 @@ of the metrics.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

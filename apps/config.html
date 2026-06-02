@@ -27,18 +27,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=7f76b32a3354e82990f2" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8bc5eb03" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../_static/scripts/fontawesome.js?digest=7f76b32a3354e82990f2"></script>
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -48,24 +48,19 @@
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'apps/config';</script>
-    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
-  
-    
-    <script src="../_static/searchtools.js"></script>
-    <script src="../_static/language_data.js"></script>
-    <script src="../searchindex.js"></script>
-  
   </head>
-  <body data-default-mode="light">
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
-
   
   <div id="pst-scroll-pixel-helper"></div>
   
@@ -97,7 +92,7 @@
 </div>
 
   
-    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -348,7 +343,6 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
-
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
@@ -504,6 +498,49 @@
 <span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
 </pre></div>
 </div>
+<p>Uses the Qiskit statevector simulator for exact, noiseless quantum simulation.</p>
+<p><strong>AerSimulator with Custom Simulation Method:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;simulator_aer&#39;</span>
+<span class="nt">sim_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;statevector&#39;</span><span class="w">  </span><span class="c1"># Options: statevector, matrix_product_state, tensor_network, etc.</span>
+<span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
+</pre></div>
+</div>
+<p>Provides access to AerSimulator’s various simulation methods. Useful for:</p>
+<ul class="simple">
+<li><p><strong>GPU acceleration</strong>: Use <code class="docutils literal notranslate"><span class="pre">sim_method:</span> <span class="pre">'tensor_network'</span></code> with GPU support</p></li>
+<li><p><strong>Memory efficiency</strong>: Use <code class="docutils literal notranslate"><span class="pre">sim_method:</span> <span class="pre">'matrix_product_state'</span></code> for low-entanglement circuits</p></li>
+<li><p><strong>Clifford circuits</strong>: Use <code class="docutils literal notranslate"><span class="pre">sim_method:</span> <span class="pre">'stabilizer'</span></code> for fast simulation</p></li>
+</ul>
+<p><strong>Noisy Simulation Based on IBM Device:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;noisy_ibm_cleveland&#39;</span><span class="w">  </span><span class="c1"># Noisy simulation modeled on IBM device</span>
+<span class="nt">sim_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;matrix_product_state&#39;</span><span class="w">  </span><span class="c1"># Simulation method for AerSimulator</span>
+<span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
+</pre></div>
+</div>
+<p>Simulates quantum circuits with realistic noise models from actual IBM Quantum devices. This feature:</p>
+<ul class="simple">
+<li><p>Extracts the noise model from a specified IBM device (e.g., <code class="docutils literal notranslate"><span class="pre">ibm_cleveland</span></code>, <code class="docutils literal notranslate"><span class="pre">ibm_kyoto</span></code>)</p></li>
+<li><p>Runs simulation locally using AerSimulator with the device’s noise characteristics</p></li>
+<li><p>Allows testing quantum algorithms under realistic noise conditions without queue time</p></li>
+<li><p>Supports any simulation method available in AerSimulator</p></li>
+</ul>
+<p><strong>Format:</strong> <code class="docutils literal notranslate"><span class="pre">'noisy_&lt;device_name&gt;'</span></code> where <code class="docutils literal notranslate"><span class="pre">&lt;device_name&gt;</span></code> is any IBM Quantum device name.</p>
+<p><strong>Examples:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'noisy_ibm_cleveland'</span></code> - Noise model from IBM Cleveland</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'noisy_ibm_kyoto'</span></code> - Noise model from IBM Kyoto</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'noisy_ibm_sherbrooke'</span></code> - Noise model from IBM Sherbrooke</p></li>
+</ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p><strong>Choosing a Simulation Method for Noisy Simulations:</strong></p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">matrix_product_state</span></code></strong>: Recommended for most quantum machine learning circuits. Efficient for circuits with moderate entanglement.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">tensor_network</span></code></strong>: Best for GPU-accelerated simulations. Requires <code class="docutils literal notranslate"><span class="pre">qiskit-aer-gpu</span></code> installation.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">statevector</span></code></strong>: Most accurate but memory-intensive. Limited to ~20-25 qubits depending on available RAM.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">automatic</span></code></strong>: Let AerSimulator choose the best method based on circuit properties.</p></li>
+</ul>
+</div>
 <p><strong>IBM Quantum Hardware:</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ibm_least&#39;</span><span class="w">  </span><span class="c1"># Use least busy device</span>
 <span class="c1"># OR</span>
@@ -512,19 +549,42 @@
 <span class="nt">resil_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span><span class="w">  </span><span class="c1"># Error mitigation level (1-3)</span>
 </pre></div>
 </div>
+<p>Runs circuits on actual IBM Quantum hardware.</p>
 <p><strong>IBM Quantum Credentials:</strong></p>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">qiskit_json_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;~/.qiskit/qiskit-ibm.json&#39;</span>
 <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;account_qbc&#39;</span><span class="w">  </span><span class="c1"># Account alias in JSON</span>
 <span class="nt">ibm_instance</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ibm-q/open/main&#39;</span><span class="w">  </span><span class="c1"># Optional: specific instance</span>
 </pre></div>
 </div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p><strong>IBM Credentials Required for Noisy Simulations:</strong></p>
+<p>When using <code class="docutils literal notranslate"><span class="pre">noisy_&lt;device_name&gt;</span></code> backends, you must provide valid IBM Quantum credentials even though the simulation runs locally. This is because QBioCode needs to:</p>
+<ol class="arabic simple">
+<li><p>Connect to IBM Quantum services to retrieve the device’s noise model</p></li>
+<li><p>Download the latest calibration data for accurate noise simulation</p></li>
+</ol>
+<p>The actual circuit execution happens locally on your machine using AerSimulator, so you won’t incur queue wait times or consume IBM Quantum compute credits.</p>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><strong>Backend Options:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">'simulator'</span></code>: Local Qiskit Aer simulator</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'simulator'</span></code>: Local Qiskit statevector simulator (exact, noiseless)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'simulator_aer'</span></code>: AerSimulator with configurable simulation method</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'noisy_&lt;device_name&gt;'</span></code>: Noisy simulation based on IBM device noise model (e.g., <code class="docutils literal notranslate"><span class="pre">'noisy_ibm_cleveland'</span></code>)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'ibm_least'</span></code>: Automatically select least busy IBM Quantum device</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">'ibm_&lt;device_name&gt;'</span></code>: Specific IBM Quantum device (e.g., ‘ibm_kyoto’)</p></li>
+</ul>
+<p><strong>Simulation Methods (for AerSimulator):</strong>
+When using <code class="docutils literal notranslate"><span class="pre">'simulator_aer'</span></code> or <code class="docutils literal notranslate"><span class="pre">'noisy_&lt;device_name&gt;'</span></code> backends, specify the simulation method via <code class="docutils literal notranslate"><span class="pre">sim_method</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">'statevector'</span></code>: Exact statevector simulation (default, memory intensive)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'matrix_product_state'</span></code>: Efficient for low-entanglement circuits</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'tensor_network'</span></code>: GPU-accelerated tensor network simulation</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'stabilizer'</span></code>: Fast simulation for Clifford circuits</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'extended_stabilizer'</span></code>: Approximate simulation for near-Clifford circuits</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">'automatic'</span></code>: Automatically select best method</p></li>
 </ul>
 <p><strong>Shots:</strong> Number of circuit executions. Higher = more accurate but slower.</p>
 <p><strong>Resilience Level:</strong> Error mitigation strength (1=light, 2=medium, 3=heavy). Higher = more accurate but slower.</p>
@@ -753,8 +813,9 @@
 <span class="nt">seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
 <span class="nt">q_seed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">42</span>
 
-<span class="c1"># Quantum backend</span>
-<span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;simulator&#39;</span>
+<span class="c1"># Quantum backend - Noisy simulation example</span>
+<span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;noisy_ibm_cleveland&#39;</span>
+<span class="nt">sim_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;matrix_product_state&#39;</span>
 <span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1024</span>
 <span class="nt">resil_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
 <span class="nt">qiskit_json_path</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;~/.qiskit/qiskit-ibm.json&#39;</span>
@@ -793,6 +854,20 @@
 <span class="nt">qsvc_args</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">feature_map</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ZZFeatureMap&#39;</span>
 <span class="w">  </span><span class="nt">reps</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+</pre></div>
+</div>
+<p><strong>Alternative Backend Configurations:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># For exact noiseless simulation</span>
+<span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;simulator&#39;</span>
+
+<span class="c1"># For AerSimulator with GPU acceleration</span>
+<span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;simulator_aer&#39;</span>
+<span class="nt">sim_method</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;tensor_network&#39;</span>
+
+<span class="c1"># For actual IBM Quantum hardware</span>
+<span class="nt">backend</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;ibm_kyoto&#39;</span>
+<span class="nt">shots</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4096</span>
+<span class="nt">resil_level</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 </pre></div>
 </div>
 </section>
@@ -885,11 +960,11 @@
     class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="pst-show_toc_level nav section-nav flex-column">
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#overview">Overview</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-sections">Configuration Sections</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuration-sections">Configuration Sections</a><ul class="visible nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#input-data">Input Data</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#random-seeds">Random Seeds</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-backend-configuration">Quantum Backend Configuration</a></li>
@@ -920,8 +995,8 @@
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -955,7 +1030,7 @@
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.17.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
 </p></div>
       
     </div>

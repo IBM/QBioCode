@@ -103,26 +103,23 @@ Session I — Foundations (09:00–10:45)
    - 💻 Notebook: `Intro to Qiskit <../_static/workshops/IntrotoQiskit.ipynb>`_
    - 📘 Background: `Quantum Machine Learning <https://ibm.github.io/QBioCode/background.html>`_
 
-
-
-.. dropdown:: 3. Quantum Computing application in multi-omics analyses (09:45–10:15)
+.. dropdown:: 3. Data complexity measures & learning algorithms (09:45–10:15)
    :icon: graph
 
-   Quantum algorithms for multi-omics analyses:
+   Understanding intrinsic dataset complexity:
 
-   - Variational Quantum algorithms
-   - Quantum Random Walk-based algorithms
-   - Hamiltonian Simulation
-   - Optimization algorithms
+   - correlations
+   - intrinsic dimension
+   - limits of classical ML
 
    **Materials**
 
-   - 📄 Slides: `Quantum Applications in Healthcare and Life Sciences <../_static/workshops/q4hcls.pdf>`_
-   
+   - 📄 Slides: `Characterizing Data Complexity in Machine Learning <../_static/workshops/datacomplex.pdf>`_
+   - 📘 Background: `Data complexity documentation <https://ibm.github.io/QBioCode/apps/profiler.html#data-complexity-measures>`_
 
 
 .. dropdown:: 4. QBioCode setup (10:15–10:45)
-   :icon: tools
+   :icon: wrench
 
    Install and configure the QBioCode environment.
 
@@ -140,27 +137,12 @@ Session I — Foundations (09:00–10:45)
 Session II — QBioCode Applications (11:00–13:00)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. dropdown:: 1. Data complexity measures & learning algorithms (11:00–11:20)
-   :icon: graph
-
-   Understanding intrinsic dataset complexity:
-
-   - correlations
-   - intrinsic dimension
-   - limits of classical ML
-
-   **Materials**
-
-   - 📄 Slides: `Characterizing Data Complexity in Machine Learning <../_static/workshops/datacomplex.pdf>`_
-   - 📘 Background: `Data complexity documentation <https://ibm.github.io/QBioCode/apps/profiler.html#data-complexity-measures>`_
-
-
-.. dropdown:: 2. Benchmarking Quantum Machine Learning methods in multi-omics data (11:20-12:00)
+.. dropdown:: 1. Qprofiler in multi-omics data (11:00–11:45)
    :icon: play
 
    Hands-on session using QProfiler for biological datasets.
 
-    **Materials**
+   **Materials**
 
    - 💻 Notebook: `Tutorial QProfiler <https://github.com/IBM/QBioCode/blob/main/tutorial/QProfiler/example_qprofiler.ipynb>`_
    - 📄 Slides: `QBC <../_static/workshops/qbiocode.pdf>`_
@@ -169,7 +151,7 @@ Session II — QBioCode Applications (11:00–13:00)
       - `Configuration Guide <https://ibm.github.io/QBioCode/apps/config.html>`_
 
 
-.. dropdown:: 3. QSage (12:00–12:30)
+.. dropdown:: 2. QSage (11:45–12:15)
    :icon: play
 
    Meta-learning approach for automated model selection.
@@ -181,13 +163,13 @@ Session II — QBioCode Applications (11:00–13:00)
    - 📘 Documentation: `QSage <https://ibm.github.io/QBioCode/apps/sage.html>`_
 
 
-.. dropdown:: 4. Quantum ensemble methods (12:30–13:00)
-   :icon: light-bulb
+.. dropdown:: 3. Quantum ensemble methods (12:15–13:00)
+   :icon: lightbulb
 
    Combining classical and quantum models for improved performance.
 
    **Materials**
-   - 📄 Slides: `Quantum Ensemble <../_static/workshops/QEnsemble.pdf>`_
+   - 📄 Slides: TBD
 
 ----
 
@@ -198,13 +180,13 @@ Session II — QBioCode Applications (11:00–13:00)
 Session III — Hybrid learning for biological networks and multi-omics (14:00–16:00)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. dropdown:: 1. QuVINE: Hybrid quantum-classical graph learning (14:00–14:45)
+.. dropdown:: 1. Hybrid quantum-classical graph learning (14:00–14:45)
    :icon: cpu
 
    Graph-based learning approaches using hybrid QC pipelines.
 
    **Materials**
-   - 📄 Slides: `QuVINE <../_static/workshops/QuVINE.pdf>`_
+   - 📄 Slides: TBD
 
 
 .. dropdown:: 2. QuVINE notebook (14:45–15:00)
@@ -213,17 +195,16 @@ Session III — Hybrid learning for biological networks and multi-omics (14:00�
    Demonstration of the QuVINE workflow.
 
    **Materials**
-   - 💻 Notebook: `Tutorial QuVINE <../tutorials/quvine_embedding_notebook.ipynb>`_
+   - 💻 Notebook: TBD
 
 
-.. dropdown:: 3. Build your own hybrid (Q)ML pipeline (15:00–16:00)
-   :icon: tools
+.. dropdown:: 3. Build your own hybrid ML pipeline (15:00–16:00)
+   :icon: hammer
 
-   Participants implement a full hybrid quantum-classical workflow. 
-   Choose from either QML or QuVINE methods on a multi-omics data which have been provided. 
+   Participants implement a full hybrid quantum-classical workflow.
 
    **Materials**
-   - 💻 Notebook: Choose from `Tutorials <https://ibm.github.io/QBioCode/tutorials.html>`_
+   - 💻 Notebook: TBD
   
 ----
 
@@ -237,7 +218,10 @@ Session IV — Hands-on + Discussion (16:15–18:00)
 .. dropdown:: 1. Continue implementation & results analysis (16:15–17:15)
    :icon: play
 
-   Extend experiments and interpret results with results read-outs.
+   Extend experiments and interpret results.
+
+   **Materials**
+   - 💻 Notebook: TBD
 
 
 .. dropdown:: 2. Interactive Q&A (17:15–17:45)
@@ -247,13 +231,9 @@ Session IV — Hands-on + Discussion (16:15–18:00)
 
 
 .. dropdown:: 3. Concluding remarks (17:45–18:00)
-   :icon: check
+   :icon: flag
 
    Key takeaways and future directions.
-
-   **Materials**
-
-   - 📄 Slides: `Closing Remarks <../_static/workshops/closingremarks.pdf>`_ 
 
 ----
 
