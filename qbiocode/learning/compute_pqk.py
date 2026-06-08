@@ -26,6 +26,7 @@ from functools import reduce
 # ====== Qiskit imports ======
 from qiskit import QuantumCircuit
 from qiskit.quantum_info import Pauli
+from qiskit_ibm_runtime.exceptions import IBMRuntimeError, RuntimeJobFailureError
 from sklearn import svm
 
 import qbiocode.utils.qutils as qutils
@@ -85,15 +86,74 @@ def compute_pqk(
     beg_time = time.time()
     feat_dimension = X_train.shape[1]
 
-    if not os.path.exists("pqk_projections"):
-        os.makedirs("pqk_projections")
+    projection_dir = os.path.expanduser(args.get("pqk_projection_dir", "pqk_projections"))
+    if not os.path.exists(projection_dir):
+        os.makedirs(projection_dir)
 
     file_projection_train = os.path.join(
-        "pqk_projections", "pqk_projection_" + data_key + "_train.npy"
+        projection_dir, "pqk_projection_" + data_key + "_train.npy"
     )
     file_projection_test = os.path.join(
-        "pqk_projections", "pqk_projection_" + data_key + "_test.npy"
+        projection_dir, "pqk_projection_" + data_key + "_test.npy"
     )
+    checkpoint_dir = os.path.join(projection_dir, "checkpoints")
+    os.makedirs(checkpoint_dir, exist_ok=True)
+
+    checkpoint_every = int(args.get("pqk_checkpoint_every", 1))
+    session_chunk_size = int(args.get("pqk_session_chunk_size", 100))
+    max_runtime_retries = int(args.get("pqk_runtime_max_retries", 3))
+
+    def _checkpoint_path(final_path):
+        base = os.path.basename(final_path)
+        return os.path.join(checkpoint_dir, base.replace(".npy", ".partial.npy"))
+
+    def _save_projection_array(path, projections):
+        tmp_path = path + ".tmp.npy"
+        np.save(tmp_path, np.asarray(projections))
+        os.replace(tmp_path, path)
+
+    def _load_checkpoint(path, expected_len):
+        if not os.path.exists(path):
+            return []
+        projections = np.load(path, allow_pickle=False)
+        if len(projections) > expected_len:
+            raise ValueError(
+                f"Checkpoint {path} has {len(projections)} rows, "
+                f"but the dataset only has {expected_len} rows."
+            )
+        return list(projections)
+
+    def _validate_projection_file(path, expected_len):
+        if not os.path.exists(path):
+            return
+        projections = np.load(path, allow_pickle=False)
+        if len(projections) != expected_len:
+            raise ValueError(
+                f"Projection file {path} has {len(projections)} rows, "
+                f"but the current dataset expects {expected_len} rows. "
+                "Remove this projection file or use a different pqk_projection_dir."
+            )
+
+    def _is_closed_session_error(exc):
+        return isinstance(exc, IBMRuntimeError) and (
+            "Session has been closed" in str(exc) or '"code":1217' in str(exc)
+        )
+
+    def _is_retryable_runtime_error(exc):
+        return isinstance(exc, RuntimeJobFailureError) and (
+            "Temporary Internal Error" in str(exc) or "Error code 9707" in str(exc)
+        )
+
+    def _close_session(session):
+        if not isinstance(session, type(None)):
+            session.close()
+
+    def _refresh_runtime(session):
+        _close_session(session)
+        _, new_session, new_prim = qutils.get_backend_session(
+            args, "estimator", num_qubits=num_qubits
+        )
+        return new_session, new_prim
 
     #  This function ensures that all multiplicative factors of data features inside single qubit gates are 1.0
     def data_map_func(x: np.ndarray):
@@ -129,6 +189,9 @@ def compute_pqk(
     circuit.compose(feature_map, inplace=True)
     num_qubits = circuit.num_qubits
 
+    _validate_projection_file(file_projection_train, len(X_train))
+    _validate_projection_file(file_projection_test, len(X_test))
+
     if (not os.path.exists(file_projection_train)) | (not os.path.exists(file_projection_test)):
 
         #  Generate the backend, session and primitive
@@ -145,13 +208,12 @@ def compute_pqk(
         # Set the global phase to 0 to avoid header size issues
         circuit.global_phase = 0
         
-        for f_tr in [file_projection_train, file_projection_test]:
+        for f_tr, dat in [
+            (file_projection_train, X_train.copy()),
+            (file_projection_test, X_test.copy()),
+        ]:
             if not os.path.exists(f_tr):
                 projections = []
-                if "train" in f_tr:
-                    dat = X_train.copy()
-                else:
-                    dat = X_test.copy()
 
                 # Identity operator on all qubits
                 id = "I" * feat_dimension
@@ -190,13 +252,25 @@ def compute_pqk(
                         Pauli(id[:i] + "Z" + id[(i + 1) :]) for i in range(feat_dimension)
                     ]
 
-                # projections[i][j][k] will be the expectation value of the j-th Pauli operator (0: X, 1: Y, 2: Z)
-                # of datapoint i on qubit k
-                projections = []
+                checkpoint_file = _checkpoint_path(f_tr)
+                projections = _load_checkpoint(checkpoint_file, len(dat))
+                if projections:
+                    print(
+                        f"Resuming {os.path.basename(f_tr)} from "
+                        f"datapoint {len(projections)}"
+                    )
 
-                for i in range(len(dat)):
+                datapoints_in_session = 0
+                for i in range(len(projections), len(dat)):
                     if i % 100 == 0:
                         print(f"at datapoint {str(i)}")
+                    if (
+                        session is not None
+                        and session_chunk_size > 0
+                        and datapoints_in_session >= session_chunk_size
+                    ):
+                        session, prim = _refresh_runtime(session)
+                        datapoints_in_session = 0
 
                     # Get training sample
                     parameters = dat[i]
@@ -207,14 +281,45 @@ def compute_pqk(
                     pub_y = (circuit, observables_y, parameters)
                     pub_z = (circuit, observables_z, parameters)
 
-                    job = prim.run([pub_x, pub_y, pub_z])
-                    job_result_x = job.result()[0].data.evs
-                    job_result_y = job.result()[1].data.evs
-                    job_result_z = job.result()[2].data.evs
+                    retry_count = 0
+                    while True:
+                        try:
+                            job = prim.run([pub_x, pub_y, pub_z])
+                            job_result = job.result()
+                            job_result_x = job_result[0].data.evs
+                            job_result_y = job_result[1].data.evs
+                            job_result_z = job_result[2].data.evs
+                            break
+                        except Exception as exc:
+                            _save_projection_array(checkpoint_file, projections)
+                            if session is not None and _is_closed_session_error(exc):
+                                session, prim = _refresh_runtime(session)
+                                datapoints_in_session = 0
+                                continue
+                            if (
+                                session is not None
+                                and _is_retryable_runtime_error(exc)
+                                and retry_count < max_runtime_retries
+                            ):
+                                retry_count += 1
+                                print(
+                                    f"Retrying datapoint {i} after temporary runtime "
+                                    f"failure ({retry_count}/{max_runtime_retries})"
+                                )
+                                session, prim = _refresh_runtime(session)
+                                datapoints_in_session = 0
+                                continue
+                            raise
 
                     # Record <X>, <Y> and <Z> on all qubits for the current datapoint
                     projections.append([job_result_x, job_result_y, job_result_z])
-                np.save(f_tr, projections)
+                    datapoints_in_session += 1
+                    if checkpoint_every > 0 and len(projections) % checkpoint_every == 0:
+                        _save_projection_array(checkpoint_file, projections)
+
+                _save_projection_array(f_tr, projections)
+                if os.path.exists(checkpoint_file):
+                    os.remove(checkpoint_file)
 
         if not isinstance(session, type(None)):
             session.close()

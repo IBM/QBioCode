@@ -52,6 +52,15 @@ shots: 1024
 # this sets the level of error mitigation for the QML methods (ranges from 1-3)
 resil_level: 1
 
+# Optional PQK checkpointing and IBM Runtime recovery settings.
+# Checkpoints are stored under the current Hydra job output directory.
+pqk_checkpoint_every: 1
+pqk_session_chunk_size: 100
+pqk_runtime_max_retries: 3
+
+# Uncomment to resume projections from a previous failed job:
+# pqk_projection_dir: '/path/to/previous/job/pqk_projections'
+
 # set the ratio of train:test the data is split into, in this case 70:30
 test_size: 0.3
 stratify: ['y']
