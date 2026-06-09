@@ -169,7 +169,7 @@ The quantum cosine classifier measures similarity between quantum states using t
 - **This Tutorial**: Part of QBioCode framework for quantum bioinformatics
 - **Quantum Ensemble Methods**:
   - Macaluso et al., "A variational algorithm for quantum ensemble learning", IET Quantum Communication (2023)
-  - Rhrissorrakrai et al., "Quantum Ensembling Methods for Healthcare and Life Science", arXiv:2506.02213 (2025)
-    [https://arxiv.org/abs/2506.02213](https://arxiv.org/abs/2506.02213)
+  - Rhrissorrakrai et al., "Quantum Ensembling Methods for Healthcare and Life Science", Briefings in Bioinformatics (2026)
+    [https://doi.org/10.1093/bib/bbag280](https://doi.org/10.1093/bib/bbag280)
 - **Original Implementation**: [GitHub Repository](https://github.com/amacaluso/Quantum-algorithm-for-ensemble-using-bagging)
 - **QBioCode Documentation**: See main repository for comprehensive guides

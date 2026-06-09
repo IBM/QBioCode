@@ -16,8 +16,8 @@ References
 - Macaluso et al., "A variational algorithm for quantum ensemble learning"
   IET Quantum Communication (2023)
 - Rhrissorrakrai et al., "Quantum Ensembling Methods for Healthcare and Life Science"
-  arXiv:2506.02213 (2025)
-  https://arxiv.org/abs/2506.02213
+  Briefings in Bioinformatics (2026)
+  https://doi.org/10.1093/bib/bbag280
 """
 
 import time
