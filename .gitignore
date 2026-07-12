@@ -30,6 +30,10 @@ coverage.xml
 .vscode/
 .idea/
 
+# IBM Quantum credentials (contain an API token) - never commit the real file
+**/credentials.json
+credentials.json
+
 # Documentation
 docs/build/*
 docs/outputdir/*
