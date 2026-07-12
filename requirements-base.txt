@@ -18,6 +18,11 @@ scikit-dimension
 scikit-learn
 scipy
 seaborn
+# Single-cell / multi-omics tutorials (sc-qc preprocessing, QProfiler single-cell)
+scanpy
+anndata
+leidenalg
+igraph
 tensorflow
 torch
 tqdm
