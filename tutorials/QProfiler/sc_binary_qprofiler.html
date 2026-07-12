@@ -487,11 +487,12 @@
 <section id="1.-Setup-and-imports">
 <h2>1. Setup and imports<a class="headerlink" href="#1.-Setup-and-imports" title="Link to this heading">#</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">glob</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
@@ -522,6 +523,15 @@
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/aritrabose/Documents/ISMB26/internal/qbc-pkg/lib/python3.12/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
@@ -532,17 +542,25 @@ cwd (outputs): /Users/aritrabose/Documents/ISMB26/final/QBioCode/docs/source/tut
 </pre></div></div>
 </div>
 </section>
-<section id="2.-Configuration-—-choose-task,-models,-embeddings">
-<h2>2. Configuration — choose task, models, embeddings<a class="headerlink" href="#2.-Configuration-—-choose-task,-models,-embeddings" title="Link to this heading">#</a></h2>
+<section id="2.-Configuration-—-choose-task,-modality,-models,-embeddings">
+<h2>2. Configuration — choose task, modality, models, embeddings<a class="headerlink" href="#2.-Configuration-—-choose-task,-modality,-models,-embeddings" title="Link to this heading">#</a></h2>
 <p>Everything you’d normally tweak lives here.</p>
-<ul class="simple">
+<ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">TASK</span></code>: one of the three tasks, or <code class="docutils literal notranslate"><span class="pre">&quot;all&quot;</span></code> to benchmark all three (needed for the cross-task complexity correlation).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LEAKAGE_SAFE</span></code>: drop the lineage-defining marker genes (e.g. <code class="docutils literal notranslate"><span class="pre">CD3D</span></code>, <code class="docutils literal notranslate"><span class="pre">LYZ</span></code>, <code class="docutils literal notranslate"><span class="pre">MS4A1</span></code>) that trivially reveal the label. Recommended — otherwise classification is trivial.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">N_FEATURES</span></code>: number of top-variance HVGs exported per task. Kept small so complexity metrics and QML stay light on a laptop.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">MODALITY</span></code>: what features feed the pipeline —</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;hvg&quot;</span></code> — <strong>gene expression</strong> (the original behavior): top-<code class="docutils literal notranslate"><span class="pre">N_FEATURES</span></code> high-variance HVGs.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;adt&quot;</span></code> — <strong>protein</strong>: the 32 scaled TotalSeqB ADT markers from the h5ad’s CITE-seq layer (<code class="docutils literal notranslate"><span class="pre">obsm['X_protein']</span></code>). Leakage-safe drops the 6 lineage-defining proteins → 26 markers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;hvg+adt&quot;</span></code> — <strong>early fusion</strong>: concatenate the top-<code class="docutils literal notranslate"><span class="pre">N_FEATURES</span></code> HVGs with all non-leakage ADTs into one feature table (columns prefixed <code class="docutils literal notranslate"><span class="pre">rna:</span></code> / <code class="docutils literal notranslate"><span class="pre">adt:</span></code>), then run the same pipeline.</p></li>
+</ul>
+<p>ADT and fusion read the protein layer, which only ships in <code class="docutils literal notranslate"><span class="pre">pbmc5k_small_cd4_vs_cd8.h5ad</span></code>, so those modalities apply to <strong>``cd4_vs_cd8`` only</strong> (<code class="docutils literal notranslate"><span class="pre">t_vs_mono</span></code> / <code class="docutils literal notranslate"><span class="pre">lymphoid_vs_myeloid</span></code> stay HVG).</p>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">LEAKAGE_SAFE</span></code>: drop the lineage-defining markers that trivially reveal the label — genes (e.g. <code class="docutils literal notranslate"><span class="pre">CD3D</span></code>, <code class="docutils literal notranslate"><span class="pre">LYZ</span></code>, <code class="docutils literal notranslate"><span class="pre">MS4A1</span></code>) and, for ADT/fusion, proteins (<code class="docutils literal notranslate"><span class="pre">CD3</span></code>, <code class="docutils literal notranslate"><span class="pre">CD4</span></code>, <code class="docutils literal notranslate"><span class="pre">CD8a</span></code>, …). Recommended — otherwise classification is trivial.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">N_FEATURES</span></code>: number of top-variance HVGs exported (also the HVG portion of the fusion). Kept small so complexity metrics and QML stay light on a laptop.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">MODELS</span></code>: classical <code class="docutils literal notranslate"><span class="pre">svc</span> <span class="pre">dt</span> <span class="pre">lr</span> <span class="pre">nb</span> <span class="pre">rf</span> <span class="pre">mlp</span></code> (fast) and/or quantum <code class="docutils literal notranslate"><span class="pre">qsvc</span> <span class="pre">pqk</span> <span class="pre">vqc</span> <span class="pre">qnn</span></code> (slow on the local simulator).</p></li>
 </ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ============================ EXPERIMENT CONFIG ============================</span>
@@ -550,6 +568,13 @@ cwd (outputs): /Users/aritrabose/Documents/ISMB26/final/QBioCode/docs/source/tut
 <span class="n">TASK</span> <span class="o">=</span> <span class="s2">&quot;cd4_vs_cd8&quot;</span>
 <span class="n">LEAKAGE_SAFE</span> <span class="o">=</span> <span class="kc">True</span>   <span class="c1"># drop label-defining marker genes/proteins</span>
 <span class="n">N_FEATURES</span> <span class="o">=</span> <span class="mi">50</span>       <span class="c1"># top-variance HVGs to export per task (keeps compute light)</span>
+
+<span class="c1"># Input modality -- what features feed the pipeline. ADT/fusion need the h5ad&#39;s CITE-seq</span>
+<span class="c1"># protein layer, which only ships for cd4_vs_cd8, so they apply to that task only.</span>
+<span class="c1">#   &quot;hvg&quot;     -&gt; gene expression: top-N_FEATURES high-variance HVGs (the original behavior)</span>
+<span class="c1">#   &quot;adt&quot;     -&gt; protein: the 32 scaled TotalSeqB ADT markers (leakage-safe drops 6 -&gt; 26)</span>
+<span class="c1">#   &quot;hvg+adt&quot; -&gt; early fusion: concat top-N_FEATURES HVGs + all non-leakage ADTs (~N+26 cols)</span>
+<span class="n">MODALITY</span> <span class="o">=</span> <span class="s2">&quot;hvg&quot;</span>      <span class="c1"># &quot;hvg&quot; | &quot;adt&quot; | &quot;hvg+adt&quot;</span>
 
 <span class="n">MODELS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lr&quot;</span><span class="p">,</span> <span class="s2">&quot;svc&quot;</span><span class="p">,</span> <span class="s2">&quot;rf&quot;</span><span class="p">,</span> <span class="s2">&quot;mlp&quot;</span><span class="p">,</span> <span class="s2">&quot;pqk&quot;</span><span class="p">]</span>   <span class="c1"># classical baselines + projected quantum kernel</span>
 <span class="n">EMBEDDINGS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;pca&quot;</span><span class="p">]</span>  <span class="c1"># e.g. [&quot;none&quot;], [&quot;pca&quot;,&quot;isomap&quot;]</span>
@@ -562,13 +587,27 @@ cwd (outputs): /Users/aritrabose/Documents/ISMB26/final/QBioCode/docs/source/tut
 <span class="c1"># the kernel carries little signal (and it is slow). A SHALLOW, linearly-entangled ZZ map</span>
 <span class="c1"># (reps=1) fixes both -- on cd4_vs_cd8 it lifts PQK accuracy ~0.81 -&gt; ~0.88 and is ~3x faster.</span>
 <span class="n">PQK_ARGS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;encoding&quot;</span><span class="p">:</span> <span class="s2">&quot;ZZ&quot;</span><span class="p">,</span> <span class="s2">&quot;entanglement&quot;</span><span class="p">:</span> <span class="s2">&quot;linear&quot;</span><span class="p">,</span> <span class="s2">&quot;primitive&quot;</span><span class="p">:</span> <span class="s2">&quot;estimator&quot;</span><span class="p">,</span> <span class="s2">&quot;reps&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+
+<span class="c1"># ---- Quantum backend --------------------------------------------------------------------</span>
+<span class="c1"># USE_HARDWARE=False -&gt; local statevector simulator (default; no credentials, runs anywhere).</span>
+<span class="c1"># USE_HARDWARE=True  -&gt; run the QML models on IBM Quantum HARDWARE. HW_BACKEND picks the device</span>
+<span class="c1">#   and configs/credentials.json supplies only the QiskitRuntimeService auth (channel / instance</span>
+<span class="c1">#   / token / url). Copy configs/credentials.example.json -&gt; configs/credentials.json and fill it</span>
+<span class="c1">#   in first (credentials.json is gitignored, so the token is never committed).</span>
+<span class="n">USE_HARDWARE</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">HW_BACKEND</span> <span class="o">=</span> <span class="s2">&quot;ibm_least&quot;</span>   <span class="c1"># device when USE_HARDWARE=True: &quot;ibm_least&quot; (least-busy real device),</span>
+                           <span class="c1"># a named device e.g. &quot;ibm_torino&quot;, &quot;simulator_aer&quot;, or &quot;noisy_&lt;device&gt;&quot;</span>
+<span class="n">CREDENTIALS_PATH</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">NB_DIR</span><span class="p">,</span> <span class="s2">&quot;configs&quot;</span><span class="p">,</span> <span class="s2">&quot;credentials.json&quot;</span><span class="p">)</span>
 <span class="c1"># ===========================================================================</span>
 
 <span class="n">ALL_TASKS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;t_vs_mono&quot;</span><span class="p">,</span> <span class="s2">&quot;lymphoid_vs_myeloid&quot;</span><span class="p">,</span> <span class="s2">&quot;cd4_vs_cd8&quot;</span><span class="p">]</span>
+<span class="n">ALL_MODALITIES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;hvg&quot;</span><span class="p">,</span> <span class="s2">&quot;adt&quot;</span><span class="p">,</span> <span class="s2">&quot;hvg+adt&quot;</span><span class="p">]</span>
 <span class="k">assert</span> <span class="n">TASK</span> <span class="ow">in</span> <span class="n">ALL_TASKS</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;unknown TASK </span><span class="si">{</span><span class="n">TASK</span><span class="si">!r}</span><span class="s2">&quot;</span>
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Task:&quot;</span><span class="p">,</span> <span class="n">TASK</span><span class="p">,</span> <span class="s2">&quot;| Models:&quot;</span><span class="p">,</span> <span class="n">MODELS</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">MODALITY</span> <span class="ow">in</span> <span class="n">ALL_MODALITIES</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;unknown MODALITY </span><span class="si">{</span><span class="n">MODALITY</span><span class="si">!r}</span><span class="s2">&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Task:&quot;</span><span class="p">,</span> <span class="n">TASK</span><span class="p">,</span> <span class="s2">&quot;| Modality:&quot;</span><span class="p">,</span> <span class="n">MODALITY</span><span class="p">,</span> <span class="s2">&quot;| Models:&quot;</span><span class="p">,</span> <span class="n">MODELS</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Embeddings:&quot;</span><span class="p">,</span> <span class="n">EMBEDDINGS</span><span class="p">,</span> <span class="s2">&quot;| n_components:&quot;</span><span class="p">,</span> <span class="n">N_COMPONENTS</span><span class="p">,</span> <span class="s2">&quot;| iters:&quot;</span><span class="p">,</span> <span class="n">ITER</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PQK_ARGS:&quot;</span><span class="p">,</span> <span class="n">PQK_ARGS</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Backend:&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;IBM Quantum HARDWARE (</span><span class="si">{</span><span class="n">HW_BACKEND</span><span class="si">}</span><span class="s2">)&quot;</span> <span class="k">if</span> <span class="n">USE_HARDWARE</span> <span class="k">else</span> <span class="s2">&quot;local simulator&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -577,60 +616,129 @@ cwd (outputs): /Users/aritrabose/Documents/ISMB26/final/QBioCode/docs/source/tut
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Task: cd4_vs_cd8 | Models: [&#39;lr&#39;, &#39;svc&#39;, &#39;rf&#39;, &#39;mlp&#39;, &#39;pqk&#39;]
+Task: cd4_vs_cd8 | Modality: hvg | Models: [&#39;lr&#39;, &#39;svc&#39;, &#39;rf&#39;, &#39;mlp&#39;, &#39;pqk&#39;]
 Embeddings: [&#39;pca&#39;] | n_components: 8 | iters: 5
 PQK_ARGS: {&#39;encoding&#39;: &#39;ZZ&#39;, &#39;entanglement&#39;: &#39;linear&#39;, &#39;primitive&#39;: &#39;estimator&#39;, &#39;reps&#39;: 1}
+Backend: local simulator
 </pre></div></div>
 </div>
 </section>
 <section id="3.-Build-per-task-CSV-datasets">
 <h2>3. Build per-task CSV datasets<a class="headerlink" href="#3.-Build-per-task-CSV-datasets" title="Link to this heading">#</a></h2>
-<p>QProfiler reads plain CSVs (features in columns, <strong>label in the last column</strong>). We export one CSV per task from the small balanced h5ads (500 cells, 250/class), selecting the top <code class="docutils literal notranslate"><span class="pre">N_FEATURES</span></code> high-variance HVGs — optionally excluding the label-defining markers to avoid leakage. Files are named <code class="docutils literal notranslate"><span class="pre">pbmc-&lt;task&gt;.csv</span></code> so they share the <code class="docutils literal notranslate"><span class="pre">pbmc</span></code> datatype prefix, which lets QProfiler correlate complexity to performance <strong>across</strong> the three tasks.</p>
+<p>QProfiler reads plain CSVs (features in columns, <strong>label in the last column</strong>). We export one CSV per task from the small balanced h5ads (500 cells, 250/class), with columns chosen by <code class="docutils literal notranslate"><span class="pre">MODALITY</span></code>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;hvg&quot;</span></code> — top-<code class="docutils literal notranslate"><span class="pre">N_FEATURES</span></code> high-variance HVGs (optionally excluding label-defining marker genes to avoid leakage).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;adt&quot;</span></code> — the scaled TotalSeqB ADT markers from <code class="docutils literal notranslate"><span class="pre">obsm['X_protein']</span></code> (leakage-safe drops the 6 lineage-defining proteins → 26).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">&quot;hvg+adt&quot;</span></code> — early fusion: the HVG block and the ADT block concatenated side by side, with columns prefixed <code class="docutils literal notranslate"><span class="pre">rna:</span></code> / <code class="docutils literal notranslate"><span class="pre">adt:</span></code>.</p></li>
+</ul>
+<p>Files are named <code class="docutils literal notranslate"><span class="pre">pbmc-&lt;task&gt;.csv</span></code> so they share the <code class="docutils literal notranslate"><span class="pre">pbmc</span></code> datatype prefix, which lets QProfiler correlate complexity to performance <strong>across</strong> the three tasks (HVG modality only — ADT/fusion build <code class="docutils literal notranslate"><span class="pre">cd4_vs_cd8</span></code> alone). Switching <code class="docutils literal notranslate"><span class="pre">MODALITY</span></code> rebuilds the same file with the new column set.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">export_task_csv</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">leakage_safe</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">h5ad_dir</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write pbmc-&lt;task&gt;.csv (top-variance HVGs + label) and return (path, info).&quot;&quot;&quot;</span>
-    <span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">h5ad_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;pbmc5k_small_</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">.h5ad&quot;</span><span class="p">))</span>
-
-    <span class="c1"># gene mask: HVGs, optionally excluding label-defining markers</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_select_hvgs</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">leakage_safe</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return (X, names) for the top-`n_features` high-variance HVGs (leakage-safe optional).&quot;&quot;&quot;</span>
     <span class="n">keep</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;highly_variable&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">leakage_safe</span> <span class="ow">and</span> <span class="s2">&quot;is_label_leakage&quot;</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">:</span>
         <span class="n">keep</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="n">adata</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;is_label_leakage&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
-
     <span class="n">X</span> <span class="o">=</span> <span class="n">adata</span><span class="p">[:,</span> <span class="n">keep</span><span class="p">]</span><span class="o">.</span><span class="n">X</span>
     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">todense</span><span class="p">())</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="s2">&quot;todense&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
     <span class="n">genes</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">var_names</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="n">n_features</span><span class="p">]</span>   <span class="c1"># rank by variance, take top-N</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">order</span><span class="p">],</span> <span class="n">genes</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
 
-    <span class="c1"># rank by variance across cells, take top-N</span>
-    <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="n">n_features</span><span class="p">]</span>
-    <span class="n">X_sel</span><span class="p">,</span> <span class="n">genes_sel</span> <span class="o">=</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">order</span><span class="p">],</span> <span class="n">genes</span><span class="p">[</span><span class="n">order</span><span class="p">]</span>
 
-    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X_sel</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">genes_sel</span><span class="p">))</span>
-    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>   <span class="c1"># label MUST be last column</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_select_adts</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">leakage_safe</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return (X, names) for the scaled ADT markers in obsm[&#39;X_protein&#39;] (leakage-safe optional).</span>
+
+<span class="sd">    All non-leakage markers are kept (there are only ~32), so there is no top-N cap here.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;X_protein&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">obsm</span> <span class="ow">or</span> <span class="s2">&quot;protein_names&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;h5ad has no CITE-seq protein layer (obsm[&#39;X_protein&#39;] / uns[&#39;protein_names&#39;])&quot;</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;X_protein&quot;</span><span class="p">])</span>
+    <span class="n">names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;protein_names&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+    <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">leakage_safe</span><span class="p">:</span>
+        <span class="n">leak</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">adata</span><span class="o">.</span><span class="n">uns</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;feature_sets&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;label_leakage_proteins&quot;</span><span class="p">,</span> <span class="p">[]))</span>
+        <span class="n">keep</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">nm</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">leak</span> <span class="k">for</span> <span class="n">nm</span> <span class="ow">in</span> <span class="n">names</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">X</span><span class="p">[:,</span> <span class="n">keep</span><span class="p">],</span> <span class="n">names</span><span class="p">[</span><span class="n">keep</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">export_task_csv</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">leakage_safe</span><span class="p">,</span> <span class="n">modality</span><span class="p">,</span> <span class="n">data_dir</span><span class="p">,</span> <span class="n">h5ad_dir</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Write pbmc-&lt;task&gt;.csv (features + label) for the chosen modality and return (path, info).</span>
+
+<span class="sd">    modality: &quot;hvg&quot; (genes), &quot;adt&quot; (proteins), or &quot;hvg+adt&quot; (early-fusion concatenation).</span>
+<span class="sd">    Fusion columns are prefixed rna:/adt: to avoid gene/protein name collisions. In every</span>
+<span class="sd">    case the label MUST be the last column (QProfiler reads it positionally).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">adata</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">h5ad_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;pbmc5k_small_</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">.h5ad&quot;</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">modality</span> <span class="o">==</span> <span class="s2">&quot;hvg&quot;</span><span class="p">:</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">names</span> <span class="o">=</span> <span class="n">_select_hvgs</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">leakage_safe</span><span class="p">)</span>
+        <span class="n">n_hvg</span><span class="p">,</span> <span class="n">n_adt</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span>
+    <span class="k">elif</span> <span class="n">modality</span> <span class="o">==</span> <span class="s2">&quot;adt&quot;</span><span class="p">:</span>
+        <span class="n">X</span><span class="p">,</span> <span class="n">names</span> <span class="o">=</span> <span class="n">_select_adts</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">leakage_safe</span><span class="p">)</span>
+        <span class="n">n_hvg</span><span class="p">,</span> <span class="n">n_adt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">modality</span> <span class="o">==</span> <span class="s2">&quot;hvg+adt&quot;</span><span class="p">:</span>                                <span class="c1"># early fusion: concat both blocks</span>
+        <span class="n">Xg</span><span class="p">,</span> <span class="n">genes</span> <span class="o">=</span> <span class="n">_select_hvgs</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">n_features</span><span class="p">,</span> <span class="n">leakage_safe</span><span class="p">)</span>
+        <span class="n">Xp</span><span class="p">,</span> <span class="n">prots</span> <span class="o">=</span> <span class="n">_select_adts</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">leakage_safe</span><span class="p">)</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">Xg</span><span class="p">,</span> <span class="n">Xp</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="sa">f</span><span class="s2">&quot;rna:</span><span class="si">{</span><span class="n">g</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">genes</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;adt:</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">prots</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">object</span><span class="p">)</span>
+        <span class="n">n_hvg</span><span class="p">,</span> <span class="n">n_adt</span> <span class="o">=</span> <span class="n">Xg</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">Xp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown modality </span><span class="si">{</span><span class="n">modality</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">names</span><span class="p">))</span>
+    <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">adata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span>    <span class="c1"># label MUST be last column</span>
 
     <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;pbmc-</span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">)</span>
     <span class="n">df</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-    <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="n">task</span><span class="p">,</span> <span class="s2">&quot;n_cells&quot;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;n_features&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">genes_sel</span><span class="p">),</span>
+    <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="n">task</span><span class="p">,</span> <span class="s2">&quot;modality&quot;</span><span class="p">:</span> <span class="n">modality</span><span class="p">,</span> <span class="s2">&quot;n_cells&quot;</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="s2">&quot;n_features&quot;</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;n_hvg&quot;</span><span class="p">:</span> <span class="n">n_hvg</span><span class="p">,</span> <span class="s2">&quot;n_adt&quot;</span><span class="p">:</span> <span class="n">n_adt</span><span class="p">,</span>
             <span class="s2">&quot;classes&quot;</span><span class="p">:</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()}</span>
     <span class="k">return</span> <span class="n">path</span><span class="p">,</span> <span class="n">info</span>
 
 
-<span class="c1"># Rebuild each task&#39;s CSV from its source h5ad when that h5ad is present; otherwise reuse</span>
-<span class="c1"># the CSV already shipped in DATA_DIR. Only pbmc5k_small_cd4_vs_cd8.h5ad ships with this</span>
-<span class="c1"># tutorial (the focus task); t_vs_mono / lymphoid_vs_myeloid simply reuse their shipped CSVs.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_h5ad_has_protein</span><span class="p">(</span><span class="n">h5ad_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;True if the h5ad carries a CITE-seq protein layer (needed for adt / hvg+adt).&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">h5ad_path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">read_h5ad</span><span class="p">(</span><span class="n">h5ad_path</span><span class="p">,</span> <span class="n">backed</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">&quot;X_protein&quot;</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">obsm</span> <span class="ow">and</span> <span class="s2">&quot;protein_names&quot;</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">uns</span>
+
+
+<span class="c1"># Rebuild each task&#39;s CSV for the chosen MODALITY.</span>
+<span class="c1">#   &quot;hvg&quot;:     rebuild from the h5ad when present; otherwise reuse the CSV shipped in DATA_DIR.</span>
+<span class="c1">#   &quot;adt&quot;/&quot;hvg+adt&quot;: require the h5ad&#39;s protein layer, so only tasks that have one are built;</span>
+<span class="c1">#                    others are skipped (only pbmc5k_small_cd4_vs_cd8.h5ad ships that layer).</span>
 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ALL_TASKS</span><span class="p">:</span>
     <span class="n">h5ad</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">H5AD_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;pbmc5k_small_</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">.h5ad&quot;</span><span class="p">)</span>
     <span class="n">csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;pbmc-</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">h5ad</span><span class="p">):</span>
-        <span class="n">_</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">export_task_csv</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">N_FEATURES</span><span class="p">,</span> <span class="n">LEAKAGE_SAFE</span><span class="p">,</span> <span class="n">DATA_DIR</span><span class="p">,</span> <span class="n">H5AD_DIR</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rebuilt from h5ad:&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv</span><span class="p">),</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;no h5ad and no pre-built CSV for </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">; &quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;add pbmc5k_small_</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">.h5ad to </span><span class="si">{</span><span class="n">H5AD_DIR</span><span class="si">}</span><span class="s2"> to build it&quot;</span><span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;using shipped CSV (no h5ad for </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">csv</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">MODALITY</span> <span class="o">==</span> <span class="s2">&quot;hvg&quot;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">h5ad</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">export_task_csv</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">N_FEATURES</span><span class="p">,</span> <span class="n">LEAKAGE_SAFE</span><span class="p">,</span> <span class="n">MODALITY</span><span class="p">,</span> <span class="n">DATA_DIR</span><span class="p">,</span> <span class="n">H5AD_DIR</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rebuilt from h5ad:&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">csv</span><span class="p">),</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;no h5ad and no pre-built CSV for </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">; &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;add pbmc5k_small_</span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">.h5ad to </span><span class="si">{</span><span class="n">H5AD_DIR</span><span class="si">}</span><span class="s2"> to build it&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;using shipped CSV (no h5ad for </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">):&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">csv</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># adt / hvg+adt need the protein layer</span>
+        <span class="k">if</span> <span class="n">_h5ad_has_protein</span><span class="p">(</span><span class="n">h5ad</span><span class="p">):</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">export_task_csv</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">N_FEATURES</span><span class="p">,</span> <span class="n">LEAKAGE_SAFE</span><span class="p">,</span> <span class="n">MODALITY</span><span class="p">,</span> <span class="n">DATA_DIR</span><span class="p">,</span> <span class="n">H5AD_DIR</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;rebuilt from h5ad:&quot;</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;skipping </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">: MODALITY=</span><span class="si">{</span><span class="n">MODALITY</span><span class="si">!r}</span><span class="s2"> needs a CITE-seq protein layer &quot;</span>
+                  <span class="sa">f</span><span class="s2">&quot;(only cd4_vs_cd8 ships one)&quot;</span><span class="p">)</span>
+
+<span class="c1"># The selected task must exist as a CSV after the loop (fails loudly for an unbuildable request,</span>
+<span class="c1"># e.g. MODALITY=&#39;adt&#39; on a task with no protein layer).</span>
+<span class="k">if</span> <span class="n">TASK</span> <span class="o">!=</span> <span class="s2">&quot;all&quot;</span><span class="p">:</span>
+    <span class="n">sel</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">DATA_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;pbmc-</span><span class="si">{</span><span class="n">TASK</span><span class="si">}</span><span class="s2">.csv&quot;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">sel</span><span class="p">),</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;MODALITY=</span><span class="si">{</span><span class="n">MODALITY</span><span class="si">!r}</span><span class="s2"> could not build </span><span class="si">{</span><span class="n">TASK</span><span class="si">!r}</span><span class="s2"> (no CITE-seq protein layer). &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Use MODALITY=&#39;hvg&#39;, or pick a task whose h5ad has obsm[&#39;X_protein&#39;].&quot;</span><span class="p">)</span>
+
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">CSVs in&quot;</span><span class="p">,</span> <span class="n">DATA_DIR</span><span class="p">,</span> <span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span>
       <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">DATA_DIR</span> <span class="o">+</span> <span class="s2">&quot;/*.csv&quot;</span><span class="p">)))</span>
 </pre></div>
@@ -643,7 +751,7 @@ PQK_ARGS: {&#39;encoding&#39;: &#39;ZZ&#39;, &#39;entanglement&#39;: &#39;linear
 <div class="highlight"><pre>
 using shipped CSV (no h5ad for t_vs_mono): pbmc-t_vs_mono.csv
 using shipped CSV (no h5ad for lymphoid_vs_myeloid): pbmc-lymphoid_vs_myeloid.csv
-rebuilt from h5ad: {&#39;task&#39;: &#39;cd4_vs_cd8&#39;, &#39;n_cells&#39;: 500, &#39;n_features&#39;: 50, &#39;classes&#39;: {&#39;CD4_T&#39;: 250, &#39;CD8_T&#39;: 250}}
+rebuilt from h5ad: {&#39;task&#39;: &#39;cd4_vs_cd8&#39;, &#39;modality&#39;: &#39;hvg&#39;, &#39;n_cells&#39;: 500, &#39;n_features&#39;: 50, &#39;n_hvg&#39;: 50, &#39;n_adt&#39;: 0, &#39;classes&#39;: {&#39;CD4_T&#39;: 250, &#39;CD8_T&#39;: 250}}
 
 CSVs in /Users/aritrabose/Documents/ISMB26/final/QBioCode/docs/source/tutorials/QProfiler/data/sc_binary -&gt; [&#39;pbmc-cd4_vs_cd8.csv&#39;, &#39;pbmc-lymphoid_vs_myeloid.csv&#39;, &#39;pbmc-t_vs_mono.csv&#39;]
 </pre></div></div>
@@ -651,8 +759,19 @@ CSVs in /Users/aritrabose/Documents/ISMB26/final/QBioCode/docs/source/tutorials/
 </section>
 <section id="4.-Assemble-the-QProfiler-config">
 <h2>4. Assemble the QProfiler config<a class="headerlink" href="#4.-Assemble-the-QProfiler-config" title="Link to this heading">#</a></h2>
+<p>We start from the shipped YAML template and override our choices, then resolve the <strong>quantum backend</strong> from the <code class="docutils literal notranslate"><span class="pre">USE_HARDWARE</span></code> flag:</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">USE_HARDWARE</span> <span class="pre">=</span> <span class="pre">False</span></code> (default) → <code class="docutils literal notranslate"><span class="pre">backend</span> <span class="pre">=</span> <span class="pre">&quot;simulator&quot;</span></code>: the local statevector simulator. No credentials needed; runs anywhere.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">USE_HARDWARE</span> <span class="pre">=</span> <span class="pre">True</span></code> → run the QML models on <strong>IBM Quantum hardware</strong>. The <strong>device</strong> is chosen in the notebook via <code class="docutils literal notranslate"><span class="pre">HW_BACKEND</span></code> (<code class="docutils literal notranslate"><span class="pre">&quot;ibm_least&quot;</span></code> auto-picks the least-busy real device, or name one directly, e.g. <code class="docutils literal notranslate"><span class="pre">&quot;ibm_torino&quot;</span></code>); <code class="docutils literal notranslate"><span class="pre">configs/credentials.json</span></code> supplies only the <code class="docutils literal notranslate"><span class="pre">QiskitRuntimeService</span></code> <strong>auth</strong>. First copy the template and fill it in:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cp<span class="w"> </span>configs/credentials.example.json<span class="w"> </span>configs/credentials.json
+<span class="c1"># then edit credentials.json: channel / instance / token / url</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">apply_backend()</span></code> sets <code class="docutils literal notranslate"><span class="pre">config[&quot;backend&quot;]</span> <span class="pre">=</span> <span class="pre">HW_BACKEND</span></code> and injects the auth as the <code class="docutils literal notranslate"><span class="pre">ibm_channel/ibm_instance/ibm_token/ibm_url</span></code> args that qbiocode’s <code class="docutils literal notranslate"><span class="pre">get_creds()</span></code> consumes. <code class="docutils literal notranslate"><span class="pre">credentials.json</span></code> is <strong>gitignored</strong>, so your API token is never committed.</p>
+</li>
+</ul>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start from the shipped template (keeps all model-arg blocks) and override our choices.</span>
@@ -670,13 +789,53 @@ CSVs in /Users/aritrabose/Documents/ISMB26/final/QBioCode/docs/source/tutorials/
     <span class="s2">&quot;scaling&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;True&quot;</span><span class="p">],</span>
     <span class="s2">&quot;n_jobs&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s2">&quot;grid_search&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="s2">&quot;backend&quot;</span><span class="p">:</span> <span class="s2">&quot;simulator&quot;</span><span class="p">,</span>     <span class="c1"># only used by QML models</span>
 <span class="p">})</span>
 <span class="n">config</span><span class="p">[</span><span class="s2">&quot;pqk_args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">PQK_ARGS</span>   <span class="c1"># tuned shallow ZZ map (overrides the template default)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">apply_backend</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">use_hardware</span><span class="p">,</span> <span class="n">hw_backend</span><span class="p">,</span> <span class="n">credentials_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set config[&#39;backend&#39;] (and, for hardware, the IBM Quantum credentials) in place.</span>
+
+<span class="sd">    The device is chosen in the notebook via hw_backend; credentials.json supplies only the</span>
+<span class="sd">    QiskitRuntimeService auth (channel/instance/token/url), injected as the args that qbiocode&#39;s</span>
+<span class="sd">    get_creds() / get_backend_session() consume. Returns the resolved backend string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">use_hardware</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;simulator&quot;</span>
+        <span class="k">return</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span>
+
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hw_backend</span>   <span class="c1"># device is set in the notebook, not in credentials.json</span>
+
+    <span class="k">assert</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">credentials_path</span><span class="p">),</span> <span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;USE_HARDWARE=True but no credentials file at </span><span class="si">{</span><span class="n">credentials_path</span><span class="si">}</span><span class="s2">.</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Copy configs/credentials.example.json -&gt; configs/credentials.json and fill in &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;your IBM Quantum channel / instance / token / url.&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">credentials_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">creds</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;channel&quot;</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">,</span> <span class="s2">&quot;token&quot;</span><span class="p">,</span> <span class="s2">&quot;url&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">creds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+    <span class="k">assert</span> <span class="ow">not</span> <span class="n">missing</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;credentials.json is missing required field(s): </span><span class="si">{</span><span class="n">missing</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="c1"># QiskitRuntimeService creds -&gt; the arg names qbiocode.utils.ibm_account.get_creds() reads.</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ibm_channel&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creds</span><span class="p">[</span><span class="s2">&quot;channel&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ibm_instance&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creds</span><span class="p">[</span><span class="s2">&quot;instance&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ibm_token&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creds</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ibm_url&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creds</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">]</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>            <span class="c1"># use the explicit token, not a saved-account alias</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;qiskit_json_path&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># rely solely on credentials.json (not ~/.qiskit/...)</span>
+    <span class="c1"># sim_method is only read by the aer / noisy_* backends; harmless for real hardware.</span>
+    <span class="n">config</span><span class="p">[</span><span class="s2">&quot;sim_method&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">creds</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sim_method&quot;</span><span class="p">,</span> <span class="s2">&quot;statevector&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;backend&quot;</span><span class="p">]</span>
+
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">apply_backend</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">USE_HARDWARE</span><span class="p">,</span> <span class="n">HW_BACKEND</span><span class="p">,</span> <span class="n">CREDENTIALS_PATH</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;file_dataset:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;file_dataset&quot;</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;models:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">],</span> <span class="s2">&quot;| embeddings:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;embeddings&quot;</span><span class="p">])</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pqk_args:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;pqk_args&quot;</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">USE_HARDWARE</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;backend: </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2">  (IBM Quantum hardware; instance=</span><span class="si">{</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ibm_instance&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;backend: </span><span class="si">{</span><span class="n">backend</span><span class="si">}</span><span class="s2">  (local statevector simulator)&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -688,6 +847,7 @@ CSVs in /Users/aritrabose/Documents/ISMB26/final/QBioCode/docs/source/tutorials/
 file_dataset: [&#39;pbmc-cd4_vs_cd8.csv&#39;]
 models: [&#39;lr&#39;, &#39;svc&#39;, &#39;rf&#39;, &#39;mlp&#39;, &#39;pqk&#39;] | embeddings: [&#39;pca&#39;]
 pqk_args: {&#39;encoding&#39;: &#39;ZZ&#39;, &#39;entanglement&#39;: &#39;linear&#39;, &#39;primitive&#39;: &#39;estimator&#39;, &#39;reps&#39;: 1}
+backend: simulator  (local statevector simulator)
 </pre></div></div>
 </div>
 </section>
@@ -695,7 +855,7 @@ pqk_args: {&#39;encoding&#39;: &#39;ZZ&#39;, &#39;entanglement&#39;: &#39;linear
 <h2>5. Run QProfiler<a class="headerlink" href="#5.-Run-QProfiler" title="Link to this heading">#</a></h2>
 <p>QProfiler writes/appends to <code class="docutils literal notranslate"><span class="pre">ModelResults.csv</span></code>, <code class="docutils literal notranslate"><span class="pre">RawDataEvaluation.csv</span></code>, and <code class="docutils literal notranslate"><span class="pre">results.pkl</span></code> in the working directory, so we clear any stale outputs first (otherwise rows accumulate across runs).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Clear stale outputs so results reflect only this run.</span>
@@ -756,7 +916,7 @@ ModelResults: (25, 32) | datasets: [&#39;pbmc-cd4_vs_cd8.csv&#39;]
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -916,7 +1076,7 @@ ModelResults: (25, 32) | datasets: [&#39;pbmc-cd4_vs_cd8.csv&#39;]
 <section id="6.-Visualize-model-performance">
 <h2>6. Visualize model performance<a class="headerlink" href="#6.-Visualize-model-performance" title="Link to this heading">#</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">metrics</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;f1_score&quot;</span><span class="p">,</span> <span class="s2">&quot;auc&quot;</span><span class="p">]</span>
@@ -952,7 +1112,7 @@ ModelResults: (25, 32) | datasets: [&#39;pbmc-cd4_vs_cd8.csv&#39;]
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1031,7 +1191,7 @@ underlying <code class="docutils literal notranslate"><span class="pre">best-cla
 <div><p>⚠️ <strong>Power note.</strong> Each split is one point, so both panels rest on <strong>n = 5</strong> — read the <em>direction and size</em> of the gap, not p-values. A robust classical-vs-quantum claim needs a <em>panel of datasets</em> spanning complexity.</p>
 </div></blockquote>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Classical vs quantum, two ways in one figure. The classical baseline is the SINGLE BEST</span>
@@ -1099,7 +1259,8 @@ underlying <code class="docutils literal notranslate"><span class="pre">best-cla
 <span class="n">axA</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">tidy</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.03</span><span class="p">,</span> <span class="n">tidy</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.03</span><span class="p">)</span>
 <span class="n">axA</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">);</span> <span class="n">axA</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Score  (mean ± 95% CI)&quot;</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">)</span>
 <span class="n">axA</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;A. Performance: </span><span class="si">{</span><span class="n">QLABEL</span><span class="si">}</span><span class="s2"> vs best classical (</span><span class="si">{</span><span class="n">BEST_CLS</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">)  &quot;</span>
-              <span class="sa">f</span><span class="s2">&quot;(n=</span><span class="si">{</span><span class="n">df7</span><span class="p">[</span><span class="s1">&#39;iteration&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2"> splits)&quot;</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
+              <span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">MODALITY</span><span class="si">}</span><span class="s2">]  (n=</span><span class="si">{</span><span class="n">df7</span><span class="p">[</span><span class="s1">&#39;iteration&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span><span class="si">}</span><span class="s2"> splits)&quot;</span><span class="p">,</span>
+              <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">)</span>
 <span class="n">h</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="n">axA</span><span class="o">.</span><span class="n">get_legend_handles_labels</span><span class="p">()</span>
 <span class="n">axA</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span><span class="n">h</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">l</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">,</span> <span class="n">frameon</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">axA</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
@@ -1121,7 +1282,8 @@ underlying <code class="docutils literal notranslate"><span class="pre">best-cla
               <span class="sa">f</span><span class="s2">&quot;the best classical (</span><span class="si">{</span><span class="n">BEST_CLS</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;left&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mf">10.5</span><span class="p">)</span>
 <span class="n">axB</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;--&quot;</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT_DIR</span><span class="p">,</span> <span class="s2">&quot;qprofiler_cd4_vs_cd8_classical_vs_quantum.pdf&quot;</span><span class="p">),</span>
+<span class="n">_mod_tag</span> <span class="o">=</span> <span class="n">MODALITY</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>                     <span class="c1"># &#39;hvg+adt&#39; -&gt; &#39;hvg_adt&#39; for the filename</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">OUT_DIR</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;qprofiler_cd4_vs_cd8_</span><span class="si">{</span><span class="n">_mod_tag</span><span class="si">}</span><span class="s2">_classical_vs_quantum.pdf&quot;</span><span class="p">),</span>
             <span class="n">dpi</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 <span class="n">div_show</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
@@ -1136,7 +1298,7 @@ underlying <code class="docutils literal notranslate"><span class="pre">best-cla
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1273,7 +1435,7 @@ underlying <code class="docutils literal notranslate"><span class="pre">best-cla
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#1.-Setup-and-imports">1. Setup and imports</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Configuration-—-choose-task,-models,-embeddings">2. Configuration — choose task, models, embeddings</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#2.-Configuration-—-choose-task,-modality,-models,-embeddings">2. Configuration — choose task, modality, models, embeddings</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#3.-Build-per-task-CSV-datasets">3. Build per-task CSV datasets</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#4.-Assemble-the-QProfiler-config">4. Assemble the QProfiler config</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#5.-Run-QProfiler">5. Run QProfiler</a></li>
