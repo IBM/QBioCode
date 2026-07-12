@@ -24,6 +24,16 @@ tqdm
 umap-learn
 xgboost
 
+# Single-cell / multi-omics tutorials (sc-qc preprocessing, QProfiler single-cell)
+scanpy
+anndata
+leidenalg
+igraph
+# Imported directly by tutorial notebooks (also available transitively; pinned here to be explicit)
+matplotlib
+pyyaml
+requests
+
 # Documentation
 sphinx
 sphinx-autodoc-typehints 
