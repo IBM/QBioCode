@@ -244,6 +244,7 @@ Once your Qiskit Jupyter notebook server is running:
    The tutorials should be available in the file browser. Navigate to the QBioCode tutorial directory and open any notebook:
    - `Artificial_data_generation/example_data_generation.ipynb`
    - `QProfiler/example_qprofiler.ipynb`
+   - `QProfiler/sc_binary_qprofiler.ipynb`
    - `QSage/qsage.ipynb`
    - `Quantum_Projection_Learning/QPL_example.ipynb`
 
@@ -284,6 +285,7 @@ After upgrading, you may need to restart your Jupyter kernel for changes to take
    - Click on any tutorial notebook to open it:
      - `Artificial_data_generation/example_data_generation.ipynb`
      - `QProfiler/example_qprofiler.ipynb`
+     - `QProfiler/sc_binary_qprofiler.ipynb`
      - `QSage/qsage.ipynb`
      - `Quantum_Projection_Learning/QPL_example.ipynb`
 

@@ -47,6 +47,7 @@ Ready to dive into the world of quantum healthcare and life sciences?
     Tutorials <tutorials.md>
     Applications <apps>
     API <api_overview>
+    Citing <citing>
 
 
 .. toctree::

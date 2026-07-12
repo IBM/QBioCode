@@ -27,18 +27,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8bc5eb03" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -50,25 +50,32 @@
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/qbiocode.utils';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
-
+  <body data-default-mode="light">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -94,7 +101,7 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -170,6 +177,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../citing.html">
+    Citing
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../workshops/index.html">
     Workshops
   </a>
@@ -205,18 +219,24 @@
           
           
           
-          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
       
         <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
       
     </div>
     
@@ -300,6 +320,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../citing.html">
+    Citing
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../workshops/index.html">
     Workshops
   </a>
@@ -326,18 +353,24 @@
           
           
           
-          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
         
           <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
         
       </div>
     
@@ -345,6 +378,7 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
@@ -441,19 +475,19 @@ computational job needs to be restarted and you want to combine all results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>prev_results_dir</strong> (<em>str</em>) – Path to the directory where the previous job stopped prematurely.
+<li><p><strong>prev_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory where the previous job stopped prematurely.
 Should contain subdirectories with individual result files.</p></li>
-<li><p><strong>recent_results_dir</strong> (<em>str</em>) – Path to the directory where the job was resumed and ran to completion.
+<li><p><strong>recent_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory where the job was resumed and ran to completion.
 Should contain combined result files.</p></li>
-<li><p><strong>eval_file_prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – Prefix of evaluation/assessment files to combine. Default is ‘Raw’.</p></li>
-<li><p><strong>results_file_prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – Prefix of model results files to combine. Default is ‘Model’.</p></li>
-<li><p><strong>output_eval_file</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the combined evaluation output file.
+<li><p><strong>eval_file_prefix</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Prefix of evaluation/assessment files to combine. Default is ‘Raw’.</p></li>
+<li><p><strong>results_file_prefix</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Prefix of model results files to combine. Default is ‘Model’.</p></li>
+<li><p><strong>output_eval_file</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the combined evaluation output file.
 Default is ‘RawDataEvaluation_Combined.csv’.</p></li>
-<li><p><strong>output_results_file</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the combined results output file.
+<li><p><strong>output_results_file</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the combined results output file.
 Default is ‘ModelResults_Combined.csv’.</p></li>
-<li><p><strong>save_intermediate</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, saves intermediate combined files from previous run.
+<li><p><strong>save_intermediate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, saves intermediate combined files from previous run.
 Default is True.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, prints shape information during processing. Default is True.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, prints shape information during processing. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -505,15 +539,15 @@ number of input datasets to determine how many remain to be processed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_dataset_dir</strong> (<em>str</em>) – Path to the directory containing input datasets.</p></li>
-<li><p><strong>current_results_dir</strong> (<em>str</em>) – Path to the directory containing outputs of the current job.</p></li>
-<li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates a dataset has been fully processed.
+<li><p><strong>input_dataset_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing input datasets.</p></li>
+<li><p><strong>current_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing outputs of the current job.</p></li>
+<li><p><strong>completion_marker</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the file that indicates a dataset has been fully processed.
 Default is ‘RawDataEvaluation.csv’.</p></li>
-<li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to skip from the beginning of directory names
+<li><p><strong>prefix_length</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of characters to skip from the beginning of directory names
 when extracting dataset identifiers. Default is 8 (e.g., skips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code>
 prefix).</p></li>
-<li><p><strong>input_extension</strong> (<em>str</em><em>, </em><em>optional</em>) – File extension of input datasets (without dot). Default is ‘csv’.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, prints progress information. Default is True.</p></li>
+<li><p><strong>input_extension</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – File extension of input datasets (without dot). Default is ‘csv’.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, prints progress information. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -570,14 +604,14 @@ completes successfully.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>previous_results_dir</strong> (<em>str</em>) – Path to the directory containing results from the previous (interrupted) run.
+<li><p><strong>previous_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing results from the previous (interrupted) run.
 Each subdirectory should correspond to one dataset.</p></li>
-<li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates successful completion of a dataset.
+<li><p><strong>completion_marker</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the file that indicates successful completion of a dataset.
 Default is ‘RawDataEvaluation.csv’ (used by QProfiler).</p></li>
-<li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to strip from the beginning of directory names to get
+<li><p><strong>prefix_length</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of characters to strip from the beginning of directory names to get
 the dataset name. Default is 8 (strips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code> prefix used by QProfiler).
 Set to 0 to use the full directory name.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print the list of completed datasets and count. Default is False.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print the list of completed datasets and count. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -585,7 +619,7 @@ Set to 0 to use the full directory name.</p></li>
 These can be excluded when restarting the batch job.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[str]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -670,13 +704,13 @@ format required by quantum circuits. Label 0 becomes [1, 0] and label
 1 becomes [0, 1].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>y</strong> (<em>np.ndarray</em>) – Binary labels (0 or 1)</p>
+<dd class="field-odd"><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Binary labels (0 or 1)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One-hot encoded labels, shape (n_samples, 2)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -698,15 +732,15 @@ complex amplitudes suitable for quantum state initialization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>np.ndarray</em>) – Classical data vector to normalize</p></li>
-<li><p><strong>C</strong> (<em>float</em><em>, </em><em>optional</em>) – Scaling constant (default: 1.0)</p></li>
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Classical data vector to normalize</p></li>
+<li><p><strong>C</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Scaling constant (default: 1.0)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Normalized vector as list of complex numbers</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[complex]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>]</span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -729,10 +763,10 @@ from each class and normalizing them for quantum encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training feature data</p></li>
-<li><p><strong>y</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Training labels (binary: 0 or 1)</p></li>
-<li><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Total number of training samples to select (must be even, default: 4)</p></li>
-<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility (default: 123)</p></li>
+<li><p><strong>X</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Training feature data</p></li>
+<li><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Training labels (binary: 0 or 1)</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Total number of training samples to select (must be even, default: 4)</p></li>
+<li><p><strong>seed</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Random seed for reproducibility (default: 123)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -740,7 +774,7 @@ from each class and normalizing them for quantum encoding.</p>
 Y_data : One-hot encoded labels, shape (n, 2)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[np.ndarray, np.ndarray]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -776,12 +810,12 @@ Optionally filters files by pattern and provides various comparison options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>directory</strong> (<em>str</em>) – Path to the directory to search for duplicate files.</p></li>
-<li><p><strong>file_pattern</strong> (<em>str</em><em>, </em><em>optional</em>) – File extension or pattern to filter (e.g., ‘.yaml’, ‘.csv’, ‘.txt’).
+<li><p><strong>directory</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory to search for duplicate files.</p></li>
+<li><p><strong>file_pattern</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – File extension or pattern to filter (e.g., ‘.yaml’, ‘.csv’, ‘.txt’).
 If None, all files are compared. Default is None.</p></li>
-<li><p><strong>ignore_empty_lines</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, empty lines are ignored during comparison. Default is True.</p></li>
-<li><p><strong>case_sensitive</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, comparison is case-sensitive. Default is True.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print progress information during comparison. Default is False.</p></li>
+<li><p><strong>ignore_empty_lines</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, empty lines are ignored during comparison. Default is True.</p></li>
+<li><p><strong>case_sensitive</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, comparison is case-sensitive. Default is True.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print progress information during comparison. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -789,7 +823,7 @@ If None, all files are compared. Default is None.</p></li>
 Returns empty list if no duplicates are found.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[Tuple[str, str]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -873,13 +907,13 @@ validating settings across multiple files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>directory</strong> (<em>str</em>) – Path to the directory containing files to search.</p></li>
-<li><p><strong>search_string</strong> (<em>str</em>) – The string to search for in the files.</p></li>
-<li><p><strong>file_pattern</strong> (<em>str</em><em>, </em><em>optional</em>) – File extension or pattern to filter (e.g., ‘.yaml’, ‘.csv’, ‘.txt’).
+<li><p><strong>directory</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing files to search.</p></li>
+<li><p><strong>search_string</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The string to search for in the files.</p></li>
+<li><p><strong>file_pattern</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – File extension or pattern to filter (e.g., ‘.yaml’, ‘.csv’, ‘.txt’).
 If None, all files are searched. Default is None.</p></li>
-<li><p><strong>case_sensitive</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, search is case-sensitive. Default is True.</p></li>
-<li><p><strong>return_lines</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, return matching lines with line numbers. Default is False.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print progress and results. Default is True.</p></li>
+<li><p><strong>case_sensitive</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, search is case-sensitive. Default is True.</p></li>
+<li><p><strong>return_lines</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, return matching lines with line numbers. Default is False.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print progress and results. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -888,7 +922,7 @@ for files containing the search string. If return_lines is False, the list
 contains empty tuples.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, List[Tuple[int, str]]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]</span></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -983,7 +1017,7 @@ or no encoding.</p>
 <li><p><strong>feature1</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Input categorical feature to be encoded. Should be a 1D array.</p></li>
 <li><p><strong>sparse_output</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True and feature_encoding=’OneHotEncoder’, returns a sparse matrix.
 If False, returns a dense array. Ignored for other encoding methods.</p></li>
-<li><p><strong>feature_encoding</strong> (<em>{'None'</em><em>, </em><em>'OneHotEncoder'</em><em>, </em><em>'OrdinalEncoder'}</em><em>, </em><em>default='None'</em>) – <p>Encoding method to apply:</p>
+<li><p><strong>feature_encoding</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'None'</span></code>, <code class="docutils literal notranslate"><span class="pre">'OneHotEncoder'</span></code>, <code class="docutils literal notranslate"><span class="pre">'OrdinalEncoder'</span></code>]</span>) – <p>Encoding method to apply:</p>
 <ul>
 <li><p>’None’: No encoding, returns original feature</p></li>
 <li><p>’OneHotEncoder’: Create binary columns for each category</p></li>
@@ -1090,7 +1124,7 @@ consistency. All metrics are printed with descriptive labels.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data to be scaled.</p></li>
-<li><p><strong>scaling</strong> (<em>{'None'</em><em>, </em><em>'StandardScaler'</em><em>, </em><em>'MinMaxScaler'}</em><em>, </em><em>default='None'</em>) – <p>Scaling method to apply:</p>
+<li><p><strong>scaling</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'None'</span></code>, <code class="docutils literal notranslate"><span class="pre">'StandardScaler'</span></code>, <code class="docutils literal notranslate"><span class="pre">'MinMaxScaler'</span></code>]</span>) – <p>Scaling method to apply:</p>
 <ul>
 <li><p>’None’: No scaling, returns original data</p></li>
 <li><p>’StandardScaler’: Standardize features by removing mean and scaling to unit variance</p></li>
@@ -1232,8 +1266,8 @@ that need direct circuit execution without the full runtime service setup.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>qc</strong> (<em>QuantumCircuit</em>) – Quantum circuit to execute</p></li>
-<li><p><strong>n_shots</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of measurement shots (default: 8192)</p></li>
-<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – Device type: ‘CPU’ or ‘GPU’ (default: ‘CPU’)
+<li><p><strong>n_shots</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of measurement shots (default: 8192)</p></li>
+<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Device type: ‘CPU’ or ‘GPU’ (default: ‘CPU’)
 Note: GPU requires qiskit-aer-gpu installation</p></li>
 </ul>
 </dd>
@@ -1297,9 +1331,9 @@ number of repetitions, and entanglement type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>dict</em>) – Dictionary containing backend and other parameters.</p></li>
-<li><p><strong>primitive</strong> (<em>str</em>) – The type of primitive to instantiate (‘sampler’ or ‘estimator’).</p></li>
-<li><p><strong>num_qubits</strong> (<em>int</em>) – Number of qubits for the backend.</p></li>
+<li><p><strong>args</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Dictionary containing backend and other parameters.</p></li>
+<li><p><strong>primitive</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The type of primitive to instantiate (‘sampler’ or ‘estimator’).</p></li>
+<li><p><strong>num_qubits</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of qubits for the backend.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1431,7 +1465,7 @@ probability predictions for binary classification. Handles edge cases
 where only one outcome is observed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>counts</strong> (<em>dict</em>) – Measurement counts with keys ‘0’ and/or ‘1’
+<dd class="field-odd"><p><strong>counts</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Measurement counts with keys ‘0’ and/or ‘1’
 Example: {‘0’: 4123, ‘1’: 4069}</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1439,7 +1473,7 @@ Example: {‘0’: 4123, ‘1’: 4069}</p>
 of class 1. Always sums to 1.0.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of float</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -1549,14 +1583,14 @@ completes successfully.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>previous_results_dir</strong> (<em>str</em>) – Path to the directory containing results from the previous (interrupted) run.
+<li><p><strong>previous_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing results from the previous (interrupted) run.
 Each subdirectory should correspond to one dataset.</p></li>
-<li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates successful completion of a dataset.
+<li><p><strong>completion_marker</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the file that indicates successful completion of a dataset.
 Default is ‘RawDataEvaluation.csv’ (used by QProfiler).</p></li>
-<li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to strip from the beginning of directory names to get
+<li><p><strong>prefix_length</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of characters to strip from the beginning of directory names to get
 the dataset name. Default is 8 (strips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code> prefix used by QProfiler).
 Set to 0 to use the full directory name.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print the list of completed datasets and count. Default is False.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print the list of completed datasets and count. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1564,7 +1598,7 @@ Set to 0 to use the full directory name.</p></li>
 These can be excluded when restarting the batch job.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[str]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1639,19 +1673,19 @@ computational job needs to be restarted and you want to combine all results.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>prev_results_dir</strong> (<em>str</em>) – Path to the directory where the previous job stopped prematurely.
+<li><p><strong>prev_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory where the previous job stopped prematurely.
 Should contain subdirectories with individual result files.</p></li>
-<li><p><strong>recent_results_dir</strong> (<em>str</em>) – Path to the directory where the job was resumed and ran to completion.
+<li><p><strong>recent_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory where the job was resumed and ran to completion.
 Should contain combined result files.</p></li>
-<li><p><strong>eval_file_prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – Prefix of evaluation/assessment files to combine. Default is ‘Raw’.</p></li>
-<li><p><strong>results_file_prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – Prefix of model results files to combine. Default is ‘Model’.</p></li>
-<li><p><strong>output_eval_file</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the combined evaluation output file.
+<li><p><strong>eval_file_prefix</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Prefix of evaluation/assessment files to combine. Default is ‘Raw’.</p></li>
+<li><p><strong>results_file_prefix</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Prefix of model results files to combine. Default is ‘Model’.</p></li>
+<li><p><strong>output_eval_file</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the combined evaluation output file.
 Default is ‘RawDataEvaluation_Combined.csv’.</p></li>
-<li><p><strong>output_results_file</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the combined results output file.
+<li><p><strong>output_results_file</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the combined results output file.
 Default is ‘ModelResults_Combined.csv’.</p></li>
-<li><p><strong>save_intermediate</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, saves intermediate combined files from previous run.
+<li><p><strong>save_intermediate</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, saves intermediate combined files from previous run.
 Default is True.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, prints shape information during processing. Default is True.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, prints shape information during processing. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -1704,8 +1738,8 @@ that need direct circuit execution without the full runtime service setup.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>qc</strong> (<em>QuantumCircuit</em>) – Quantum circuit to execute</p></li>
-<li><p><strong>n_shots</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of measurement shots (default: 8192)</p></li>
-<li><p><strong>device</strong> (<em>str</em><em>, </em><em>optional</em>) – Device type: ‘CPU’ or ‘GPU’ (default: ‘CPU’)
+<li><p><strong>n_shots</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of measurement shots (default: 8192)</p></li>
+<li><p><strong>device</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Device type: ‘CPU’ or ‘GPU’ (default: ‘CPU’)
 Note: GPU requires qiskit-aer-gpu installation</p></li>
 </ul>
 </dd>
@@ -1751,7 +1785,7 @@ or no encoding.</p>
 <li><p><strong>feature1</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Input categorical feature to be encoded. Should be a 1D array.</p></li>
 <li><p><strong>sparse_output</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True and feature_encoding=’OneHotEncoder’, returns a sparse matrix.
 If False, returns a dense array. Ignored for other encoding methods.</p></li>
-<li><p><strong>feature_encoding</strong> (<em>{'None'</em><em>, </em><em>'OneHotEncoder'</em><em>, </em><em>'OrdinalEncoder'}</em><em>, </em><em>default='None'</em>) – <p>Encoding method to apply:</p>
+<li><p><strong>feature_encoding</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'None'</span></code>, <code class="docutils literal notranslate"><span class="pre">'OneHotEncoder'</span></code>, <code class="docutils literal notranslate"><span class="pre">'OrdinalEncoder'</span></code>]</span>) – <p>Encoding method to apply:</p>
 <ul>
 <li><p>’None’: No encoding, returns original feature</p></li>
 <li><p>’OneHotEncoder’: Create binary columns for each category</p></li>
@@ -1817,12 +1851,12 @@ Optionally filters files by pattern and provides various comparison options.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>directory</strong> (<em>str</em>) – Path to the directory to search for duplicate files.</p></li>
-<li><p><strong>file_pattern</strong> (<em>str</em><em>, </em><em>optional</em>) – File extension or pattern to filter (e.g., ‘.yaml’, ‘.csv’, ‘.txt’).
+<li><p><strong>directory</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory to search for duplicate files.</p></li>
+<li><p><strong>file_pattern</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – File extension or pattern to filter (e.g., ‘.yaml’, ‘.csv’, ‘.txt’).
 If None, all files are compared. Default is None.</p></li>
-<li><p><strong>ignore_empty_lines</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, empty lines are ignored during comparison. Default is True.</p></li>
-<li><p><strong>case_sensitive</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, comparison is case-sensitive. Default is True.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print progress information during comparison. Default is False.</p></li>
+<li><p><strong>ignore_empty_lines</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, empty lines are ignored during comparison. Default is True.</p></li>
+<li><p><strong>case_sensitive</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, comparison is case-sensitive. Default is True.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print progress information during comparison. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1830,7 +1864,7 @@ If None, all files are compared. Default is None.</p></li>
 Returns empty list if no duplicates are found.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[Tuple[str, str]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -1907,13 +1941,13 @@ validating settings across multiple files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>directory</strong> (<em>str</em>) – Path to the directory containing files to search.</p></li>
-<li><p><strong>search_string</strong> (<em>str</em>) – The string to search for in the files.</p></li>
-<li><p><strong>file_pattern</strong> (<em>str</em><em>, </em><em>optional</em>) – File extension or pattern to filter (e.g., ‘.yaml’, ‘.csv’, ‘.txt’).
+<li><p><strong>directory</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing files to search.</p></li>
+<li><p><strong>search_string</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The string to search for in the files.</p></li>
+<li><p><strong>file_pattern</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – File extension or pattern to filter (e.g., ‘.yaml’, ‘.csv’, ‘.txt’).
 If None, all files are searched. Default is None.</p></li>
-<li><p><strong>case_sensitive</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, search is case-sensitive. Default is True.</p></li>
-<li><p><strong>return_lines</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, return matching lines with line numbers. Default is False.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print progress and results. Default is True.</p></li>
+<li><p><strong>case_sensitive</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, search is case-sensitive. Default is True.</p></li>
+<li><p><strong>return_lines</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, return matching lines with line numbers. Default is False.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print progress and results. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -1922,7 +1956,7 @@ for files containing the search string. If return_lines is False, the list
 contains empty tuples.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Dict[str, List[Tuple[int, str]]]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]]</span></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
@@ -2006,29 +2040,29 @@ Each configuration file can be used with QProfiler to run systematic experiments
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>template_config_path</strong> (<em>str</em>) – Path to the template YAML configuration file.</p></li>
-<li><p><strong>output_dir</strong> (<em>str</em>) – Directory where generated config files will be saved.</p></li>
-<li><p><strong>data_dirs</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – List of directories containing CSV dataset files.</p></li>
-<li><p><strong>qmethods</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Quantum methods to test. Default: [‘qnn’, ‘vqc’, ‘qsvc’]</p></li>
-<li><p><strong>reps</strong> (<em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – Number of repetitions for ansatz layers. Default: [1, 2]</p></li>
-<li><p><strong>optimizers</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Optimizers to use. Default: [‘COBYLA’, ‘SPSA’]</p></li>
-<li><p><strong>entanglements</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Entanglement patterns. Default: [‘linear’, ‘full’]</p></li>
-<li><p><strong>feature_maps</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Feature map encodings. Default: [‘Z’, ‘ZZ’]</p></li>
-<li><p><strong>ansatz_types</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Ansatz types for QNN/VQC. Default: [‘amp’, ‘esu2’]</p></li>
-<li><p><strong>n_components</strong> (<em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – Number of components for dimensionality reduction. Default: [5, 10]</p></li>
-<li><p><strong>Cs</strong> (<em>List</em><em>[</em><em>float</em><em>]</em><em>, </em><em>optional</em>) – Regularization parameters for QSVC. Default: [0.1, 1, 10]</p></li>
-<li><p><strong>max_iters</strong> (<em>List</em><em>[</em><em>int</em><em>]</em><em>, </em><em>optional</em>) – Maximum iterations for optimization. Default: [100, 500]</p></li>
-<li><p><strong>embeddings</strong> (<em>List</em><em>[</em><em>str</em><em>]</em><em>, </em><em>optional</em>) – Embedding methods. Default: [‘none’, ‘pca’, ‘lle’, ‘isomap’, ‘spectral’, ‘umap’, ‘nmf’]</p></li>
-<li><p><strong>data_sample_fraction</strong> (<em>float</em><em>, </em><em>optional</em>) – Fraction of data files to use (0.0-1.0). Default: 1.0</p></li>
-<li><p><strong>used_files_path</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to CSV file tracking previously used data files.</p></li>
-<li><p><strong>random_seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducible file sampling.</p></li>
+<li><p><strong>template_config_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the template YAML configuration file.</p></li>
+<li><p><strong>output_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Directory where generated config files will be saved.</p></li>
+<li><p><strong>data_dirs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – List of directories containing CSV dataset files.</p></li>
+<li><p><strong>qmethods</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Quantum methods to test. Default: [‘qnn’, ‘vqc’, ‘qsvc’]</p></li>
+<li><p><strong>reps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</span>) – Number of repetitions for ansatz layers. Default: [1, 2]</p></li>
+<li><p><strong>optimizers</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Optimizers to use. Default: [‘COBYLA’, ‘SPSA’]</p></li>
+<li><p><strong>entanglements</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Entanglement patterns. Default: [‘linear’, ‘full’]</p></li>
+<li><p><strong>feature_maps</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Feature map encodings. Default: [‘Z’, ‘ZZ’]</p></li>
+<li><p><strong>ansatz_types</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Ansatz types for QNN/VQC. Default: [‘amp’, ‘esu2’]</p></li>
+<li><p><strong>n_components</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</span>) – Number of components for dimensionality reduction. Default: [5, 10]</p></li>
+<li><p><strong>Cs</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]]</span>) – Regularization parameters for QSVC. Default: [0.1, 1, 10]</p></li>
+<li><p><strong>max_iters</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]</span>) – Maximum iterations for optimization. Default: [100, 500]</p></li>
+<li><p><strong>embeddings</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]</span>) – Embedding methods. Default: [‘none’, ‘pca’, ‘lle’, ‘isomap’, ‘spectral’, ‘umap’, ‘nmf’]</p></li>
+<li><p><strong>data_sample_fraction</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Fraction of data files to use (0.0-1.0). Default: 1.0</p></li>
+<li><p><strong>used_files_path</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span>) – Path to CSV file tracking previously used data files.</p></li>
+<li><p><strong>random_seed</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</span>) – Random seed for reproducible file sampling.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Number of configuration files generated and path to used files CSV.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[int, str]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -2102,9 +2136,9 @@ number of repetitions, and entanglement type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>dict</em>) – Dictionary containing backend and other parameters.</p></li>
-<li><p><strong>primitive</strong> (<em>str</em>) – The type of primitive to instantiate (‘sampler’ or ‘estimator’).</p></li>
-<li><p><strong>num_qubits</strong> (<em>int</em>) – Number of qubits for the backend.</p></li>
+<li><p><strong>args</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Dictionary containing backend and other parameters.</p></li>
+<li><p><strong>primitive</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The type of primitive to instantiate (‘sampler’ or ‘estimator’).</p></li>
+<li><p><strong>num_qubits</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of qubits for the backend.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2279,13 +2313,13 @@ format required by quantum circuits. Label 0 becomes [1, 0] and label
 1 becomes [0, 1].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>y</strong> (<em>np.ndarray</em>) – Binary labels (0 or 1)</p>
+<dd class="field-odd"><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Binary labels (0 or 1)</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>One-hot encoded labels, shape (n_samples, 2)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -2307,15 +2341,15 @@ complex amplitudes suitable for quantum state initialization.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>np.ndarray</em>) – Classical data vector to normalize</p></li>
-<li><p><strong>C</strong> (<em>float</em><em>, </em><em>optional</em>) – Scaling constant (default: 1.0)</p></li>
+<li><p><strong>x</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Classical data vector to normalize</p></li>
+<li><p><strong>C</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></span>) – Scaling constant (default: 1.0)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Normalized vector as list of complex numbers</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[complex]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">complex</span></code>]</span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -2338,10 +2372,10 @@ from each class and normalizing them for quantum encoding.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>X</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Training feature data</p></li>
-<li><p><strong>y</strong> (<em>np.ndarray</em><em>, </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Training labels (binary: 0 or 1)</p></li>
-<li><p><strong>n</strong> (<em>int</em><em>, </em><em>optional</em>) – Total number of training samples to select (must be even, default: 4)</p></li>
-<li><p><strong>seed</strong> (<em>int</em><em>, </em><em>optional</em>) – Random seed for reproducibility (default: 123)</p></li>
+<li><p><strong>X</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Training feature data</p></li>
+<li><p><strong>y</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></span>) – Training labels (binary: 0 or 1)</p></li>
+<li><p><strong>n</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Total number of training samples to select (must be even, default: 4)</p></li>
+<li><p><strong>seed</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Random seed for reproducibility (default: 123)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2349,7 +2383,7 @@ from each class and normalizing them for quantum encoding.</p>
 Y_data : One-hot encoded labels, shape (n, 2)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Tuple[np.ndarray, np.ndarray]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Tuple</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -2403,7 +2437,7 @@ probability predictions for binary classification. Handles edge cases
 where only one outcome is observed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>counts</strong> (<em>dict</em>) – Measurement counts with keys ‘0’ and/or ‘1’
+<dd class="field-odd"><p><strong>counts</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></span>) – Measurement counts with keys ‘0’ and/or ‘1’
 Example: {‘0’: 4123, ‘1’: 4069}</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -2411,7 +2445,7 @@ Example: {‘0’: 4123, ‘1’: 4069}</p>
 of class 1. Always sums to 1.0.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list of float</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></span></p>
 </dd>
 </dl>
 <p class="rubric">Notes</p>
@@ -2444,7 +2478,7 @@ of class 1. Always sums to 1.0.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data to be scaled.</p></li>
-<li><p><strong>scaling</strong> (<em>{'None'</em><em>, </em><em>'StandardScaler'</em><em>, </em><em>'MinMaxScaler'}</em><em>, </em><em>default='None'</em>) – <p>Scaling method to apply:</p>
+<li><p><strong>scaling</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'None'</span></code>, <code class="docutils literal notranslate"><span class="pre">'StandardScaler'</span></code>, <code class="docutils literal notranslate"><span class="pre">'MinMaxScaler'</span></code>]</span>) – <p>Scaling method to apply:</p>
 <ul>
 <li><p>’None’: No scaling, returns original data</p></li>
 <li><p>’StandardScaler’: Standardize features by removing mean and scaling to unit variance</p></li>
@@ -2496,15 +2530,15 @@ number of input datasets to determine how many remain to be processed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_dataset_dir</strong> (<em>str</em>) – Path to the directory containing input datasets.</p></li>
-<li><p><strong>current_results_dir</strong> (<em>str</em>) – Path to the directory containing outputs of the current job.</p></li>
-<li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates a dataset has been fully processed.
+<li><p><strong>input_dataset_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing input datasets.</p></li>
+<li><p><strong>current_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing outputs of the current job.</p></li>
+<li><p><strong>completion_marker</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the file that indicates a dataset has been fully processed.
 Default is ‘RawDataEvaluation.csv’.</p></li>
-<li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to skip from the beginning of directory names
+<li><p><strong>prefix_length</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of characters to skip from the beginning of directory names
 when extracting dataset identifiers. Default is 8 (e.g., skips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code>
 prefix).</p></li>
-<li><p><strong>input_extension</strong> (<em>str</em><em>, </em><em>optional</em>) – File extension of input datasets (without dot). Default is ‘csv’.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, prints progress information. Default is True.</p></li>
+<li><p><strong>input_extension</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – File extension of input datasets (without dot). Default is ‘csv’.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, prints progress information. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -2571,50 +2605,50 @@ prefix).</p></li>
     class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.combine_evals_results">qbiocode.utils.combine_evals_results module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.combine_evals_results">qbiocode.utils.combine_evals_results module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.combine_evals_results.combine_results"><code class="docutils literal notranslate"><span class="pre">combine_results()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.combine_evals_results.track_progress"><code class="docutils literal notranslate"><span class="pre">track_progress()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.dataset_checkpoint">qbiocode.utils.dataset_checkpoint module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.dataset_checkpoint">qbiocode.utils.dataset_checkpoint module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.dataset_checkpoint.checkpoint_restart"><code class="docutils literal notranslate"><span class="pre">checkpoint_restart()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.data_encoding">qbiocode.utils.data_encoding module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.data_encoding">qbiocode.utils.data_encoding module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#quantum-data-encoding-utilities">Quantum Data Encoding Utilities</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.data_encoding.label_to_array"><code class="docutils literal notranslate"><span class="pre">label_to_array()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.data_encoding.normalize_data"><code class="docutils literal notranslate"><span class="pre">normalize_data()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.data_encoding.prepare_training_set"><code class="docutils literal notranslate"><span class="pre">prepare_training_set()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.find_duplicates">qbiocode.utils.find_duplicates module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.find_duplicates">qbiocode.utils.find_duplicates module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.find_duplicates.find_duplicate_files"><code class="docutils literal notranslate"><span class="pre">find_duplicate_files()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.find_string">qbiocode.utils.find_string module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.find_string">qbiocode.utils.find_string module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.find_string.find_string_in_files"><code class="docutils literal notranslate"><span class="pre">find_string_in_files()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.helper_fn">qbiocode.utils.helper_fn module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.helper_fn">qbiocode.utils.helper_fn module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#helper-functions-for-data-preprocessing-and-model-evaluation">Helper Functions for Data Preprocessing and Model Evaluation</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.helper_fn.feature_encoding"><code class="docutils literal notranslate"><span class="pre">feature_encoding()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.helper_fn.print_results"><code class="docutils literal notranslate"><span class="pre">print_results()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.helper_fn.scaler_fn"><code class="docutils literal notranslate"><span class="pre">scaler_fn()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.ibm_account">qbiocode.utils.ibm_account module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.ibm_account">qbiocode.utils.ibm_account module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.ibm_account.get_creds"><code class="docutils literal notranslate"><span class="pre">get_creds()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.ibm_account.instantiate_runtime_service"><code class="docutils literal notranslate"><span class="pre">instantiate_runtime_service()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.qc_winner_finder">qbiocode.utils.qc_winner_finder module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.qc_winner_finder">qbiocode.utils.qc_winner_finder module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qc_winner_finder.qml_winner"><code class="docutils literal notranslate"><span class="pre">qml_winner()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.qutils">qbiocode.utils.qutils module</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils.qutils">qbiocode.utils.qutils module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.execute_circuit"><code class="docutils literal notranslate"><span class="pre">execute_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.get_ansatz"><code class="docutils literal notranslate"><span class="pre">get_ansatz()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.get_backend_session"><code class="docutils literal notranslate"><span class="pre">get_backend_session()</span></code></a></li>
@@ -2627,7 +2661,7 @@ prefix).</p></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode.utils.qutils.transpile_circuit"><code class="docutils literal notranslate"><span class="pre">transpile_circuit()</span></code></a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils">Module contents</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.utils">Module contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#utilities-module-for-qbiocode">Utilities Module for QBioCode</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#available-functions">Available Functions</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#usage">Usage</a></li>
@@ -2673,8 +2707,8 @@ prefix).</p></li>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2708,7 +2742,7 @@ prefix).</p></li>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
 </p></div>
       
     </div>

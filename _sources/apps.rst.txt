@@ -29,4 +29,11 @@ QSage is an intelligent meta-learning system that predicts which machine learnin
 
 See the :doc:`QSage documentation <apps/sage>` for detailed usage instructions.
 
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+
+   QProfiler <apps/profiler>
+   QSage <apps/sage>
+
 .. Made with Bob

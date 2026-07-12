@@ -35,6 +35,19 @@ Learn how to use QProfiler to systematically benchmark and compare quantum and c
 - Visualize model comparisons and correlations
 - Interpret results for model selection
 
+#### QProfiler on Single-Cell Data - Binary Task Prediction (with PQK)
+
+Apply QProfiler to a real single-cell RNA-seq benchmark: **CD4 vs CD8 T-cell** classification from PBMC data. This tutorial benchmarks classical baselines against the **projected quantum kernel (PQK)** on the one non-trivial binary task, and shows how to read data-complexity measures to explain the result.
+
+<a href="tutorials/QProfiler/sc_binary_qprofiler.html">📓 <strong>View Tutorial Notebook</strong></a>
+
+**What You'll Learn:**
+- Build per-task CSV datasets from balanced PBMC `h5ad` files (leakage-safe HVG selection)
+- Add and tune a PQK feature map (shallow, linearly-entangled ZZ) to avoid quantum-kernel concentration
+- Quantify quantum advantage with a paired Cohen's *d_z* (PQK vs classical)
+- Correlate data-complexity measures with the quantum advantage
+- Use complexity context (Fisher ratio, mutual information, silhouette) to explain task difficulty
+
 ---
 
 ### 3. QSage - Quantum-Inspired Feature Importance
@@ -161,3 +174,16 @@ If you encounter any issues or have questions about the tutorials:
 - Check the [GitHub Issues](https://github.com/IBM/QBioCode/issues)
 - Review the [Contributing Guide](https://github.com/IBM/QBioCode/blob/main/CONTRIBUTING.md)
 - Consult the API documentation for detailed function references
+
+```{toctree}
+:hidden:
+:maxdepth: 1
+
+Artificial Data Generation <tutorials/Artificial_data_generation/example_data_generation>
+Single-Cell Preprocessing & QC <tutorials/Preprocessing/sc-qc>
+QProfiler <tutorials/QProfiler/example_qprofiler>
+QProfiler on Single-Cell Data <tutorials/QProfiler/sc_binary_qprofiler>
+QSage <tutorials/QSage/qsage>
+Quantum Projection Learning <tutorials/Quantum_Projection_Learning/QPL_example>
+PQK on Ovarian Cancer <tutorials/PQK - OV>
+```

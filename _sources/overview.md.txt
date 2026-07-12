@@ -1,3 +1,7 @@
+---
+orphan: true
+---
+
 ![biocode logo](img/QBioCode_logo.png)
 
 # Overview

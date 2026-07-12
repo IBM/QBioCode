@@ -81,7 +81,7 @@ Session II — Data & Benchmarking
    
 
 .. dropdown:: 2. QProfiler — Benchmarking ML Models
-   :icon: bar-chart
+   :icon: graph
 
    Automated benchmarking of classical and quantum models:
    - evaluation across datasets  
@@ -100,7 +100,7 @@ Session III — Model Selection & Meta-learning
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. QSage — Meta-learning for Model Selection
-   :icon: brain
+   :icon: light-bulb
 
    Predict which ML models perform best using data complexity features.
 
@@ -112,7 +112,7 @@ Session III — Model Selection & Meta-learning
 
 
 .. dropdown:: 2. Interpreting Model Performance
-   :icon: bar-chart
+   :icon: graph
 
    Analyze benchmarking results to understand:
 
@@ -140,7 +140,7 @@ Session IV — Quantum-enhanced Pipelines
 
 
 .. dropdown:: 2. Hybrid Quantum-Classical Workflows
-   :icon: hammer
+   :icon: tools
 
    Build complete pipelines combining quantum and classical models.
 
@@ -157,7 +157,7 @@ Session V — Wrap-up & Discussion
 
 
 .. dropdown:: 2. Concluding Remarks
-   :icon: flag
+   :icon: milestone
 
    Summary and outlook on quantum computing in life sciences.
 

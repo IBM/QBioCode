@@ -27,18 +27,18 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
     <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=8bc5eb03" />
   
   <!-- So that users can add custom icons -->
-  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
     <script src="../_static/jquery.js?v=5d32c60e"></script>
     <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
@@ -50,25 +50,32 @@
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-mml-chtml.js"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/qbiocode';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
   </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
-
+  <body data-default-mode="light">
   
   
   <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
   
   <div id="pst-scroll-pixel-helper"></div>
   
   <button type="button" class="btn rounded-pill" id="pst-back-to-top">
     <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
+  
+  
+  
   
   <dialog id="pst-search-dialog">
     
@@ -94,7 +101,7 @@
 </div>
 
   
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
   <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
@@ -170,6 +177,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../citing.html">
+    Citing
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../workshops/index.html">
     Workshops
   </a>
@@ -205,18 +219,24 @@
           
           
           
-          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
       
         <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
       
     </div>
     
@@ -300,6 +320,13 @@
 
 
 <li class="nav-item ">
+  <a class="nav-link nav-internal" href="../citing.html">
+    Citing
+  </a>
+</li>
+
+
+<li class="nav-item ">
   <a class="nav-link nav-internal" href="../workshops/index.html">
     Workshops
   </a>
@@ -326,18 +353,24 @@
           
           
           
-          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
+          <a href="https://github.com/IBM/QBioCode" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fab fa-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
         </li>
 </ul></div>
         
           <div class="navbar-item">
 
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
         
       </div>
     
@@ -345,6 +378,7 @@
   
     <div class="sidebar-primary-items__start sidebar-primary__section">
         <div class="sidebar-primary-item">
+
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
@@ -811,14 +845,14 @@ completes successfully.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>previous_results_dir</strong> (<em>str</em>) – Path to the directory containing results from the previous (interrupted) run.
+<li><p><strong>previous_results_dir</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Path to the directory containing results from the previous (interrupted) run.
 Each subdirectory should correspond to one dataset.</p></li>
-<li><p><strong>completion_marker</strong> (<em>str</em><em>, </em><em>optional</em>) – Name of the file that indicates successful completion of a dataset.
+<li><p><strong>completion_marker</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the file that indicates successful completion of a dataset.
 Default is ‘RawDataEvaluation.csv’ (used by QProfiler).</p></li>
-<li><p><strong>prefix_length</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of characters to strip from the beginning of directory names to get
+<li><p><strong>prefix_length</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></span>) – Number of characters to strip from the beginning of directory names to get
 the dataset name. Default is 8 (strips <code class="docutils literal notranslate"><span class="pre">dataset_</span></code> prefix used by QProfiler).
 Set to 0 to use the full directory name.</p></li>
-<li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, print the list of completed datasets and count. Default is False.</p></li>
+<li><p><strong>verbose</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></span>) – If True, print the list of completed datasets and count. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
@@ -826,7 +860,7 @@ Set to 0 to use the full directory name.</p></li>
 These can be excluded when restarting the batch job.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>List[str]</p>
+<dd class="field-odd"><p><span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</span></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -1302,9 +1336,9 @@ The function returns the performance results, including accuracy, F1-score, AUC,
 <li><p><strong>args</strong> (<em>dict</em>) – Dictionary containing configuration parameters for the QNN.</p></li>
 <li><p><strong>model</strong> (<em>str</em><em>, </em><em>optional</em>) – Model type. Defaults to ‘QNN’.</p></li>
 <li><p><strong>data_key</strong> (<em>str</em><em>, </em><em>optional</em>) – Key for the dataset. Defaults to ‘’.</p></li>
-<li><p><strong>primitive</strong> (<em>Literal</em><em>[</em><em>'estimator'</em><em>, </em><em>'sampler'</em><em>]</em><em>, </em><em>optional</em>) – Type of primitive to use. Defaults to ‘sampler’.</p></li>
+<li><p><strong>primitive</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'estimator'</span></code>, <code class="docutils literal notranslate"><span class="pre">'sampler'</span></code>]</span>) – Type of primitive to use. Defaults to ‘sampler’.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, prints additional information. Defaults to False.</p></li>
-<li><p><strong>local_optimizer</strong> (<em>Literal</em><em>[</em><em>'COBYLA'</em><em>, </em><em>'L_BFGS_B'</em><em>, </em><em>'GradientDescent'</em><em>]</em><em>, </em><em>optional</em>) – Optimizer to use. Defaults to ‘COBYLA’.</p></li>
+<li><p><strong>local_optimizer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'COBYLA'</span></code>, <code class="docutils literal notranslate"><span class="pre">'L_BFGS_B'</span></code>, <code class="docutils literal notranslate"><span class="pre">'GradientDescent'</span></code>]</span>) – Optimizer to use. Defaults to ‘COBYLA’.</p></li>
 <li><p><strong>maxiter</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations for the optimizer. Defaults to 100.</p></li>
 <li><p><strong>encoding</strong> (<em>str</em><em>, </em><em>optional</em>) – Feature encoding method. Defaults to ‘Z’.</p></li>
 <li><p><strong>entanglement</strong> (<em>str</em><em>, </em><em>optional</em>) – Entanglement strategy for the circuit. Defaults to ‘linear’.</p></li>
@@ -1342,7 +1376,7 @@ The function returns the performance results, including accuracy, F1-score, AUC,
 <li><p><strong>C</strong> (<em>float</em>) – Regularization parameter for the SVM, default is 1.</p></li>
 <li><p><strong>gamma</strong> (<em>str</em><em> or </em><em>float</em>) – Kernel coefficient, default is ‘scale’.</p></li>
 <li><p><strong>pegasos</strong> (<em>bool</em>) – Whether to use Pegasos QSVC, default is False.</p></li>
-<li><p><strong>encoding</strong> (<em>str</em>) – Feature map encoding type, options are ‘ZZ’, ‘Z’, or ‘P’, default is ‘ZZ’.</p></li>
+<li><p><strong>encoding</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'ZZ'</span></code>, <code class="docutils literal notranslate"><span class="pre">'Z'</span></code>, <code class="docutils literal notranslate"><span class="pre">'P'</span></code>]</span>) – Feature map encoding type, options are ‘ZZ’, ‘Z’, or ‘P’, default is ‘ZZ’.</p></li>
 <li><p><strong>entanglement</strong> (<em>str</em>) – Entanglement strategy for the feature map, default is ‘linear’.</p></li>
 <li><p><strong>primitive</strong> (<em>str</em>) – Primitive type to use, default is ‘sampler’.</p></li>
 <li><p><strong>reps</strong> (<em>int</em>) – Number of repetitions for the feature map, default is 2.</p></li>
@@ -1564,7 +1598,7 @@ The function returns the performance results, including accuracy, F1-score, AUC,
 <li><p><strong>verbose</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, prints additional information. Defaults to False.</p></li>
 <li><p><strong>model</strong> (<em>str</em><em>, </em><em>optional</em>) – Model type. Defaults to ‘VQC’.</p></li>
 <li><p><strong>data_key</strong> (<em>str</em><em>, </em><em>optional</em>) – Key for the dataset. Defaults to ‘’.</p></li>
-<li><p><strong>local_optimizer</strong> (<em>str</em><em>, </em><em>optional</em>) – Local optimizer to use. Defaults to ‘COBYLA’.</p></li>
+<li><p><strong>local_optimizer</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'COBYLA'</span></code>, <code class="docutils literal notranslate"><span class="pre">'L_BFGS_B'</span></code>, <code class="docutils literal notranslate"><span class="pre">'GradientDescent'</span></code>]</span>) – Local optimizer to use. Defaults to ‘COBYLA’.</p></li>
 <li><p><strong>maxiter</strong> (<em>int</em><em>, </em><em>optional</em>) – Maximum number of iterations for the optimizer. Defaults to 100.</p></li>
 <li><p><strong>encoding</strong> (<em>str</em><em>, </em><em>optional</em>) – Feature map encoding type. Defaults to ‘Z’.</p></li>
 <li><p><strong>entanglement</strong> (<em>str</em><em>, </em><em>optional</em>) – Entanglement strategy. Defaults to ‘linear’.</p></li>
@@ -1696,7 +1730,7 @@ or no encoding.</p>
 <li><p><strong>feature1</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>,</em><em>)</em>) – Input categorical feature to be encoded. Should be a 1D array.</p></li>
 <li><p><strong>sparse_output</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If True and feature_encoding=’OneHotEncoder’, returns a sparse matrix.
 If False, returns a dense array. Ignored for other encoding methods.</p></li>
-<li><p><strong>feature_encoding</strong> (<em>{'None'</em><em>, </em><em>'OneHotEncoder'</em><em>, </em><em>'OrdinalEncoder'}</em><em>, </em><em>default='None'</em>) – <p>Encoding method to apply:</p>
+<li><p><strong>feature_encoding</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'None'</span></code>, <code class="docutils literal notranslate"><span class="pre">'OneHotEncoder'</span></code>, <code class="docutils literal notranslate"><span class="pre">'OrdinalEncoder'</span></code>]</span>) – <p>Encoding method to apply:</p>
 <ul>
 <li><p>’None’: No encoding, returns original feature</p></li>
 <li><p>’OneHotEncoder’: Create binary columns for each category</p></li>
@@ -2086,7 +2120,7 @@ all configuration parameters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>embedding</strong> (<em>str</em>) – The embedding technique to use. Options are ‘none’, ‘pca’, ‘nmf’, ‘lle’, ‘isomap’, ‘spectral’, or ‘umap’.</p></li>
+<li><p><strong>embedding</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – The embedding technique to use. Options are ‘none’, ‘pca’, ‘nmf’, ‘lle’, ‘isomap’, ‘spectral’, or ‘umap’.</p></li>
 <li><p><strong>X_train</strong> (<em>array-like</em>) – The training dataset.</p></li>
 <li><p><strong>X_test</strong> (<em>array-like</em>) – The test dataset.</p></li>
 <li><p><strong>n_neighbors</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of neighbors for certain embeddings. Defaults to 30.</p></li>
@@ -2151,7 +2185,7 @@ when the main profiler is run (qbiocode-profiler.py).</p>
 <li><p><strong>beg_time</strong> (<em>float</em>) – Start time for measuring execution time.</p></li>
 <li><p><strong>params</strong> (<em>dict</em>) – Model parameters used during training.</p></li>
 <li><p><strong>args</strong> (<em>dict</em>) – Additional arguments, including grid search flag.</p></li>
-<li><p><strong>model</strong> (<em>str</em>) – Name of the model being evaluated.</p></li>
+<li><p><strong>model</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></span>) – Name of the model being evaluated.</p></li>
 <li><p><strong>verbose</strong> (<em>bool</em>) – If True, prints the evaluation results.</p></li>
 <li><p><strong>average</strong> (<em>str</em>) – Type of averaging to use for F1 score calculation.
 Default is ‘weighted’.</p></li>
@@ -2274,7 +2308,7 @@ the methods.</p>
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>X</strong> (<em>array-like</em><em> of </em><em>shape</em><em> (</em><em>n_samples</em><em>, </em><em>n_features</em><em>)</em>) – Input data to be scaled.</p></li>
-<li><p><strong>scaling</strong> (<em>{'None'</em><em>, </em><em>'StandardScaler'</em><em>, </em><em>'MinMaxScaler'}</em><em>, </em><em>default='None'</em>) – <p>Scaling method to apply:</p>
+<li><p><strong>scaling</strong> (<span class="sphinx_autodoc_typehints-type"><code class="xref py py-data docutils literal notranslate"><span class="pre">Literal</span></code>[<code class="docutils literal notranslate"><span class="pre">'None'</span></code>, <code class="docutils literal notranslate"><span class="pre">'StandardScaler'</span></code>, <code class="docutils literal notranslate"><span class="pre">'MinMaxScaler'</span></code>]</span>) – <p>Scaling method to apply:</p>
 <ul>
 <li><p>’None’: No scaling, returns original data</p></li>
 <li><p>’StandardScaler’: Standardize features by removing mean and scaling to unit variance</p></li>
@@ -2346,12 +2380,12 @@ the methods.</p>
     class="page-toc tocsection onthispage">
     <i class="fa-solid fa-list"></i> On this page
   </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode.version">qbiocode.version module</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode">Module contents</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-qbiocode">Module contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#qbiocode-quantum-machine-learning-for-biological-data-analysis">QBioCode: Quantum Machine Learning for Biological Data Analysis</a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#main-modules">Main Modules</a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick Start</a></li>
@@ -2412,8 +2446,8 @@ the methods.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -2447,7 +2481,7 @@ the methods.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
 </p></div>
       
     </div>
