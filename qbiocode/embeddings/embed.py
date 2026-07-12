@@ -66,7 +66,13 @@ def pqk(
                 float: the mapped value
             """
             coeff = x[0] / 2 if len(x) == 1 else reduce(lambda m, n: (m * n) / 2, x)
-            return float(coeff)
+            try:
+                return float(coeff)
+            except TypeError:
+                # coeff is a symbolic ParameterExpression during circuit
+                # construction (unbound parameters) — return it unevaluated
+                # and let Qiskit bind real values later.
+                return coeff
 
     else:
         data_map_func = None
