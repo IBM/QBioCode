@@ -136,11 +136,39 @@ QProfiler provides a comprehensive benchmarking pipeline that:
 - Correlates model performance with data characteristics
 - Generates detailed performance reports and visualizations
 
+**Before you run — the input data must exist.** QProfiler reads a folder of CSV
+datasets. The `folder_path` in the config is resolved **relative to the
+`QBioCode` repo root** (the code truncates your current directory at `QBioCode`
+and joins `folder_path` to it). So:
+
+1. Run the command from **inside the QBioCode repo tree** (your working directory
+   path must contain `QBioCode`).
+2. The data must already be present at `<QBioCode-repo-root>/<folder_path>`.
+   QProfiler does **not** create it. The tutorial dataset already ships in the
+   repo at `tutorial/QProfiler/data/ld_data`.
+
 **Usage:**
 ```bash
-# Command line
-qprofiler --config configs/config.yaml
+# Always run from inside the QBioCode repo so folder_path resolves correctly
+cd /path/to/QBioCode
 
+# 1) Run with the bundled default config
+#    (expects data at <repo>/tutorial_test_data/lower_dim_datasets)
+qprofiler
+
+# 2) Point at the tutorial config + bundled data
+#    (folder_path in this config = tutorial/QProfiler/data/ld_data)
+qprofiler --config-dir=tutorial/QProfiler/configs --config-name=config
+
+# 3) Override any value inline (Hydra syntax — key=value, no leading --)
+#    folder_path is relative to the QBioCode repo root
+qprofiler folder_path=tutorial/QProfiler/data/ld_data file_dataset=ALL backend=simulator
+```
+
+Results are written to `results/<config_file_name>/dataset=<file_dataset>/<backend>_<timestamp>/`
+under the repo root. Run `qprofiler --help` to see every overridable key.
+
+```python
 # Python API
 from qbiocode.apps.qprofiler import qprofiler
 qprofiler.main(config)

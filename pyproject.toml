@@ -113,9 +113,9 @@ all = [
 ]
 
 [project.scripts]
-qprofiler = "apps.qprofiler.cli:main"
-qprofiler-batch = "apps.qprofiler.qprofiler_batchmode:main"
-qsage = "apps.sage.sage:main"
+qprofiler = "qbiocode.apps.qprofiler.cli:main"
+qprofiler-batch = "qbiocode.apps.qprofiler.qprofiler_batchmode:main"
+qsage = "qbiocode.apps.sage.sage:main"
 
 [tool.setuptools]
 include-package-data = true
@@ -131,7 +131,7 @@ dependencies = {file = ["requirements-base.txt"]}
 
 [tool.setuptools.package-data]
 qbiocode = ["py.typed"]
-"apps.qprofiler" = ["configs/*.yaml"]
+"qbiocode.apps.qprofiler" = ["configs/*.yaml"]
 
 [tool.black]
 line-length = 100

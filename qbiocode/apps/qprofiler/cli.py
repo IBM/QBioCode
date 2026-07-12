@@ -22,7 +22,7 @@ def main():
         sys.argv.insert(1, f'--config-dir={os.path.abspath(default_config_dir)}')
     
     # Import and run the actual main function
-    from apps.qprofiler.qprofiler import main as qprofiler_main
+    from qbiocode.apps.qprofiler.qprofiler import main as qprofiler_main
     qprofiler_main()
 
 if __name__ == '__main__':
