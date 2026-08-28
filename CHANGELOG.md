@@ -87,6 +87,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixed path-order assumptions in duplicate-file tests
   - Tests now work consistently across different file systems
 
+- **Packaging**: dependencies are now tiered under `requirements/`
+  - `requirements/requirements-base.txt` is the single source of truth for the
+    package's runtime dependencies; `pyproject.toml` reads it via
+    `[tool.setuptools.dynamic]`. It ships in the sdist, so building from an
+    sdist no longer risks an empty dependency list.
+  - `requirements/requirements-quvine.txt` backs the new `[quvine]` extra,
+    `requirements/requirements-docs.txt` backs `[docs]`, and
+    `requirements/requirements.txt` installs a complete development environment.
+  - The root `requirements.txt` is now a pointer to
+    `requirements/requirements.txt`, so the documented
+    `pip install -r requirements.txt` keeps working unchanged.
+  - `[all]` is now defined as `qbiocode[apps,quvine,docs,dev]` instead of a
+    hand-maintained copy of every other extra's contents, which had already
+    drifted out of sync.
+
+- **Packaging**: `setup.py` is now a 33-line shim that passes no arguments, so
+  `pyproject.toml` is the only place project metadata is declared. The previous
+  189-line version re-declared name, version, dependencies, extras, classifiers
+  and entry points, and parsed `requirements.txt` by looking for a
+  `# Documentation` comment to split runtime from docs dependencies. Duplicated
+  metadata is what allowed the two files to disagree.
+
+- **Dependencies**: removed `tensorflow` from the dependency set. Nothing in
+  `qbiocode/`, the tutorials, or the docs imports TensorFlow or Keras — the only
+  remaining reference was a stale entry in `autodoc_mock_imports`. This removes
+  roughly 600 MB from a default install. `qbiocode/embeddings/compute_autoencoder.py`,
+  the one module that could have needed it, is written against PyTorch, which
+  remains a dependency.
+
 ### Fixed
 
 #### ⚠️ Train/test contamination in QProfiler — results change
@@ -126,6 +155,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is now part of the filename.
 - Cached projection files are also validated on width (`3 x feat_dimension`), not just row
   count, so a file written with a different feature dimension is rejected rather than reused.
+
+#### Packaging and dependency declarations
+- Three dependencies were imported by the library but never declared:
+  `pyyaml` (`qbiocode/utils/generate_qml_configs.py` and
+  `qbiocode/apps/qprofiler/qprofiler_batchmode.py`, which backs the
+  `qprofiler-batch` console script), `matplotlib` (five modules, including
+  `qbiocode/visualization/visualize_correlation.py`), and `joblib`
+  (`qbiocode/evaluation/model_run.py` and `qprofiler_batchmode.py`). Installs
+  only worked because `seaborn` and `optuna` happened to pull them in
+  transitively. All three are now declared explicitly.
+- `MANIFEST.in` referenced `apps/qprofiler/configs`, a path that does not exist
+  in this tree — the configs live at `qbiocode/apps/qprofiler/configs`. The
+  sdist therefore shipped no Hydra config for QProfiler. Likewise
+  `[tool.setuptools.packages.find]` listed an `apps*` include glob that matched
+  no package.
+- `pandoc` was declared as a pip dependency of the `docs` extra. Pandoc is a
+  system binary; the PyPI distribution of that name does not provide it.
+  Removed, with the platform install commands documented in
+  `requirements/requirements-docs.txt` instead.
+- `.gitignore` matched `data/` and `results/` unanchored, so those patterns
+  excluded a directory of either name at *any* depth — including
+  `docs/source/tutorials/QProfiler/data/`, which holds the committed `.h5ad`
+  and `sc_binary/*.csv` fixtures the published notebooks read. Because git
+  cannot re-include a file whose parent directory is excluded, those fixtures
+  were only addable by virtue of already being tracked. Both patterns are now
+  anchored to the repository root.
+- Stopped tracking generated QProfiler output under
+  `docs/source/tutorials/QProfiler/` (`ModelResults.csv`,
+  `RawDataEvaluation.csv`, `results.pkl`, and 500 KB of `pqk_projections/*.npy`).
+  The notebooks write these files and read them back within the same run, and
+  `nbsphinx_execute = 'never'` means the docs build never executes them. The
+  cached projections were additionally unreachable after the PQK cache-key fix
+  above, since their filenames predate the feature-map fingerprint.
 
 #### Earlier fixes
 - Invalid escape sequence in `qbiocode/visualization/visualize_correlation.py`

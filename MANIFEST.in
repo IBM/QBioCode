@@ -8,11 +8,14 @@ include SECURITY.md
 include SUPPORT.md
 include CHANGELOG.md
 include requirements.txt
-include requirements-base.txt
+# requirements/requirements-base.txt MUST ship: pyproject.toml declares
+# dynamic dependencies and reads them from that file at build time, so an
+# sdist without it produces a package with an empty dependency list.
+include requirements/*.txt
 include .zenodo.json
 
 # Include configuration files
-recursive-include apps/qprofiler/configs *.yaml *.py
+recursive-include qbiocode/apps/qprofiler/configs *.yaml *.py
 recursive-include tutorial/QProfiler/configs *.yaml
 recursive-include tutorial/Quantum_Projection_Learning/configs *.yaml
 

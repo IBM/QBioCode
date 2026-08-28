@@ -2,6 +2,7 @@
 venv/
 env/
 .venv/
+.venv-quvine/
 .env/
 *env/
 .*env/
@@ -38,9 +39,11 @@ credentials.json
 docs/build/*
 docs/outputdir/*
 
-# Project specific
-results/
-data/
+# Project specific (top-level scratch dirs only -- anchored with a leading
+# slash so they do not swallow committed fixtures such as
+# docs/source/tutorials/QProfiler/data/*.h5ad)
+/results/
+/data/
 
 # Tutorial generated outputs
 tutorial/**/ModelResults.csv
@@ -57,3 +60,25 @@ tutorial/**/pqk_projections/
 !tutorial/**/*.ipynb
 !tutorial/**/configs/
 !tutorial/**/configs/*.yaml
+
+# Docs tutorial generated outputs (mirror of the tutorial/ rules above).
+# Notebooks under docs/source/tutorials are published with nbsphinx_execute =
+# 'never', so their run artifacts are never needed by the docs build.
+docs/source/tutorials/**/ModelResults.csv
+docs/source/tutorials/**/RawDataEvaluation.csv
+docs/source/tutorials/**/compiled_*.csv
+docs/source/tutorials/**/results.pkl
+docs/source/tutorials/**/performance_summary_and_spearman_correlation_plots/
+docs/source/tutorials/**/*.png
+docs/source/tutorials/**/.ipynb_checkpoints/
+docs/source/tutorials/**/pqk_projections/
+
+# Deliberately NOT ignoring docs/source/tutorials/**/data/: unlike tutorial/,
+# that directory holds committed *input* fixtures (pbmc5k_small_cd4_vs_cd8.h5ad
+# and the sc_binary/*.csv matrices) which the published notebooks read.
+
+# Keep docs tutorial notebooks, configs, and committed figure assets
+!docs/source/tutorials/**/*.ipynb
+!docs/source/tutorials/**/configs/
+!docs/source/tutorials/**/configs/*.yaml
+!docs/source/tutorials/PQK_OV_results.png

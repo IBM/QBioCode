@@ -1,0 +1,53 @@
+# ==========================================================================
+# QBioCode core runtime dependencies
+# ==========================================================================
+# This is the SINGLE SOURCE OF TRUTH for the package's install_requires:
+# pyproject.toml declares `dynamic = ["version", "dependencies"]` and reads
+# this file via [tool.setuptools.dynamic]. It therefore MUST ship in the
+# sdist (see MANIFEST.in) or building from an sdist yields an empty
+# dependency list.
+#
+# Keep this list to what `import qbiocode` and the console scripts actually
+# need. Optional tiers live in sibling files:
+#   requirements-quvine.txt  -> the [quvine] extra (QuVINE embeddings)
+#   requirements-docs.txt    -> the [docs] extra (Sphinx toolchain)
+#   requirements.txt         -> everything, for development environments
+#
+# Do NOT add build-time tooling here (e.g. setuptools). A build-time pin
+# declared as a runtime dependency is a published-metadata bug; see the
+# docstring in setup.py.
+# ==========================================================================
+
+dill
+h5py
+hfda
+hydra-core
+ipykernel
+joblib
+matplotlib
+networkx
+numpy
+optuna
+pandas
+pyyaml
+qiskit==2.2.0
+qiskit-aer==0.17.0
+qiskit-algorithms==0.4.0
+qiskit-ibm-runtime==0.44.0
+qiskit-ibm-transpiler==0.11.0
+qiskit-machine-learning==0.9.0
+qiskit-nature==0.7.2
+scikit-dimension
+scikit-learn
+scipy
+seaborn
+torch
+tqdm
+umap-learn
+xgboost
+
+# Single-cell / multi-omics tutorials (sc-qc preprocessing, QProfiler single-cell)
+scanpy
+anndata
+leidenalg
+igraph
