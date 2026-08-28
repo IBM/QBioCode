@@ -12,88 +12,115 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Graph and dataset preparation helpers for QuVINE.
+"""Graph and dataset preparation utilities for QuVINE.
 
-.. warning::
+Loading graphs and GWAS tables from disk, preprocessing them (sparsification,
+largest-connected-component extraction, node subsampling), bounded-radius
+ego-net expansion, and a library of synthetic graph generators used by
+``qbiocode.apps.quvine.reproducibility`` to build reproducible benchmarks.
 
-   This package is **incomplete**. Four modules that the rest of QuVINE imports
-   were never committed to the internal repository: an *unanchored* ``data/``
-   rule in its ``.gitignore`` matched ``qbiocode/apps/quvine/data/`` at every
-   depth, so the directory was silently excluded and never entered git history.
-   (External's ``.gitignore`` anchors the rule as ``/data/`` and does not have
-   this problem, which is why the directory can be tracked here.)
+Everything here needs only the base install -- numpy, pandas, networkx -- so
+this package is imported eagerly and is unaffected by the ``[quvine]`` extra.
 
-   Present and working:
+.. note::
 
-   * :mod:`~qbiocode.apps.quvine.data.subgraph` -- reimplemented here from its
-     call sites, since ego-net expansion is a well-determined graph primitive
-     and the whole 69-method registry depends on it.
-
-   Still missing, with the feature each one gates:
-
-   =============================== =========================================
-   Module                          Feature it gates
-   =============================== =========================================
-   ``data_loader``                 :class:`~qbiocode.apps.quvine.Pipeline`
-                                   loading graphs and GWAS tables from disk
-   ``prepare``                     ``Pipeline`` graph preprocessing
-   ``random_graphs``               synthetic benchmark generators used by
-                                   ``reproducibility.graph_generator``
-   ``random_graphs_extended``      SBM variants used by the same
-   =============================== =========================================
-
-   Everything reachable from :func:`qbiocode.get_embeddings` and the ``quvine``
-   CLI works without them. Dropping the original files into this directory needs
-   no other change -- the import paths that reference them are unmodified.
+   Graph-complexity metrics are **not** here. They live in QBioCode's own
+   :func:`qbiocode.evaluate_graph` (``qbiocode.evaluation.graph_evaluation``),
+   which supersedes the ``graph_complexity`` module that used to sit alongside
+   these files in the standalone QuVINE distribution.
 """
 
-import importlib
+from qbiocode.apps.quvine.data.data_loader import (
+    load_graph,
+    load_gwas_data,
+    load_pegasus_results,
+    load_seeds_and_targets,
+)
+from qbiocode.apps.quvine.data.prepare import (
+    PrepareGraphConfig,
+    keep_largest_connected_component,
+    prepare_graph,
+)
+from qbiocode.apps.quvine.data.random_graphs import (
+    add_hub_nodes,
+    generate_barabasi_albert,
+    generate_bipartite_random,
+    generate_core_periphery,
+    generate_erdos_renyi,
+    generate_graph_with_seeds_and_targets,
+    generate_hierarchical_network,
+    generate_modular_network,
+    generate_powerlaw_cluster,
+    generate_random_geometric,
+    generate_stochastic_block_model,
+    generate_watts_strogatz,
+    get_graph_statistics,
+)
+from qbiocode.apps.quvine.data.random_graphs_extended import (
+    generate_configuration_model_graph,
+    generate_degree_corrected_sbm,
+    generate_grid_torus_lattice,
+    generate_heterophilic_sbm,
+    generate_random_regular_expander_like,
+    sample_degree_sequence,
+    sweep_configuration_model_graphs,
+    sweep_degree_corrected_sbm,
+    sweep_grid_torus_lattice,
+    sweep_heterophilic_sbm,
+    sweep_random_regular_expander_like,
+)
+from qbiocode.apps.quvine.data.sparsify import (
+    materialize_undirected_simple_graph,
+    sparsify_edges_biological,
+)
+from qbiocode.apps.quvine.data.subgraph import (
+    expand_neighborhood,
+    induce_subgraph_by_nodes,
+    subsample_nodes,
+    subsample_nodes_with_protected,
+)
 
-from qbiocode.apps.quvine.data.subgraph import expand_neighborhood
-
-__all__ = ["QuvineDataUnavailableError", "expand_neighborhood", "require_data_module"]
-
-
-class QuvineDataUnavailableError(ImportError):
-    """A module of this package is referenced but absent from the checkout.
-
-    Subclasses :class:`ImportError` so the existing ``except ImportError`` guards
-    around optional QuVINE features keep working.
-    """
-
-
-def require_data_module(module_name: str, feature: str):
-    """Import ``qbiocode.apps.quvine.data.<module_name>`` or explain its absence.
-
-    Args:
-        module_name: Bare module name inside this package, e.g. ``"data_loader"``.
-        feature: What the caller was trying to do, named the way a user would
-            recognise it, e.g. ``"Pipeline graph loading"``.
-
-    Returns:
-        The imported module.
-
-    Raises:
-        QuvineDataUnavailableError: if the module is one of the four that were
-            never committed. The message says which module, which feature is
-            therefore unavailable, and what to do about it.
-        ModuleNotFoundError: unchanged, if the module exists but one of *its*
-            third-party imports is missing -- that is a dependency problem and
-            must not be reported as missing source.
-    """
-    qualified = f"{__name__}.{module_name}"
-    try:
-        return importlib.import_module(qualified)
-    except ModuleNotFoundError as exc:
-        if exc.name != qualified:
-            # Something deeper is missing; do not blame our own source tree.
-            raise
-        raise QuvineDataUnavailableError(
-            f"{feature} needs {qualified}, which is not present in this "
-            f"installation. That module was never committed to the QuVINE source "
-            f"repository -- an unanchored 'data/' rule in its .gitignore excluded "
-            f"the whole directory. Everything reachable from "
-            f"qbiocode.get_embeddings() and the 'quvine' CLI works without it; see "
-            f"the qbiocode.apps.quvine.data docstring for the full list of what "
-            f"this gates."
-        ) from exc
+__all__ = [
+    # Data loading
+    "load_graph",
+    "load_gwas_data",
+    "load_pegasus_results",
+    "load_seeds_and_targets",
+    # Graph preparation
+    "prepare_graph",
+    "PrepareGraphConfig",
+    "keep_largest_connected_component",
+    "materialize_undirected_simple_graph",
+    "sparsify_edges_biological",
+    # Subgraphs
+    "expand_neighborhood",
+    "induce_subgraph_by_nodes",
+    "subsample_nodes",
+    "subsample_nodes_with_protected",
+    # Random graph generators
+    "add_hub_nodes",
+    "generate_barabasi_albert",
+    "generate_bipartite_random",
+    "generate_core_periphery",
+    "generate_erdos_renyi",
+    "generate_graph_with_seeds_and_targets",
+    "generate_hierarchical_network",
+    "generate_modular_network",
+    "generate_powerlaw_cluster",
+    "generate_random_geometric",
+    "generate_stochastic_block_model",
+    "generate_watts_strogatz",
+    "get_graph_statistics",
+    # Extended random graph generators
+    "generate_configuration_model_graph",
+    "generate_degree_corrected_sbm",
+    "generate_grid_torus_lattice",
+    "generate_heterophilic_sbm",
+    "generate_random_regular_expander_like",
+    "sample_degree_sequence",
+    "sweep_configuration_model_graphs",
+    "sweep_degree_corrected_sbm",
+    "sweep_grid_torus_lattice",
+    "sweep_heterophilic_sbm",
+    "sweep_random_regular_expander_like",
+]

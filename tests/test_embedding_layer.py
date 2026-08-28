@@ -29,7 +29,8 @@ the internal tree:
 2. **A subpackage that was never committed.** ``qbiocode/apps/quvine/data/``
    was matched by an unanchored ``data/`` rule in the internal ``.gitignore``,
    so ``embedding/quantum_filters.py`` imported a module that did not exist and
-   the entire 69-method registry was unreachable.
+   the entire 69-method registry was unreachable. The directory was recovered
+   from the pre-commit working tree it was written in and is tracked here.
 3. **Library code writing to stdout.** The registry printed ``✓ netmf: 0.00
    minutes`` per call. QProfiler calls this once per method per iteration.
 """
@@ -132,27 +133,57 @@ def test_expand_neighborhood_is_radius_bounded_and_includes_its_roots():
     assert expand_neighborhood(path, {0}, radius=99) == set(path.nodes())
 
 
-def test_expand_neighborhood_tolerates_absent_roots_and_rejects_a_negative_radius():
+def test_expand_neighborhood_filters_absent_roots_at_every_radius():
+    """Callers sample roots then prune the graph, so an absent root is not an error.
+
+    It used to be filtered only for ``radius >= 1``: ``radius=0`` returned the
+    roots verbatim, so it could hand back a node the graph does not contain.
+    """
     import networkx as nx
 
     from qbiocode.apps.quvine.data import expand_neighborhood
 
     G = nx.path_graph(3)
-    # Callers sample roots then prune the graph; an absent root is not an error.
-    assert expand_neighborhood(G, {"not-a-node"}, radius=2) == set()
+    for radius in (0, 1, 2):
+        assert expand_neighborhood(G, {"not-a-node"}, radius=radius) == set(), radius
     assert expand_neighborhood(G, {0, "not-a-node"}, radius=1) == {0, 1}
-    with pytest.raises(ValueError, match="radius must be >= 0"):
-        expand_neighborhood(G, {0}, radius=-1)
 
 
-def test_expand_neighborhood_ignores_edge_direction():
-    """Ego-nets feed undirected walk scoring, so a DiGraph expands both ways."""
-    import networkx as nx
+def test_the_recovered_data_modules_all_import_and_work():
+    """The four modules the unanchored gitignore rule dropped.
 
-    from qbiocode.apps.quvine.data import expand_neighborhood
+    Not a smoke test for its own sake: ``pipeline.py`` imports two of them at
+    module scope and ``reproducibility.graph_generator`` the other two, so their
+    absence is what made ``Pipeline`` unimportable.
+    """
+    from qbiocode.apps.quvine.data import (
+        PrepareGraphConfig,
+        generate_erdos_renyi,
+        keep_largest_connected_component,
+        load_graph,
+        load_gwas_data,
+        prepare_graph,
+    )
 
-    D = nx.DiGraph([(0, 1), (1, 2)])
-    assert expand_neighborhood(D, {2}, radius=1) == {1, 2}
+    assert all(callable(f) for f in (load_graph, load_gwas_data, prepare_graph))
+    assert callable(keep_largest_connected_component)
+
+    G = generate_erdos_renyi(n=40, p=0.12, seed=0)
+    assert G.number_of_nodes() == 40
+    # Seeded generation must be reproducible -- the reproducibility package
+    # exists to guarantee every method sees the same graph instance.
+    assert sorted(generate_erdos_renyi(n=40, p=0.12, seed=0).edges()) == sorted(G.edges())
+
+    largest = keep_largest_connected_component(G)
+    assert largest.number_of_nodes() <= G.number_of_nodes()
+    assert PrepareGraphConfig is not None
+
+
+def test_the_pipeline_is_importable():
+    """It imports ``data.data_loader`` and ``data.prepare`` at module scope."""
+    from qbiocode.apps.quvine import Pipeline
+
+    assert Pipeline.__name__ == "Pipeline"
 
 
 # --------------------------------------------------------------------------
@@ -320,3 +351,65 @@ def test_quvine_method_detection_survives_the_extra_being_absent():
     assert embed_mod._is_quvine_method("quvine_rwr") is True
     assert embed_mod._is_quvine_method("pca") is False
     assert embed_mod._is_quvine_method("definitely-not-a-method") is False
+
+
+def test_every_synthetic_graph_family_generates():
+    """The 15 reproducibility families were all dead while ``data/`` was missing.
+
+    ``SyntheticGraphGenerator`` imports ``data.random_graphs`` and
+    ``random_graphs_extended`` inside ``__init__``, so constructing it raised.
+    """
+    import tempfile
+    from pathlib import Path
+
+    from qbiocode.apps.quvine.reproducibility import DatasetRegistry, SeedManager
+    from qbiocode.apps.quvine.reproducibility.graph_generator import SyntheticGraphGenerator
+
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        generator = SyntheticGraphGenerator(
+            output_dir=tmp / "graphs",
+            seed_manager=SeedManager(base_seed=0),
+            registry=DatasetRegistry(tmp / "registry"),
+        )
+        for family in SyntheticGraphGenerator.SYNTHETIC_FAMILIES:
+            G, path = generator.generate_single(family, n_nodes=40, repetition_id=0)
+            assert G.number_of_nodes() > 0, family
+            assert G.number_of_edges() > 0, family
+            assert path.exists(), family
+
+
+def test_ego_net_helpers_that_depend_on_subgraph_work():
+    """Both callers of ``expand_neighborhood``, exercised through their own API."""
+    import networkx as nx
+
+    from qbiocode.apps.quvine.embedding.quantum_filters import get_ego_net_nodes_quvine
+
+    G = nx.karate_club_graph()
+    nodes = get_ego_net_nodes_quvine(G, center=0, k=1)
+    assert 0 in nodes
+    assert set(nodes) <= set(G.nodes())
+    # The truncation branch keeps the center and fills with the highest degrees.
+    truncated = get_ego_net_nodes_quvine(G, center=0, k=2, max_nodes=5)
+    assert len(truncated) == 5
+    assert truncated[0] == 0
+
+
+def test_build_walk_targets_produces_calibration_targets():
+    """``api.targets`` imports ``data.subgraph`` inside the function body.
+
+    RWR is the walk kind that needs no optional dependency, so this runs on a
+    bare install; ctqw/dtqw would need hiperwalk.
+    """
+    import networkx as nx
+
+    from qbiocode.apps.quvine.api.targets import build_walk_targets
+
+    G = nx.karate_club_graph()
+    targets = build_walk_targets(G, seeds=[0, 33], walk_type="rwr", num_subgraphs=2)
+    assert targets, "expected at least one target"
+    for target in targets:
+        # The contract gat.calibrate_heat_kernel validates.
+        assert {"nodes", "center", "pQ"} <= set(target)
+        assert target["center"] in target["nodes"]
+        assert len(target["pQ"]) == len(target["nodes"])

@@ -16,15 +16,6 @@
 Synthetic Graph Generator for QuVINE
 
 Pre-generates and saves synthetic graphs to ensure all methods use identical instances.
-
-.. warning::
-
-   The generators here import :mod:`qbiocode.apps.quvine.data.random_graphs` and
-   ``random_graphs_extended``, neither of which is present in this installation --
-   see the :mod:`qbiocode.apps.quvine.data` docstring for why. The imports are
-   function-local, so this module imports fine and the rest of ``reproducibility``
-   works; only synthetic-graph generation raises. Nothing reachable from
-   :func:`qbiocode.get_embeddings` or the ``quvine`` CLI depends on it.
 """
 
 import json
