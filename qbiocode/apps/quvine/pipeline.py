@@ -26,8 +26,7 @@ import pandas as pd
 import time
 from hydra.core.hydra_config import HydraConfig
 from omegaconf import DictConfig, OmegaConf
-from qbiocode.apps.quvine.data.data_loader import load_graph, load_gwas_data
-from qbiocode.apps.quvine.data.prepare import PrepareGraphConfig, prepare_graph
+from qbiocode.apps.quvine.data import require_data_module
 from qbiocode.apps.quvine.api.sgns import run_sgns
 from qbiocode.apps.quvine.api.targets import build_quantum_targets
 from qbiocode.apps.quvine.embedding.registry import EmbeddingStore
@@ -294,7 +293,8 @@ class Pipeline:
     # ----------------
     
     def _preprocess_graph(self, graph_data, source, target):
-        cfg_pg = PrepareGraphConfig(
+        prepare = require_data_module("prepare", "Pipeline graph preprocessing")
+        cfg_pg = prepare.PrepareGraphConfig(
                             subsample_nodes=self.cfg.preprocess.subsample.enabled, 
                             max_nodes=self.cfg.preprocess.subsample.max_nodes, 
                             radius=self.cfg.preprocess.subsample.radius,
@@ -304,7 +304,7 @@ class Pipeline:
                             scoring=self.cfg.preprocess.sparsify.scoring,
                             verbose=self.cfg.verbose
                             )
-        graph_data = prepare_graph(
+        graph_data = prepare.prepare_graph(
                             cfg_pg, 
                             graph=graph_data, 
                             seeds=source, 
@@ -320,11 +320,13 @@ class Pipeline:
     def _load_graph(self):
         self.log.info("Loading graph: %s", self.cfg.graph.name)
         
-        return load_graph(self.cfg)
+        loader = require_data_module("data_loader", "Pipeline graph loading")
+        return loader.load_graph(self.cfg)
     
     def _load_gwas_data(self, graph_data):
         self.log.info("Loading gwas data: %s", self.cfg.disease.name)
-        return load_gwas_data(self.cfg, graph_data)
+        loader = require_data_module("data_loader", "Pipeline GWAS-table loading")
+        return loader.load_gwas_data(self.cfg, graph_data)
     
     def _set_iteration_seed(self, it):
         seed = self.base_seed + it

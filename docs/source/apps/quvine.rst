@@ -9,6 +9,8 @@ QuVINE turns a graph into low-dimensional node embeddings by combining
 classical and quantum random walks with SGNS-based representation learning. It
 is vendored into QBioCode as an in-tree app (``qbiocode.apps.quvine``).
 
+.. _quvine-installation:
+
 Installation
 ============
 
@@ -102,6 +104,49 @@ Evaluating the input graph:
    from qbiocode import evaluate_graph
 
    metrics = evaluate_graph(G, name="karate")   # -> pandas.DataFrame
+
+As a QBioCode Embedding
+-----------------------
+
+QuVINE is also wired into QBioCode's embedding layer, so any of its method names
+is usable wherever ``pca``, ``nmf`` or ``umap`` is -- including QProfiler's
+``embeddings:`` config list. The call shape is identical:
+
+.. code-block:: python
+
+   from qbiocode import get_embeddings
+
+   X_train_emb, X_test_emb = get_embeddings(
+       "quvine_rwr", X_train, X_test, n_components=8
+   )
+
+A symmetric k-nearest-neighbour graph is built over the rows of
+``vstack([X_train, X_test])`` with edge weight ``1/(1+d)``, embedded with the
+requested method, reduced to ``n_components`` if the method returned a different
+width, and split back into the train and test blocks.
+
+.. warning::
+
+   QuVINE methods are **transductive**: no QuVINE method has an out-of-sample
+   ``transform``, so the test rows take part in building the graph. Test
+   *features* therefore influence the geometry; test *labels* never enter at any
+   point. ``get_embeddings`` emits one :class:`UserWarning` per call saying so,
+   and :func:`qbiocode.is_transductive` lets downstream code branch on it. The
+   classical ``spectral`` mode has exactly the same property.
+
+Discovering what is available:
+
+.. code-block:: python
+
+   import qbiocode
+
+   qbiocode.SKLEARN_METHODS           # the classical modes, always present
+   qbiocode.QUVINE_HEADLINE_METHODS   # the QuVINE names worth trying first
+   qbiocode.QUVINE_METHODS            # all 83; empty if the extra is absent
+
+``netmf``, ``appnp`` and the ``gat_*`` family need nothing beyond the base
+install. The rest raise a message naming the missing dependency and the exact
+install command -- see :ref:`the installation note above <quvine-installation>`.
 
 Available Methods
 =================

@@ -278,7 +278,7 @@ def _embed_registry(cfg, graph, node_order, requested, key, base_seed,
     if not result.success or result.embedding is None:
         raise QuvineMethodError(
             f"Method {requested!r} (registry key {key!r}) failed: {result.error}"
-        )
+        ) from result.exception
 
     Z = result.embedding
     extra: dict = {"category": meta.category}

@@ -15,11 +15,23 @@
 import numpy as np
 from qbiocode.apps.quvine._deps import require_module
 
-# The node2vec distribution is provided by the [quvine] extra. Note that it
-# imports the deprecated pkg_resources module, so the extra pins
-# setuptools<81 -- without that pin this import fails even when node2vec
-# itself is installed.
-Node2Vec = require_module("node2vec", method="node2vec").Node2Vec
+
+def _node2vec_class():
+    """Resolve node2vec.Node2Vec at call time, not import time.
+
+    The node2vec distribution is provided by the [quvine] extra. Note that it
+    imports the deprecated pkg_resources module, so the extra pins
+    setuptools<81 -- without that pin this import fails even when node2vec
+    itself is installed.
+
+    Resolving it at *import* time would be wrong. ``baselines/__init__.py``
+    imports this module inside ``try/except ImportError``, so a module-level
+    failure left ``run_node2vec`` unbound; ``baselines/adapters.py`` then
+    imported that name to build the method registry and every registry method
+    -- netmf, appnp, graphgps -- died with a node2vec-specific ImportError
+    instead of naming its own missing dependency.
+    """
+    return require_module("node2vec", method="node2vec").Node2Vec
 
 
 def run_node2vec(
@@ -45,6 +57,7 @@ def run_node2vec(
         Canonical node ordering (must match graph_data.nodes)
     """
 
+    Node2Vec = _node2vec_class()
     node2vec = Node2Vec(
         graph,
         dimensions=dimensions,

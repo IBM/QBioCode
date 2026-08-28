@@ -171,6 +171,7 @@ def main(args):
                     n_neighbors=args.get("n_neighbors", 30),
                     n_components=args["n_components"],
                     method=None,
+                    quvine_args=args.get("quvine_args", {}),
                 )
                 summary.update({'embeddings': embed})
                 model_results.update({'embeddings': embed})

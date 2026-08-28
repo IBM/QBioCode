@@ -56,7 +56,14 @@ from .data_generation import (
 from .data_generation.generator import generate_data
 
 # ====== Import embedding functions ======
-from .embeddings.embed import get_embeddings, pqk
+from .embeddings.embed import (
+    QUVINE_HEADLINE_METHODS,
+    QUVINE_METHODS,
+    SKLEARN_METHODS,
+    get_embeddings,
+    is_transductive,
+    pqk,
+)
 
 # ====== Import evaluation functions ======
 from .evaluation.dataset_evaluation import evaluate
@@ -124,6 +131,10 @@ __all__ = [
     "compute_pqk",
     # Embeddings
     "get_embeddings",
+    "is_transductive",
+    "SKLEARN_METHODS",
+    "QUVINE_HEADLINE_METHODS",
+    "QUVINE_METHODS",
     "pqk",
     # Utilities
     "scaler_fn",
