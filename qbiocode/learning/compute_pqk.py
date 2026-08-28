@@ -1,4 +1,19 @@
+# Copyright 2026, IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # ====== Base class imports ======
+import hashlib
 import os
 import time
 import warnings
@@ -90,11 +105,30 @@ def compute_pqk(
     if not os.path.exists(projection_dir):
         os.makedirs(projection_dir)
 
+    # The cached projections are only valid for the exact feature map that produced them, so the
+    # feature-map parameters must be part of the cache key. Without this, changing `encoding`,
+    # `entanglement`, `reps` or `primitive` and rerunning into the same pqk_projection_dir
+    # silently reloads the previous run's projections and reports them as the new result.
+    # A short digest keeps the filename bounded regardless of how many parameters are added.
+    feature_map_fingerprint = hashlib.sha256(
+        repr(
+            (
+                ("model", model),
+                ("encoding", encoding),
+                ("primitive", primitive),
+                ("entanglement", entanglement),
+                ("reps", int(reps)),
+            )
+        ).encode("utf-8")
+    ).hexdigest()[:10]
+
     file_projection_train = os.path.join(
-        projection_dir, "pqk_projection_" + data_key + "_train.npy"
+        projection_dir,
+        "pqk_projection_" + data_key + "_" + feature_map_fingerprint + "_train.npy",
     )
     file_projection_test = os.path.join(
-        projection_dir, "pqk_projection_" + data_key + "_test.npy"
+        projection_dir,
+        "pqk_projection_" + data_key + "_" + feature_map_fingerprint + "_test.npy",
     )
     checkpoint_dir = os.path.join(projection_dir, "checkpoints")
     os.makedirs(checkpoint_dir, exist_ok=True)
@@ -131,6 +165,18 @@ def compute_pqk(
             raise ValueError(
                 f"Projection file {path} has {len(projections)} rows, "
                 f"but the current dataset expects {expected_len} rows. "
+                "Remove this projection file or use a different pqk_projection_dir."
+            )
+        # Each row holds one expectation value per Pauli-X/Y/Z observable per qubit, so the
+        # flattened width must be 3 * feat_dimension. A mismatch means the file was written by a
+        # run with a different feature dimension and must not be silently reused.
+        expected_width = 3 * feat_dimension
+        actual_width = int(np.prod(np.asarray(projections).shape[1:])) if len(projections) else 0
+        if len(projections) and actual_width != expected_width:
+            raise ValueError(
+                f"Projection file {path} has {actual_width} features per row, "
+                f"but the current feature map produces {expected_width} "
+                f"(3 observables x {feat_dimension} qubits). "
                 "Remove this projection file or use a different pqk_projection_dir."
             )
 
@@ -198,131 +244,133 @@ def compute_pqk(
         backend, session, prim = qutils.get_backend_session(
             args, "estimator", num_qubits=num_qubits
         )
+        try:
 
-        # Transpile
-        if args["backend"] != "simulator":
-            circuit = qutils.transpile_circuit(
-                circuit, opt_level=3, backend=backend, PT=True, initial_layout=None
-            )
+            # Transpile
+            if args["backend"] != "simulator":
+                circuit = qutils.transpile_circuit(
+                    circuit, opt_level=3, backend=backend, PT=True, initial_layout=None
+                )
 
-        # Set the global phase to 0 to avoid header size issues
-        circuit.global_phase = 0
+            # Set the global phase to 0 to avoid header size issues
+            circuit.global_phase = 0
         
-        for f_tr, dat in [
-            (file_projection_train, X_train.copy()),
-            (file_projection_test, X_test.copy()),
-        ]:
-            if not os.path.exists(f_tr):
-                projections = []
+            for f_tr, dat in [
+                (file_projection_train, X_train.copy()),
+                (file_projection_test, X_test.copy()),
+            ]:
+                if not os.path.exists(f_tr):
+                    projections = []
 
-                # Identity operator on all qubits
-                id = "I" * feat_dimension
+                    # Identity operator on all qubits
+                    id = "I" * feat_dimension
 
-                # We group all commuting observables
-                # These groups are the Pauli X, Y and Z operators on individual qubits
-                # Apply the circuit layout to the observable if mapped to device
-                if args["backend"] != "simulator":
-                    observables_x = []
-                    observables_y = []
-                    observables_z = []
-                    for i in range(feat_dimension):
-                        observables_x.append(
-                            Pauli(id[:i] + "X" + id[(i + 1) :]).apply_layout(
-                                circuit.layout, num_qubits=backend.num_qubits
-                            )
-                        )
-                        observables_y.append(
-                            Pauli(id[:i] + "Y" + id[(i + 1) :]).apply_layout(
-                                circuit.layout, num_qubits=backend.num_qubits
-                            )
-                        )
-                        observables_z.append(
-                            Pauli(id[:i] + "Z" + id[(i + 1) :]).apply_layout(
-                                circuit.layout, num_qubits=backend.num_qubits
-                            )
-                        )
-                else:
-                    observables_x = [
-                        Pauli(id[:i] + "X" + id[(i + 1) :]) for i in range(feat_dimension)
-                    ]
-                    observables_y = [
-                        Pauli(id[:i] + "Y" + id[(i + 1) :]) for i in range(feat_dimension)
-                    ]
-                    observables_z = [
-                        Pauli(id[:i] + "Z" + id[(i + 1) :]) for i in range(feat_dimension)
-                    ]
-
-                checkpoint_file = _checkpoint_path(f_tr)
-                projections = _load_checkpoint(checkpoint_file, len(dat))
-                if projections:
-                    print(
-                        f"Resuming {os.path.basename(f_tr)} from "
-                        f"datapoint {len(projections)}"
-                    )
-
-                datapoints_in_session = 0
-                for i in range(len(projections), len(dat)):
-                    if i % 100 == 0:
-                        print(f"at datapoint {str(i)}")
-                    if (
-                        session is not None
-                        and session_chunk_size > 0
-                        and datapoints_in_session >= session_chunk_size
-                    ):
-                        session, prim = _refresh_runtime(session)
-                        datapoints_in_session = 0
-
-                    # Get training sample
-                    parameters = dat[i]
-
-                    # We define the primitive unified blocs (PUBs) consisting of the embedding circuit,
-                    # set of observables and the circuit parameters
-                    pub_x = (circuit, observables_x, parameters)
-                    pub_y = (circuit, observables_y, parameters)
-                    pub_z = (circuit, observables_z, parameters)
-
-                    retry_count = 0
-                    while True:
-                        try:
-                            job = prim.run([pub_x, pub_y, pub_z])
-                            job_result = job.result()
-                            job_result_x = job_result[0].data.evs
-                            job_result_y = job_result[1].data.evs
-                            job_result_z = job_result[2].data.evs
-                            break
-                        except Exception as exc:
-                            _save_projection_array(checkpoint_file, projections)
-                            if session is not None and _is_closed_session_error(exc):
-                                session, prim = _refresh_runtime(session)
-                                datapoints_in_session = 0
-                                continue
-                            if (
-                                session is not None
-                                and _is_retryable_runtime_error(exc)
-                                and retry_count < max_runtime_retries
-                            ):
-                                retry_count += 1
-                                print(
-                                    f"Retrying datapoint {i} after temporary runtime "
-                                    f"failure ({retry_count}/{max_runtime_retries})"
+                    # We group all commuting observables
+                    # These groups are the Pauli X, Y and Z operators on individual qubits
+                    # Apply the circuit layout to the observable if mapped to device
+                    if args["backend"] != "simulator":
+                        observables_x = []
+                        observables_y = []
+                        observables_z = []
+                        for i in range(feat_dimension):
+                            observables_x.append(
+                                Pauli(id[:i] + "X" + id[(i + 1) :]).apply_layout(
+                                    circuit.layout, num_qubits=backend.num_qubits
                                 )
-                                session, prim = _refresh_runtime(session)
-                                datapoints_in_session = 0
-                                continue
-                            raise
+                            )
+                            observables_y.append(
+                                Pauli(id[:i] + "Y" + id[(i + 1) :]).apply_layout(
+                                    circuit.layout, num_qubits=backend.num_qubits
+                                )
+                            )
+                            observables_z.append(
+                                Pauli(id[:i] + "Z" + id[(i + 1) :]).apply_layout(
+                                    circuit.layout, num_qubits=backend.num_qubits
+                                )
+                            )
+                    else:
+                        observables_x = [
+                            Pauli(id[:i] + "X" + id[(i + 1) :]) for i in range(feat_dimension)
+                        ]
+                        observables_y = [
+                            Pauli(id[:i] + "Y" + id[(i + 1) :]) for i in range(feat_dimension)
+                        ]
+                        observables_z = [
+                            Pauli(id[:i] + "Z" + id[(i + 1) :]) for i in range(feat_dimension)
+                        ]
 
-                    # Record <X>, <Y> and <Z> on all qubits for the current datapoint
-                    projections.append([job_result_x, job_result_y, job_result_z])
-                    datapoints_in_session += 1
-                    if checkpoint_every > 0 and len(projections) % checkpoint_every == 0:
-                        _save_projection_array(checkpoint_file, projections)
+                    checkpoint_file = _checkpoint_path(f_tr)
+                    projections = _load_checkpoint(checkpoint_file, len(dat))
+                    if projections:
+                        print(
+                            f"Resuming {os.path.basename(f_tr)} from "
+                            f"datapoint {len(projections)}"
+                        )
 
-                _save_projection_array(f_tr, projections)
-                if os.path.exists(checkpoint_file):
-                    os.remove(checkpoint_file)
+                    datapoints_in_session = 0
+                    for i in range(len(projections), len(dat)):
+                        if i % 100 == 0:
+                            print(f"at datapoint {str(i)}")
+                        if (
+                            session is not None
+                            and session_chunk_size > 0
+                            and datapoints_in_session >= session_chunk_size
+                        ):
+                            session, prim = _refresh_runtime(session)
+                            datapoints_in_session = 0
 
-        if not isinstance(session, type(None)):
-            session.close()
+                        # Get training sample
+                        parameters = dat[i]
+
+                        # We define the primitive unified blocs (PUBs) consisting of the embedding circuit,
+                        # set of observables and the circuit parameters
+                        pub_x = (circuit, observables_x, parameters)
+                        pub_y = (circuit, observables_y, parameters)
+                        pub_z = (circuit, observables_z, parameters)
+
+                        retry_count = 0
+                        while True:
+                            try:
+                                job = prim.run([pub_x, pub_y, pub_z])
+                                job_result = job.result()
+                                job_result_x = job_result[0].data.evs
+                                job_result_y = job_result[1].data.evs
+                                job_result_z = job_result[2].data.evs
+                                break
+                            except Exception as exc:
+                                _save_projection_array(checkpoint_file, projections)
+                                if session is not None and _is_closed_session_error(exc):
+                                    session, prim = _refresh_runtime(session)
+                                    datapoints_in_session = 0
+                                    continue
+                                if (
+                                    session is not None
+                                    and _is_retryable_runtime_error(exc)
+                                    and retry_count < max_runtime_retries
+                                ):
+                                    retry_count += 1
+                                    print(
+                                        f"Retrying datapoint {i} after temporary runtime "
+                                        f"failure ({retry_count}/{max_runtime_retries})"
+                                    )
+                                    session, prim = _refresh_runtime(session)
+                                    datapoints_in_session = 0
+                                    continue
+                                raise
+
+                        # Record <X>, <Y> and <Z> on all qubits for the current datapoint
+                        projections.append([job_result_x, job_result_y, job_result_z])
+                        datapoints_in_session += 1
+                        if checkpoint_every > 0 and len(projections) % checkpoint_every == 0:
+                            _save_projection_array(checkpoint_file, projections)
+
+                    _save_projection_array(f_tr, projections)
+                    if os.path.exists(checkpoint_file):
+                        os.remove(checkpoint_file)
+
+        finally:
+            if not isinstance(session, type(None)):
+                session.close()
 
     # Load computed projections
     projections_train = np.load(file_projection_train)

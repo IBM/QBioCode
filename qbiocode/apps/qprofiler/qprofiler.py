@@ -1,19 +1,28 @@
+# Copyright 2026, IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 # ====== Base class imports ======
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import logging
-from datetime import datetime, timezone
-import json
 import pickle
 import os
 import re
 import csv
 import time
-import sys
 # ====== Hydra imports ======
 import hydra
-from hydra import compose, initialize_config_dir
 
 # ====== Scikit-learn imports ======
 from sklearn.model_selection import train_test_split
@@ -26,18 +35,13 @@ dir_home = re.sub( 'QBioCode.*', 'QBioCode', os.getcwd() )
 sys.path.append( dir_home )
 
 # ====== Scaling and encoding functions imports ======
-from qbiocode import scaler_fn, feature_encoding
+from qbiocode import scale_train_test, feature_encoding
 from qbiocode import get_embeddings
 # ====== Evaluation functions imports ====
 #from qmlbench.evaluation.dataset_evaluation_no_var_threshold import evaluate2 # use this for moons/circles data, otherwise you'll run into an error with finding no features with minimum variance threshold
 from qbiocode import evaluate
 from qbiocode import model_run
 
-# Get the directory where this script is located for default config
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-DEFAULT_CONFIG_PATH = os.path.join(SCRIPT_DIR, 'configs')
-
-current_dir = os.getcwd()
 # Begin the main function and instatiate Hydra class
 # config_path=None allows --config-dir to work properly
 @hydra.main(config_path=None, config_name='config', version_base='1.1')
@@ -81,10 +85,6 @@ def main(args):
         algorithm_globals.random_seed = args['q_seed']
 
         dataset_start_time = time.time()
-        # dataset timestamps (may or may not be neccessary, since hydra already timestamps every log?)
-        TIMESTAMP = datetime.now(timezone.utc)
-        dataset_timestamp_str = TIMESTAMP.strftime("%Y_%m_%d_%H_%M_%S_%f")
-        #
         summary = {}
         model_results = {}
         summary.update({'Dataset':file})
@@ -141,20 +141,24 @@ def main(args):
             
             # Apply stratification based on config
             # stratify can be: ['y'], ['Y'], or empty list/None for no stratification
+            # Distinct-but-reproducible split per iteration: random_state = seed + iter makes
+            # every split different from the others, yet deterministic across reruns and
+            # independent of any other RNG consumers (embeddings etc.) that run before it.
+            split_seed = args['seed'] + iter
             if use_stratify and len(use_stratify) > 0:
                 X_train, X_test, y_train, y_test = train_test_split(
-                    X, y_encoded, stratify=y_encoded, test_size=test_size
+                    X, y_encoded, stratify=y_encoded, test_size=test_size, random_state=split_seed
                 )
                 log.info(f"Begin processing iteration (split) {iter} of {args['iter']} with stratified sampling")
             else:
                 X_train, X_test, y_train, y_test = train_test_split(
-                    X, y_encoded, test_size=test_size
+                    X, y_encoded, test_size=test_size, random_state=split_seed
                 )
                 log.info(f"Begin processing iteration (split) {iter} of {args['iter']} without stratification")
-            #Scale the features
+            # Scale the features: fit one scaler on TRAIN and apply it to TEST (never fit a
+            # separate scaler on the test set -- that would use test-set statistics).
             if 'True' in args['scaling']:
-                X_train = scaler_fn(X_train, scaling='MinMaxScaler')
-                X_test = scaler_fn(X_test, scaling='MinMaxScaler')
+                X_train, X_test = scale_train_test(X_train, X_test, scaling='MinMaxScaler')
         
             # Embed the training data and test data separately
             for embed in args['embeddings']:
@@ -162,7 +166,12 @@ def main(args):
                     log.info(f"No feature reduction (embedding) applied in this iteration")
                 else:
                     log.info(f"Feature reduction (embedding) applied with {embed}")    
-                X_train_emb, X_test_emb = get_embeddings(embed, X_train, X_test, n_components=args["n_components"], method=None)
+                X_train_emb, X_test_emb = get_embeddings(
+                    embed, X_train, X_test,
+                    n_neighbors=args.get("n_neighbors", 30),
+                    n_components=args["n_components"],
+                    method=None,
+                )
                 summary.update({'embeddings': embed})
                 model_results.update({'embeddings': embed})
                 

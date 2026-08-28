@@ -1,3 +1,17 @@
+# Copyright 2026, IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import os
 from functools import reduce
 
@@ -87,91 +101,93 @@ def pqk(
 
     #  Generate the backend, session and primitive
     backend, session, prim = qutils.get_backend_session(args, "estimator", num_qubits=num_qubits)
+    try:
 
-    # Transpile
-    if args["backend"] != "simulator":
-        circuit = qutils.transpile_circuit(
-            circuit, opt_level=3, backend=backend, PT=True, initial_layout=None
-        )
-
-    for f_tr in ["train", "test"]:
-
-        if "train" in f_tr:
-            dat = X_train.copy()
-        else:
-            dat = X_test.copy()
-
-        # Identity operator on all qubits
-        id = "I" * feat_dimension
-
-        # We group all commuting observables
-        # These groups are the Pauli X, Y and Z operators on individual qubits
-        # Apply the circuit layout to the observable if mapped to device
+        # Transpile
         if args["backend"] != "simulator":
-            observables_x = []
-            observables_y = []
-            observables_z = []
-            for i in range(feat_dimension):
-                observables_x.append(
-                    Pauli(id[:i] + "X" + id[(i + 1) :]).apply_layout(
-                        circuit.layout, num_qubits=backend.num_qubits
-                    )
-                )
-                observables_y.append(
-                    Pauli(id[:i] + "Y" + id[(i + 1) :]).apply_layout(
-                        circuit.layout, num_qubits=backend.num_qubits
-                    )
-                )
-                observables_z.append(
-                    Pauli(id[:i] + "Z" + id[(i + 1) :]).apply_layout(
-                        circuit.layout, num_qubits=backend.num_qubits
-                    )
-                )
-        else:
-            observables_x = [Pauli(id[:i] + "X" + id[(i + 1) :]) for i in range(feat_dimension)]
-            observables_y = [Pauli(id[:i] + "Y" + id[(i + 1) :]) for i in range(feat_dimension)]
-            observables_z = [Pauli(id[:i] + "Z" + id[(i + 1) :]) for i in range(feat_dimension)]
-
-        # projections[i][j][k] will be the expectation value of the j-th Pauli operator (0: X, 1: Y, 2: Z)
-        # of datapoint i on qubit k
-        projections = []
-
-        for i in range(len(dat)):
-
-            # Get training sample
-            parameters = dat[i]
-
-            # We define the primitive unified blocs (PUBs) consisting of the embedding circuit,
-            # set of observables and the circuit parameters
-            pub_x = (circuit, observables_x, parameters)
-            pub_y = (circuit, observables_y, parameters)
-            pub_z = (circuit, observables_z, parameters)
-
-            job = prim.run([pub_x, pub_y, pub_z])
-            job_result_x = job.result()[0].data.evs
-            job_result_y = job.result()[1].data.evs
-            job_result_z = job.result()[2].data.evs
-
-            # Record <X>, <Y> and <Z> on all qubits for the current datapoint
-            projections.append([job_result_x, job_result_y, job_result_z])
-
-        if store:
-            if not os.path.exists("pqk_projections"):
-                os.makedirs("pqk_projections")
-
-            file_projection = os.path.join(
-                "pqk_projections", "pqk_projection_" + data_key + "_" + f_tr + ".npy"
+            circuit = qutils.transpile_circuit(
+                circuit, opt_level=3, backend=backend, PT=True, initial_layout=None
             )
 
-            np.save(file_projection, projections)
+        for f_tr in ["train", "test"]:
 
-        if "train" in f_tr:
-            X_train_prj = np.array(projections.copy()).reshape(len(projections), -1)
-        else:
-            X_test_prj = np.array(projections.copy()).reshape(len(projections), -1)
+            if "train" in f_tr:
+                dat = X_train.copy()
+            else:
+                dat = X_test.copy()
 
-    if not isinstance(session, type(None)):
-        session.close()
+            # Identity operator on all qubits
+            id = "I" * feat_dimension
+
+            # We group all commuting observables
+            # These groups are the Pauli X, Y and Z operators on individual qubits
+            # Apply the circuit layout to the observable if mapped to device
+            if args["backend"] != "simulator":
+                observables_x = []
+                observables_y = []
+                observables_z = []
+                for i in range(feat_dimension):
+                    observables_x.append(
+                        Pauli(id[:i] + "X" + id[(i + 1) :]).apply_layout(
+                            circuit.layout, num_qubits=backend.num_qubits
+                        )
+                    )
+                    observables_y.append(
+                        Pauli(id[:i] + "Y" + id[(i + 1) :]).apply_layout(
+                            circuit.layout, num_qubits=backend.num_qubits
+                        )
+                    )
+                    observables_z.append(
+                        Pauli(id[:i] + "Z" + id[(i + 1) :]).apply_layout(
+                            circuit.layout, num_qubits=backend.num_qubits
+                        )
+                    )
+            else:
+                observables_x = [Pauli(id[:i] + "X" + id[(i + 1) :]) for i in range(feat_dimension)]
+                observables_y = [Pauli(id[:i] + "Y" + id[(i + 1) :]) for i in range(feat_dimension)]
+                observables_z = [Pauli(id[:i] + "Z" + id[(i + 1) :]) for i in range(feat_dimension)]
+
+            # projections[i][j][k] will be the expectation value of the j-th Pauli operator (0: X, 1: Y, 2: Z)
+            # of datapoint i on qubit k
+            projections = []
+
+            for i in range(len(dat)):
+
+                # Get training sample
+                parameters = dat[i]
+
+                # We define the primitive unified blocs (PUBs) consisting of the embedding circuit,
+                # set of observables and the circuit parameters
+                pub_x = (circuit, observables_x, parameters)
+                pub_y = (circuit, observables_y, parameters)
+                pub_z = (circuit, observables_z, parameters)
+
+                job = prim.run([pub_x, pub_y, pub_z])
+                job_result_x = job.result()[0].data.evs
+                job_result_y = job.result()[1].data.evs
+                job_result_z = job.result()[2].data.evs
+
+                # Record <X>, <Y> and <Z> on all qubits for the current datapoint
+                projections.append([job_result_x, job_result_y, job_result_z])
+
+            if store:
+                if not os.path.exists("pqk_projections"):
+                    os.makedirs("pqk_projections")
+
+                file_projection = os.path.join(
+                    "pqk_projections", "pqk_projection_" + data_key + "_" + f_tr + ".npy"
+                )
+
+                np.save(file_projection, projections)
+
+            if "train" in f_tr:
+                X_train_prj = np.array(projections.copy()).reshape(len(projections), -1)
+            else:
+                X_test_prj = np.array(projections.copy()).reshape(len(projections), -1)
+
+    finally:
+        if not isinstance(session, type(None)):
+            session.close()
 
     return X_train_prj, X_test_prj
 
@@ -192,6 +208,13 @@ def get_embeddings(embedding: str, X_train, X_test, n_neighbors=30, n_components
     """
 
     embedding = embedding.lower()
+
+    # Default the embedding width to the feature count. This is the documented behavior, but
+    # without it `n_components=None` (the documented default!) reaches the comparison below and
+    # raises TypeError: '<=' not supported between 'NoneType' and 'int'.
+    if n_components is None:
+        n_components = X_train.shape[1]
+
     valid_modes = ["none", "pca", "lle", "isomap", "spectral", "umap", "nmf"]
     if embedding not in valid_modes:
         raise ValueError(f"Invalid mode: {embedding}. Mode must be one of {valid_modes}")
@@ -208,7 +231,7 @@ def get_embeddings(embedding: str, X_train, X_test, n_neighbors=30, n_components
         elif "nmf" == embedding:
             embedding_model = NMF(n_components=n_components)
         elif "lle" == embedding:
-            if method == None:
+            if method is None:
                 embedding_model = LocallyLinearEmbedding(
                     n_neighbors=n_neighbors, n_components=n_components, method="standard"
                 )
@@ -221,13 +244,20 @@ def get_embeddings(embedding: str, X_train, X_test, n_neighbors=30, n_components
                 n_neighbors=n_neighbors,
                 n_components=n_components,
             )
-        elif "spectral" == embedding:
-            embedding_model = SpectralEmbedding(n_components=n_components, eigen_solver="arpack")
         elif "umap" == embedding:
             embedding_model = UMAP(
                 n_neighbors=n_neighbors,
                 n_components=n_components,
             )
+
+        if "spectral" == embedding:
+            # SpectralEmbedding has no out-of-sample `transform`, so it must be fit
+            # transductively on the combined train+test rows and then sliced back. Only
+            # feature structure is used (no labels), so no label leakage is introduced.
+            n_train = X_train.shape[0]
+            X_all = np.vstack([X_train, X_test])
+            Z = SpectralEmbedding(n_components=n_components, eigen_solver="arpack").fit_transform(X_all)
+            return Z[:n_train], Z[n_train:]
 
         X_train = embedding_model.fit_transform(X_train)
         X_test = embedding_model.transform(X_test)

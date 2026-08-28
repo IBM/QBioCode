@@ -88,6 +88,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tests now work consistently across different file systems
 
 ### Fixed
+
+#### ⚠️ Train/test contamination in QProfiler — results change
+- **QProfiler no longer scales the test set with test-set statistics.** Previously
+  `qprofiler.py` called `scaler_fn` separately on each split, which fit a *fresh*
+  `MinMaxScaler` on `X_test`. The test features were therefore normalized using the test
+  set's own min/max — both a use of held-out information and a train/test distribution
+  mismatch, since the model was trained under a different transform than it was evaluated
+  under. One scaler is now fit on `X_train` and applied to `X_test` via the new
+  `qbiocode.scale_train_test`.
+- **Consequence: metrics produced by QProfiler before this change are not comparable to
+  metrics produced after it.** Any accuracy/F1/AUC numbers carried over from an earlier run
+  should be regenerated. Affected tutorial notebooks have been re-executed.
+- **`seed` now actually controls the train/test split.** `train_test_split` was called with
+  no `random_state`, so iterations were irreproducible and the configured `seed` was silently
+  ignored for splitting — despite an inline comment claiming the splits "will be based on the
+  seed". Each iteration now uses `random_state = seed + iter`: distinct across iterations,
+  deterministic across reruns, and independent of other RNG consumers.
+
+#### Embeddings
+- `get_embeddings(..., n_components=None)` — the documented default — raised
+  `TypeError: '<=' not supported between instances of 'NoneType' and 'int'` instead of
+  defaulting to the feature count. It now defaults to `X_train.shape[1]` as documented.
+- `spectral` embedding raised `AttributeError: 'SpectralEmbedding' object has no attribute
+  'transform'` on every run. `SpectralEmbedding` has no out-of-sample transform, so it is now
+  fit transductively over the combined train+test rows and sliced back. Only feature structure
+  participates — no labels — so no label leakage is introduced.
+
+#### Quantum sessions and caching
+- Qiskit Runtime sessions in `embed.pqk` and `learning.compute_pqk` are now closed in a
+  `finally` block. An exception mid-computation previously leaked the session, leaving jobs
+  queued against the user's account.
+- **PQK projection caches are now keyed by the feature map that produced them.** The cache
+  filename omitted `encoding`, `entanglement`, `reps` and `primitive`, so re-running with a
+  different feature map into the same `pqk_projection_dir` silently reloaded the previous
+  run's projections and reported them as the new result. A short digest of those parameters
+  is now part of the filename.
+- Cached projection files are also validated on width (`3 x feat_dimension`), not just row
+  count, so a file written with a different feature dimension is rejected rather than reused.
+
+#### Earlier fixes
 - Invalid escape sequence in `qbiocode/visualization/visualize_correlation.py`
 - Import ordering issues throughout codebase
 - Type-check errors in CI pipeline
