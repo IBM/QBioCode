@@ -15,12 +15,20 @@
 import networkx as nx 
 import numpy as np
 from qbiocode.apps.quvine._deps import require_module
-
-# hiperwalk is provided by the [quvine] extra. Resolving it through
-# require_module turns its absence into a message that names the extra and
-# the install command, rather than a bare ModuleNotFoundError traceback.
-hpw = require_module("hiperwalk", feature="continuous-time quantum walks (CTQW)")
 from qbiocode.apps.quvine.utils.utilities import sample_walks_from_distribution
+
+
+def _hiperwalk():
+    """Resolve hiperwalk at call time, not import time.
+
+    hiperwalk is provided by the [quvine] extra; require_module turns its absence
+    into a message naming the extra and the install command rather than a bare
+    ModuleNotFoundError. Resolving it at *import* time would be wrong: walks/base.py
+    imports this module eagerly, so an RWR-only run -- which never touches a quantum
+    walk -- would fail with a CTQW message pointing at the wrong dependency.
+    """
+    return require_module("hiperwalk", feature="continuous-time quantum walks (CTQW)")
+
 
 def generate_ctqw_hiperwalk_scores(G, root, view_nodes=None, steps: int=20, time: float | None=None, gamma: float | None=None):
     """
@@ -45,6 +53,7 @@ def generate_ctqw_hiperwalk_scores(G, root, view_nodes=None, steps: int=20, time
     
     
     #build hiperwalk graph + ctqw
+    hpw = _hiperwalk()
     hg = hpw.Graph(G_int)
     qw = hpw.ContinuousTime(graph=hg)
     

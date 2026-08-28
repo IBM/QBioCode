@@ -186,12 +186,14 @@ def _check_deps() -> None:
             "For CPU-only: pip install torch --index-url https://download.pytorch.org/whl/cpu"
         )
     if not PYG_AVAILABLE:
-        raise ImportError(
-            "PyTorch Geometric is required for GraphGPS.\n"
-            "Install with: pip install torch-geometric\n"
-            "See installation guide: https://pytorch-geometric.readthedocs.io/en/latest/install/installation.html\n"
-            "Quick install: pip install torch-geometric torch-scatter torch-sparse"
-        )
+        # Delegate to require_module so this reads like every other missing-extra
+        # message in QuVINE -- naming the [quvine] extra and the exact pip command
+        # -- instead of sending the user off to install torch-geometric by hand.
+        # It raises QuvineDependencyError, which is an ImportError subclass, so
+        # callers already catching ImportError here are unaffected.
+        from qbiocode.apps.quvine._deps import require_module
+
+        require_module("torch_geometric", feature="GraphGPS transformer embeddings")
 
 
 def set_seed(seed: int) -> None:

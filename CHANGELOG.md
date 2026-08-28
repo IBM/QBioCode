@@ -39,6 +39,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ImportError`, so code probing with `except ImportError` still works.
   `describe_environment()` and `missing_dependencies()` report what an environment has.
 
+- **QuVINE is a first-class embedding.** `qbiocode.get_embeddings("quvine_rwr", X_train,
+  X_test, n_components=8)` now works exactly like `"pca"`, `"nmf"` or `"umap"` — same call
+  shape, same return of `(Z_train, Z_test)`. Any of the 83 QuVINE method names is accepted;
+  a symmetric kNN graph is built over the rows, embedded, and reduced to `n_components`.
+  QProfiler reaches them through its existing `embeddings:` config list, and passes
+  `quvine_args` through for per-method overrides.
+  - `qbiocode.SKLEARN_METHODS`, `qbiocode.QUVINE_HEADLINE_METHODS` and
+    `qbiocode.QUVINE_METHODS` name what is available; `QUVINE_METHODS` is empty rather
+    than raising when the `[quvine]` extra is absent.
+  - Methods needing no extra beyond the base install — `netmf`, `appnp`, `gat_*` — work on
+    a bare `pip install qbiocode`.
+
+- **`qbiocode.is_transductive(name)`** reports whether a method sees test *features* at
+  embed time. `spectral` and every QuVINE method have no out-of-sample `transform`, so they
+  are fitted over the stacked train+test rows and sliced. `get_embeddings` now also emits a
+  single `UserWarning` per call for those methods, stating plainly that test features
+  participate in the geometry while test *labels* never do. Inductive methods are silent.
+
 - **Quantum Backend**: Noisy simulation support based on IBM device noise models
   - New backend format: `noisy_<device_name>` (e.g., `noisy_ibm_cleveland`)
   - Extracts noise model from actual IBM Quantum devices for realistic local simulation
@@ -236,6 +254,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `pip install qbiocode` / `git clone` with no extra install step". Both now document the
   `[quvine]` extra and what still works without it. A stale comment about avoiding a
   TensorFlow/Keras import at load time was also removed — no TensorFlow exists in the tree.
+
+- **Every registry method was unreachable.** `qbiocode/apps/quvine/data/` — imported by
+  `embedding/quantum_filters.py`, and through it by the adapter module that builds the
+  method registry — was never committed to the internal repository: an *unanchored* `data/`
+  rule in its `.gitignore` matched the directory at every depth and excluded it silently
+  (it appears nowhere in that repository's history). All 69 registry methods therefore died
+  with `ModuleNotFoundError: No module named 'qbiocode.apps.quvine.data'`.
+  `data/subgraph.py` is reimplemented here from its two call sites — bounded-radius ego-net
+  expansion is a well-determined graph primitive — which restores the whole registry.
+  Four modules remain absent (`data_loader`, `prepare`, `random_graphs`,
+  `random_graphs_extended`); they gate only `Pipeline`'s on-disk graph loading and the
+  synthetic benchmark generators in `reproducibility.graph_generator`, and they now raise
+  `QuvineDataUnavailableError` naming the module and the feature instead of a bare
+  `ModuleNotFoundError`. `qbiocode.apps.quvine.Pipeline` is importable again. External's
+  `.gitignore` anchors the rule as `/data/`, so dropping the original files in will track
+  them with no further change.
+- **Missing optional dependencies were attributed to the wrong feature.**
+  `walks/ctqw.py` and `walks/dtqw.py` bound `hiperwalk` at module scope, and `walks/base.py`
+  imports both eagerly — so an RWR-only run, which never performs a quantum walk, failed
+  reporting *"continuous-time quantum walks (CTQW) requires ... missing: hiperwalk"*.
+  `baselines/node2vec.py` had the same shape, and because `baselines/__init__.py` wraps its
+  imports in `except ImportError: pass`, that left `run_node2vec` unbound and every registry
+  method — netmf, appnp, graphgps — failed with a node2vec error. All three now resolve
+  their dependency at call time and each names its own. A test asserts structurally that no
+  module under `apps/quvine` calls `require_module` at module scope.
+- GraphGPS's missing-`torch_geometric` message told the user to `pip install
+  torch-geometric` by hand; it now goes through `require_module` and names the `[quvine]`
+  extra like every other one.
+- **The method registry printed to stdout.** `run_method` wrote `✓ netmf: 0.00 minutes` /
+  `✗ node2vec: FAILED - ...` on every call and logged a full traceback at `ERROR` for a
+  failure it then returned to its caller to re-raise. QProfiler calls this once per method
+  per iteration. Progress now goes through `logging`, the traceback is available at `DEBUG`,
+  and the causing exception travels on `MethodResult.exception` so `api.core` chains it
+  (`raise QuvineMethodError(...) from exc`) — the cause reaches the caller through the
+  exception rather than a stray log line.
+- `get_embeddings` validated nothing. Unknown method names raised `KeyError` or fell through
+  to an sklearn assertion; a non-string `embedding`, a non-integer, zero, negative, or
+  wider-than-the-input `n_components` all produced errors from deep in sklearn. Each now
+  raises `ValueError` at the boundary, naming the parameter, the value received and the
+  accepted set, with close-name suggestions for typos (`"pcaa"` → *Did you mean: pca?*).
+- `qbiocode.embeddings`' module docstring documented `get_embeddings(X, method='pca',
+  n_components=2)` — a signature the function has never had.
 
 #### Packaging and dependency declarations
 - Three dependencies were imported by the library but never declared:

@@ -63,6 +63,9 @@ class MethodResult:
         execution_time: Time taken in seconds
         success: Whether execution succeeded
         error: Error message if failed
+        exception: The exception that caused the failure, so callers can chain
+            (``raise ... from result.exception``) instead of losing the
+            traceback to a log line
         metadata: Additional metadata
     """
     name: str
@@ -70,6 +73,7 @@ class MethodResult:
     execution_time: float = 0.0
     success: bool = True
     error: Optional[str] = None
+    exception: Optional[BaseException] = None
     metadata: Optional[Dict[str, Any]] = None
     
     def __post_init__(self):
@@ -237,10 +241,16 @@ class MethodRegistry:
             
             execution_time = time.time() - start_time
             
+            # A library must not write to stdout: get_embeddings("netmf", ...) has to
+            # be as quiet as get_embeddings("pca", ...), and QProfiler calls it once
+            # per iteration per method. Route verbosity through logging so the caller
+            # decides where it goes.
             if self.verbose:
-                print(f"✓ {method_name}: {execution_time/60:.2f} minutes")
-            
-            logger.info(f"Method {method_name} completed in {execution_time:.2f}s")
+                logger.info(
+                    "Method %s completed in %.2f minutes", method_name, execution_time / 60
+                )
+            else:
+                logger.debug("Method %s completed in %.2fs", method_name, execution_time)
             
             return MethodResult(
                 name=method_name,
@@ -252,16 +262,19 @@ class MethodRegistry:
             
         except Exception as e:
             execution_time = time.time() - start_time
-            logger.error(f"Error executing {method_name}: {e}", exc_info=True)
-            
-            if self.verbose:
-                print(f"✗ {method_name}: FAILED - {str(e)}")
+            # One warning line, not a traceback: the exception travels on the result
+            # so api.core can chain it (`raise QuvineMethodError(...) from exc`) and
+            # the caller sees the real cause without the library dumping to stderr.
+            # The full traceback stays available at DEBUG.
+            logger.warning("Method %s failed: %s", method_name, e)
+            logger.debug("Traceback for %s", method_name, exc_info=True)
             
             return MethodResult(
                 name=method_name,
                 execution_time=execution_time,
                 success=False,
-                error=str(e)
+                error=str(e),
+                exception=e,
             )
     
     def run_all(
