@@ -1,0 +1,23 @@
+# ==========================================================================
+# Documentation toolchain -- the [docs] extra
+# ==========================================================================
+#   pip install "qbiocode[docs]"
+#   cd docs && make html          # output lands in docs/build/html
+#
+# NOTE: `pandoc` is deliberately absent. Pandoc is a system binary, not a
+# Python package; the PyPI `pandoc` distribution is a third-party wrapper
+# that does not provide it. Install the binary instead:
+#   macOS:  brew install pandoc
+#   Ubuntu: apt-get install -y pandoc
+# ==========================================================================
+
+sphinx
+sphinx-autodoc-typehints
+sphinx_rtd_theme
+sphinx-design
+myst_parser
+myst_nb
+nbsphinx
+better_apidoc
+furo
+pydata-sphinx-theme

@@ -63,22 +63,43 @@ Repository = "https://github.com/IBM/qbiocode"
 "Bug Tracker" = "https://github.com/IBM/qbiocode/issues"
 
 [project.optional-dependencies]
+# Mirrors of the tiered files in requirements/ -- tests/test_requirements_consistency.py
+# asserts that `quvine` and `docs` here match requirements-quvine.txt and
+# requirements-docs.txt exactly, so the two cannot drift apart.
 apps = [
     "hydra-core",
     "joblib",
 ]
+# QuVINE embedding app (qbiocode.apps.quvine). One all-or-nothing extra: with it
+# installed, every `get_embeddings("quvine_*", ...)` method resolves; without it,
+# `import qbiocode` and all classical embeddings still work.
+quvine = [
+    # node2vec imports the deprecated `pkg_resources`, removed in setuptools>=81.
+    "setuptools<81",
+    # gensim>=4.4 drops `scipy.triu` (removed in scipy 1.13); an older gensim would
+    # force numpy<2.0, conflicting with qiskit-machine-learning==0.9.0 (numpy>=2.0).
+    "gensim>=4.4",
+    "hiperwalk",
+    "node2vec",
+    "omegaconf",
+    "python-louvain",
+    "ripser",
+    "torch",
+    "torch-geometric",
+]
+# `pandoc` is intentionally not listed: it is a system binary, not a Python
+# package. Install it with brew/apt -- see requirements/requirements-docs.txt.
 docs = [
     "sphinx",
     "sphinx-autodoc-typehints",
     "sphinx_rtd_theme",
+    "sphinx-design",
     "myst_parser",
-    "better_apidoc",
-    "nbsphinx",
     "myst_nb",
+    "nbsphinx",
+    "better_apidoc",
     "furo",
     "pydata-sphinx-theme",
-    "pandoc",
-    "sphinx-design",
 ]
 dev = [
     "pytest>=7.0",
@@ -89,27 +110,9 @@ dev = [
     "mypy>=1.0",
     "types-PyYAML",
 ]
+# Union of every extra above. Keep in sync when adding to any tier.
 all = [
-    "hydra-core",
-    "joblib",
-    "sphinx",
-    "sphinx-autodoc-typehints",
-    "sphinx_rtd_theme",
-    "myst_parser",
-    "better_apidoc",
-    "nbsphinx",
-    "myst_nb",
-    "furo",
-    "pydata-sphinx-theme",
-    "pandoc",
-    "sphinx-design",
-    "pytest>=7.0",
-    "pytest-cov>=4.0",
-    "black>=23.0",
-    "isort>=5.0",
-    "flake8>=6.0",
-    "mypy>=1.0",
-    "types-PyYAML",
+    "qbiocode[apps,quvine,docs,dev]",
 ]
 
 [project.scripts]
@@ -122,12 +125,12 @@ include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["qbiocode*", "apps*"]
+include = ["qbiocode*"]
 exclude = ["tests*", "docs*", "archive*"]
 
 [tool.setuptools.dynamic]
 version = {attr = "qbiocode.version.__version__"}
-dependencies = {file = ["requirements-base.txt"]}
+dependencies = {file = ["requirements/requirements-base.txt"]}
 
 [tool.setuptools.package-data]
 qbiocode = ["py.typed"]

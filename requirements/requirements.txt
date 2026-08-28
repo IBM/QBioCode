@@ -1,0 +1,39 @@
+# ==========================================================================
+# QBioCode -- complete development environment
+# ==========================================================================
+# Everything: core runtime + the QuVINE embedding app + the Sphinx toolchain
+# + the test/lint tooling, plus QBioCode itself in editable mode.
+#
+# --------------------------------------------------------------------------
+# Create the environment (Python 3.12; tested on 3.12.4)
+# --------------------------------------------------------------------------
+#   cd <repo root>            # MUST be the repo root: the trailing "-e .[dev]"
+#                             # below is resolved relative to the CWD, not to
+#                             # this file.
+#   python3.12 -m venv .venv
+#   source .venv/bin/activate            # Windows: .venv\Scripts\activate
+#   python -m pip install --upgrade pip
+#   pip install -r requirements/requirements.txt
+#
+# The final "-e .[dev]" installs QBioCode (editable) plus the dev extra, so no
+# separate "pip install -e ." step is needed.
+#
+# Verify:
+#   python -c "import qbiocode; print(qbiocode.__version__)"
+#   python -c "from qbiocode.apps.quvine import list_methods; print(len(list_methods()), 'methods')"
+#   python -m pytest tests/ -o addopts=""
+#
+# Pandoc is a system binary and is NOT installed by pip; see
+# requirements-docs.txt for the platform command.
+# --------------------------------------------------------------------------
+# This file only aggregates the tiered lists -- edit those, never duplicate
+# a pin here.
+# ==========================================================================
+
+-r requirements-base.txt
+-r requirements-quvine.txt
+-r requirements-docs.txt
+
+# QBioCode itself (editable) + the [dev] extra from pyproject.toml.
+# Resolved relative to the CWD, so run pip from the repo root.
+-e .[dev]
