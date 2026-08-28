@@ -255,21 +255,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `[quvine]` extra and what still works without it. A stale comment about avoiding a
   TensorFlow/Keras import at load time was also removed — no TensorFlow exists in the tree.
 
-- **Every registry method was unreachable.** `qbiocode/apps/quvine/data/` — imported by
-  `embedding/quantum_filters.py`, and through it by the adapter module that builds the
-  method registry — was never committed to the internal repository: an *unanchored* `data/`
-  rule in its `.gitignore` matched the directory at every depth and excluded it silently
-  (it appears nowhere in that repository's history). All 69 registry methods therefore died
-  with `ModuleNotFoundError: No module named 'qbiocode.apps.quvine.data'`.
-  `data/subgraph.py` is reimplemented here from its two call sites — bounded-radius ego-net
-  expansion is a well-determined graph primitive — which restores the whole registry.
-  Four modules remain absent (`data_loader`, `prepare`, `random_graphs`,
-  `random_graphs_extended`); they gate only `Pipeline`'s on-disk graph loading and the
-  synthetic benchmark generators in `reproducibility.graph_generator`, and they now raise
-  `QuvineDataUnavailableError` naming the module and the feature instead of a bare
-  `ModuleNotFoundError`. `qbiocode.apps.quvine.Pipeline` is importable again. External's
-  `.gitignore` anchors the rule as `/data/`, so dropping the original files in will track
-  them with no further change.
+- **`qbiocode/apps/quvine/data/` was missing entirely, and with it every registry
+  method.** The directory was never committed to the internal repository: an *unanchored*
+  `data/` rule in its `.gitignore` matched it at every depth, so it was excluded silently
+  and appears nowhere in that repository's history. Because
+  `embedding/quantum_filters.py` imports it at module scope — and through it the adapter
+  module that builds the method registry — all 69 registry methods died with
+  `ModuleNotFoundError: No module named 'qbiocode.apps.quvine.data'`, and
+  `qbiocode.apps.quvine.Pipeline` was unimportable. The six modules
+  (`data_loader`, `prepare`, `sparsify`, `subgraph`, `random_graphs`,
+  `random_graphs_extended`) are recovered from the working tree they were written in and
+  are now tracked, restoring the registry, `Pipeline`, and all 15 synthetic graph families
+  in `reproducibility.graph_generator`. External's `.gitignore` anchors the rule as
+  `/data/`, so this cannot recur here. `graph_complexity.py`, which sat alongside them in
+  the standalone QuVINE distribution, is deliberately **not** carried over — nothing
+  imports it and `qbiocode.evaluate_graph` supersedes it.
+- `data.subgraph.expand_neighborhood` filtered roots absent from the graph only for
+  `radius >= 1`; at `radius=0` it returned the roots verbatim and so could hand back nodes
+  the graph does not contain. Roots are now filtered before the radius check.
 - **Missing optional dependencies were attributed to the wrong feature.**
   `walks/ctqw.py` and `walks/dtqw.py` bound `hiperwalk` at module scope, and `walks/base.py`
   imports both eagerly — so an RWR-only run, which never performs a quantum walk, failed

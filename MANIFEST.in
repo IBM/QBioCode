@@ -17,6 +17,8 @@ include .zenodo.json
 # Include configuration files
 recursive-include qbiocode/apps/qprofiler/configs *.yaml *.py
 recursive-include qbiocode/apps/quvine/configs *.yaml *.py
+# In-tree module documentation (e.g. the random-graph generator reference).
+recursive-include qbiocode *.md
 recursive-include tutorial/QProfiler/configs *.yaml
 recursive-include tutorial/Quantum_Projection_Learning/configs *.yaml
 
