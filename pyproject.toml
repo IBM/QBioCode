@@ -84,7 +84,6 @@ quvine = [
     "omegaconf",
     "python-louvain",
     "ripser",
-    "torch",
     "torch-geometric",
 ]
 # `pandoc` is intentionally not listed: it is a system binary, not a Python
@@ -119,6 +118,7 @@ all = [
 qprofiler = "qbiocode.apps.qprofiler.cli:main"
 qprofiler-batch = "qbiocode.apps.qprofiler.qprofiler_batchmode:main"
 qsage = "qbiocode.apps.sage.sage:main"
+quvine = "qbiocode.apps.quvine.cli:main"
 
 [tool.setuptools]
 include-package-data = true
@@ -135,6 +135,7 @@ dependencies = {file = ["requirements/requirements-base.txt"]}
 [tool.setuptools.package-data]
 qbiocode = ["py.typed"]
 "qbiocode.apps.qprofiler" = ["configs/*.yaml"]
+"qbiocode.apps.quvine" = ["configs/*.yaml"]
 
 [tool.black]
 line-length = 100

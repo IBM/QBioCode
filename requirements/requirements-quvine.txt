@@ -31,5 +31,6 @@ node2vec
 omegaconf
 python-louvain
 ripser
-torch
+# torch itself is NOT listed here: qbiocode.embeddings imports it eagerly, so it
+# is a base dependency. torch-geometric needs it and finds it there.
 torch-geometric

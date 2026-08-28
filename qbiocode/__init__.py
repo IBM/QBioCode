@@ -25,11 +25,11 @@ Main Modules
 ------------
 - learning: Classical and quantum machine learning algorithms
 - embeddings: Feature embedding and encoding methods
-- evaluation: Model and dataset evaluation tools
+- evaluation: Model, dataset and graph-complexity evaluation tools
 - data_generation: Synthetic dataset generators
 - visualization: Result visualization and correlation analysis
 - utils: Helper functions and utilities
-- apps: Command-line applications (QProfiler, QSage)
+- apps: Command-line applications (QProfiler, QSage, QuVINE)
 
 Quick Start
 -----------
@@ -60,6 +60,7 @@ from .embeddings.embed import get_embeddings, pqk
 
 # ====== Import evaluation functions ======
 from .evaluation.dataset_evaluation import evaluate
+from .evaluation.graph_evaluation import evaluate_graph
 from .evaluation.model_evaluation import modeleval
 from .evaluation.model_run import model_run
 
@@ -133,6 +134,7 @@ __all__ = [
     # Evaluation
     "modeleval",
     "evaluate",
+    "evaluate_graph",
     "model_run",
     # Visualization
     "plot_results_correlation",
