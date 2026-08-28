@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **QuVINE — Quantum View-based Network Embeddings** (`qbiocode.apps.quvine`), a new
+  in-tree app that turns a graph into low-dimensional node embeddings by combining
+  classical and quantum walks with skip-gram negative sampling.
+  - Multi-view graph construction, random walk with restart (RWR) and discrete-/
+    continuous-time quantum walks (DTQW/CTQW), SGNS embedding learning, quantum-calibrated
+    filter / GAT / GraphGPS variants, view fusion, and classical baselines
+    (node2vec, NetMF, APPNP, GraphSAGE, GCN-MF).
+  - 83 method names selectable by a single `method` string, resolved by
+    `qbiocode.apps.quvine.resolve_method()` and listed by `list_methods()`.
+  - New `quvine` command-line tool: embeds a 2- or 3-column edge list and writes
+    `embedding.csv` + `embedding_meta.json`.
+  - Programmatic API: `embed(G, method)` returning an `EmbedResult`, plus
+    `load_config`, `run_sgns`, `build_quantum_targets`.
+  - **Installed via an optional extra**: `pip install "qbiocode[quvine]"`. The Python
+    modules ship with QBioCode, but the heavy third-party dependencies (gensim,
+    hiperwalk, node2vec, torch-geometric, python-louvain, ripser, omegaconf) do not.
+    `import qbiocode` and every classical embedding work without the extra.
+
+- **Graph-complexity metrics**: `qbiocode.evaluate_graph(G, name="")` returns a one-row
+  `DataFrame` of graph descriptors (spectral gap, von Neumann entropy, modularity,
+  density, community and topological metrics, and more). Deliberately separate from the
+  embedding app — run it on the same graph to characterize it. Needs nothing beyond
+  networkx/scipy/pandas; the persistent-homology metrics are skipped with a warning
+  when `ripser` is absent.
+
+- **Actionable errors for optional dependencies**: `qbiocode.apps.quvine._deps` resolves
+  every `[quvine]` dependency through `require_module()`, so a missing one raises
+  `QuvineDependencyError` naming the method, the extra, the exact pip command and the
+  missing distribution, instead of a bare `ModuleNotFoundError` traceback. It subclasses
+  `ImportError`, so code probing with `except ImportError` still works.
+  `describe_environment()` and `missing_dependencies()` report what an environment has.
+
 - **Quantum Backend**: Noisy simulation support based on IBM device noise models
   - New backend format: `noisy_<device_name>` (e.g., `noisy_ibm_cleveland`)
   - Extracts noise model from actual IBM Quantum devices for realistic local simulation
@@ -155,6 +187,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is now part of the filename.
 - Cached projection files are also validated on width (`3 x feat_dimension`), not just row
   count, so a file written with a different feature dimension is rejected rather than reused.
+
+#### QuVINE method resolution and packaging
+- **The `quvine` CLI rejected its own default method.** `--method` defaults to
+  `quvine_fused`, but the CLI validated it against `list_methods()`, and the five fused
+  names (`quvine`, `quvine_fused`, `quvine_sgns`, `quvine_sgns_fused`, `fused`) were
+  handled directly inside `embed()` without ever being registered in the alias tables.
+  Running `quvine -i edges.csv -o out/` therefore always exited 1 with
+  `unknown method 'quvine_fused'`, and `resolve_method("quvine_fused")` raised
+  `KeyError`. Fused names are now a first-class kind in
+  `qbiocode/apps/quvine/api/aliases.py`: `resolve_method` returns `("fused", "fused")`,
+  `list_methods()` includes them (83 names, up from 78), `list_methods("fused")` filters
+  to them, and `core.embed` sources its fused-name set from the same table instead of
+  duplicating it. The CLI now validates through `resolve_method`, so its message carries
+  close-match suggestions and can no longer drift from what `embed()` dispatches.
+
+- **Four QuVINE subpackages were missing from a built wheel.** `walks/`, `corpus/`,
+  `utils/` and `configs/` had no `__init__.py`, so `[tool.setuptools.packages.find]`
+  skipped them. The modules imported fine from a source checkout — including
+  `from qbiocode.apps.quvine.walks.rwr import ...` — which is exactly why this went
+  unnoticed; an installed wheel raised `ModuleNotFoundError`. Each directory is now a
+  real package, and `tests/test_quvine_packaging.py` fails if any regains modules
+  without an `__init__.py`.
+
+- **`import qbiocode` no longer pulls in the `[quvine]` dependency set.**
+  `qbiocode/apps/quvine/api/__init__.py` eagerly imported `core`, `config`, `sgns` and
+  `targets`, so reaching the stdlib-only `resolve_method` dragged in omegaconf and
+  everything behind it. That only appeared to work because `hydra-core` pulls omegaconf
+  in transitively. Those attributes are resolved lazily now, which is what lets
+  `qbiocode.embeddings` probe method names on a bare install. The `quvine` CLI likewise
+  imports `embed` at its point of use, so `--help` and `--list-methods` work without
+  the extra.
+
+- **`torch` is declared in the base dependency set only.** It was listed in both the
+  base set and the `[quvine]` extra, which implied it was optional —
+  `qbiocode.embeddings.__init__` imports `ConvAutoencoder`, which imports torch eagerly,
+  so a bare `import qbiocode` already requires it. A missing torch is a broken install,
+  not a missing extra, and the `[quvine]` install hint would have been wrong advice.
+
+- **Stale dependency advice removed.** `embedding/word2vec.py` raised
+  `ImportError("... Try: pip install gensim==4.3.0 scipy==1.11.0")`, advising a downgrade
+  that conflicts with `qiskit-machine-learning==0.9.0` (which requires numpy>=2.0, while
+  gensim<4.4 forces numpy<2.0). It now names the `[quvine]` extra. The unused
+  `GENSIM_AVAILABLE` module flag was dropped along with it.
+
+- **Documentation claims corrected.** `qbiocode/apps/quvine/__init__.py` and
+  `docs/source/apps/quvine.rst` stated QuVINE was "available on a plain
+  `pip install qbiocode` / `git clone` with no extra install step". Both now document the
+  `[quvine]` extra and what still works without it. A stale comment about avoiding a
+  TensorFlow/Keras import at load time was also removed — no TensorFlow exists in the tree.
 
 #### Packaging and dependency declarations
 - Three dependencies were imported by the library but never declared:
