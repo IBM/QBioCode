@@ -81,7 +81,7 @@ The Meta-Learning Pipeline
 Data Complexity Features
 -------------------------
 
-QSage uses 23 complexity features extracted by :doc:`QProfiler <profiler>`. For detailed descriptions of each metric, see the :ref:`Data Complexity Measures <profiler:Data Complexity Measures>` section in the QProfiler documentation.
+QSage uses 23 complexity features extracted by :doc:`QProfiler <profiler>`. For detailed descriptions of each metric, see the :ref:`Data Complexity Measures <data-complexity-measures>` section in the QProfiler documentation.
 
 **Dimensionality (5 features)**
    - Number of features, samples, feature-to-sample ratio

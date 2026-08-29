@@ -1,5 +1,5 @@
 Quantum Computing for Multi-omics Analyses (ISMB 2026)
-=========================================
+======================================================
 
 .. image:: ../_static/workshops/ISMB26banner.png
    :align: center
@@ -96,7 +96,7 @@ Agenda
 ----
 
 Session I — Foundations (09:00–10:45)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Introduction (09:00–09:15)
    :icon: info
@@ -163,7 +163,7 @@ Session I — Foundations (09:00–10:45)
 ----
 
 Session II — QBioCode Applications (11:00–13:00)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Qprofiler in multi-omics data (11:00–11:45)  — 🖐️ Hands-on
    :icon: play
@@ -210,7 +210,7 @@ Session II — QBioCode Applications (11:00–13:00)
 ----
 
 Session III — Quantum Algorithms & Applications (14:00–16:00)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Quantum Algorithms for Healthcare and Life Sciences (14:00–14:40)
    :icon: info
@@ -294,7 +294,7 @@ Session III — Quantum Algorithms & Applications (14:00–16:00)
 ----
 
 Session IV — Hands-on + Discussion (16:15–18:00)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Continue implementation & results analysis (16:15–16:45)  — 🖐️ Hands-on
    :icon: cpu

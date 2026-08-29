@@ -195,6 +195,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is tracked by git, and the deploy job is gated to pushes on `main` and writes
   `.nojekyll`. The `omegaconf` mock gap above was found by this test, not by review.
 
+- **An integration test tier under `tests/integration/`.** The existing tests call
+  functions; these run the package the way a user does — through the console scripts, a
+  fresh interpreter, a real `sphinx-build`, a real QProfiler run — because that is the only
+  place several of this release's defects were reachable. The `_resolve_scaling`
+  `ListConfig` bug under *Fixed* was found by the first of them on its first run.
+  - `test_qprofiler_end_to_end.py` — runs the real `qprofiler` entry point on a small
+    synthetic dataset with `embeddings=[pca,none]`, `model=[lr,dt]`, `iter=2`, and asserts
+    on the `ModelResults.csv` it writes: every embedding × model × iteration produced a
+    row, the PCA rows report `n_components` features and the unembedded rows report all
+    five, the metrics are finite and in `[0, 1]`, and the classifier actually learned the
+    signal. Then the reproducibility contract from the seeding fix: **two runs at the same
+    seed are identical frames**, two seeds differ, and the two iterations of one run differ
+    from each other — the `split_seed = seed + iter` behaviour, asserted rather than
+    assumed.
+  - `test_qprofiler_quvine.py` — the same harness with `embeddings=[quvine_rwr]`, so the
+    QuVINE embedding path is exercised through the CLI and not only through `embed()`. Also
+    asserts the PCA safety net delivers exactly `n_components` columns and that the
+    transductivity `UserWarning` actually fires.
+  - `test_cli_smoke.py` — every name in `[project.scripts]`, read from `pyproject.toml` so
+    a script added later is covered automatically, imports and answers `--help` with exit
+    code 0 in a subprocess whose working directory is outside the checkout. This is the
+    regression guard for the `cli.py` import defect: a broken entry point fails here.
+  - `test_package_surface.py` — `__all__` has no duplicates and every name in it resolves;
+    the star-import surface matches it exactly; the four documented top-level helpers are
+    importable; and a subprocess asserts that `import qbiocode` leaves every `[quvine]`
+    dependency unimported, which is what makes the extra genuinely optional.
+  - `test_docs_build.py` — runs Sphinx into a temporary directory and asserts the
+    structural warning classes are empty and the expected pages were written, plus that the
+    `BUILDDIR` in `docs/Makefile` is the path `ci.yml` uploads. Skips when pandoc or
+    nbconvert's `rst` template is unavailable, so a missing docs toolchain reads as a skip
+    rather than a documentation failure.
+  - `test_notebook_execution.py` — executes the two fast tutorials end to end (`slow`,
+    deselected by default) from a copy in a temp directory, so a passing run cannot mutate
+    the checkout. Alongside them, cheap always-on checks assert no committed notebook is
+    *half* executed: a cell counts as run if it has either an execution count or outputs,
+    and every notebook must be entirely blank or entirely complete. The five that are
+    genuinely truncated — the two QEnsemble copies, the two 2×2 QuVINE copies, and the
+    single-cell CD4/CD8 notebook, which need a quantum backend, a long ensemble sweep, or
+    `anndata` — are strict `xfail`s with the reason recorded, so they are visible instead
+    of silently tolerated, and a stale entry fails the test.
+
+- **`tests/test_graph_evaluation_edges.py`** — 38 tests putting `evaluate_graph` on the
+  degenerate graphs a caller will eventually hand it: empty, single node, self-loop,
+  disconnected, complete, star, weighted, directed. It pins the *contract* rather than a
+  column schema, since which metrics are computable legitimately varies with the graph: one
+  summary row, no infinities, byte-identical output across two calls, and undefined metrics
+  absent or `nan` rather than a plausible-looking `0.0`. A handful of known answers are
+  checked outright — K5 has density 1.0 and modularity 0.0, two disjoint triangles have
+  modularity 0.5 and a zero normalized spectral gap.
+
+- **`tests/test_leakage_contract.py`, `tests/test_split_reproducibility.py` and
+  `tests/test_pqk_cache_key.py`** — one module per machine-learning defect fixed in this
+  release, asserting the property rather than the implementation. Scaling a fixed train set
+  alone and with a wildly shifted test set appended must give *identical* train output;
+  identical seeds must give identical split indices and different seeds different ones; and
+  two `compute_pqk` calls differing only in `encoding`, `reps` or `entanglement` must write
+  different cache files, with a shape-mismatched cache rejected rather than loaded.
+
 ### Changed
 - **Code Formatting**: Applied consistent code style across entire codebase
   - Ran `black` formatter on all Python files
@@ -248,6 +306,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   consumes that artifact. The `lint` job's `black`/`isort`/`mypy` steps keep
   `continue-on-error` — the tree is not fully formatted, and changing that is a separate
   piece of work.
+
+- **Testing**: `pytest` no longer requires `pytest-cov` to start. `addopts` hardcoded
+  `--cov=qbiocode`, so a bare `pytest` failed outright with `unrecognized arguments` in
+  any environment that installed the package rather than the `[dev]` extra. CI passes
+  `--cov` explicitly instead. `addopts` now carries `-m 'not slow and not
+  requires_quantum'`, and both markers are registered: `slow` for the minutes-long
+  notebook executions and `requires_quantum` for anything needing a real backend and
+  credentials. The default run stays fast; the excluded tiers run with `pytest -m slow`
+  and `pytest -m requires_quantum`.
 
 - **Dependencies**: removed `tensorflow` from the dependency set. Nothing in
   `qbiocode/`, the tutorials, or the docs imports TensorFlow or Keras — the only
@@ -344,6 +411,14 @@ have been re-executed.
   of all, `scaling: true`. All spellings — bool, `['True']`, `true`/`yes`/`1`,
   `false`/`no`/`0`/`none`, or a scaler name — are now resolved explicitly, and anything else
   is an error rather than a quietly disabled transform.
+  The first version of that fix then rejected the shipped `config.yaml`'s own
+  `scaling: ['True']`: it unwrapped single-element sequences behind
+  `isinstance(value, list)`, and Hydra hands the config over as
+  `omegaconf.ListConfig`, which is a `Sequence` but *not* a `list` subclass. Every
+  dict-based unit test passed and the real CLI path raised
+  `ValueError: Unrecognized scaling ['True']`. The test is now on `Sequence`, and the
+  docstring names the trap. Found by the new end-to-end QProfiler test on its first run —
+  no unit test built from plain dicts could have caught it.
 - **`compute_pqk` accepted a `primitive` it never used.** `primitive="sampler"` changed only
   the cache fingerprint, not the computation: projected quantum kernels are Pauli expectation
   values and the backend is requested as `"estimator"` unconditionally. That produced two
@@ -694,6 +769,37 @@ have been re-executed.
   it backs QuVINE's config loading, so without it `api/config`, `api/core`, `api/sgns`,
   `main`, `pipeline` and `utils/io` were all unimportable. Base dependencies are deliberately *not*
   mocked: mocking them would hide a genuinely broken install behind a clean docs build.
+
+- **Four broken documentation references, found by running the build rather than reading
+  the sources.** Each one rendered as a visible defect on the published site:
+  - `workshops/ISMB_2025.rst` embedded `../_static/qml_multiomics.png`, which has never
+    been committed to either repository — a broken image on the workshop page. The
+    directive is removed; nothing else on the page referred to the figure.
+  - `apps/sage.rst` linked `:ref:`Data Complexity Measures <profiler:Data Complexity
+    Measures>``. That `docname:Title` form needs `sphinx.ext.autosectionlabel`, which is
+    not enabled, so the reference could never resolve. `apps/profiler.rst` now carries an
+    explicit `.. _data-complexity-measures:` target and `sage.rst` points at it.
+  - `apps/config.md` linked the QProfiler config as
+    `../../../apps/qprofiler/configs/config.yaml` — a path that predates the move into
+    `qbiocode/` and escapes the docs tree. It now links the file on GitHub.
+  - `tutorials/QSage/qsage.ipynb` linked its own section with the GitHub anchor
+    `#3b-load-pre-compiled-model-recommended`. nbsphinx slugs headings differently, so the
+    link was dead in the rendered HTML; it now uses the nbsphinx form.
+
+- **Thirteen docutils warnings and errors in docstrings and workshop pages.**
+  `graph_evaluation.py` wrote graph-theory cardinalities as `|V|`, `|E|` and
+  `|N(u) ∩ N(v)|`, which RST reads as substitution references — three ERRORs and no
+  rendered formula. They are now inline literals. Ten section underlines in
+  `workshops/ISMB_2025.rst` and `workshops/ISMB_2026.rst` were shorter than their titles.
+
+  The build is now verified locally: `python -m sphinx -b html docs/source` succeeds and
+  emits **no** structural warnings (broken toctree, undefined label, unknown document,
+  unreadable image, failed autodoc import). 83 warnings remain, all docstring-formatting
+  nits — unindented block quotes, definition lists, and title underlines — spread across
+  about twenty modules. Reformatting every docstring in the tree is deliberately out of
+  scope for this release, which is why the build is not run under `-W`; the new
+  `tests/integration/test_docs_build.py` asserts the *structural* warning classes are
+  empty instead, which is the contract that matters and cannot regress silently.
 
 #### Earlier fixes
 - Invalid escape sequence in `qbiocode/visualization/visualize_correlation.py`

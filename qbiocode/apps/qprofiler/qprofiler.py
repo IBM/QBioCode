@@ -16,6 +16,7 @@
 import numpy as np
 import pandas as pd
 import logging
+from collections.abc import Sequence
 import pickle
 import os
 import re
@@ -61,6 +62,12 @@ def _resolve_scaling(scaling):
     YAML of all -- ``scaling: true``. All four spellings are accepted here, and
     anything else is named as an error instead of quietly disabling scaling.
 
+    The single-element unwrapping tests ``Sequence`` rather than ``list``: Hydra
+    hands the config over as ``omegaconf.ListConfig``, which is a ``Sequence``
+    but *not* a ``list`` subclass, so an ``isinstance(value, list)`` test passes
+    every dict-based unit test and then rejects the shipped config's own
+    ``scaling: ['True']`` on the real CLI path.
+
     Returns:
         str: ``'MinMaxScaler'``, ``'StandardScaler'`` or ``'None'``.
 
@@ -68,7 +75,7 @@ def _resolve_scaling(scaling):
         ValueError: if the value is not a recognized flag or scaler name.
     """
     value = scaling
-    if isinstance(value, (list, tuple)):
+    if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
         if len(value) != 1:
             raise ValueError(
                 f"scaling accepts a single value; got {list(value)!r}. Use "
