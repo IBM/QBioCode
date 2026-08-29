@@ -43,8 +43,11 @@ from sklearn.metrics import (
     confusion_matrix, classification_report
 )
 from sklearn.preprocessing import StandardScaler
+import logging
 import warnings
 
+
+logger = logging.getLogger(__name__)
 
 def generate_community_labels(
     G: nx.Graph,
@@ -669,11 +672,23 @@ def evaluate_nc_stratified(
     """
     try:
         labels = generate_community_labels(G, method=label_strategy)
-    except Exception:
+    except Exception as exc:
+        # label_propagation needs no optional dependency, so it is the fallback
+        # when the requested strategy is unavailable (python-louvain absent) or
+        # undefined on this graph. The first failure was previously discarded,
+        # which made a silently-substituted labelling indistinguishable from the
+        # requested one.
+        logger.warning(
+            "Label strategy %r failed (%s); falling back to label_propagation.",
+            label_strategy, exc,
+        )
         try:
             labels = generate_community_labels(G, method='label_propagation')
         except Exception as e:
-            warnings.warn(f"NC stratified: label generation failed: {e}")
+            warnings.warn(
+                f"NC stratified: label generation failed for both {label_strategy!r} "
+                f"({exc}) and the label_propagation fallback ({e}); skipping."
+            )
             return []
 
     X = embeddings
@@ -724,7 +739,11 @@ def evaluate_nc_stratified(
     for hub in hubs:
         try:
             dists = nx.single_source_shortest_path_length(G, hub, cutoff=dist_max_bin)
-        except Exception:
+        except nx.NetworkXException as exc:
+            # A hub that is not in G (only reachable if G was mutated between the
+            # degree scan and here) contributes no distances. Other hubs still do,
+            # so this is a skip, not a failure.
+            logger.debug("No distances from hub %r: %s", hub, exc)
             dists = {}
         for v, d in dists.items():
             if v not in node_min_dist or d < node_min_dist[v]:

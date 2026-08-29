@@ -185,6 +185,137 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   seed". Each iteration now uses `random_state = seed + iter`: distinct across iterations,
   deterministic across reruns, and independent of other RNG consumers.
 
+#### ⚠️ Undefined measurements are now `nan`, not a plausible number — results change
+Several functions returned an achievable value when they could not compute anything at
+all, which made "undefined" indistinguishable from a real result in an aggregated table.
+Every one of these now returns `nan`, and every consumer aggregates nan-aware. **Any
+table or ranking built from the metrics below should be regenerated**; affected notebooks
+have been re-executed.
+
+- **Link-prediction ranking metrics no longer report `0.5` for an undefined AUC.**
+  `reproducibility.method_adapters.evaluate_link_prediction` returned
+  `{"auc_roc": 0.5, "auc_pr": 0.5, "f1": 0.0}` whenever the evaluation split held a single
+  class, or whenever `roc_auc_score` raised. `0.5` is the score of a random ranker — a real,
+  and quite common, outcome — so a method that could not be scored sorted level with
+  methods that genuinely failed to learn. It now returns `nan` for all three, logs which
+  case occurred, and validates that the supplied node indices exist in the embedding matrix
+  rather than raising `IndexError` several frames deeper.
+- **`summarize_link_prediction_results` is nan-aware.** It averaged with `np.mean`, so one
+  undefined method turned every aggregate into `nan` and erased the methods that had
+  succeeded. Aggregates now use `np.nanmean`/`np.nanstd` and each metric carries an
+  `n_defined_<metric>` count, so a reader can see how many methods the mean is over. An
+  empty result set yields `nan` rather than `0.0`.
+- **`evaluate_graph` metrics that cannot be computed are absent or `nan`, never `0.0`.**
+  `modularity` was set to `0.0` on the exception path and for an edgeless graph;
+  `path_length_ratio` likewise. Modularity is `Q = Σ_c (e_c/m − (d_c/2m)²)`, undefined at
+  `m = 0`, and `0.0` states "no community structure beyond chance" — a finding. Both now
+  report `nan`. `compute_community_metrics` previously disagreed with itself on this,
+  returning `modularity: 0.0` alongside `approx_conductance: nan` on the same line.
+  (The `0.0` `path_length_ratio` for a *disconnected* graph is retained deliberately: that
+  is a measurement, not a failure.)
+- **`compute_quantum_advantage_metrics` on an empty graph returns `nan` for all ten
+  metrics**, including the composite `quantum_advantage_score`, instead of `0.0`. A `0.0`
+  score is rankable, so an empty graph previously sorted alongside genuinely unpromising
+  ones. This function has no callers outside `graph_evaluation.py`, so no existing ranking
+  changes order — only the values reported for degenerate inputs.
+- **`netmf` no longer synthesizes an embedding from random noise.** When its truncated SVD
+  failed to converge, and when the deepwalk-matrix construction failed, it returned
+  `np.random.randn(n, dim) * 0.01` — which the registry scored, logged and ranked as a
+  result. Both paths now raise `RuntimeError` naming the stage that failed, chained from the
+  underlying `ArpackError`/`LinAlgError`. A test asserts the module's source contains no
+  random-matrix fallback.
+- `evaluate_graph(None)` raises `TypeError` instead of returning a size-only summary
+  reporting "0 nodes" — which was indistinguishable from a genuinely empty graph. An empty
+  `nx.Graph()` remains a valid input and still yields the size-only summary with a warning.
+  The two metric families also degrade independently: if one fails, its columns are simply
+  absent from the returned frame and a `UserWarning` names the exception type, rather than
+  the frame being padded with fabricated values.
+
+#### Silent no-ops reported as success
+- **`get_optimizer("L_BFGS_B")` never worked.** The branch read
+  `optimizer == L_BFGS_B(maxiter=max_iter)` — a comparison, not an assignment — so it
+  constructed the optimizer, discarded it, and left `optimizer` unbound. Every request
+  raised `UnboundLocalError: cannot access local variable 'optimizer'`, despite `L_BFGS_B`
+  being advertised in the `Literal` type hints of both `compute_vqc` and `compute_qnn`.
+- **`get_feature_map` returned its own argument for an unrecognized name.** The if/elif
+  chain had no `else`, so `feature_map` stayed bound to the caller's string and failed
+  several frames later with `'str' object has no attribute 'num_qubits'`. A mistyped
+  `encoding` — `'zz'` for `'ZZ'` — was therefore reported as a qiskit type error.
+  `SUPPORTED_FEATURE_MAPS`, `SUPPORTED_ENTANGLEMENTS` and `SUPPORTED_OPTIMIZERS` are now
+  module constants in `qbiocode.utils.qutils`, validated at entry and reusable by callers.
+  An unknown `entanglement` previously reached qiskit and came back as
+  `ValueError: Something went wrong in Rust space`.
+- **`scale_train_test` silently returned unscaled data for a mistyped scaler name.** The
+  `else` branch fell through to the `"None"` behaviour, so `scaling="minmaxscaler"`
+  disabled scaling and reported success. It now raises `ValueError`.
+- **QProfiler's `scaling` config was tested with a substring match.** `'True' in
+  args['scaling']` accepted `'MinMaxScalerTrue'`, silently ignored the lowercase `['true']`,
+  and raised `TypeError: argument of type 'bool' is not iterable` for the most natural YAML
+  of all, `scaling: true`. All spellings — bool, `['True']`, `true`/`yes`/`1`,
+  `false`/`no`/`0`/`none`, or a scaler name — are now resolved explicitly, and anything else
+  is an error rather than a quietly disabled transform.
+- **`compute_pqk` accepted a `primitive` it never used.** `primitive="sampler"` changed only
+  the cache fingerprint, not the computation: projected quantum kernels are Pauli expectation
+  values and the backend is requested as `"estimator"` unconditionally. That produced two
+  cache files holding identical projections and a caller who believed they had measured
+  something else. Only `"estimator"` is accepted now, and the message says why.
+- **A mistyped `--config` path could produce a successful `quvine` run with the wrong
+  settings**, by falling back to the packaged config. The path is now checked with
+  `os.path.isfile` before anything else runs.
+- **`QSage.__init__` aliased its metric list instead of copying it.**
+  `self._available_metrics = self._columns_metrics` followed by an in-place `.sort()` bound
+  both names to one list, so sorting the public attribute silently reordered the column list
+  used to slice the input frame. It is now `sorted(...)`, which returns a new list.
+- A QProfiler run whose `folder_path` matched no dataset, or whose `iter` was `0`, exited
+  successfully having produced no output at all — indistinguishable from a run whose models
+  all failed. Both are now errors.
+
+#### Errors attributed to the wrong cause
+- **Dead sentinel guards removed.** `try: from xgboost import XGBClassifier / except
+  ImportError: XGBClassifier = None` (in `qbiocode/__init__.py`, `learning/__init__.py` and
+  `learning/compute_pqk.py`) replaced an actionable `ImportError` with
+  `TypeError: 'NoneType' object is not callable` at the point of use — a message that names
+  neither xgboost nor the fix. xgboost is a declared base dependency, so its absence is a
+  broken install. `compute_qpl`'s guard is retained (it holds an optional import) but now
+  records the original `ImportError` and quotes it in the message. The PyTorch-Geometric
+  guard in `reproducibility/graph_generator.py` does the same.
+- **Broad `except Exception` handlers narrowed to the failure they actually handle**, so a
+  bug in the handler's own body no longer masquerades as a degenerate graph: graph-metric
+  handlers in `baselines/gat.py`, `baselines/graphgps.py` and `evaluation/graph_evaluation.py`
+  catch `nx.NetworkXException`; SVD and eigendecomposition handlers in `baselines/netmf.py`,
+  `baselines/graphsage.py` and `fusion/fuse_fixes.py` catch
+  `(scipy.sparse.linalg.ArpackError, np.linalg.LinAlgError, ValueError)`; the edge-list
+  reader in the `quvine` CLI catches the four ways a text table fails to parse. Where a
+  handler must stay broad — `evaluate_graph`'s two public metric blocks,
+  `reproducibility/validator.py` — it now names `type(e).__name__` in the message and keeps
+  the traceback at `DEBUG`, because the alternative is a missing column with nothing to
+  trace it back to.
+- `evaluation/classification.py` discarded the reason the *requested* label strategy failed
+  before falling back to `label_propagation`, so a silently-substituted labelling was
+  indistinguishable from the requested one. The substitution is now logged with its cause,
+  and if the fallback also fails the warning names both failures rather than only the last.
+- `graphgps.py` read precomputed node dictionaries with `d[node]`, raising `KeyError` for a
+  node absent from a partial computation; it uses `.get(node, default)` now. `get_nodelist` /
+  `_stable_nodelist` validate that a supplied `nodelist` is a permutation of the graph's
+  nodes, instead of silently producing misaligned feature rows.
+- **Validation moved to the boundary.** `get_embeddings` coerces and shape-checks `X_train`
+  and `X_test` up front (a list of lists — the natural thing to pass from a notebook — used
+  to fail on `'list' object has no attribute 'shape'`), and the new public
+  `qbiocode.embeddings.check_embedding_name` lets a caller validate an entire `embeddings`
+  list *before* any work begins, with the identical message; QProfiler uses it for exactly
+  that, so a typo in the sixth entry no longer surfaces after the first five have run.
+  `compute_pqk` performs eleven argument checks before it creates directories or reads a
+  projection cache. `evaluation/model_run.py` rejects unknown model names with the available
+  set instead of a bare `KeyError` raised inside a joblib worker, and falls back to estimator
+  defaults — with a log line — for a model that has no `<model>_args` config block, which
+  `xgb` and `qpl` do not in the shipped `config.yaml`. The `qprofiler`, `qsage` and `quvine`
+  CLIs validate every argument before creating an output directory or reading input:
+  `--cv 1`, `--test-size 1.0`, `--n-iter 0`, an `--input` that is not a directory, an empty
+  `--sep`, and a graph with no nodes are all caught up front.
+- `tests/test_error_contracts.py` (43 tests) pins the behaviour above: that undefined
+  measurements are `nan`, that a silent no-op is now an error, and that each message names
+  the parameter, the value received and the accepted set.
+
 #### Embeddings
 - `get_embeddings(..., n_components=None)` — the documented default — raised
   `TypeError: '<=' not supported between instances of 'NoneType' and 'int'` instead of

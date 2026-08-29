@@ -216,7 +216,35 @@ def _select_device(device: str = "cpu") -> Any:
 
 
 def _stable_nodelist(G: nx.Graph, nodelist: Optional[Sequence] = None) -> List:
-    return list(G.nodes()) if nodelist is None else list(nodelist)
+    """Return the node order to use, validating that it belongs to ``G``.
+
+    Every consumer of this ordering indexes ``G`` by these ids -- degree views,
+    Laplacian construction, per-node metric dicts -- so an id that is not in the
+    graph has no meaningful feature row. Rejecting it here names the offending
+    ids; letting it through produced either a silently zeroed feature column or
+    an inscrutable numpy shape error several frames deeper.
+
+    Raises:
+        ValueError: if ``nodelist`` contains ids absent from ``G``, or duplicates.
+    """
+    if nodelist is None:
+        return list(G.nodes())
+    nodes = list(nodelist)
+    missing = [v for v in nodes if v not in G]
+    if missing:
+        shown = missing[:5]
+        raise ValueError(
+            f"nodelist contains {len(missing)} node(s) not present in the graph: "
+            f"{shown}{' ...' if len(missing) > len(shown) else ''}. "
+            f"The graph has {G.number_of_nodes()} nodes."
+        )
+    if len(set(nodes)) != len(nodes):
+        dupes = sorted({v for v in nodes if nodes.count(v) > 1}, key=repr)[:5]
+        raise ValueError(
+            f"nodelist contains duplicate node ids, e.g. {dupes}; "
+            f"the ordering must be a permutation of the nodes it covers."
+        )
+    return nodes
 
 
 def as_numpy(x: Any) -> np.ndarray:
@@ -343,6 +371,13 @@ def make_base_features(
         - 'provided': require features.
         - 'random': row-normalized random features.
         - 'structural': scalable local structural features padded/projected to embedding_dim.
+
+    Degenerate graphs:
+        Any structural column that networkx cannot compute for this graph class
+        (clustering and triangles on multigraphs, k-core with self-loops,
+        pagerank that fails to converge) falls back to zeros -- pagerank to the
+        uniform distribution -- and logs the reason at DEBUG. The feature matrix
+        always has the documented width; it is never partially built.
     """
     nodes = _stable_nodelist(G, nodelist)
     n = len(nodes)
@@ -368,34 +403,45 @@ def make_base_features(
     deg = np.array([G.degree(node) for node in nodes], dtype=np.float32)
     log_deg = np.log1p(deg)
 
+    # Each structural column below degrades independently. networkx raises
+    # NetworkXNotImplemented for metrics undefined on the given graph class
+    # (multigraphs, directed graphs, self-loops) and PowerIterationFailedConvergence
+    # when pagerank does not settle; those are expected inputs here, not errors, so
+    # the column falls back to a documented sentinel and the reason is logged at
+    # debug rather than raised or discarded.
     try:
         clustering_dict = nx.clustering(G)
-        clustering = np.array([clustering_dict[node] for node in nodes], dtype=np.float32)
-    except Exception:
+        clustering = np.array([clustering_dict.get(node, 0.0) for node in nodes], dtype=np.float32)
+    except nx.NetworkXException as exc:
+        logger.debug("clustering coefficients unavailable, using zeros: %s", exc)
         clustering = np.zeros(n, dtype=np.float32)
 
     try:
         core_dict = nx.core_number(G)
-        core = np.array([core_dict[node] for node in nodes], dtype=np.float32)
-    except Exception:
+        core = np.array([core_dict.get(node, 0.0) for node in nodes], dtype=np.float32)
+    except nx.NetworkXException as exc:
+        logger.debug("k-core numbers unavailable, using zeros: %s", exc)
         core = np.zeros(n, dtype=np.float32)
 
     try:
         pr_dict = nx.pagerank(G, alpha=0.85, max_iter=200, tol=1e-6)
-        pagerank = np.array([pr_dict[node] for node in nodes], dtype=np.float32)
-    except Exception:
+        pagerank = np.array([pr_dict.get(node, 0.0) for node in nodes], dtype=np.float32)
+    except nx.NetworkXException as exc:
+        logger.debug("PageRank unavailable, using the uniform distribution: %s", exc)
         pagerank = np.ones(n, dtype=np.float32) / max(n, 1)
 
     try:
         tri_dict = nx.triangles(G)
-        triangles = np.array([tri_dict[node] for node in nodes], dtype=np.float32)
-    except Exception:
+        triangles = np.array([tri_dict.get(node, 0.0) for node in nodes], dtype=np.float32)
+    except nx.NetworkXException as exc:
+        logger.debug("triangle counts unavailable, using zeros: %s", exc)
         triangles = np.zeros(n, dtype=np.float32)
 
     try:
         avg_nbr_deg_dict = nx.average_neighbor_degree(G)
-        avg_nbr_deg = np.array([avg_nbr_deg_dict[node] for node in nodes], dtype=np.float32)
-    except Exception:
+        avg_nbr_deg = np.array([avg_nbr_deg_dict.get(node, 0.0) for node in nodes], dtype=np.float32)
+    except nx.NetworkXException as exc:
+        logger.debug("average neighbour degrees unavailable, using zeros: %s", exc)
         avg_nbr_deg = np.zeros(n, dtype=np.float32)
 
     max_deg = max(float(deg.max()) if deg.size else 0.0, 1.0)
@@ -906,7 +952,12 @@ def _append_laplacian_pe(
                 if pe[np.argmax(np.abs(pe[:, j])), j] < 0:
                     pe[:, j] *= -1
         pe = standardize_columns(pe.astype(np.float32), train_mask=train_mask)
-    except Exception:
+    except (spla.ArpackError, np.linalg.LinAlgError, ValueError) as exc:
+        # ARPACK does not always find k smallest eigenpairs of a near-singular or
+        # disconnected Laplacian (ArpackNoConvergence subclasses ArpackError).
+        # Positional encodings are an additive feature block, so an all-zero block
+        # keeps the output width contractual instead of failing the embedding.
+        logger.debug("Laplacian positional encoding unavailable, using zeros: %s", exc)
         pe = np.zeros((n, pe_dim), dtype=np.float32)
     return np.concatenate([X, pe], axis=1).astype(np.float32)
 

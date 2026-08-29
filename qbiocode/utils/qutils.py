@@ -235,6 +235,23 @@ def get_ansatz(ansatz_type, feat_dimension, reps=1, entanglement="linear"):
     return ansatz
 
 
+#: Feature-map names accepted by :func:`get_feature_map`, in the spelling the
+#: config files use. Exported so callers can validate at their own boundary --
+#: e.g. :func:`qbiocode.learning.compute_pqk.compute_pqk` rejects a mistyped
+#: ``encoding`` before it creates directories or reads a projection cache.
+SUPPORTED_FEATURE_MAPS = ("Z", "ZZ", "P")
+
+#: Entanglement patterns accepted by qiskit's ZZ/Pauli feature maps. Validated
+#: because qiskit itself reports an unknown pattern as
+#: "Something went wrong in Rust space", which names neither the parameter nor
+#: the value. A callable or an explicit index list is also valid and is passed
+#: through to qiskit unchecked.
+SUPPORTED_ENTANGLEMENTS = ("full", "linear", "reverse_linear", "pairwise", "circular", "sca")
+
+#: Optimizer names accepted by :func:`get_optimizer`.
+SUPPORTED_OPTIMIZERS = ("SPSA", "COBYLA", "GradientDescent", "L_BFGS_B")
+
+
 def get_feature_map(feature_map, feat_dimension, reps=1, entanglement="linear", data_map_func=None):
     """
     This function returns a feature map based on the specified type and parameters.
@@ -249,7 +266,39 @@ def get_feature_map(feature_map, feat_dimension, reps=1, entanglement="linear", 
     Returns:
         feature_map: An instance of the specified feature map type.
         feat_dimension (int): The number of qubits in the feature map.
+
+    Raises:
+        ValueError: if ``feature_map`` is not one of ``'Z'``, ``'ZZ'``, ``'P'``,
+            or if ``feat_dimension``/``reps`` is not a positive integer.
     """
+    # Validated here rather than left to the if/elif chain: an unrecognized name
+    # used to fall through every branch and return the *input string* as the
+    # feature map, which then failed several frames later with
+    # "'str' object has no attribute 'num_qubits'" -- a message that says nothing
+    # about the actual mistake, a mistyped encoding.
+    if feature_map not in SUPPORTED_FEATURE_MAPS:
+        raise ValueError(
+            f"Unsupported feature_map {feature_map!r}. Expected one of "
+            f"{SUPPORTED_FEATURE_MAPS} (case-sensitive): 'Z' for ZFeatureMap, "
+            f"'ZZ' for ZZFeatureMap, 'P' for PauliFeatureMap."
+        )
+    if isinstance(entanglement, str) and entanglement not in SUPPORTED_ENTANGLEMENTS:
+        raise ValueError(
+            f"Unsupported entanglement {entanglement!r}. Expected one of "
+            f"{SUPPORTED_ENTANGLEMENTS}, or a callable/index list passed straight "
+            f"through to qiskit."
+        )
+    if not isinstance(feat_dimension, (int, np.integer)) or feat_dimension < 1:
+        raise ValueError(
+            f"feat_dimension is the number of qubits and must be a positive "
+            f"integer; got {feat_dimension!r}."
+        )
+    if not isinstance(reps, (int, np.integer)) or reps < 1:
+        raise ValueError(
+            f"reps is the number of feature-map repetitions and must be a "
+            f"positive integer; got {reps!r}."
+        )
+
     # Get Feature Map
     if feature_map == "Z":
         feature_map = ZFeatureMap(
@@ -294,7 +343,26 @@ def get_optimizer(
 
     Returns:
         optimizer: An instance of the specified optimizer type.
+
+    Raises:
+        ValueError: if ``type`` is not one of ``'SPSA'``, ``'COBYLA'``,
+            ``'GradientDescent'``, ``'L_BFGS_B'``, or if ``max_iter`` is not a
+            positive integer.
     """
+    # Validated up front: an unrecognized name previously left `optimizer`
+    # unbound and surfaced as "cannot access local variable 'optimizer'", which
+    # points at this function's internals rather than at the caller's typo.
+    if type not in SUPPORTED_OPTIMIZERS:
+        raise ValueError(
+            f"Unsupported optimizer {type!r}. Expected one of "
+            f"{SUPPORTED_OPTIMIZERS} (case-sensitive)."
+        )
+    if not isinstance(max_iter, (int, np.integer)) or max_iter < 1:
+        raise ValueError(
+            f"max_iter must be a positive integer number of optimizer "
+            f"iterations; got {max_iter!r}."
+        )
+
     if type == "SPSA":
         if (learning_rate_a != None) & (perturbation_gamma != None):
             # set up the power series
@@ -322,7 +390,11 @@ def get_optimizer(
     elif type == "GradientDescent":
         optimizer = GradientDescent(maxiter=max_iter)
     elif type == "L_BFGS_B":
-        optimizer == L_BFGS_B(maxiter=max_iter)
+        # `=`, not `==`. This was a comparison, so the branch built an optimizer,
+        # discarded it, and left `optimizer` unbound -- every request for
+        # L_BFGS_B (an option both compute_vqc and compute_qnn advertise in their
+        # Literal type hints) raised UnboundLocalError instead of running.
+        optimizer = L_BFGS_B(maxiter=max_iter)
 
     return optimizer
 

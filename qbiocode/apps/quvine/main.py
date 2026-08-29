@@ -77,9 +77,13 @@ def main(cfg: DictConfig) -> None:
         pipeline = Pipeline(cfg)
         pipeline.run()
 
-    except Exception as e:
+    except Exception:
+        # Bare `raise`, not `raise e`: re-raising the bound name appends this
+        # frame to the traceback, so the reported origin is main() rather than
+        # the line inside the pipeline that actually failed. log.exception has
+        # already recorded the full traceback.
         log.exception("Experiment failed with error")
-        raise e
+        raise
 
     log.info("Run completed successfully")
     

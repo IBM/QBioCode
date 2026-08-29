@@ -21,11 +21,14 @@ Validates that all methods use identical experimental conditions.
 from pathlib import Path
 from typing import Dict, List, Optional, Set, Tuple, Any
 import json
+import logging
 import pickle
 import networkx as nx
 
 from .dataset_registry import DatasetRegistry
 from .seed_manager import SeedManager
+
+logger = logging.getLogger(__name__)
 
 
 class ReproducibilityValidator:
@@ -150,7 +153,15 @@ class ReproducibilityValidator:
                     G = pickle.load(f)
                 self._validate_graph_fairness(G, task, metadata or {}, disease_nodes)
             except Exception as e:
-                self.validation_errors.append(f"Failed to load/validate graph: {e}")
+                # Deliberately broad: a validator exists to report every problem it
+                # finds, so an unexpected failure has to become a recorded finding
+                # rather than abort the run and hide the findings already collected.
+                # The type is included so the report is diagnosable.
+                self.validation_errors.append(
+                    f"Failed to load/validate graph {entry.graph_path}: "
+                    f"{type(e).__name__}: {e}"
+                )
+                logger.debug("Graph validation failed for %s", entry.graph_path, exc_info=True)
 
         return len(self.validation_errors) == 0
     
@@ -423,14 +434,24 @@ class ReproducibilityValidator:
                     )
 
         except Exception as e:
-            self.validation_errors.append(f"Error loading split: {e}")
+            # Broad for the same reason as above: recorded, not raised, so one bad
+            # split file does not discard the findings for every other dataset.
+            self.validation_errors.append(f"Error loading split: {type(e).__name__}: {e}")
+            logger.debug("Split validation failed", exc_info=True)
         
         return len(self.validation_errors) == 0
     def _safe_load_json(self, path: Path) -> Optional[Dict[str, Any]]:
+        """Load JSON, returning None if it cannot be read.
+
+        Returns None rather than raising because callers turn a missing or
+        malformed file into a recorded validation finding. The reason is logged
+        so it is recoverable -- the caller only knows *that* the load failed.
+        """
         try:
             with open(path, "r") as f:
                 return json.load(f)
-        except Exception:
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError) as exc:
+            logger.warning("Could not read JSON at %s: %s", path, exc)
             return None
 
     def _validate_graph_fairness(

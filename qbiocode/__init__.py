@@ -83,12 +83,13 @@ from .learning.compute_rf import compute_rf, compute_rf_opt
 from .learning.compute_svc import compute_svc, compute_svc_opt
 from .learning.compute_vqc import compute_vqc
 
-try:
-    from .learning.compute_xgb import compute_xgb, compute_xgb_opt
-except Exception:
-    # XGBoost not available (e.g., OpenMP not installed on macOS)
-    compute_xgb = None  # type: ignore
-    compute_xgb_opt = None  # type: ignore
+# compute_xgb.py guards the xgboost import itself and both functions raise an
+# actionable ImportError -- naming libomp and the exact reinstall command -- when
+# it is missing, so this import is unconditional. Wrapping it in try/except and
+# binding None on failure would replace that message with
+# "'NoneType' object is not callable" and would additionally hide a genuine
+# breakage in the module (a typo, a broken sibling import) as a missing extra.
+from .learning.compute_xgb import compute_xgb, compute_xgb_opt
 
 # ====== Import helper functions ======
 from .utils.dataset_checkpoint import checkpoint_restart

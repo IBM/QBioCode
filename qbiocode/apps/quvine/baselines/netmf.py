@@ -157,9 +157,18 @@ def run_netmf(
             # Embedding is U * sqrt(S)
             embeddings = U @ np.diag(np.sqrt(S))
             
-        except Exception as e:
-            print(f"SVD failed: {e}. Falling back to random initialization.")
-            embeddings = np.random.randn(n_nodes, rank) * 0.01
+        except (np.linalg.LinAlgError, sparse_linalg.ArpackError, ValueError) as exc:
+            # Do NOT fall back to random noise. This function previously returned
+            # np.random.randn(...) here, so a failed factorization was reported to
+            # the caller as a successful embedding and scored as if it were one.
+            # run_netmf is reached through baselines.registry, which catches this
+            # and records the method as failed with the reason attached -- which is
+            # the honest outcome for "NetMF could not factorize this graph".
+            raise RuntimeError(
+                f"NetMF truncated SVD failed on a {n_nodes}-node graph at rank "
+                f"{rank}: {exc}. Try a smaller `dimensions`, or a graph with more "
+                f"than {rank + 1} nodes."
+            ) from exc
     else:
         # Use eigendecomposition (symmetric approximation)
         M_sym = (M_dense + M_dense.T) / 2
@@ -182,9 +191,13 @@ def run_netmf(
             eigenvalues[eigenvalues < 0] = 0  # Ensure non-negative
             embeddings = eigenvectors @ np.diag(np.sqrt(eigenvalues))
             
-        except Exception as e:
-            print(f"Eigendecomposition failed: {e}. Falling back to random initialization.")
-            embeddings = np.random.randn(n_nodes, rank) * 0.01
+        except (np.linalg.LinAlgError, sparse_linalg.ArpackError, ValueError) as exc:
+            # See the SVD branch above: a random-noise embedding is not a result.
+            raise RuntimeError(
+                f"NetMF eigendecomposition failed on a {n_nodes}-node graph at "
+                f"rank {rank}: {exc}. Try a smaller `dimensions`, or a graph with "
+                f"more than {rank + 1} nodes."
+            ) from exc
     
     # Ensure we have the right number of dimensions
     if embeddings.shape[1] < dimensions:

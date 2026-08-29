@@ -34,6 +34,7 @@ Both are guarded; missing them degrades gracefully to defaults.
 
 from __future__ import annotations
 
+import logging
 import math
 import warnings
 from dataclasses import dataclass, field
@@ -45,13 +46,15 @@ import networkx as nx
 import scipy.sparse as sp
 from scipy import linalg
 from scipy.stats import entropy
-from scipy.sparse.linalg import eigsh, eigs, expm_multiply
+from scipy.sparse.linalg import ArpackError, eigsh, eigs, expm_multiply
 
 
 # =============================================================================
 # Ported from quvine/complexity/graph.py
 # =============================================================================
 
+
+logger = logging.getLogger(__name__)
 
 def compute_laplacian_spectrum(G: nx.Graph, normalized: bool = True) -> np.ndarray:
     """
@@ -154,8 +157,11 @@ def fiedler_eigenvalue_sparse(
         fiedler_vec = eigenvectors[:, 1]
 
         return lambda2, fiedler_vec
-    except Exception:
-        # Fallback to dense computation for small graphs
+    except (ArpackError, np.linalg.LinAlgError, ValueError) as exc:
+        # ARPACK needs k < n and does not always converge on a near-singular or
+        # disconnected Laplacian. The dense path computes the same quantity
+        # exactly, so this is an alternative route rather than a degraded result.
+        logger.debug("eigsh(k=2) failed (%s); falling back to the dense spectrum", exc)
         eigenvalues = compute_laplacian_spectrum(G, normalized=normalized)
         if len(eigenvalues) < 2:
             return 0.0, np.array([])
@@ -546,7 +552,10 @@ def compute_effective_resistance(G: nx.Graph, source: int, target: int) -> float
 
     try:
         L_pinv = linalg.pinv(L)
-    except Exception:
+    except (np.linalg.LinAlgError, ValueError) as exc:
+        # Infinite resistance is the correct reading of "no finite pseudoinverse
+        # of this Laplacian", i.e. no conducting path between the two nodes.
+        logger.debug("Laplacian pseudoinverse failed (%s); resistance is infinite", exc)
         return float('inf')
 
     # Get node indices
@@ -797,17 +806,23 @@ def compute_quantum_advantage_metrics(G: nx.Graph) -> Dict[str, float]:
         - quantum_advantage_score: Weighted composite prediction score
     """
     if G.number_of_nodes() == 0:
+        # nan, not 0.0. Every value here is a measurement of structure, and a
+        # graph with no nodes has no structure to measure -- which is a different
+        # statement from "measured, and found to be zero". A 0.0
+        # quantum_advantage_score in particular is a rankable value, so an empty
+        # graph used to sort alongside genuinely unpromising ones. Aggregate these
+        # with np.nanmean; compute_degree_metrics already reports nan here.
         return {
-            'spectral_dimension': 0.0,
-            'modularity': 0.0,
-            'path_length_ratio': 0.0,
-            'clustering_mean': 0.0,
-            'clustering_std': 0.0,
-            'degree_heterogeneity': 0.0,
-            'quantum_advantage_score': 0.0,
-            'quantum_advantage_arithmetic': 0.0,
-            'quantum_advantage_geometric': 0.0,
-            'quantum_advantage_harmonic': 0.0,
+            'spectral_dimension': float('nan'),
+            'modularity': float('nan'),
+            'path_length_ratio': float('nan'),
+            'clustering_mean': float('nan'),
+            'clustering_std': float('nan'),
+            'degree_heterogeneity': float('nan'),
+            'quantum_advantage_score': float('nan'),
+            'quantum_advantage_arithmetic': float('nan'),
+            'quantum_advantage_geometric': float('nan'),
+            'quantum_advantage_harmonic': float('nan'),
         }
 
     metrics = {}
@@ -827,8 +842,13 @@ def compute_quantum_advantage_metrics(G: nx.Graph) -> Dict[str, float]:
     try:
         communities = nx.community.greedy_modularity_communities(G)
         metrics['modularity'] = float(nx.community.modularity(G, communities))
-    except Exception:
-        metrics['modularity'] = 0.0
+    except (nx.NetworkXException, ValueError, ZeroDivisionError) as exc:
+        # nan, not 0.0. Modularity 0.0 is a real measurement -- "no community
+        # structure beyond chance" -- so reporting it for an undetectable
+        # partition fabricates a finding. compute_community_metrics below already
+        # uses nan for exactly this case; these two now agree.
+        logger.warning("Modularity could not be computed (%s); reporting nan.", exc)
+        metrics['modularity'] = float('nan')
 
     # 3. Path length ratio (compactness)
     if nx.is_connected(G):
@@ -836,8 +856,13 @@ def compute_quantum_advantage_metrics(G: nx.Graph) -> Dict[str, float]:
             avg_path = nx.average_shortest_path_length(G)
             diameter = nx.diameter(G)
             metrics['path_length_ratio'] = float(avg_path / diameter if diameter > 0 else 0.0)
-        except Exception:
-            metrics['path_length_ratio'] = 0.0
+        except (nx.NetworkXException, ZeroDivisionError) as exc:
+            # The 0.0 in the `else` branch below is deliberate: a disconnected
+            # graph has no finite ratio by definition. This branch is different --
+            # the graph *is* connected and the computation failed -- so it reports
+            # nan rather than borrowing the disconnected graph's answer.
+            logger.warning("Path length ratio could not be computed (%s); reporting nan.", exc)
+            metrics['path_length_ratio'] = float('nan')
     else:
         metrics['path_length_ratio'] = 0.0
 
@@ -1556,12 +1581,20 @@ def sanitize_graph(G: nx.Graph, make_undirected: bool = True, remove_selfloops: 
 
 
 def safe_float(x: Any, default: float = np.nan) -> float:
+    """Coerce ``x`` to a finite float, returning ``default`` if it is not one.
+
+    Deliberately broad on the coercion: this is called on values from many metric
+    backends, and ``float()`` raises ``TypeError`` for a None or a sequence,
+    ``ValueError`` for an unparsable string, and ``OverflowError`` for an
+    out-of-range value. Not logged -- it runs once per metric value, and the
+    caller decides what a missing metric means.
+    """
     try:
         y = float(x)
         if math.isfinite(y):
             return y
         return default
-    except Exception:
+    except (TypeError, ValueError, OverflowError):
         return default
 
 
@@ -1997,10 +2030,19 @@ def _get_communities(G: nx.Graph, seed: int = 0) -> List[set]:
         return []
     try:
         return [set(c) for c in nx.community.louvain_communities(G, seed=seed)]
-    except Exception:
+    except (nx.NetworkXException, ValueError, ZeroDivisionError) as exc:
+        logger.debug("Louvain community detection failed (%s); trying greedy modularity", exc)
         try:
             return [set(c) for c in nx.community.greedy_modularity_communities(G)]
-        except Exception:
+        except (nx.NetworkXException, ValueError, ZeroDivisionError) as exc2:
+            # A single all-node community is not a detected partition: it forces
+            # modularity to 0 and conductance to nan downstream. Warn, because a
+            # caller reading those numbers needs to know they came from here.
+            logger.warning(
+                "No community structure could be detected (louvain: %s; greedy: %s); "
+                "treating the graph as a single community, which forces modularity to 0.",
+                exc, exc2,
+            )
             return [set(G.nodes())]
 
 
@@ -2021,12 +2063,17 @@ def _conductance_for_set(G: nx.Graph, S: set) -> float:
 def compute_community_metrics(G: nx.Graph, config: ComplexityConfig = ComplexityConfig()) -> Dict[str, float]:
     """Compute modularity and approximate conductance from detected communities."""
     if G.number_of_nodes() == 0 or G.number_of_edges() == 0:
-        return {"modularity": 0.0, "approx_conductance": np.nan}
+        # Modularity is Q = sum_c (e_c/m - (d_c/2m)^2), undefined when m == 0.
+        # Returning 0.0 for it claimed "no community structure beyond chance",
+        # which is an achievable measurement, and disagreed with the nan on the
+        # very same line for approx_conductance.
+        return {"modularity": np.nan, "approx_conductance": np.nan}
 
     communities = _get_communities(G, seed=config.random_state)
     try:
         mod = float(nx.community.modularity(G, communities)) if communities else 0.0
-    except Exception:
+    except (nx.NetworkXException, ValueError, ZeroDivisionError) as exc:
+        logger.debug("modularity failed for the detected partition (%s); reporting nan", exc)
         mod = np.nan
 
     conductances = [_conductance_for_set(G, c) for c in communities if 0 < len(c) < G.number_of_nodes()]
@@ -2055,7 +2102,9 @@ def compute_degree_metrics(G: nx.Graph) -> Dict[str, float]:
 
     try:
         assort = nx.degree_assortativity_coefficient(G) if G.number_of_edges() > 0 else np.nan
-    except Exception:
+    except (nx.NetworkXException, ValueError, ZeroDivisionError, FloatingPointError) as exc:
+        # Undefined when every node has the same degree (zero variance).
+        logger.debug("degree assortativity is undefined here (%s); reporting nan", exc)
         assort = np.nan
 
     return {
@@ -2117,7 +2166,8 @@ def compute_cycle_metrics(G: nx.Graph, config: ComplexityConfig = ComplexityConf
 
     try:
         trans = float(nx.transitivity(G)) if m > 0 else 0.0
-    except Exception:
+    except (nx.NetworkXException, ValueError, ZeroDivisionError) as exc:
+        logger.debug("transitivity is undefined here (%s); reporting nan", exc)
         trans = np.nan
 
     components = nx.number_connected_components(G) if n > 0 else 0
@@ -2473,14 +2523,52 @@ def evaluate_graph(G: nx.Graph, name: str = "") -> pd.DataFrame:
     merges them, and returns a transposed one-row summary keyed by ``name``.
 
     Args:
-        G (networkx.Graph): Graph to evaluate.
+        G (networkx.Graph): Graph to evaluate. Any networkx graph class is
+            accepted; metrics undefined for the given class are omitted rather
+            than raised (see Notes).
         name (str): Identifier stored in the ``Graph`` column of the summary.
 
     Returns:
         pandas.DataFrame: One-row summary of graph complexity metrics.
+
+    Raises:
+        TypeError: if ``G`` is not a networkx graph, or ``name`` is not a string.
+
+    Notes:
+        An **empty** graph is a legitimate input and yields a size-only summary
+        (``Graph``/``num_nodes``/``num_edges``) with a ``UserWarning``. ``None``
+        is not: it is a caller error and raises, because the size-only summary
+        previously returned for it reported "0 nodes" for a graph that was in
+        fact missing.
+
+        Individual metric groups degrade independently: if either the core or the
+        enhanced block fails, its columns are absent from the returned frame and
+        a ``UserWarning`` names the failure. The frame is never partially
+        populated with fabricated values, so check for a column before reading
+        it rather than assuming a fixed width.
     """
-    n_nodes = 0 if G is None else G.number_of_nodes()
-    n_edges = 0 if G is None else G.number_of_edges()
+    if G is None:
+        raise TypeError(
+            "evaluate_graph() requires a networkx graph, got None. If you meant "
+            "an empty graph, pass nx.Graph() -- that returns a size-only summary. "
+            "None is treated as a caller error because silently summarizing it as "
+            "'0 nodes' is indistinguishable from a real empty graph."
+        )
+    if not isinstance(G, nx.Graph):
+        raise TypeError(
+            f"evaluate_graph() requires a networkx graph (Graph, DiGraph, "
+            f"MultiGraph or MultiDiGraph); got {type(G).__name__}. Convert first, "
+            f"e.g. nx.from_numpy_array(adjacency) for a dense or sparse matrix, or "
+            f"nx.from_pandas_edgelist(df) for an edge list."
+        )
+    if not isinstance(name, str):
+        raise TypeError(
+            f"name must be a string used to label the summary row; got "
+            f"{type(name).__name__} ({name!r})."
+        )
+
+    n_nodes = G.number_of_nodes()
+    n_edges = G.number_of_edges()
 
     if n_nodes == 0:
         warnings.warn("evaluate_graph received an empty graph; returning size-only summary.")
@@ -2488,16 +2576,30 @@ def evaluate_graph(G: nx.Graph, name: str = "") -> pd.DataFrame:
             {"Graph": name, "num_nodes": 0, "num_edges": 0}, orient="index"
         ).T
 
+    # Both blocks stay broad on purpose: this is the public entry point, and the
+    # two metric families are independent, so one failing must not cost the caller
+    # the other. What they must not do is fail opaquely -- the exception type is
+    # named in the warning and the traceback is kept at DEBUG, because the columns
+    # simply go missing from the returned frame and there is otherwise nothing to
+    # trace it back to.
     try:
         base = compute_graph_complexity_metrics(G)
     except Exception as e:  # pragma: no cover - defensive
-        warnings.warn(f"core graph complexity metrics failed: {e}")
+        warnings.warn(
+            f"core graph complexity metrics failed ({type(e).__name__}: {e}); "
+            f"those columns are omitted from the summary for {name!r}."
+        )
+        logger.debug("compute_graph_complexity_metrics failed", exc_info=True)
         base = {}
 
     try:
         enhanced = compute_enhanced_complexity_metrics(G)
     except Exception as e:  # pragma: no cover - defensive
-        warnings.warn(f"enhanced graph complexity metrics failed: {e}")
+        warnings.warn(
+            f"enhanced graph complexity metrics failed ({type(e).__name__}: {e}); "
+            f"those columns are omitted from the summary for {name!r}."
+        )
+        logger.debug("compute_enhanced_complexity_metrics failed", exc_info=True)
         enhanced = {}
 
     row: Dict[str, Any] = {"Graph": name, "num_nodes": n_nodes, "num_edges": n_edges}

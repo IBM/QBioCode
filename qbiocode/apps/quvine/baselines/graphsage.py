@@ -223,12 +223,17 @@ def _run_graphsage_numpy(
     # Reduce to desired dimensionality with truncated SVD
     dims = min(dimensions, H.shape[1], N - 1)
     try:
-        from scipy.sparse.linalg import svds
+        from scipy.sparse.linalg import ArpackError, svds
         U, s, _ = svds(H, k=dims)
         # svds returns ascending singular values — reverse to descending
         idx = np.argsort(s)[::-1]
         emb = U[:, idx] * s[idx]
-    except Exception:
+    except (ArpackError, np.linalg.LinAlgError, ValueError) as exc:
+        # Truncated SVD needs k < min(H.shape) and does not always converge.
+        # The dense fallback is exact and returns the same quantity, so this is a
+        # genuine alternative route rather than a degraded result -- but it is
+        # O(N*d^2), so it is worth being able to see in a log.
+        logger.debug("svds(k=%d) failed (%s); using dense SVD instead", dims, exc)
         U, s, _ = np.linalg.svd(H, full_matrices=False)
         emb = U[:, :dims] * s[:dims]
 

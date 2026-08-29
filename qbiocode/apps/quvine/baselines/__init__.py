@@ -12,68 +12,67 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__all__ = []
+"""Optional baseline embedding methods.
 
-try:
-    from qbiocode.apps.quvine.baselines.node2vec import run_node2vec
-    __all__.append("run_node2vec")
-except ImportError:
-    pass
+Every name below is re-exported for convenience only. The guards keep
+``import qbiocode`` working when a baseline's dependency is absent, but they do
+not make the method registry resilient -- :mod:`.adapters` imports from each
+module directly, so a genuinely broken baseline still fails loudly there, which
+is the correct outcome. What the guards must not do is fail *silently*: a
+shorter ``__all__`` with no explanation is undiagnosable, so each failure is
+recorded in :data:`UNAVAILABLE` and logged at DEBUG.
+"""
 
-try:
-    from qbiocode.apps.quvine.baselines.netmf import run_netmf
-    __all__.append("run_netmf")
-except ImportError:
-    pass
+import logging
 
-try:
-    from qbiocode.apps.quvine.baselines.graphsage import run_graphsage
-    __all__.append("run_graphsage")
-except ImportError:
-    pass
+logger = logging.getLogger(__name__)
 
-try:
-    from qbiocode.apps.quvine.baselines.appnp import run_appnp, generate_appnp_embedding
-    __all__.extend(["run_appnp", "generate_appnp_embedding"])
-except ImportError:
-    pass
+__all__ = ["UNAVAILABLE"]
 
-try:
-    from qbiocode.apps.quvine.baselines.gcn_mf import (
-        GCNMF,
-        GCNLayer,
-        QuVINEGCNMF,
-        normalize_adjacency,
-        train_gcn_mf,
-        precompute_quantum_diffusion,
-        generate_baseline_gcnmf_embedding,
-        generate_baseline_filter_embedding_wrapper,
-    )
-    __all__.extend([
-        "GCNMF",
-        "GCNLayer",
-        "QuVINEGCNMF",
-        "normalize_adjacency",
-        "train_gcn_mf",
-        "precompute_quantum_diffusion",
-        "generate_baseline_gcnmf_embedding",
-        "generate_baseline_filter_embedding_wrapper",
-    ])
-except ImportError:
-    pass
+#: Maps a baseline module name to the reason it could not be imported. Empty on a
+#: complete install. Inspect it when an expected method is missing from
+#: :func:`qbiocode.apps.quvine.list_methods`.
+UNAVAILABLE: "dict[str, str]" = {}
 
-try:
-    from qbiocode.apps.quvine.baselines.graphgps import (
-        GraphGPSConfig,
-        TrainConfig as GraphGPSTrainConfig,
-        generate_graphgps_embedding,
-        generate_multiple_graphgps_embeddings,
-    )
-    __all__.extend([
-        "GraphGPSConfig",
-        "GraphGPSTrainConfig",
-        "generate_graphgps_embedding",
-        "generate_multiple_graphgps_embeddings",
-    ])
-except ImportError:
-    pass
+
+def _guard(module: str, names: "list[str]") -> None:
+    """Re-export ``names`` from ``.<module>``, recording the reason on failure."""
+    import importlib
+
+    try:
+        mod = importlib.import_module(f".{module}", __name__)
+    except ImportError as exc:
+        UNAVAILABLE[module] = str(exc)
+        logger.debug("Baseline %r unavailable: %s", module, exc)
+        return
+    for name in names:
+        globals()[name] = getattr(mod, name)
+        __all__.append(name)
+
+
+_guard("node2vec", ["run_node2vec"])
+_guard("netmf", ["run_netmf"])
+_guard("graphsage", ["run_graphsage"])
+_guard("appnp", ["run_appnp", "generate_appnp_embedding"])
+_guard("gcn_mf", [
+    "GCNMF",
+    "GCNLayer",
+    "QuVINEGCNMF",
+    "normalize_adjacency",
+    "train_gcn_mf",
+    "precompute_quantum_diffusion",
+    "generate_baseline_gcnmf_embedding",
+    "generate_baseline_filter_embedding_wrapper",
+])
+_guard("graphgps", [
+    "GraphGPSConfig",
+    "generate_graphgps_embedding",
+    "generate_multiple_graphgps_embeddings",
+])
+
+# GraphGPS's TrainConfig is re-exported under a disambiguated name (gat.py has one
+# too), so it cannot go through the loop above.
+if "graphgps" not in UNAVAILABLE:
+    from .graphgps import TrainConfig as GraphGPSTrainConfig
+
+    __all__.append("GraphGPSTrainConfig")
