@@ -97,3 +97,7 @@ docs/source/tutorials/**/pqk_projections/
 !docs/source/tutorials/**/configs/
 !docs/source/tutorials/**/configs/*.yaml
 !docs/source/tutorials/PQK_OV_results.png
+
+# Generated locally by `pip freeze`; specific to one OS/arch/Python, so never
+# committed. See requirements/requirements.txt for the recipe.
+requirements/requirements-lock.txt
