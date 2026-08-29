@@ -128,7 +128,7 @@ pip install qbiocode
 pip install 'qbiocode[apps]'
 ```
 
-**Note**: See [docs/CONDA_SUBMISSION.md](../CONDA_SUBMISSION.md) for information about the conda submission process.
+**Note**: See [docs/CONDA_SUBMISSION.md](https://github.com/IBM/QBioCode/blob/main/docs/CONDA_SUBMISSION.md) for information about the conda submission process.
 
 ## Install from Source
 
@@ -410,7 +410,7 @@ pip install --force-reinstall xgboost
 
 Another cloud-based option is [Google Colab](https://colab.research.google.com/):
 
-```python
+```text
 # In a Colab notebook cell:
 !git clone https://github.com/IBM/QBioCode.git
 %cd QBioCode

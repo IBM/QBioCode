@@ -609,6 +609,8 @@ For comprehensive video tutorials, lectures, and demonstrations on quantum compu
 **Recommended Playlist**: [Understanding Quantum Information and Computation](https://www.youtube.com/playlist?list=PLOFEBzvs-VvqKKMXX4vbi4EB1uaErFMSO) - Essential foundation for quantum computing concepts used throughout QBioCode.
 ```
 
----
-
-*This background material is designed to provide context for using QBioCode in quantum machine learning research and applications. For hands-on tutorials, see the [Tutorials](tutorials.md) section.*
+```{seealso}
+This background material provides context for using QBioCode in quantum
+machine learning research and applications. For hands-on tutorials, see
+the [Tutorials](tutorials.md) section.
+```
