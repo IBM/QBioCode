@@ -431,6 +431,66 @@ have been re-executed.
 - `qbiocode.embeddings`' module docstring documented `get_embeddings(X, method='pca',
   n_components=2)` — a signature the function has never had.
 
+#### Plotting no longer reconfigures, blocks, or overwrites
+- **`import qbiocode` no longer rewrites the importing program's matplotlib.**
+  `visualization/visualize_correlation.py` assigned 27 entries into the global
+  `plt.rcParams` at module scope — font family, size, tick geometry, spine visibility,
+  and a 600-dpi `savefig` default. Because `qbiocode/__init__.py` imports the module,
+  merely importing the package restyled every unrelated figure the caller drew
+  afterwards, with nothing in the traceback or the call stack to attribute it to. The
+  settings are now `qbiocode.visualization.PUBLICATION_STYLE`, applied for the duration
+  of a plotting call through `plt.rc_context` and restored even when plotting raises.
+  `qbiocode.publication_style()` returns a copy for callers who want the same look on
+  their own figures. `tests/test_plotting_hygiene.py` asserts in a subprocess that
+  importing the package leaves `rcParams` untouched, and an AST guard fails if any
+  module under `qbiocode/` regains a module-level `rcParams` assignment,
+  `matplotlib.use()`, or `sns.set_theme()`.
+- **⚠️ `plot_results_correlation` no longer overwrites its own output.** It writes three
+  figures, deriving the second and third paths with
+  `re.sub(".pdf", "_heatmap.pdf", save_file_path)`. That pattern did not match any
+  extension other than `.pdf`, so the derived path *equalled the original*: a caller who
+  passed `corr.png` had the scatter plot overwritten by the clustered heatmap and that
+  overwritten by the non-clustered one, ending with one file where three were requested
+  and nothing to indicate two had been lost. The `.` was also an unescaped regex
+  wildcard, so `out/spdf_x.pdf` became `out/_heatmap.pdf_x_heatmap.pdf`. Paths are now
+  derived with `os.path.splitext`, any image format works, and a missing output directory
+  is created rather than raising. `.pdf` filenames are unchanged.
+  `QSage.plot_results` had the same `re.sub('.pdf', '', saveFile)` defect and forced a
+  `.pdf` extension regardless of the request, producing files named
+  `results.png_f1_score_barplot.pdf`; it now honours the extension it was given.
+- **Library code no longer blocks on a window.** `plt.show()` was called unconditionally
+  in `visualize_correlation` (three times per call), `apps/quvine/analysis/analyze.py`
+  (four sites) and `QSage.plot_results` (two) — hanging a batch QProfiler run under a GUI
+  backend, and emitting `UserWarning: FigureCanvasAgg is non-interactive` under `Agg`.
+  Every site is now guarded on the backend actually being able to display.
+  `plot_results_correlation` keeps `show_plots=True`, since five tutorial notebooks rely
+  on it for inline display; `QSage.plot_results` gained `show=None`, meaning "show only
+  when not saving", which is what its docstring already claimed. No `matplotlib.use("Agg")`
+  guard was added: forcing a backend at import is the same hidden global mutation this
+  change removes, and matplotlib already falls back to `Agg` when no GUI toolkit is
+  importable.
+- **`plot_singular_values` and `spectral_info` saved *after* showing**, so under a GUI
+  backend the file was not written until someone closed the window — a batch run stalled
+  with nothing on disk. They save first now. `spectral_info` also wrote
+  `log_spectrum.png`, `loglog_spectrum.png` and `log_normalized_spectrum.png` into the
+  process's current working directory under fixed names, so two runs from the same
+  directory silently overwrote each other; it takes an `outdir` argument.
+- **Figures no longer accumulate.** Every `plt.close()` — which closes whatever figure is
+  *current*, not necessarily the one just drawn — is now `plt.close(fig)` on the specific
+  figure, and the touched functions use the explicit `fig, ax = plt.subplots()` API rather
+  than the pyplot state machine. This matters because QProfiler plots once per metric per
+  embedding per iteration.
+- **The plotting functions return their figures.** `plot_results_correlation` returns a
+  `CorrelationFigures` named tuple (`scatter`, `scatter_ax`, `clustered_heatmap`,
+  `ordered_heatmap`), `QSage.plot_results` returns its list of figures, and
+  `plot_singular_values` returns its figure — so a notebook can restyle or re-save
+  without recomputing. All are closed before returning, which removes them from pyplot's
+  manager while leaving each fully usable for `fig.savefig(...)` and inline display.
+- `plot_results_correlation`'s docstring documented `Returns: None`; the module docstring
+  of `qbiocode.visualization` documented an `output_dir=` parameter the function has never
+  had. Three `print()` calls in it, and one in `QSage.plot_results`, now go through
+  `logging`.
+
 #### Packaging and dependency declarations
 - Three dependencies were imported by the library but never declared:
   `pyyaml` (`qbiocode/utils/generate_qml_configs.py` and

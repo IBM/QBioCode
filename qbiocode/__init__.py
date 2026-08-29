@@ -101,6 +101,7 @@ from .version import __version__
 from .visualization.visualize_correlation import (
     compute_results_correlation,
     plot_results_correlation,
+    publication_style,
 )
 
 # ====== Expose apps submodule ======
@@ -151,6 +152,7 @@ __all__ = [
     # Visualization
     "plot_results_correlation",
     "compute_results_correlation",
+    "publication_style",
     # Data generation
     "generate_data",
     "generate_circles_datasets",
