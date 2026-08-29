@@ -318,7 +318,13 @@ def create_xgb_model(seed):
             "  pip install --force-reinstall xgboost\n\n"
             "See installation documentation for more details."
         )
-    xgb = XGBClassifier(objective="binary:logistic", eval_metric="logloss")  # type: ignore
+    # random_state=seed, like every sibling create_*_model here: the search grid
+    # below varies `subsample` and `colsample_bytree`, both of which sample rows and
+    # columns at random, so an unseeded estimator made this model irreproducible even
+    # though the search itself was seeded.
+    xgb = XGBClassifier(  # type: ignore
+        objective="binary:logistic", eval_metric="logloss", random_state=seed
+    )
 
     xgb_param_distributions = {
         "n_estimators": [100, 200, 300],

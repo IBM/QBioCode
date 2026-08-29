@@ -121,6 +121,7 @@ def compute_lr_opt(
     solver=[],
     verbose=False,
     max_iter=[],
+    random_state=None,
 ):
     """This function also generates a model using a Logistic Regression (LR) method as implemented in
     `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`__.
@@ -143,6 +144,7 @@ def compute_lr_opt(
         solver (list): List of solvers to try, default is an empty list.
         verbose (bool): Whether to print detailed logs, default is False.
         max_iter (list): List of maximum iterations to try, default is an empty list.
+        random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
 
     Returns:
         modeleval (dict): A dictionary containing the evaluation metrics, best parameters, and time taken for training and validation.
@@ -151,12 +153,12 @@ def compute_lr_opt(
     beg_time = time.time()
     params = {"penalty": penalty, "C": C, "solver": solver, "max_iter": max_iter}
     # Perform Grid Search to find the best parameters
-    grid_search = GridSearchCV(LogisticRegression(), param_grid=params, cv=cv)
+    grid_search = GridSearchCV(LogisticRegression(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
 
     # Get the best parameters and use them to create the final Decision Tree model
     best_params = grid_search.best_params_
-    best_logres = LogisticRegression(**best_params)
+    best_logres = LogisticRegression(**best_params, random_state=random_state)
     best_logres.fit(X_train, y_train)
 
     # Make predictions and calculate accuracy

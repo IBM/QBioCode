@@ -143,6 +143,7 @@ def compute_mlp_opt(
     solver=[],
     alpha=[],
     learning_rate=[],
+    random_state=None,
 ):
     """
     This function also generates a model using a Multi-layer Perceptron (mlp), a neural network, as implemented in scikit-learn
@@ -168,6 +169,7 @@ def compute_mlp_opt(
             solver (str or list): The solver for weight optimization.
             alpha (float or list): L2 penalty (regularization term) parameter.
             learning_rate (str or list): Learning rate schedule for weight updates.
+            random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
     Returns:
             modeleval (dict): A dictionary containing the evaluation metrics of the model on the test dataset, including accuracy, AUC, F1 score,
                       and the time taken to train and validate the model, along with the best parameters found during grid search.
@@ -184,12 +186,12 @@ def compute_mlp_opt(
     }
 
     # Pemlporm Grid Search to find the best parameters
-    grid_search = GridSearchCV(MLPClassifier(), param_grid=params, cv=cv)
+    grid_search = GridSearchCV(MLPClassifier(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
 
     # Get the best parameters and use them to create the final model
     best_params = grid_search.best_params_
-    best_mlp = MLPClassifier(**best_params)
+    best_mlp = MLPClassifier(**best_params, random_state=random_state)
     best_mlp.fit(X_train, y_train)
 
     # Make predictions and calculate accuracy
