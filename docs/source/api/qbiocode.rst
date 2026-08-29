@@ -7,6 +7,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   qbiocode.apps
    qbiocode.data_generation
    qbiocode.embeddings
    qbiocode.evaluation

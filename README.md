@@ -36,9 +36,37 @@ pip install qbiocode
 # Install with apps support (QProfiler, QSage)
 pip install 'qbiocode[apps]'
 
+# Install with QuVINE graph embeddings (quvine_rwr, quvine_dtqw, node2vec, ...)
+pip install 'qbiocode[quvine]'
+
 # Install with all optional dependencies
 pip install 'qbiocode[all]'
 ```
+
+<details>
+<summary><b>Optional dependency extras</b></summary>
+
+A plain `pip install qbiocode` gives you the full classical and quantum pipeline.
+Everything below is additive, and extras combine (`'qbiocode[apps,quvine]'`).
+
+| Extra | Command | What it adds |
+| --- | --- | --- |
+| *(none)* | `pip install qbiocode` | Core library: embeddings (`pca`, `nmf`, `umap`, `tsne`, `spectral`, ...), PQK, classical + quantum models, `evaluate_graph`, `scale_train_test` |
+| `apps` | `pip install 'qbiocode[apps]'` | Hydra-driven CLIs for the QProfiler and QSage apps |
+| `quvine` | `pip install 'qbiocode[quvine]'` | QuVINE quantum/classical graph embeddings — 83 methods via `get_embeddings("quvine_*", ...)` |
+| `docs` | `pip install 'qbiocode[docs]'` | Sphinx toolchain for building the documentation |
+| `dev` | `pip install 'qbiocode[dev]'` | `pytest`, `pytest-cov`, `black`, `isort`, `flake8`, `mypy` |
+| `all` | `pip install 'qbiocode[all]'` | Union of every extra above |
+
+QuVINE is deliberately one all-or-nothing extra: its dependencies overlap across
+the walk, spectral and neural method families, so a partial install would leave
+most method names resolving and a few raising at call time. Without it,
+`import qbiocode` and all classical embeddings still work — only the
+`quvine_*` names raise, with a message naming the missing module and the exact
+install command. See
+[Installation](https://ibm.github.io/QBioCode/installation.html) for details.
+
+</details>
 
 #### Install with Conda
 
@@ -80,6 +108,9 @@ pip install -e .
 
 # Install with apps support (QProfiler, QSage)
 pip install -e '.[apps]'
+
+# Install with QuVINE graph embeddings
+pip install -e '.[quvine]'
 ```
 
 **macOS Users:** XGBoost requires OpenMP. Install it using Homebrew:

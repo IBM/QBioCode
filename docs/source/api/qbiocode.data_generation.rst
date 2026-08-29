@@ -1,5 +1,5 @@
-qbiocode.data\_generation package
-=================================
+qbiocode.data_generation package
+================================
 
 Submodules
 ----------
