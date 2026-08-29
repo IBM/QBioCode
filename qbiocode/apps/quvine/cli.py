@@ -35,7 +35,15 @@ def _load_graph(path: str, sep: str, weighted: bool):
     import pandas as pd
     import networkx as nx
 
-    df = pd.read_csv(path, sep=sep, engine="python", header=None, comment="#")
+    try:
+        df = pd.read_csv(path, sep=sep, engine="python", header=None, comment="#")
+    except (OSError, UnicodeDecodeError, pd.errors.ParserError, pd.errors.EmptyDataError) as exc:
+        # Narrow to the four ways a text table can fail to parse, so a genuine bug
+        # in this function still raises rather than being reported as a bad file.
+        raise ValueError(
+            f"Could not read the edge list {path!r} as a {sep!r}-separated table "
+            f"({type(exc).__name__}: {exc}). Check --sep -- use --sep '\\t' for TSV."
+        ) from exc
     if df.shape[1] < 2:
         raise ValueError(
             f"Edge list {path!r} must have at least 2 columns (source, target); "
@@ -96,6 +104,28 @@ For more information, see: https://github.com/IBM/QBioCode
     if not os.path.exists(args.edgelist):
         print(f"Error: edge list {args.edgelist!r} not found.", file=sys.stderr)
         sys.exit(1)
+    if os.path.isdir(args.edgelist):
+        print(
+            f"Error: --edgelist must be a file, but {args.edgelist!r} is a directory.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    if args.config is not None and not os.path.isfile(args.config):
+        # Checked here rather than left to load_config: a missing override path
+        # silently fell back to the packaged config in some code paths, so a
+        # mistyped --config produced a successful run with the wrong settings.
+        print(
+            f"Error: --config {args.config!r} is not a file. Omit --config to use "
+            f"the packaged default.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    if not args.sep:
+        print(
+            "Error: --sep must be a non-empty separator (e.g. ',' or '\\t').",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     # Validate through resolve_method rather than a membership test, so the
     # message carries its close-match suggestions and the accepted set can never
@@ -121,8 +151,22 @@ For more information, see: https://github.com/IBM/QBioCode
     print(f"Output    : {args.output}")
 
     print("\nLoading graph...")
-    G = _load_graph(args.edgelist, args.sep, args.weighted)
+    try:
+        G = _load_graph(args.edgelist, args.sep, args.weighted)
+    except ValueError as exc:
+        print(f"Error: {exc}", file=sys.stderr)
+        sys.exit(1)
     print(f"  nodes={G.number_of_nodes()} edges={G.number_of_edges()}")
+    if G.number_of_nodes() == 0:
+        # Every method here embeds nodes; with none there is nothing to write, and
+        # the walk builders fail several frames deeper with an empty-corpus error.
+        print(
+            f"Error: {args.edgelist!r} produced a graph with no nodes. An edge "
+            f"list needs at least one source,target row (lines starting with '#' "
+            f"are treated as comments).",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     print("Embedding...")
     # A missing [quvine] dependency is a configuration problem, not a crash:

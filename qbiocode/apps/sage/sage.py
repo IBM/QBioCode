@@ -1,3 +1,4 @@
+import logging
 import os, re
 import pandas as pd
 import numpy as np
@@ -11,6 +12,8 @@ from sklearn.neural_network import MLPRegressor
 import xgboost as xgb
 import optuna
 import dill as pickle
+
+logger = logging.getLogger(__name__)
 
 
 #####
@@ -50,8 +53,10 @@ class QuantumSage():
         self._available_models.sort()
         self._available_embeddings = list(set(self._input_data_metadata['embeddings']))
         self._available_embeddings.sort()
-        self._available_metrics = self._columns_metrics
-        self._available_metrics.sort()
+        # sorted(), not `= self._columns_metrics` followed by .sort(): that bound
+        # both names to the same list, so sorting the public one silently
+        # reordered the column list used to slice the input frame.
+        self._available_metrics = sorted(self._columns_metrics)
 
         self._results_subsages = {}
 
@@ -818,8 +823,8 @@ def main():
         # Train QSage on profiler results
         qsage --input compiled_results.csv --output sage_results/
         
-        # Train with specific metric and iterations
-        qsage --input data.csv --output results/ --metric accuracy --n-iter 200
+        # Train with a specific model type and iteration budget
+        qsage --input data.csv --output results/ --model-type mlp --n-iter 200
         
         # Train with custom seed
         qsage --input data.csv --output results/ --seed 123
@@ -880,12 +885,43 @@ def main():
     )
     
     args = parser.parse_args()
-    
-    # Validate input file
+
+    # Validate every argument before doing any work: creating the output
+    # directory, reading the CSV and training all take time or leave artifacts
+    # behind, and a --cv=1 typo previously surfaced several minutes in as an
+    # sklearn error about n_splits.
     if not os.path.exists(args.input):
         print(f"Error: Input file '{args.input}' not found.", file=sys.stderr)
         sys.exit(1)
-    
+    if os.path.isdir(args.input):
+        print(
+            f"Error: --input must be a CSV file, but '{args.input}' is a directory.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    if not 0.0 < args.test_size < 1.0:
+        print(
+            f"Error: --test-size is a proportion and must be strictly between 0 "
+            f"and 1; got {args.test_size}.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    if args.cv < 2:
+        print(
+            f"Error: --cv is the number of cross-validation folds and must be at "
+            f"least 2; got {args.cv}.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    if args.n_iter is not None and args.n_iter < 1:
+        print(
+            f"Error: --n-iter must be a positive integer (search iterations, "
+            f"epochs or Optuna trials depending on --model-type); got "
+            f"{args.n_iter}.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     # Create output directory
     os.makedirs(args.output, exist_ok=True)
     
@@ -911,12 +947,21 @@ def main():
     print("\nLoading data...")
     try:
         data = pd.read_csv(args.input)
-        # data['Model_Parameters'] = [ 'None' if str(x) == 'nan' else x for x in data['Model_Parameters'] ]
-        data['embeddings'] = [ 'None' if str(x) == 'nan' else x for x in data['embeddings'] ]
-        print(f"Loaded {len(data)} rows with {len(data.columns)} columns")
-    except Exception as e:
-        print(f"Error loading data: {e}", file=sys.stderr)
+    except (OSError, pd.errors.ParserError, UnicodeDecodeError) as e:
+        print(f"Error reading {args.input}: {type(e).__name__}: {e}", file=sys.stderr)
+        logger.debug("Failed to read %s", args.input, exc_info=True)
         sys.exit(1)
+    if 'embeddings' not in data.columns:
+        # A missing column is a malformed input, not a read failure; conflating the
+        # two sent users looking for a filesystem problem that was not there.
+        print(
+            f"Error: {args.input} has no 'embeddings' column. "
+            f"Found: {list(data.columns)}",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    data['embeddings'] = ['None' if str(x) == 'nan' else x for x in data['embeddings']]
+    print(f"Loaded {len(data)} rows with {len(data.columns)} columns")
     
     # Initialize QSage
     print("\nInitializing QSage...")
@@ -927,7 +972,11 @@ def main():
         print(f"Available embeddings: {sage._available_embeddings}")
         print(f"Available metrics: {sage._available_metrics}")
     except Exception as e:
-        print(f"Error initializing QSage: {e}", file=sys.stderr)
+        # Broad by design: this is a CLI boundary, where an unexpected failure has
+        # to become an exit code and a readable line rather than a traceback. The
+        # traceback is kept at DEBUG so `-v` / a logging config can still get it.
+        print(f"Error initializing QSage: {type(e).__name__}: {e}", file=sys.stderr)
+        logger.debug("QSage initialization failed", exc_info=True)
         sys.exit(1)
     
     # Train sub-sages
@@ -953,11 +1002,22 @@ def main():
         
         print("Training complete!")
     except Exception as e:
-        print(f"Error training sub-sages: {e}", file=sys.stderr)
+        print(f"Error training sub-sages: {type(e).__name__}: {e}", file=sys.stderr)
+        logger.debug("Sub-sage training failed", exc_info=True)
         sys.exit(1)
-    
-    # Save Sage model
-    pickle.dump(sage, open(os.path.join(args.output, 'trained_sage.pkl'), 'wb'))
+
+    # Save Sage model. `with` so the handle is closed even on a pickling error --
+    # pickle.dump(obj, open(...)) leaked the file object and, on failure, left a
+    # truncated .pkl behind with no indication that it was incomplete.
+    model_path = os.path.join(args.output, 'trained_sage.pkl')
+    try:
+        with open(model_path, 'wb') as fh:
+            pickle.dump(sage, fh)
+    except (OSError, pickle.PicklingError, TypeError, AttributeError) as e:
+        print(f"Error saving the trained model to {model_path}: "
+              f"{type(e).__name__}: {e}", file=sys.stderr)
+        logger.debug("Failed to pickle the trained sage", exc_info=True)
+        sys.exit(1)
 
     # Generate and save plots
     print(f"\nGenerating plots...")
@@ -966,7 +1026,10 @@ def main():
         sage.plot_results(saveFile=output_file)
         print(f"Plots saved to: {output_file}")
     except Exception as e:
-        print(f"Warning: Could not generate plots: {e}", file=sys.stderr)
+        # Non-fatal: plots are a convenience, and the results summary below is the
+        # actual output. Warn and continue rather than discarding a completed run.
+        print(f"Warning: could not generate plots: {type(e).__name__}: {e}", file=sys.stderr)
+        logger.debug("Plot generation failed", exc_info=True)
     
     # Save results summary
     print("\nSaving results summary...")
@@ -995,7 +1058,9 @@ def main():
         else:
             print("Warning: No results to save")
     except Exception as e:
-        print(f"Warning: Could not save results summary: {e}", file=sys.stderr)
+        print(f"Warning: could not save the results summary: "
+              f"{type(e).__name__}: {e}", file=sys.stderr)
+        logger.debug("Failed to write the results summary", exc_info=True)
     
     print("\n" + "="*80)
     print("QSage training completed successfully!")

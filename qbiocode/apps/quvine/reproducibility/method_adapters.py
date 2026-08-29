@@ -130,8 +130,46 @@ def evaluate_link_prediction(
     Returns
     -------
     dict
-        Link prediction metrics
+        Link prediction metrics: ``auc_roc``, ``auc_pr``, ``f1``.
+
+    Notes
+    -----
+    Ranking metrics are undefined unless both classes are present. When either
+    ``test_edges`` or ``neg_test_edges`` is empty the three metrics are returned
+    as ``nan`` -- not as 0.5 -- because 0.5 is an achievable score and reporting
+    it would make an undefined evaluation indistinguishable from a genuinely
+    chance-level one, and would drag any average over methods toward chance.
+    Aggregate these with ``np.nanmean``.
+
+    Raises
+    ------
+    ValueError
+        If both edge lists are empty, or if an edge references a node index
+        outside ``embeddings``.
     """
+    n_nodes = len(embeddings)
+    for name, edges in (("test_edges", test_edges), ("neg_test_edges", neg_test_edges)):
+        bad = [(u, v) for u, v in edges
+               if not (0 <= u < n_nodes) or not (0 <= v < n_nodes)]
+        if bad:
+            raise ValueError(
+                f"{name} references node indices outside embeddings "
+                f"(which has {n_nodes} rows): {bad[:5]}"
+                f"{' ...' if len(bad) > 5 else ''}"
+            )
+    if not test_edges and not neg_test_edges:
+        raise ValueError(
+            "evaluate_link_prediction requires at least one edge; both "
+            "test_edges and neg_test_edges are empty."
+        )
+    if not test_edges or not neg_test_edges:
+        logger.warning(
+            "Link-prediction metrics are undefined with a single class "
+            "(%d positive, %d negative edges); returning nan.",
+            len(test_edges), len(neg_test_edges),
+        )
+        return {"auc_roc": float("nan"), "auc_pr": float("nan"), "f1": float("nan")}
+
     # Compute scores for positive edges
     pos_scores = []
     for u, v in test_edges:
@@ -148,17 +186,23 @@ def evaluate_link_prediction(
     scores = np.array(pos_scores + neg_scores)
     labels = np.array([1] * len(pos_scores) + [0] * len(neg_scores))
     
-    # Compute metrics
+    # Both classes are guaranteed present by the check above, so these are
+    # defined. ValueError is still caught -- non-finite scores from a diverged
+    # embedding reach sklearn as a genuine input error -- and the sentinel is
+    # nan, matching the single-class path, so undefined never masquerades as
+    # chance-level. Narrow to ValueError: anything else here is a real bug.
     try:
         auc_roc = float(roc_auc_score(labels, scores))
-    except Exception:
-        auc_roc = 0.5
-    
+    except ValueError as exc:
+        logger.warning("roc_auc_score failed (%s); reporting nan.", exc)
+        auc_roc = float("nan")
+
     try:
         auc_pr = float(average_precision_score(labels, scores))
-    except Exception:
-        auc_pr = 0.5
-    
+    except ValueError as exc:
+        logger.warning("average_precision_score failed (%s); reporting nan.", exc)
+        auc_pr = float("nan")
+
     # F1 score at optimal threshold
     precision, recall, thresholds = precision_recall_curve(labels, scores)
     f1_scores = 2 * (precision * recall) / (precision + recall + 1e-10)

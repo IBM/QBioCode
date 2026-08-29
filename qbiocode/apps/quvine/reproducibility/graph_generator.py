@@ -19,6 +19,7 @@ Pre-generates and saves synthetic graphs to ensure all methods use identical ins
 """
 
 import json
+import logging
 import pickle
 from collections import deque
 from pathlib import Path
@@ -34,14 +35,29 @@ if TYPE_CHECKING:
 else:
     pyg_from_networkx_type = None
 
+logger = logging.getLogger(__name__)
+
+# PyTorch Geometric export is optional: every graph is always written as a
+# pickle, and the .pt companion file is an extra for GNN baselines. Deliberately
+# broad -- torch_geometric raises OSError or RuntimeError from its native
+# extensions when it is installed against a mismatched torch, not just
+# ImportError. The reason is kept and logged so a missing graph.pt is traceable
+# instead of silent.
 try:
     import importlib
     _pyg_utils = importlib.import_module("torch_geometric.utils")
     pyg_from_networkx = getattr(_pyg_utils, "from_networkx")
     HAS_TORCH_GEOMETRIC = True
-except Exception:
+    _PYG_IMPORT_ERROR = None
+except Exception as exc:
     pyg_from_networkx = None
     HAS_TORCH_GEOMETRIC = False
+    _PYG_IMPORT_ERROR = str(exc)
+    logger.debug(
+        "torch_geometric unavailable (%s); graphs will be saved as .pkl only. "
+        'Install it with: pip install "qbiocode[quvine]"',
+        _PYG_IMPORT_ERROR,
+    )
 
 from .seed_manager import SeedManager
 from .dataset_registry import DatasetRegistry, DatasetType, DatasetMetadata
@@ -233,6 +249,11 @@ class SyntheticGraphGenerator:
             pyg_path = dataset_dir / "graph.pt"
             pyg_data = cast(Callable[[nx.Graph], Any], pyg_from_networkx)(G)
             torch.save(pyg_data, pyg_path)
+        else:
+            logger.debug(
+                "Skipping PyG export for %s: torch_geometric unavailable (%s)",
+                dataset_dir.name, _PYG_IMPORT_ERROR,
+            )
         
         # Save metadata
         metadata = DatasetMetadata(
@@ -730,6 +751,11 @@ class PPIGraphGenerator:
             pyg_path = dataset_dir / "graph.pt"
             pyg_data = cast(Callable[[nx.Graph], Any], pyg_from_networkx)(G_sub)
             torch.save(pyg_data, pyg_path)
+        else:
+            logger.debug(
+                "Skipping PyG export for %s: torch_geometric unavailable (%s)",
+                dataset_dir.name, _PYG_IMPORT_ERROR,
+            )
 
         return graph_path
 

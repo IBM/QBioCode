@@ -37,10 +37,136 @@ sys.path.append( dir_home )
 # ====== Scaling and encoding functions imports ======
 from qbiocode import scale_train_test, feature_encoding
 from qbiocode import get_embeddings
+from qbiocode.embeddings import check_embedding_name
 # ====== Evaluation functions imports ====
 #from qmlbench.evaluation.dataset_evaluation_no_var_threshold import evaluate2 # use this for moons/circles data, otherwise you'll run into an error with finding no features with minimum variance threshold
 from qbiocode import evaluate
 from qbiocode import model_run
+
+#: Config keys ``main`` reads unconditionally. Reported together rather than one
+#: KeyError at a time, so a hand-written config can be fixed in a single pass.
+_REQUIRED_CONFIG_KEYS = (
+    "folder_path", "file_dataset", "embeddings", "n_components", "model",
+    "seed", "q_seed", "test_size", "iter", "scaling", "backend", "n_jobs",
+)
+
+
+def _resolve_scaling(scaling):
+    """Resolve the ``scaling`` config value to a scaler name for ``scale_train_test``.
+
+    The shipped config writes ``scaling: ['True']`` and the original code tested
+    it with ``'True' in args['scaling']``. That substring test accepted
+    ``'MinMaxScalerTrue'``, silently ignored ``['true']``, and raised
+    ``TypeError: argument of type 'bool' is not iterable`` for the most natural
+    YAML of all -- ``scaling: true``. All four spellings are accepted here, and
+    anything else is named as an error instead of quietly disabling scaling.
+
+    Returns:
+        str: ``'MinMaxScaler'``, ``'StandardScaler'`` or ``'None'``.
+
+    Raises:
+        ValueError: if the value is not a recognized flag or scaler name.
+    """
+    value = scaling
+    if isinstance(value, (list, tuple)):
+        if len(value) != 1:
+            raise ValueError(
+                f"scaling accepts a single value; got {list(value)!r}. Use "
+                f"scaling: ['True'], scaling: false, or a scaler name."
+            )
+        value = value[0]
+    if isinstance(value, bool):
+        return "MinMaxScaler" if value else "None"
+    if isinstance(value, str):
+        lowered = value.strip().lower()
+        if lowered in ("true", "yes", "1"):
+            return "MinMaxScaler"
+        if lowered in ("false", "no", "0", "none"):
+            return "None"
+        if lowered == "minmaxscaler":
+            return "MinMaxScaler"
+        if lowered == "standardscaler":
+            return "StandardScaler"
+    raise ValueError(
+        f"Unrecognized scaling {scaling!r}. Accepted: true/false (or ['True'] / "
+        f"['False'] as the shipped config writes it), 'MinMaxScaler', "
+        f"'StandardScaler', or 'None'."
+    )
+
+
+def _validate_config(args, log):
+    """Check the whole config before any dataset is read.
+
+    A QProfiler run is long: loading data, splitting, embedding and fitting
+    quantum models takes minutes to hours. Every check below used to fire deep
+    into that run, or not at all -- an empty ``embeddings`` list, or an ``iter``
+    of 0, simply produced no results and exited 0, which is indistinguishable
+    from a run whose models all failed.
+
+    Returns:
+        str: the resolved scaler name, so ``main`` does not re-derive it.
+
+    Raises:
+        ValueError: naming the offending key, the value received, and what is
+            accepted.
+    """
+    missing = [k for k in _REQUIRED_CONFIG_KEYS if k not in args]
+    if missing:
+        raise ValueError(
+            f"Config is missing required key(s): {missing}. Start from the "
+            f"packaged configs/config.yaml, which defines all of "
+            f"{list(_REQUIRED_CONFIG_KEYS)}."
+        )
+
+    if not isinstance(args["iter"], int) or isinstance(args["iter"], bool) or args["iter"] < 1:
+        raise ValueError(
+            f"iter is the number of train/test splits and must be a positive "
+            f"integer; got {args['iter']!r}. A value of 0 produces no results at "
+            f"all while still exiting successfully."
+        )
+    if not 0.0 < float(args["test_size"]) < 1.0:
+        raise ValueError(
+            f"test_size is a proportion and must be strictly between 0 and 1; "
+            f"got {args['test_size']!r}."
+        )
+    n_components = args["n_components"]
+    if (
+        not isinstance(n_components, int)
+        or isinstance(n_components, bool)
+        or n_components < 1
+    ):
+        raise ValueError(
+            f"n_components is the embedding width and must be a positive integer; "
+            f"got {n_components!r}."
+        )
+    if not isinstance(args["n_jobs"], int) or args["n_jobs"] == 0:
+        raise ValueError(
+            f"n_jobs must be a non-zero integer (-1 means all cores); got "
+            f"{args['n_jobs']!r}."
+        )
+
+    embeddings = list(args["embeddings"])
+    if not embeddings:
+        raise ValueError(
+            "embeddings is empty; there is nothing to profile. Use ['none'] to "
+            "run the models on the unreduced features."
+        )
+    # Validated as a set, up front: a typo in the last of six embeddings used to
+    # surface only after the first five had been embedded and modelled.
+    for name in embeddings:
+        check_embedding_name(name)
+
+    models = list(args["model"])
+    if not models:
+        raise ValueError(
+            "model is empty; there is nothing to fit. See "
+            "qbiocode.evaluation.model_run for the available model names."
+        )
+
+    scaler_name = _resolve_scaling(args["scaling"])
+    log.info(f"Feature scaling resolved to: {scaler_name}")
+    return scaler_name
+
 
 # Begin the main function and instatiate Hydra class
 # config_path=None allows --config-dir to work properly
@@ -64,14 +190,34 @@ def main(args):
     log.info(f"Main program initiated")
     log.info(f"The number of ML methods being parallelized is {min(args['n_jobs'], len(args['model']))}")
     log.info(f"Chosen backend for quantum algorithms is: {args['backend']}") 
+    scaler_name = _validate_config(args, log)
     # Normalize path separators for cross-platform compatibility
     folder_path = args['folder_path'].replace('/', os.sep).replace('\\', os.sep)
     path_to_input = os.path.join(dir_home, folder_path)
+    if not os.path.isdir(path_to_input):
+        raise ValueError(
+            f"folder_path {args['folder_path']!r} resolves to {path_to_input!r}, "
+            f"which is not a directory. folder_path is interpreted relative to "
+            f"{dir_home!r} (the QBioCode checkout root, derived from the current "
+            f"working directory), so run QProfiler from the repository root or "
+            f"give an absolute path."
+        )
     if args['file_dataset'] == 'ALL':
         input_files = [file for file in os.listdir(path_to_input) if file.endswith('csv')]
     else:
         input_files = [file for file in os.listdir(path_to_input) if file in args['file_dataset'] and file.endswith('csv')]
-    
+    if not input_files:
+        # Previously this produced a successful run with no output whatsoever,
+        # which reads exactly like a run whose models all silently failed.
+        selector = (
+            "every .csv file" if args['file_dataset'] == 'ALL'
+            else f"file_dataset={args['file_dataset']!r}"
+        )
+        raise ValueError(
+            f"No input datasets matched {selector} in {path_to_input!r}. "
+            f"Directory contents: {sorted(os.listdir(path_to_input))[:10]}"
+        )
+
     # need to populate raw data evaluation for each file, so start an empty list
     appended_raw_data_eval = []
     
@@ -157,8 +303,8 @@ def main(args):
                 log.info(f"Begin processing iteration (split) {iter} of {args['iter']} without stratification")
             # Scale the features: fit one scaler on TRAIN and apply it to TEST (never fit a
             # separate scaler on the test set -- that would use test-set statistics).
-            if 'True' in args['scaling']:
-                X_train, X_test = scale_train_test(X_train, X_test, scaling='MinMaxScaler')
+            if scaler_name != 'None':
+                X_train, X_test = scale_train_test(X_train, X_test, scaling=scaler_name)
         
             # Embed the training data and test data separately
             for embed in args['embeddings']:

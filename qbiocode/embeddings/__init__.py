@@ -13,6 +13,7 @@ Available Functions
   QuVINE graph embeddings (``quvine_rwr``, ``quvine_fused``, ``node2vec``, ...)
 - pqk: Projected Quantum Kernel embedding
 - is_transductive: Whether a method sees test *features* at embed time
+- check_embedding_name: Validate a method name up front, before doing any work
 
 Available Constants
 -------------------
@@ -41,6 +42,7 @@ from .embed import (
     QUVINE_HEADLINE_METHODS,
     QUVINE_METHODS,
     SKLEARN_METHODS,
+    check_embedding_name,
     get_embeddings,
     is_transductive,
     pqk,
@@ -52,6 +54,7 @@ __all__ = [
     "pqk",
     "ConvAutoencoder",
     "SKLEARN_METHODS",
+    "check_embedding_name",
     "QUVINE_HEADLINE_METHODS",
     "QUVINE_METHODS",
 ]

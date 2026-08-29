@@ -614,27 +614,43 @@ def summarize_link_prediction_results(
                 mrr_scores.append(metrics['mrr'])
     
     if not auc_roc_scores:
+        # nan, not 0.0: no method produced a score, which is not the same claim
+        # as every method scoring zero.
         return {
-            'mean_auc_roc': 0.0,
-            'mean_auc_pr': 0.0,
-            'mean_mrr': 0.0,
-            'n_successful_methods': 0
+            'mean_auc_roc': float('nan'),
+            'mean_auc_pr': float('nan'),
+            'mean_mrr': float('nan'),
+            'n_defined_auc_roc': 0,
+            'n_defined_auc_pr': 0,
+            'n_defined_mrr': 0,
+            'n_successful_methods': 0,
         }
     
+    # nan-aware: a method whose ranking metric was undefined (single-class test
+    # split) reports nan, and plain np.mean would propagate that one nan into
+    # every summary field, erasing the methods that did succeed. n_defined_* says
+    # how many values each statistic was actually computed over.
+    def _stats(prefix, values):
+        arr = np.asarray(values, dtype=float)
+        n_defined = int(np.count_nonzero(~np.isnan(arr)))
+        if n_defined == 0:
+            return {f'mean_{prefix}': float('nan'), f'std_{prefix}': float('nan'),
+                    f'max_{prefix}': float('nan'), f'min_{prefix}': float('nan'),
+                    f'n_defined_{prefix}': 0}
+        return {f'mean_{prefix}': float(np.nanmean(arr)),
+                f'std_{prefix}': float(np.nanstd(arr)),
+                f'max_{prefix}': float(np.nanmax(arr)),
+                f'min_{prefix}': float(np.nanmin(arr)),
+                f'n_defined_{prefix}': n_defined}
+
     summary = {
-        'mean_auc_roc': np.mean(auc_roc_scores),
-        'std_auc_roc': np.std(auc_roc_scores),
-        'max_auc_roc': np.max(auc_roc_scores),
-        'min_auc_roc': np.min(auc_roc_scores),
-        'mean_auc_pr': np.mean(auc_pr_scores),
-        'std_auc_pr': np.std(auc_pr_scores),
-        'max_auc_pr': np.max(auc_pr_scores),
-        'min_auc_pr': np.min(auc_pr_scores),
-        'mean_mrr': np.mean(mrr_scores),
-        'std_mrr': np.std(mrr_scores),
-        'n_successful_methods': len(auc_roc_scores)
+        **_stats('auc_roc', auc_roc_scores),
+        **_stats('auc_pr', auc_pr_scores),
+        **{k: v for k, v in _stats('mrr', mrr_scores).items()
+           if not (k.startswith('max_') or k.startswith('min_'))},
+        'n_successful_methods': len(auc_roc_scores),
     }
-    
+
     return summary
 
 

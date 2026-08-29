@@ -156,7 +156,35 @@ def set_seed(seed: int) -> None:
 
 
 def get_nodelist(G: nx.Graph, nodelist: Optional[Sequence] = None) -> List:
-    return list(G.nodes()) if nodelist is None else list(nodelist)
+    """Return the node order to use, validating that it belongs to ``G``.
+
+    Every consumer of this ordering indexes ``G`` by these ids -- degree views,
+    Laplacian construction, per-node metric dicts -- so an id that is not in the
+    graph has no meaningful feature row. Rejecting it here names the offending
+    ids; letting it through produced either a silently zeroed feature column or
+    an inscrutable numpy shape error several frames deeper.
+
+    Raises:
+        ValueError: if ``nodelist`` contains ids absent from ``G``, or duplicates.
+    """
+    if nodelist is None:
+        return list(G.nodes())
+    nodes = list(nodelist)
+    missing = [v for v in nodes if v not in G]
+    if missing:
+        shown = missing[:5]
+        raise ValueError(
+            f"nodelist contains {len(missing)} node(s) not present in the graph: "
+            f"{shown}{' ...' if len(missing) > len(shown) else ''}. "
+            f"The graph has {G.number_of_nodes()} nodes."
+        )
+    if len(set(nodes)) != len(nodes):
+        dupes = sorted({v for v in nodes if nodes.count(v) > 1}, key=repr)[:5]
+        raise ValueError(
+            f"nodelist contains duplicate node ids, e.g. {dupes}; "
+            f"the ordering must be a permutation of the nodes it covers."
+        )
+    return nodes
 
 
 def as_numpy(X: ArrayLike) -> np.ndarray:
@@ -272,6 +300,13 @@ def build_structural_features(
         For transductive node classification, train_mask can be None since
         the full graph structure is known. For inductive tasks or to prevent
         test leakage, always provide train_mask.
+
+    Degenerate graphs:
+        Any structural column that networkx cannot compute for this graph class
+        (clustering and triangles on multigraphs, k-core with self-loops,
+        pagerank that fails to converge) falls back to zeros -- pagerank to the
+        uniform distribution -- and logs the reason at DEBUG. The feature matrix
+        always has the documented width; it is never partially built.
     """
     nodelist = get_nodelist(G, nodelist)
     n = len(nodelist)
@@ -281,34 +316,45 @@ def build_structural_features(
     deg = dict(G.degree())
     deg_arr = np.array([deg.get(v, 0.0) for v in nodelist], dtype=np.float64)
 
+    # Each structural column below degrades independently. networkx raises
+    # NetworkXNotImplemented for metrics undefined on the given graph class
+    # (multigraphs, directed graphs, self-loops) and PowerIterationFailedConvergence
+    # when pagerank does not settle; those are expected inputs here, not errors, so
+    # the column falls back to a documented sentinel and the reason is logged at
+    # debug rather than raised or discarded.
     try:
         clustering = nx.clustering(G)
         clust_arr = np.array([clustering.get(v, 0.0) for v in nodelist], dtype=np.float64)
-    except Exception:
+    except nx.NetworkXException as exc:
+        logger.debug("clustering coefficients unavailable, using zeros: %s", exc)
         clust_arr = np.zeros(n, dtype=np.float64)
 
     try:
         core = nx.core_number(G)
         core_arr = np.array([core.get(v, 0.0) for v in nodelist], dtype=np.float64)
-    except Exception:
+    except nx.NetworkXException as exc:
+        logger.debug("k-core numbers unavailable, using zeros: %s", exc)
         core_arr = np.zeros(n, dtype=np.float64)
 
     try:
         pr = nx.pagerank(G, alpha=0.85, max_iter=200, tol=1e-6)
         pr_arr = np.array([pr.get(v, 0.0) for v in nodelist], dtype=np.float64)
-    except Exception:
+    except nx.NetworkXException as exc:
+        logger.debug("PageRank unavailable, using zeros: %s", exc)
         pr_arr = np.zeros(n, dtype=np.float64)
 
     try:
         tri = nx.triangles(G)
         tri_arr = np.array([tri.get(v, 0.0) for v in nodelist], dtype=np.float64)
-    except Exception:
+    except nx.NetworkXException as exc:
+        logger.debug("triangle counts unavailable, using zeros: %s", exc)
         tri_arr = np.zeros(n, dtype=np.float64)
 
     try:
         avg_nbr_deg = nx.average_neighbor_degree(G)
         avg_nbr_deg_arr = np.array([avg_nbr_deg.get(v, 0.0) for v in nodelist], dtype=np.float64)
-    except Exception:
+    except nx.NetworkXException as exc:
+        logger.debug("average neighbour degrees unavailable, using zeros: %s", exc)
         avg_nbr_deg_arr = np.zeros(n, dtype=np.float64)
 
     max_deg = max(float(deg_arr.max()), 1.0)

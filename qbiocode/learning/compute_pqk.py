@@ -17,6 +17,7 @@ import hashlib
 import os
 import time
 import warnings
+from collections.abc import Mapping
 
 import numpy as np
 import pandas as pd
@@ -26,14 +27,6 @@ from sklearn.metrics import accuracy_score, auc, classification_report, confusio
 from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
-
-try:
-    from xgboost import XGBClassifier
-
-    XGBOOST_AVAILABLE = True
-except Exception:
-    XGBOOST_AVAILABLE = False
-    XGBClassifier = None  # type: ignore
 
 # from qiskit.primitives import Sampler
 from functools import reduce
@@ -94,7 +87,88 @@ def compute_pqk(
 
     Returns:
         modeleval (pd.DataFrame): A DataFrame containing evaluation metrics and model parameters for all models.
+
+    Raises:
+        ValueError: if any argument is outside its accepted set or the train/test
+            arrays are inconsistent. Every check runs before any directory is
+            created or any cached projection is read, so a mistyped ``encoding``
+            costs nothing and reports the parameter, the value received and the
+            accepted set instead of failing later inside qiskit.
     """
+    # --- boundary validation -------------------------------------------------
+    # These used to surface far from their cause: a bad `encoding` reached
+    # qutils.get_feature_map and came back as the input string, failing with
+    # "'str' object has no attribute 'num_qubits'"; a bad `entanglement` reached
+    # qiskit and came back as "Something went wrong in Rust space".
+    if not isinstance(args, Mapping):
+        raise ValueError(
+            f"args must be a mapping of run configuration (it is read with "
+            f"args['backend'] and args.get(...)); got {type(args).__name__}."
+        )
+    if "backend" not in args:
+        raise ValueError(
+            "args is missing the required 'backend' key (e.g. 'simulator', or an "
+            f"IBM Quantum backend name). Keys present: {sorted(args)}."
+        )
+    if encoding not in qutils.SUPPORTED_FEATURE_MAPS:
+        raise ValueError(
+            f"encoding must be one of {qutils.SUPPORTED_FEATURE_MAPS} "
+            f"(case-sensitive); got {encoding!r}."
+        )
+    if isinstance(entanglement, str) and entanglement not in qutils.SUPPORTED_ENTANGLEMENTS:
+        raise ValueError(
+            f"entanglement must be one of {qutils.SUPPORTED_ENTANGLEMENTS}; "
+            f"got {entanglement!r}."
+        )
+    if not isinstance(reps, (int, np.integer)) or reps < 1:
+        raise ValueError(
+            f"reps is the number of feature-map repetitions and must be a "
+            f"positive integer; got {reps!r}."
+        )
+    if primitive != "estimator":
+        # PQK projects onto Pauli expectation values, which is an Estimator
+        # measurement; the backend below is requested as "estimator"
+        # unconditionally. Accepting 'sampler' therefore changed only the cache
+        # fingerprint, not the computation -- two cache files holding identical
+        # projections, and a caller who believed they had measured something else.
+        raise ValueError(
+            f"primitive must be 'estimator'; got {primitive!r}. Projected quantum "
+            f"kernels are built from Pauli expectation values, which only the "
+            f"Estimator primitive provides. For sampler-based models see "
+            f"compute_vqc or compute_qnn."
+        )
+    if not isinstance(data_key, str):
+        raise ValueError(
+            f"data_key is interpolated into the projection cache filename and "
+            f"must be a string; got {type(data_key).__name__} ({data_key!r})."
+        )
+
+    X_train = np.asarray(X_train)
+    X_test = np.asarray(X_test)
+    if X_train.ndim != 2 or X_test.ndim != 2:
+        raise ValueError(
+            f"X_train and X_test must be 2-D (n_samples, n_features); got "
+            f"{X_train.ndim}-D and {X_test.ndim}-D. Reshape a single sample with "
+            f"X.reshape(1, -1)."
+        )
+    if X_train.shape[1] != X_test.shape[1]:
+        raise ValueError(
+            f"X_train and X_test must have the same number of features -- one "
+            f"feature map is built for both -- got {X_train.shape[1]} and "
+            f"{X_test.shape[1]}."
+        )
+    if X_train.shape[0] == 0 or X_test.shape[0] == 0:
+        raise ValueError(
+            f"X_train and X_test must both be non-empty; got "
+            f"{X_train.shape[0]} training and {X_test.shape[0]} test samples."
+        )
+    if len(y_train) != X_train.shape[0] or len(y_test) != X_test.shape[0]:
+        raise ValueError(
+            f"Labels and features must be aligned; got {X_train.shape[0]} train "
+            f"samples vs {len(y_train)} train labels, and {X_test.shape[0]} test "
+            f"samples vs {len(y_test)} test labels."
+        )
+    # ------------------------------------------------------------------------
 
     classical_models = ["svc"]
 

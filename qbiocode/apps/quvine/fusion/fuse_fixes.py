@@ -12,12 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+
 import numpy as np
 from numpy.linalg import svd
 import scipy.sparse as sp
 import scipy.sparse.linalg as spla
 from typing import List, Optional
 
+
+logger = logging.getLogger(__name__)
 
 def fuse_embeddings_attention_fixed(Zs, k, temperature=1.0, mode="effective_rank"):
     """
@@ -39,7 +43,15 @@ def fuse_embeddings_attention_fixed(Zs, k, temperature=1.0, mode="effective_rank
                 p = s2 / s2.sum()
                 entropy = -np.sum(p * np.log(p + 1e-20))
                 weights_raw.append(float(np.exp(entropy)))
-            except Exception:
+            except np.linalg.LinAlgError as exc:
+                # LAPACK did not converge, or Z holds non-finite values. Weight 1.0
+                # is a neutral pre-softmax score, so this view neither dominates nor
+                # is dropped -- but it is not a measured effective rank, so it is
+                # logged rather than silently mixed in with the measured ones.
+                logger.warning(
+                    "view weighting (%s): SVD failed (%s); using a neutral "
+                    "weight of 1.0 for this view", "effective_rank", exc,
+                )
                 weights_raw.append(1.0)
         elif mode == "spectral_norm":
             try:
@@ -48,7 +60,15 @@ def fuse_embeddings_attention_fixed(Zs, k, temperature=1.0, mode="effective_rank
                     weights_raw.append(0.0)
                 else:
                     weights_raw.append(float(s.max() / s.mean()))
-            except Exception:
+            except np.linalg.LinAlgError as exc:
+                # LAPACK did not converge, or Z holds non-finite values. Weight 1.0
+                # is a neutral pre-softmax score, so this view neither dominates nor
+                # is dropped -- but it is not a measured spectral-norm ratio, so it is
+                # logged rather than silently mixed in with the measured ones.
+                logger.warning(
+                    "view weighting (%s): SVD failed (%s); using a neutral "
+                    "weight of 1.0 for this view", "spectral_norm", exc,
+                )
                 weights_raw.append(1.0)
         elif mode == "variance":
             weights_raw.append(float(np.log1p(Z.var())))

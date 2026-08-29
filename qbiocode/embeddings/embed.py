@@ -332,6 +332,37 @@ def _unknown_embedding_error(embedding: str) -> ValueError:
     )
 
 
+def check_embedding_name(embedding: str) -> str:
+    """Normalize and validate an embedding name, raising if it is unknown.
+
+    :func:`get_embeddings` calls this, so a caller that is about to run many
+    embeddings can validate the whole list *before* doing any work and get the
+    identical message. QProfiler uses it for exactly that: a typo in the sixth
+    entry of ``embeddings`` used to surface only after the first five had run.
+
+    Args:
+        embedding (str): Method name, case-insensitive, surrounding space ignored.
+
+    Returns:
+        str: The normalized (lower-cased, stripped) name.
+
+    Raises:
+        ValueError: if ``embedding`` is not a string, or names no known method.
+            The message lists close matches and the valid sklearn modes.
+    """
+    if not isinstance(embedding, str):
+        raise ValueError(
+            f"embedding must be a string naming an embedding method; got "
+            f"{embedding!r} ({type(embedding).__name__}). Valid options: "
+            f"{list(SKLEARN_METHODS)}"
+            + (f" plus {len(QUVINE_METHODS)} QuVINE methods." if QUVINE_METHODS else ".")
+        )
+    name = embedding.lower().strip()
+    if name not in SKLEARN_METHODS and not _is_quvine_method(name):
+        raise _unknown_embedding_error(name)
+    return name
+
+
 def _quvine_embed(embedding, X_train, X_test, n_components, n_neighbors=30, quvine_args=None):
     """Embed via QuVINE, treating the (train+test) feature matrix as one cell graph.
 
@@ -439,8 +470,9 @@ def get_embeddings(
 
     Raises:
         ValueError: if ``embedding`` is not a known name (the message lists close
-            matches), if ``n_components`` is not a positive integer, or if
-            ``n_components`` exceeds the feature count for an sklearn mode.
+            matches), if ``n_components`` is not a positive integer, if
+            ``n_components`` exceeds the feature count for an sklearn mode, or if
+            ``X_train``/``X_test`` are not 2-D arrays with matching widths.
         QuvineDependencyError: if a QuVINE method is requested without the ``[quvine]``
             extra installed. The message names the extra and the install command.
 
@@ -452,14 +484,30 @@ def get_embeddings(
         >>> Z_tr, Z_te = get_embeddings("quvine_rwr", X_train, X_test, n_components=8)
     """
 
-    if not isinstance(embedding, str):
+    embedding = check_embedding_name(embedding)
+
+    # Coerced and shape-checked before anything reads X_train.shape: a list of
+    # lists (the natural thing to pass from a notebook) otherwise failed on the
+    # `n_components is None` default below with "'list' object has no attribute
+    # 'shape'", which names neither the parameter nor the requirement.
+    X_train = np.asarray(X_train)
+    X_test = np.asarray(X_test)
+    if X_train.ndim != 2 or X_test.ndim != 2:
         raise ValueError(
-            f"embedding must be a string naming an embedding method; got "
-            f"{embedding!r} ({type(embedding).__name__}). Valid options: "
-            f"{list(SKLEARN_METHODS)}"
-            + (f" plus {len(QUVINE_METHODS)} QuVINE methods." if QUVINE_METHODS else ".")
+            f"X_train and X_test must be 2-D (n_samples, n_features); got "
+            f"{X_train.ndim}-D and {X_test.ndim}-D. Reshape a single sample with "
+            f"X.reshape(1, -1)."
         )
-    embedding = embedding.lower().strip()
+    if X_train.shape[1] != X_test.shape[1]:
+        raise ValueError(
+            f"X_train and X_test must have the same number of features -- one "
+            f"embedding is fitted for both -- got {X_train.shape[1]} and "
+            f"{X_test.shape[1]}."
+        )
+    if X_train.shape[0] == 0:
+        raise ValueError(
+            "X_train is empty; an embedding cannot be fitted on zero samples."
+        )
 
     # Default the embedding width to the feature count. This is the documented behavior, but
     # without it `n_components=None` (the documented default!) reaches the comparison below and
@@ -476,9 +524,9 @@ def get_embeddings(
     if n_components < 1:
         raise ValueError(f"n_components must be >= 1; got {n_components}.")
 
+    # check_embedding_name above already rejected unknown names, so this only
+    # decides which of the two routes the (valid) name takes.
     is_quvine = _is_quvine_method(embedding)
-    if not is_quvine and embedding not in SKLEARN_METHODS:
-        raise _unknown_embedding_error(embedding)
 
     if embedding != "none" and (is_quvine or embedding in _TRANSDUCTIVE_SKLEARN_METHODS):
         _warn_transductive(embedding)

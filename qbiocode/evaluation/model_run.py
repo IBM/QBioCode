@@ -1,5 +1,6 @@
 # ====== Base class imports ======
 import json
+import logging
 import os
 
 import pandas as pd
@@ -8,6 +9,8 @@ import pandas as pd
 from joblib import Parallel, delayed
 
 current_dir = os.getcwd()
+
+logger = logging.getLogger(__name__)
 
 
 def model_run(X_train, X_test, y_train, y_test, data_key, args):
@@ -80,6 +83,35 @@ def model_run(X_train, X_test, y_train, y_test, data_key, args):
     # Quantum models don't have _opt versions (use separate configs for hyperparameter tuning)
     quantum_models = {"qsvc", "qnn", "vqc", "pqk", "qpl"}
 
+    # Validate the requested models before dispatching. An unknown name otherwise
+    # reached `compute_ml_dict[method]` inside a joblib worker and came back as a
+    # bare KeyError with no indication of what the valid names are.
+    requested = list(args["model"])
+    if not requested:
+        raise ValueError(
+            "args['model'] is empty; there is nothing to run. Choose at least one "
+            f"of {sorted(compute_ml_dict)}."
+        )
+    unknown = [m for m in requested if m not in compute_ml_dict]
+    if unknown:
+        raise ValueError(
+            f"Unknown model(s) {unknown} in args['model']. Available models: "
+            f"{sorted(compute_ml_dict)} (quantum: {sorted(quantum_models)}). "
+            f"Note the '_opt' variants are selected with args['grid_search'], not "
+            f"by naming them here."
+        )
+    if grid_search_requested := bool(args.get("grid_search", False)):
+        missing_opt = [
+            m for m in requested
+            if m not in quantum_models and (m + "_opt") not in compute_ml_dict
+        ]
+        if missing_opt:
+            raise ValueError(
+                f"grid_search is enabled but {missing_opt} have no '_opt' "
+                f"implementation. Disable grid_search or drop those models."
+            )
+    del grid_search_requested
+
     # Run classical and quantum models
     n_jobs = len(args["model"])
     if "n_jobs" in args.keys():
@@ -110,6 +142,25 @@ def model_run(X_train, X_test, y_train, y_test, data_key, args):
             print("  )")
             print("\nSee documentation: qbiocode.utils.generate_qml_experiment_configs")
             print("=" * 80 + "\n")
+
+    def _model_args(method):
+        """Per-model hyperparameters from the config, or the estimator defaults.
+
+        `args[method + "_args"]` raised KeyError for any model whose config block
+        was absent -- which includes ``xgb`` and ``qpl`` in the shipped
+        config.yaml, so naming either in ``model`` failed before the estimator was
+        ever constructed. The grid-search branch below already used ``.get(...,
+        {})``; this makes the two agree, and says so in the log rather than
+        substituting silently.
+        """
+        key = method + "_args"
+        if key in args:
+            return args[key]
+        logger.info(
+            "No %r block in the config; running %r with its default "
+            "hyperparameters.", key, method,
+        )
+        return {}
 
     if grid_search:
         results = []
@@ -152,7 +203,7 @@ def model_run(X_train, X_test, y_train, y_test, data_key, args):
                 args,
                 model=method,
                 data_key=data_key,
-                **args[method + "_args"],
+                **_model_args(method),
                 verbose=False,
             )
             for method in args["model"]

@@ -27,8 +27,13 @@ import logging
 from typing import List, Optional
 import numpy as np
 
-# Import baseline methods
-from . import run_node2vec, run_appnp
+# Import baseline methods. These come from the modules directly, never from the
+# package namespace: __init__.py binds them behind try/except ImportError, so
+# `from . import run_node2vec` turns any one baseline's missing dependency into
+# an ImportError that names node2vec and takes down the whole method registry
+# with it -- including the methods that need nothing optional at all.
+from .node2vec import run_node2vec
+from .appnp import run_appnp
 from .graphsage import run_graphsage
 from .netmf import run_netmf
 from .gat import generate_gat_embedding, GATConfig as GATModelConfig, TrainConfig as GATTrainConfig

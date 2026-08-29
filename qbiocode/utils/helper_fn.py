@@ -105,13 +105,23 @@ def scale_train_test(
     Returns:
         tuple: ``(X_train_scaled, X_test_scaled)``. When ``scaling='None'`` the inputs are
         returned unchanged.
+
+    Raises:
+        ValueError: if ``scaling`` is not one of the three accepted names. A
+            mistyped name used to fall through to the ``'None'`` branch, so
+            ``scaling='minmaxscaler'`` returned unscaled data and reported success.
     """
     if scaling == "MinMaxScaler":
         scaler = MinMaxScaler()
     elif scaling == "StandardScaler":
         scaler = StandardScaler()
-    else:  # scaling == 'None'
+    elif scaling == "None":
         return X_train, X_test
+    else:
+        raise ValueError(
+            f"Unrecognized scaling {scaling!r}. Expected one of 'None', "
+            f"'MinMaxScaler', 'StandardScaler' (case-sensitive)."
+        )
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
     return X_train_scaled, X_test_scaled
