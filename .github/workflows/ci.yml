@@ -109,15 +109,67 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y pandoc
     
+    # No continue-on-error: a docs build that fails is a broken docs build. This
+    # catches unresolved toctree refs, missing API pages and import errors in
+    # conf.py, none of which are visible from the rendered site.
     - name: Build documentation
       run: |
         cd docs
         make html
-      continue-on-error: true
-    
+
+    # deploy-docs consumes this artifact instead of rebuilding, so it must not be
+    # allowed to fail silently.
     - name: Upload documentation artifacts
       uses: actions/upload-artifact@v6
       with:
         name: documentation
         path: docs/build/html/
-      continue-on-error: true
+
+  # Publishes the built HTML to the gh-pages branch, which is what
+  # https://ibm.github.io/QBioCode serves (Pages source = "Deploy from a branch",
+  # branch gh-pages). peaceiris/actions-gh-pages is used rather than
+  # actions/deploy-pages because the latter requires flipping the repository's
+  # Pages source to "GitHub Actions"; pushing the branch keeps the existing
+  # setting working untouched.
+  #
+  # Before this job existed the rendered site was committed to the repository
+  # under docs/_build/html/ and copied over by hand. That build output has been
+  # removed from source control (see .gitignore); this job replaces it.
+  deploy-docs:
+    name: Deploy Documentation to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: docs
+    # main only, and never on a pull request -- a PR from a fork must not be able
+    # to publish to the live site.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: write
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    # Reuses the artifact built by the `docs` job rather than building a second
+    # time; `needs: docs` already guarantees that build was clean.
+    - name: Download documentation artifact
+      uses: actions/download-artifact@v6
+      with:
+        name: documentation
+        path: site
+
+    # Without this, Pages runs the output through Jekyll, which drops every
+    # directory whose name starts with an underscore -- i.e. all of Sphinx's
+    # _static/, _images/, _sources/ and _modules/.
+    - name: Disable Jekyll processing
+      run: touch site/.nojekyll
+
+    - name: Publish to gh-pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_branch: gh-pages
+        publish_dir: ./site
+        # Sphinx output is fully regenerated each build, so stale files from a
+        # previous version must not linger.
+        force_orphan: true
+        commit_message: "Update documentation (${{ github.sha }})"

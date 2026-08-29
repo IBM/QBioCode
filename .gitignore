@@ -36,7 +36,13 @@ coverage.xml
 credentials.json
 
 # Documentation
-docs/build/*
+# Sphinx build output. `docs/Makefile` sets BUILDDIR = build, and CI uploads
+# docs/build/html, so docs/build/ is the single build directory. docs/_build/ is
+# listed too because ~250 files of rendered HTML plus a .doctrees build cache were
+# once committed under it: the published site is now produced by the deploy-docs
+# job in .github/workflows/ci.yml, so no build output belongs in git.
+docs/build/
+docs/_build/
 docs/outputdir/*
 
 # Project specific (top-level scratch dirs only -- anchored with a leading

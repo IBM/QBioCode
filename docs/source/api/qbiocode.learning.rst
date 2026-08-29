@@ -60,6 +60,14 @@ qbiocode.learning.compute\_qnn module
    :show-inheritance:
    :undoc-members:
 
+qbiocode.learning.compute\_qpl module
+-------------------------------------
+
+.. automodule:: qbiocode.learning.compute_qpl
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 qbiocode.learning.compute\_qsvc module
 --------------------------------------
 

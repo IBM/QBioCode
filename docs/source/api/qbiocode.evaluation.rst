@@ -12,6 +12,14 @@ qbiocode.evaluation.dataset\_evaluation module
    :show-inheritance:
    :undoc-members:
 
+qbiocode.evaluation.graph\_evaluation module
+--------------------------------------------
+
+.. automodule:: qbiocode.evaluation.graph_evaluation
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 qbiocode.evaluation.model\_evaluation module
 --------------------------------------------
 

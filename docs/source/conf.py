@@ -8,19 +8,78 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.insert(0, os.path.abspath('../..'))
 
-# Mock imports for packages that have issues
-autodoc_mock_imports = ['xgboost']
+# Anchor every path on this file, not on the cwd. `make html` runs from docs/ but
+# `sphinx-build docs/source docs/build/html` runs from the repository root, and
+# cwd-relative paths silently resolved to the wrong place in the second case.
+_CONF_DIR = os.path.dirname(os.path.abspath(__file__))       # docs/source
+_DOCS_DIR = os.path.dirname(_CONF_DIR)                       # docs
+_REPO_ROOT = os.path.dirname(_DOCS_DIR)                      # checkout root
 
+sys.path.insert(0, _CONF_DIR)
+sys.path.insert(0, _DOCS_DIR)
+sys.path.insert(0, _REPO_ROOT)
+
+# Mock imports so autodoc can introspect every module -- including the QuVINE app
+# (``qbiocode.apps.quvine``) -- in an environment that has only the [docs] extra.
+#
+# Everything here is either a member of the optional [quvine] extra, which a docs
+# build has no reason to install, or a package whose import is unreliable in CI.
+# Base runtime dependencies are deliberately NOT mocked: `pip install -e ".[docs]"`
+# installs them, and mocking a real dependency hides genuine import errors.
+# `tensorflow` used to be listed and was removed: nothing in qbiocode, the
+# tutorials, or the docs imports TensorFlow or Keras.
+autodoc_mock_imports = [
+    # [quvine] extra
+    'gensim',
+    'hiperwalk',
+    'node2vec',
+    'torch_geometric',
+    'community',        # python-louvain
+    'ripser',
+    # omegaconf backs QuVINE's config loading (api/config, api/core, api/sgns,
+    # main, pipeline, utils/io), so autodoc cannot import those modules without it.
+    'omegaconf',
+    # unreliable wheels in CI
+    'xgboost',
+]
 
 
 project = 'qbiocode'
 copyright = '2025 IBM Research' #, Bryan Raubenolt, Aritra Bose, Kahn Rhrissorrakrai, Filippo Utro, Akhil Mohan, Daniel Blankenberg, Laxmi Parida'
 author = 'Bryan Raubenolt, Aritra Bose, Kahn Rhrissorrakrai, Filippo Utro, Akhil Mohan, Daniel Blankenberg, Laxmi Parida'
-release = '0.0.1'
+
+
+def _package_version():
+    """Read ``__version__`` out of qbiocode/version.py.
+
+    Parsed rather than imported: importing qbiocode pulls in qiskit, torch and
+    umap, which a docs-only environment may not have, and a hardcoded literal
+    here silently disagreed with the package for several releases (conf.py said
+    0.0.1 while qbiocode/version.py said 0.1.0).
+    """
+    import re
+
+    version_file = os.path.join(_REPO_ROOT, "qbiocode", "version.py")
+    try:
+        with open(version_file, encoding="utf-8") as handle:
+            text = handle.read()
+    except OSError as exc:
+        raise RuntimeError(
+            f"Cannot read {version_file} to determine the documented version. "
+            "conf.py expects to live at docs/source/conf.py inside the checkout."
+        ) from exc
+    match = re.search(r"^__version__\s*=\s*[\"']([^\"']+)[\"']", text, re.M)
+    if match is None:
+        raise RuntimeError(
+            f"No __version__ assignment found in {version_file}; cannot set the "
+            "documented release."
+        )
+    return match.group(1)
+
+
+release = _package_version()
+version = release
 
 # Documentation note
 html_show_sphinx = True
@@ -45,6 +104,9 @@ extensions = [ "sphinx.ext.autodoc",
 ]
 
 templates_path = ['_templates']
+# workshops/_tutorial.rst is a copy-me skeleton full of {{placeholder}} braces, not
+# a page: un-excluding it publishes "{{Workshop Title}}" and, since no toctree
+# references it, adds an "isn't included in any toctree" warning as well.
 exclude_patterns = ["build", "Thumbs.db", ".DS_Store", "workshops/_tutorial.rst"]
 
 
@@ -91,27 +153,60 @@ source_suffix = {
 # nbsphinx automatically handles .ipynb files when included in extensions
 
 def run_apidoc(app):
-    """Generate API documentation"""
+    """Regenerate docs/source/api/ from the package tree with better_apidoc.
+
+    Two things used to go wrong here:
+
+    * Every path was cwd-relative, so this only worked when sphinx-build was
+      invoked from ``docs/``. Paths are now anchored on ``conf.py``.
+    * A bare ``except Exception`` printed a note to stdout and continued. A
+      partial run therefore left a half-regenerated ``api/`` tree behind with no
+      failing exit code -- which is how the committed pages ended up a mix of two
+      generators' output, missing ``qbiocode.apps`` entirely. Failures are now
+      reported through Sphinx's own logger, so ``-W`` turns them into build
+      errors.
+
+    A missing better_apidoc is reported at info level rather than as a warning:
+    the committed ``api/*.rst`` pages are a complete, checked-in fallback, so a
+    build without the tool still produces a full reference -- just one that is
+    only as fresh as the last commit.
+    """
+    from sphinx.util import logging as sphinx_logging
+
+    logger = sphinx_logging.getLogger(__name__)
+
     try:
         import better_apidoc
+    except ImportError:
+        logger.info(
+            "better_apidoc is not installed; using the committed docs/source/api "
+            "pages as-is. Install it with: pip install \"qbiocode[docs]\""
+        )
+        return
 
+    try:
         better_apidoc.APP = app
         better_apidoc.main(
             [
                 "better-apidoc",
                 "-t",
-                os.path.join(".", "_templates"),
+                os.path.join(_DOCS_DIR, "_templates"),
                 "--force",
                 "--no-toc",
                 "--separate",
                 "-o",
-                os.path.join("source/", "api"),
-                os.path.join("..", "qbiocode"),
+                os.path.join(_CONF_DIR, "api"),
+                os.path.join(_REPO_ROOT, "qbiocode"),
             ]
         )
-    except Exception as e:
-        print(f"Warning: API documentation generation failed: {e}")
-        print("Continuing with build...")
+    except Exception as exc:  # noqa: BLE001 -- reported, not swallowed
+        logger.warning(
+            "better_apidoc failed after possibly rewriting part of "
+            "docs/source/api/: %s: %s. The API reference may be incomplete; "
+            "`git checkout docs/source/api` to restore the committed pages.",
+            type(exc).__name__,
+            exc,
+        )
 
 
 # -- Extension configuration -------------------------------------------------

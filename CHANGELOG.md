@@ -161,6 +161,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (Quantum Ensemble, QPL, PQK-OV) renumber to 5-7. `apps/quvine.rst` now links both
   notebooks directly instead of only the gallery page.
 
+- **`deploy-docs` job** in `.github/workflows/ci.yml`. On a push to `main` it downloads
+  the HTML the `docs` job already built and publishes it to the `gh-pages` branch that
+  https://ibm.github.io/QBioCode serves, writing `.nojekyll` first so Pages does not
+  discard Sphinx's `_static/`, `_images/`, `_sources/` and `_modules/` directories. The
+  site was previously updated by committing the rendered output into the repository and
+  copying it across by hand. `peaceiris/actions-gh-pages` is used rather than
+  `actions/deploy-pages` because the latter requires switching the repository's Pages
+  source to "GitHub Actions"; pushing the branch leaves the existing setting working.
+  The job is gated on `github.event_name == 'push' && github.ref == 'refs/heads/main'`,
+  so a pull request — including one from a fork — cannot publish to the live site.
+
+- **Extras matrix** in `README.md` and `docs/source/installation.md`. Both documented
+  only `[apps]` and `[all]`; `[quvine]`, `[docs]` and `[dev]` were undocumented, and
+  nothing said what a bare `pip install qbiocode` includes. `installation.md` gains a
+  QuVINE section explaining why the extra is all-or-nothing, what still works without
+  it, the actual `QuvineDependencyError` message, the `setuptools<81` pin, and the
+  `brew install cmake` prerequisite for `ripser` on macOS.
+
+- **`api_overview.rst`**: a *Graph Embeddings (QuVINE)* section documenting `embed`,
+  `list_methods`, `resolve_method`, `is_transductive` and `evaluate_graph` alongside the
+  transductivity contract, and a *Preprocessing* subsection for `scale_train_test`. New
+  public API added in this release was otherwise reachable only by knowing its name.
+
+- **`tests/test_docs_structure.py`** — 17 static checks on the documentation source, so
+  the defects listed under *Documentation build* cannot come back silently. It parses
+  the `.rst`/`.md` sources and `ci.yml` rather than running `sphinx-build`, so it works
+  without the `[docs]` extra installed: every toctree entry names an existing document,
+  no document is orphaned (honouring an explicit `:orphan:`/`orphan: true`), every
+  `automodule` target is a real module, `qbiocode.apps` and the other new public modules
+  each have a page, `conf.py`'s paths are anchored on `__file__` and its version agrees
+  with `qbiocode/version.py`, every optional QuVINE import is mocked, no rendered HTML
+  is tracked by git, and the deploy job is gated to pushes on `main` and writes
+  `.nojekyll`. The `omegaconf` mock gap above was found by this test, not by review.
+
 ### Changed
 - **Code Formatting**: Applied consistent code style across entire codebase
   - Ran `black` formatter on all Python files
@@ -201,6 +235,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   and entry points, and parsed `requirements.txt` by looking for a
   `# Documentation` comment to split runtime from docs dependencies. Duplicated
   metadata is what allowed the two files to disagree.
+
+- **Documentation**: `docs/build/` is now the single build directory. `docs/Makefile`
+  sets `BUILDDIR = build` and CI uploads `docs/build/html/`, but ~250 files of rendered
+  HTML were committed under `docs/_build/html/` — a second, hand-maintained copy that
+  no tool wrote to. Both directories are now gitignored and the `deploy-docs` job
+  publishes the build output instead. See *Documentation build* under Fixed.
+
+- **CI**: the docs job's `Build documentation` step no longer sets
+  `continue-on-error: true`, so a docs build that fails now fails CI. The artifact
+  upload step is likewise no longer allowed to fail silently, since `deploy-docs`
+  consumes that artifact. The `lint` job's `black`/`isort`/`mypy` steps keep
+  `continue-on-error` — the tree is not fully formatted, and changing that is a separate
+  piece of work.
 
 - **Dependencies**: removed `tensorflow` from the dependency set. Nothing in
   `qbiocode/`, the tutorials, or the docs imports TensorFlow or Keras — the only
@@ -605,6 +652,48 @@ have been re-executed.
   `docs/source/tutorials/QEnsemble/` and the page is in the toctree. Every gallery link
   in `tutorials.md` now resolves to a built page, and every built page is reachable from
   the toctree.
+
+#### Documentation build
+- **The entire API reference was orphaned.** Nothing in any toctree pointed at
+  `api/modules`, so Sphinx emitted "document isn't included in any toctree" for every
+  generated page and none of them was reachable by navigation — the API docs existed
+  only for anyone who guessed a URL. `api_overview.rst` now roots the tree with a hidden
+  toctree entry.
+- **The generated API pages were stale and came from two different generators.** Of the
+  23 committed pages, 15 were `better_apidoc --separate` output and 8 were plain
+  `sphinx-apidoc`, with no page at all for `qbiocode.apps` — meaning the whole of
+  QuVINE, QProfiler and QSage was absent from the API reference, along with
+  `qbiocode.evaluation.graph_evaluation`. The directory is now regenerated from the real
+  package tree: 26 pages, 128 `automodule` targets covering every one of the 128
+  importable modules under `qbiocode/`, with no dangling toctree references and no
+  orphans. The `--separate` per-module pages are no
+  longer committed; `run_apidoc` regenerates them at build time with `--force`.
+- **`conf.py` resolved every path relative to the current working directory.** The
+  `sys.path` entries, the `better_apidoc` template directory and its output directory
+  were all built from `"."`, so they were correct only when `sphinx-build` was invoked
+  from `docs/`. Running `sphinx-build docs/source docs/build/html` from the repository
+  root — as most editors and IDE integrations do — silently produced a build with no
+  autodoc templates and API pages written to the wrong place. All four are now derived
+  from `__file__`.
+- **`run_apidoc` swallowed every exception.** A bare `except Exception: pass` meant a
+  missing `better_apidoc`, a template error or an import failure produced no output at
+  all, and the build continued against whatever pages happened to be committed. A
+  missing `better_apidoc` is now logged at info level (the committed pages are the
+  intended fallback), and any other failure is logged as a Sphinx warning, so
+  `sphinx-build -W` fails on it.
+- **The documented version was wrong.** `conf.py` hardcoded `release = '0.0.1'` while
+  `qbiocode/version.py` declared `0.1.0`, so the published documentation labelled itself
+  a version that was never released. `conf.py` now parses `qbiocode/version.py` with a
+  regex rather than importing the package, so the version is correct even when the docs
+  build cannot import `qbiocode`.
+- **`autodoc_mock_imports` mocked a package that does not exist and missed the ones that
+  do.** It listed `tensorflow` — absent from the entire tree — while omitting every
+  `[quvine]` dependency (`gensim`, `hiperwalk`, `node2vec`, `torch_geometric`,
+  `community`, `ripser`, `omegaconf`), so a docs build without the extra installed
+  failed to import the QuVINE modules it was documenting. `omegaconf` matters most:
+  it backs QuVINE's config loading, so without it `api/config`, `api/core`, `api/sgns`,
+  `main`, `pipeline` and `utils/io` were all unimportable. Base dependencies are deliberately *not*
+  mocked: mocking them would hide a genuinely broken install behind a clean docs build.
 
 #### Earlier fixes
 - Invalid escape sequence in `qbiocode/visualization/visualize_correlation.py`
