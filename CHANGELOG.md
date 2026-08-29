@@ -264,6 +264,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   identical seeds must give identical split indices and different seeds different ones; and
   two `compute_pqk` calls differing only in `encoding`, `reps` or `entanglement` must write
   different cache files, with a shape-mismatched cache rejected rather than loaded.
+  `test_split_reproducibility.py` also covers the estimator half of the seeding fix:
+  `model_run` must record `estimator__random_state == seed` for every model that takes one,
+  must leave `nb` (which takes none) alone rather than crashing on an unexpected keyword, and
+  must let a `random_state` in the config win. It asserts the recorded parameters rather than
+  the metrics on purpose — whether an unseeded estimator actually changes its answer depends
+  on there being a tie to break, so a metric comparison would pass or fail by luck. The
+  end-to-end run in `tests/integration/test_qprofiler_end_to_end.py` is what caught the
+  defect, and it caught it intermittently for exactly that reason.
+  Alongside the existing unseeded-splitter guard, the module now walks every estimator
+  construction in the package with `ast` and fails on any `DecisionTreeClassifier`,
+  `RandomForestClassifier`, `MLPClassifier`, `LogisticRegression`, `SVC`, `XGBClassifier`
+  (and the ensemble variants) built without a `random_state`. That is the check that scales:
+  each `compute_*` module looked correct on its own, with `random_state=None` as a documented
+  default that nothing filled in — the defect only appears when all the call sites are read
+  together. Replayed against the pre-fix tree it reports eight offenders; against this one,
+  none.
 
 ### Changed
 - **Code Formatting**: Applied consistent code style across entire codebase
@@ -359,12 +375,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `qbiocode.scale_train_test`.
 - **Consequence: metrics produced by QProfiler before this change are not comparable to
   metrics produced after it.** Any accuracy/F1/AUC numbers carried over from an earlier run
-  should be regenerated. Affected tutorial notebooks have been re-executed.
+  should be regenerated. Every notebook that carries QProfiler numbers now states this at
+  the top; see *Notebooks* below for why they are annotated rather than re-executed.
 - **`seed` now actually controls the train/test split.** `train_test_split` was called with
   no `random_state`, so iterations were irreproducible and the configured `seed` was silently
   ignored for splitting — despite an inline comment claiming the splits "will be based on the
   seed". Each iteration now uses `random_state = seed + iter`: distinct across iterations,
   deterministic across reruns, and independent of other RNG consumers.
+- **`seed` now reaches the estimators too, not just the split.** Fixing the split was only
+  half of it. `qprofiler` sets `np.random.seed(seed)` in the parent process, but `model_run`
+  fans the models out with joblib, whose loky workers are fresh interpreters seeded from OS
+  entropy — so every estimator left at `random_state=None` drew a different random state on
+  each run. `DecisionTreeClassifier` permutes the features before choosing a split, so a tie
+  between two equally-good splits broke either way, and two runs at seed 7 came back with
+  0.889 and 0.944 accuracy on the same row. `model_run` now fills in
+  `random_state = seed` for every model whose function accepts one (`dt`, `lr`, `rf`, `mlp`,
+  `svc`, `xgb`, and their `_opt` grid-search variants, which had no `random_state` parameter
+  at all); a `random_state` set explicitly in the config still wins, and models without one
+  (`nb`) are left alone. The worker also re-establishes `np.random.seed` and
+  `algorithm_globals.random_seed`, which is what `compute_qnn`'s initial weights read.
+  Setting the global seed alone would not have been enough: joblib batches tasks, so how far
+  an earlier task advanced a shared stream depends on timing. **Any metric produced before
+  this change for `dt`, `rf`, `mlp`, `xgb`, or a grid search is not exactly reproducible.**
+- **`create_xgb_model` in the QPL pipeline ignored its own `seed` argument.** Every sibling
+  (`create_lr_model`, `create_rf_model`, `create_mlp_model`, `create_svc_model`) passed
+  `random_state=seed` to its estimator; the XGBoost one passed the seed to
+  `RandomizedSearchCV` and left the classifier unseeded, while the search grid varied
+  `subsample` and `colsample_bytree` — both of which sample rows and columns at random. Now
+  seeded like the rest.
 
 #### ⚠️ Undefined measurements are now `nan`, not a plausible number — results change
 Several functions returned an achievable value when they could not compute anything at
@@ -752,6 +790,15 @@ have been re-executed.
   top of `sc_binary_qprofiler.ipynb` (both trees) states that the outputs below predate
   the train/test contamination fix, that they are therefore not comparable to a fresh
   run of the same config, and that the corrected numbers are usually slightly lower.
+- **Four published tutorial pages render code with no results.** `PQK - OV.ipynb`,
+  `example_qprofiler.ipynb`, `qsage.ipynb` and `QPL_example.ipynb` have *zero* of their
+  code cells executed, and `nbsphinx_execute = 'never'`, so their pages publish the source
+  with nothing under it. This predates the migration and is left as it stands: three of the
+  four need a quantum backend or a dependency this environment cannot install, so their
+  outputs could not be produced here, and committing partial ones would create exactly the
+  half-executed page `test_no_notebook_is_half_executed` exists to prevent. The condition
+  is now visible rather than silent -- that test records which notebooks are templates and
+  which are complete, and it is what surfaced these four.
 - **The Quantum Ensemble tutorial link was a 404.** `tutorials.md` linked
   `tutorials/QEnsemble/QEnsemble_example_blobs.html`, but the notebook existed only under
   `tutorial/QEnsemble/` and had no toctree entry, so Sphinx never built that page. The

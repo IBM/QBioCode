@@ -48,6 +48,23 @@ SEEDED_SPLITTERS = {
 #: Deterministic unless shuffling is requested.
 SHUFFLE_SPLITTERS = {"KFold", "StratifiedKFold", "GroupKFold"}
 
+#: Estimator classes whose ``fit`` is randomized unless ``random_state`` is pinned:
+#: feature permutation when splits tie, bootstrap sampling, weight initialisation,
+#: row and column subsampling. ``SVC`` and ``LogisticRegression`` are only random
+#: under some settings (``probability=True``, the saga/liblinear solvers), but they
+#: are listed anyway -- pinning a seed that turns out not to matter costs nothing,
+#: and leaving them out means the guard depends on reading the other arguments.
+RANDOMIZED_ESTIMATORS = {
+    "DecisionTreeClassifier",
+    "ExtraTreesClassifier",
+    "GradientBoostingClassifier",
+    "LogisticRegression",
+    "MLPClassifier",
+    "RandomForestClassifier",
+    "SVC",
+    "XGBClassifier",
+}
+
 
 def _calls():
     """Every call node in the package, with its file and line."""
@@ -101,6 +118,33 @@ class TestNoSplitterRunsUnseeded:
                 offenders.append(f"{rel}:{node.lineno} {name}(shuffle=True)")
         assert not offenders, "shuffling cross-validators without a seed:\n  " + "\n  ".join(
             offenders
+        )
+
+
+class TestNoEstimatorRunsUnseeded:
+    """The companion to the splitter guard, for the models themselves.
+
+    A seeded split reproduces the *data*; it does nothing about an estimator that
+    permutes features, bootstraps rows or initialises weights from a global RNG.
+    That gap is what made two QProfiler runs at seed 7 disagree, and it is not
+    visible in any single file: each ``compute_*`` looked fine on its own, with
+    ``random_state=None`` as a documented default that nothing ever filled in.
+    Checking every construction site at once is the only way to see it.
+    """
+
+    def test_every_randomized_estimator_pins_random_state(self):
+        offenders = []
+        for path, node, name in _calls():
+            if name not in RANDOMIZED_ESTIMATORS:
+                continue
+            if "random_state" in _keywords(node) or _has_double_star(node):
+                continue
+            rel = path.relative_to(PACKAGE_ROOT.parent)
+            offenders.append(f"{rel}:{node.lineno} {name}()")
+        assert not offenders, (
+            "estimators constructed without random_state -- their fits draw from the "
+            "global RNG, so two runs at the same seed can disagree:\n  "
+            + "\n  ".join(offenders)
         )
 
 
@@ -203,3 +247,83 @@ class TestLinkPredictionSplitsLeaveGlobalStateAlone:
         first = _module.sample_negative_edges(graph, 10, existing, "random", 3)
         second = _module.sample_negative_edges(graph, 10, existing, "random", 3)
         assert first == second
+
+
+class TestEstimatorsAreSeededAtDispatch:
+    """A seeded split is only half of reproducibility -- the estimators need one too.
+
+    ``qprofiler`` calls ``np.random.seed(args['seed'])`` in the parent process, but
+    ``model_run`` fans the models out with joblib, whose loky workers are fresh
+    interpreters seeded from OS entropy. Every estimator left at
+    ``random_state=None`` therefore drew a different random state on every run.
+    ``DecisionTreeClassifier`` permutes the features before choosing a split, so a
+    tie between two equally-good splits broke either way; that is how two
+    end-to-end runs at seed 7 came back with 0.889 and 0.944 accuracy on the same
+    row, and it is what these tests pin down in seconds rather than minutes.
+
+    Asserting on the *recorded parameters* rather than on the metrics is
+    deliberate. Whether an unseeded estimator actually changes its answer depends
+    on there being a tie to break, which varies with the split -- a metric
+    comparison would pass or fail by luck. The seed reaching the estimator is the
+    property that matters, and it is exact.
+    """
+
+    ARGS = {"model": ["dt"], "seed": 7, "n_jobs": 1, "grid_search": False}
+
+    @staticmethod
+    def _dataset():
+        rng = np.random.default_rng(0)
+        X = rng.normal(size=(60, 5))
+        y = (X[:, 0] + 0.3 * rng.normal(size=60) > 0).astype(int)
+        return train_test_split(X, y, stratify=y, test_size=0.3, random_state=9)
+
+    @classmethod
+    def _results(cls, model, **overrides):
+        from qbiocode.evaluation.model_run import model_run
+
+        X_train, X_test, y_train, y_test = cls._dataset()
+        args = {**cls.ARGS, "model": [model], **overrides}
+        raw = model_run(X_train, X_test, y_train, y_test, "tiny", args)
+        return raw[f"results_{model}"][0]
+
+    # Every classical estimator in the dispatch table whose scikit-learn class takes
+    # a random_state. ``xgb`` is absent only because xgboost is an optional install.
+    @pytest.mark.parametrize("model", ["dt", "lr", "rf", "svc"])
+    def test_the_configured_seed_reaches_every_estimator_that_takes_one(self, model):
+        params = self._results(model)["Model_Parameters"]
+        assert params["estimator__random_state"] == self.ARGS["seed"], (
+            f"{model} ran with random_state="
+            f"{params['estimator__random_state']!r}, so its randomness does not "
+            f"follow the configured seed"
+        )
+
+    def test_an_estimator_without_a_random_state_is_left_alone(self):
+        """The signature check is what keeps this from being a TypeError.
+
+        ``GaussianNB`` has no ``random_state``; injecting one unconditionally would
+        turn a reproducibility fix into a crash for naive Bayes.
+        """
+        params = self._results("nb")["Model_Parameters"]
+        assert "estimator__random_state" not in params
+
+    def test_a_random_state_in_the_config_still_wins(self):
+        """Filling the gap must not override a choice the user made explicitly."""
+        params = self._results("dt", dt_args={"random_state": 3})["Model_Parameters"]
+        assert params["estimator__random_state"] == 3
+
+    def test_two_runs_agree_whatever_the_ambient_global_rng(self):
+        """The behavioural half, stated as a property rather than a fixed value.
+
+        Re-seeding the global RNG differently before each run stands in for the
+        worker entropy that broke this, and does not depend on joblib's backend or
+        its batching.
+        """
+        np.random.seed(1234)
+        first = self._results("dt")
+        np.random.seed(999_983)
+        second = self._results("dt")
+
+        def signature(row):
+            return row["accuracy"], row["f1_score"], row["auc"]
+
+        assert signature(first) == signature(second)

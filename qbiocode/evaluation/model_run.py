@@ -1,4 +1,5 @@
 # ====== Base class imports ======
+import inspect
 import json
 import logging
 import os
@@ -11,6 +12,38 @@ from joblib import Parallel, delayed
 current_dir = os.getcwd()
 
 logger = logging.getLogger(__name__)
+
+
+def _call_with_global_seeds(compute_fn, seed, q_seed, *fn_args, **fn_kwargs):
+    """Re-establish the global RNG seeds inside the worker, then run ``compute_fn``.
+
+    ``qprofiler`` sets ``np.random.seed`` and ``algorithm_globals.random_seed`` in
+    the parent process, but the models run under joblib's loky backend, which
+    starts fresh interpreters. Neither seed crosses that boundary, so anything
+    reading a global RNG -- ``compute_qnn``'s initial weights come from
+    ``algorithm_globals.random`` -- started from OS entropy and produced a
+    different answer on every run.
+
+    This is a floor, not the mechanism: ``_seeded_kwargs`` below sets
+    ``random_state`` on each estimator explicitly, because joblib batches tasks
+    and how far an earlier task advanced a shared global stream depends on
+    timing. Seeding here covers the randomness that has no ``random_state`` to
+    set.
+    """
+    import numpy as np
+
+    if seed is not None:
+        np.random.seed(seed)
+    if q_seed is not None:
+        try:
+            from qiskit_algorithms.utils import algorithm_globals
+        except ImportError:
+            # Classical-only install: nothing in this worker reads the quantum
+            # global seed, so there is nothing to set.
+            pass
+        else:
+            algorithm_globals.random_seed = q_seed
+    return compute_fn(*fn_args, **fn_kwargs)
 
 
 def model_run(X_train, X_test, y_train, y_test, data_key, args):
@@ -162,12 +195,46 @@ def model_run(X_train, X_test, y_train, y_test, data_key, args):
         )
         return {}
 
+    def _seeded_kwargs(compute_fn, model_kwargs):
+        """Fill in ``random_state`` from ``args['seed']`` wherever an estimator takes one.
+
+        Two runs at the same seed used to disagree on the decision-tree rows.
+        ``DecisionTreeClassifier`` at ``random_state=None`` permutes the features
+        before choosing a split, so a tie between two equally-good splits broke
+        one way or the other at random; on a 60-sample dataset that moved
+        accuracy by a whole test sample (0.889 vs 0.944). The same applies to
+        every other estimator here that draws from a global RNG: random forests,
+        the MLP's weight init, XGBoost's row subsampling, SVC's probability
+        calibration.
+
+        A ``random_state`` already present in the config wins -- this only fills
+        the gap. Functions that take no ``random_state`` (naive Bayes) are left
+        alone.
+        """
+        seed = args.get("seed")
+        if seed is None or "random_state" in model_kwargs:
+            return model_kwargs
+        try:
+            takes_random_state = "random_state" in inspect.signature(compute_fn).parameters
+        except (TypeError, ValueError):  # pragma: no cover - C callables
+            return model_kwargs
+        if not takes_random_state:
+            return model_kwargs
+        return {**model_kwargs, "random_state": seed}
+
+    seed = args.get("seed")
+    q_seed = args.get("q_seed")
+
     if grid_search:
         results = []
         for method in args["model"]:
             if method in quantum_models:
                 # Quantum models don't have _opt versions, use regular function
-                result = delayed(compute_ml_dict[method])(
+                compute_fn = compute_ml_dict[method]
+                result = delayed(_call_with_global_seeds)(
+                    compute_fn,
+                    seed,
+                    q_seed,
                     X_train,
                     X_test,
                     y_train,
@@ -175,12 +242,16 @@ def model_run(X_train, X_test, y_train, y_test, data_key, args):
                     args,
                     model=method,
                     data_key=data_key,
-                    **args.get(method + "_args", {}),
+                    **_seeded_kwargs(compute_fn, args.get(method + "_args", {})),
                     verbose=False,
                 )
             else:
                 # Classical models have _opt versions with grid search
-                result = delayed(compute_ml_dict[method + "_opt"])(
+                compute_fn = compute_ml_dict[method + "_opt"]
+                result = delayed(_call_with_global_seeds)(
+                    compute_fn,
+                    seed,
+                    q_seed,
                     X_train,
                     X_test,
                     y_train,
@@ -188,14 +259,19 @@ def model_run(X_train, X_test, y_train, y_test, data_key, args):
                     args,
                     model=method + "_opt",
                     cv=args["cross_validation"],
-                    **args.get("gridsearch_" + method + "_args", {}),
+                    **_seeded_kwargs(
+                        compute_fn, args.get("gridsearch_" + method + "_args", {})
+                    ),
                     verbose=False,
                 )
             results.append(result)
         results = Parallel(n_jobs=n_jobs)(results)
     else:
         results = Parallel(n_jobs=n_jobs)(
-            delayed(compute_ml_dict[method])(
+            delayed(_call_with_global_seeds)(
+                compute_ml_dict[method],
+                seed,
+                q_seed,
                 X_train,
                 X_test,
                 y_train,
@@ -203,7 +279,7 @@ def model_run(X_train, X_test, y_train, y_test, data_key, args):
                 args,
                 model=method,
                 data_key=data_key,
-                **_model_args(method),
+                **_seeded_kwargs(compute_ml_dict[method], _model_args(method)),
                 verbose=False,
             )
             for method in args["model"]
