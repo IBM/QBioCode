@@ -118,6 +118,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added "Running Tests" section with pytest usage
   - Instructions for installing development dependencies
 
+- **`qbiocode.tutorial_data_path(filename)`** — one documented resolution path for
+  tutorial fixtures, replacing the copy-pasted snippet each notebook carried. It
+  searches `$QBC_DATA` (colon-separated) first, then every fixture directory of a
+  source checkout, locating that checkout both from the installed package *and* by
+  walking up from the current working directory — so it resolves for an editable
+  install, for a normal install used inside a clone, and for a notebook run from its
+  own subdirectory. On failure it raises a `FileNotFoundError` listing every directory
+  it tried plus the three ways to fix it. `tutorial_data_dirs()` exposes the search
+  path. When `$QBC_DATA` is set but does not hold the requested file, the file is still
+  returned from wherever it was found *and* a `WARNING` is logged naming both
+  directories — silently reading a fixture out of a directory the caller did not name
+  is how a stale copy gets used for a whole session.
+
+- **Four QuVINE tutorial notebooks**:
+  - `tutorial/QuVINE/example_quvine.ipynb` — the QuVINE API end to end on a synthetic
+    graph: `list_methods`, `embed`, `evaluate_graph`, node classification.
+  - `tutorial/QuVINE/quvine_sc_t_vs_mono.ipynb` — T-cell vs. monocyte embedding from an
+    `.h5ad` fixture.
+  - `docs/source/tutorials/QuVINE/quvine_sc_cd4_vs_cd8.ipynb` — the published
+    single-cell walkthrough (CD4 vs. CD8), linked from `tutorials.md` and
+    `apps/quvine.rst`.
+  - `tutorial/QProfiler/sc_binary_quvine_2x2_qprofiler.ipynb` (mirrored under
+    `docs/source/tutorials/QProfiler/`) — QuVINE driven through
+    `qbiocode.get_embeddings` exactly like `pca`/`umap`, benchmarked by QProfiler in a
+    2x2 classical/quantum design.
+
+  Each declares `pip install "qbiocode[quvine]"` in its first cell, since a plain
+  `pip install qbiocode` no longer pulls QuVINE's dependencies.
+
+- **Three single-cell fixtures** under `tutorial/QuVINE/datasets/`
+  (`pbmc5k_graph_t_vs_mono.h5ad`, `pbmc5k_small_t_vs_mono.h5ad`,
+  `pbmc5k_small_lymphoid_vs_myeloid.h5ad`, 13 MB total). The latter two are the
+  provenance of the `sc_binary/*.csv` matrices QProfiler's single-cell tutorial already
+  shipped, which could not otherwise be regenerated without the raw 10x matrix and
+  scanpy/leidenalg. `pbmc5k_small_cd4_vs_cd8.h5ad` was deliberately *not* duplicated
+  here — the copy under `tutorial/QProfiler/data/` is byte-identical, and
+  `tutorial_data_path()` finds it from either tree.
+
+- **`tutorials.md`**: a QuVINE gallery section (§4, with the QProfiler-2x2 notebook as a
+  subsection) and toctree entries for both new published notebooks. Sections 4-6
+  (Quantum Ensemble, QPL, PQK-OV) renumber to 5-7. `apps/quvine.rst` now links both
+  notebooks directly instead of only the gallery page.
+
 ### Changed
 - **Code Formatting**: Applied consistent code style across entire codebase
   - Ran `black` formatter on all Python files
@@ -523,6 +566,45 @@ have been re-executed.
   `nbsphinx_execute = 'never'` means the docs build never executes them. The
   cached projections were additionally unreachable after the PQK cache-key fix
   above, since their filenames predate the feature-map fingerprint.
+
+#### Notebooks
+- **Four notebooks imported packages that do not exist.** `example_qprofiler.ipynb`
+  (docs) used `from apps.qprofiler import qprofiler`, `qsage.ipynb` (docs) used
+  `from apps.sage.sage import QuantumSage`, and both copies of `QPL_example.ipynb` used
+  `import qprofiler.qprofiler` — there is no top-level `apps` or `qprofiler`
+  distribution, so every one of them was an unconditional `ModuleNotFoundError` on a
+  clean install. All four now import from `qbiocode.apps.*`. This is the same defect
+  already fixed in `qbiocode/apps/qprofiler/cli.py`.
+- **Notebook fixture paths only resolved for an editable install.** The single-cell
+  notebooks derived a repository root with
+  `os.path.dirname(os.path.dirname(os.path.abspath(qbiocode.__file__)))`, which yields
+  `site-packages` for a normal install — so the derived fixture path pointed nowhere and
+  the failure surfaced as anndata's "file not found", naming neither the `$QBC_DATA`
+  override nor the directories that were tried. Each notebook also knew only one of the
+  four fixture directories in the tree. They now call `qbiocode.tutorial_data_path()`.
+  The QProfiler-2x2 notebook additionally derived its config template from the same
+  broken root; it now reads `configs/config.yaml` out of the installed package.
+- **Eight notebooks pinned a kernel that does not exist outside their author's machine**
+  (`venv`, `.env`, `venv_quvine`, `qbc-pkg`). A notebook whose `kernelspec.name` cannot
+  be resolved fails to execute under `nbclient`/`nbsphinx` rather than falling back.
+  All notebooks now declare the standard `python3` kernel.
+- **`sc_binary_qprofiler.ipynb` carried a stale warning about the PQK cache.** Its
+  comment told readers the projection cache ignores `pqk_args` and that stale
+  projections silently mask a feature-map change. That was true before this release and
+  is no longer — the cache key now includes the feature-map fingerprint. The comment was
+  corrected rather than deleted, since the purge it introduces is still worth keeping
+  for a self-contained run.
+- **Notebooks whose numbers came from the leaky scaling path now say so.** A note at the
+  top of `sc_binary_qprofiler.ipynb` (both trees) states that the outputs below predate
+  the train/test contamination fix, that they are therefore not comparable to a fresh
+  run of the same config, and that the corrected numbers are usually slightly lower.
+- **The Quantum Ensemble tutorial link was a 404.** `tutorials.md` linked
+  `tutorials/QEnsemble/QEnsemble_example_blobs.html`, but the notebook existed only under
+  `tutorial/QEnsemble/` and had no toctree entry, so Sphinx never built that page. The
+  notebook (and the `helper_functions.py` it imports) are now mirrored under
+  `docs/source/tutorials/QEnsemble/` and the page is in the toctree. Every gallery link
+  in `tutorials.md` now resolves to a built page, and every built page is reachable from
+  the toctree.
 
 #### Earlier fixes
 - Invalid escape sequence in `qbiocode/visualization/visualize_correlation.py`

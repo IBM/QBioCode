@@ -63,7 +63,45 @@ Explore QSage, an intelligent meta-learning system that predicts which machine l
 
 ---
 
-### 4. Quantum Ensemble Learning
+### 4. QuVINE - Quantum View-based Network Embeddings
+
+Learn how to use QuVINE to embed the nodes of a graph using classical and quantum random walks combined with SGNS-based representation learning. This tutorial walks through a single-cell example (CD4 vs. CD8) and demonstrates the 2×2 comparison of classical/quantum embeddings.
+
+QuVINE's dependencies ship behind an optional extra, so install it with
+`pip install "qbiocode[quvine]"` before running these notebooks.
+
+<a href="tutorials/QuVINE/quvine_sc_cd4_vs_cd8.html">📓 <strong>View Tutorial Notebook</strong></a>
+
+**What You'll Learn:**
+- Build a graph from single-cell data and inspect it with `evaluate_graph`
+- Select among QuVINE's 83 embedding methods with a single `method` string
+- Run classical (node2vec, NetMF, APPNP) and quantum-calibrated walk embeddings
+- Fuse multiple graph views into a single embedding
+- Compare classical vs. quantum embeddings on a downstream classification task
+
+**Key Concepts:**
+- Multi-view graph construction
+- Random walk with restart (RWR) and discrete-/continuous-time quantum walks
+- Skip-gram negative sampling (SGNS) embedding learning
+- Reproducible, seed-controlled embedding pipelines
+
+#### QuVINE as a QProfiler Embedding - 2×2 Classical/Quantum Comparison
+
+Drive QuVINE through `qbiocode.get_embeddings` exactly as you would `pca` or `umap`, and let
+QProfiler benchmark the resulting embeddings. The 2×2 design crosses a classical and a quantum
+walk with a classical and a quantum learner on the CD4 vs. CD8 task.
+
+<a href="tutorials/QProfiler/sc_binary_quvine_2x2_qprofiler.html">📓 <strong>View Tutorial Notebook</strong></a>
+
+**What You'll Learn:**
+- Call a `quvine_*` method through the same `get_embeddings` entry point as the classical embeddings
+- Understand why graph embeddings are *transductive* - test features join graph construction, test labels never do
+- Read the `UserWarning` QBioCode emits to make that transductivity explicit
+- Compare quantum-walk against classical-walk embeddings under an identical learner
+
+---
+
+### 5. Quantum Ensemble Learning
 
 Learn how to use quantum ensemble methods to improve classification performance by leveraging quantum superposition to evaluate multiple training set configurations simultaneously. This tutorial demonstrates two quantum ensemble approaches.
 
@@ -96,7 +134,7 @@ Learn how to use quantum ensemble methods to improve classification performance 
 
 ---
 
-### 5. Quantum Projection Learning (QPL)
+### 6. Quantum Projection Learning (QPL)
 
 Learn about Quantum Projection Learning (QPL), a technique that combines quantum feature maps with multiple classical machine learning algorithms. This comprehensive tutorial demonstrates how to systematically evaluate quantum-enhanced features across different learners.
 
@@ -128,7 +166,7 @@ Learn about Quantum Projection Learning (QPL), a technique that combines quantum
 
 ---
 
-### 6. Projected Quantum Kernel (PQK) - Ovarian Cancer Survival Prediction
+### 7. Projected Quantum Kernel (PQK) - Ovarian Cancer Survival Prediction
 
 Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics data for survival prediction. This advanced tutorial demonstrates quantum-enhanced machine learning on multi-omics ovarian cancer data from the Multi-Omics Cancer Benchmark (TCGA preprocessed data).
 
@@ -166,6 +204,7 @@ Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics
 - [API Documentation](api_overview.rst) - Detailed API reference
 - [QProfiler App](apps/profiler.rst) - Standalone profiling application
 - [QSage App](apps/sage.rst) - Feature selection application
+- [QuVINE App](apps/quvine.rst) - Quantum view-based network embeddings
 - [GitHub Repository](https://github.com/IBM/QBioCode) - Source code and examples
 
 ## Support
@@ -183,6 +222,9 @@ Artificial Data Generation <tutorials/Artificial_data_generation/example_data_ge
 Single-Cell Preprocessing & QC <tutorials/Preprocessing/sc-qc>
 QProfiler <tutorials/QProfiler/example_qprofiler>
 QProfiler on Single-Cell Data <tutorials/QProfiler/sc_binary_qprofiler>
+QuVINE on Single-Cell Data <tutorials/QuVINE/quvine_sc_cd4_vs_cd8>
+QuVINE Embeddings in QProfiler <tutorials/QProfiler/sc_binary_quvine_2x2_qprofiler>
+Quantum Ensemble Learning <tutorials/QEnsemble/QEnsemble_example_blobs>
 QSage <tutorials/QSage/qsage>
 Quantum Projection Learning <tutorials/Quantum_Projection_Learning/QPL_example>
 PQK on Ovarian Cancer <tutorials/PQK - OV>

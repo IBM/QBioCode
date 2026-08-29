@@ -183,11 +183,16 @@ Available Methods
 Tutorials
 =========
 
-For worked examples, see the :doc:`Tutorials <../tutorials>` page.
+For worked examples, see:
 
-.. TODO(phase-7): once ``tutorials/QuVINE/quvine_sc_cd4_vs_cd8.ipynb`` is in the
-   tree, link it directly here. Referencing it before the notebook exists would
-   leave a dangling :doc: role that fails a ``sphinx-build -W`` run.
+- :doc:`QuVINE on Single-Cell Data <../tutorials/QuVINE/quvine_sc_cd4_vs_cd8>` -
+  build a kNN graph from PBMC single-cell data, inspect it with
+  :py:func:`qbiocode.evaluate_graph`, and compare classical against
+  quantum-calibrated walk embeddings on a CD4-vs-CD8 task.
+- :doc:`QuVINE Embeddings in QProfiler <../tutorials/QProfiler/sc_binary_quvine_2x2_qprofiler>` -
+  drive QuVINE through :py:func:`qbiocode.get_embeddings` like any other embedding
+  and let QProfiler benchmark the 2x2 classical/quantum design.
+- The :doc:`Tutorials <../tutorials>` page for the full gallery.
 
 .. seealso::
    - :py:mod:`qbiocode.apps.quvine` - App package
