@@ -3,6 +3,7 @@ import os, re
 import pandas as pd
 import numpy as np
 import seaborn as sns
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import RandomizedSearchCV
@@ -14,6 +15,11 @@ import optuna
 import dill as pickle
 
 logger = logging.getLogger(__name__)
+
+
+def _can_show() -> bool:
+    """Whether ``plt.show()`` would display anything rather than warn and do nothing."""
+    return mpl.get_backend().lower() not in ("agg", "pdf", "ps", "svg", "cairo", "template")
 
 
 #####
@@ -693,7 +699,26 @@ class QuantumSage():
 
         return result
 
-    def plot_results(self, figsize = (6,4), saveFile='' ):
+    @staticmethod
+    def _save_plot(fig, saveFile, suffix):
+        """Write ``fig`` next to ``saveFile`` with ``suffix`` before the extension.
+
+        Replaces ``re.sub('.pdf', '', saveFile) + suffix + '.pdf'``, where the
+        unescaped ``.`` was a regex wildcard: it stripped any character followed by
+        ``pdf``, so ``sage_pdf_run.pdf`` became ``sage_run``. It also forced a
+        ``.pdf`` extension regardless of what the caller asked for, so requesting
+        ``results.png`` silently produced PDFs named ``results.png_..._barplot.pdf``.
+        """
+        root, ext = os.path.splitext(saveFile)
+        ext = ext or '.pdf'
+        path = f"{root}{suffix}{ext}"
+        parent = os.path.dirname(os.path.abspath(path))
+        os.makedirs(parent, exist_ok=True)
+        fig.savefig(path, bbox_inches='tight')
+        logger.info("Plot saved to: %s", path)
+        return path
+
+    def plot_results(self, figsize = (6,4), saveFile='', show=None ):
 
         ''' This function plots the results of the sub-sages trained on the input data.
         It will create a bar plot for each metric showing the performance of each model, and a scatter plot of the predictions vs. true values.
@@ -702,9 +727,20 @@ class QuantumSage():
         If saveFile is provided, the plots will be saved to that file. Otherwise, the plots will be shown.
         It is designed to be used after the train_sub_sages function has been called, and the sub-sages have been trained.
         Args:
-            saveFile (str): The file name to save the plots. If empty, the plots will be shown. Default is ''.
+            figsize (tuple): Size of each figure.
+            saveFile (str): Base file name for the plots. One bar plot and one
+                scatter plot are written per metric, with ``_<metric>_barplot`` and
+                ``_<metric>_scatterplot`` inserted before the extension. If empty,
+                nothing is written. Default is ''.
+            show (bool | None): Whether to call ``plt.show()``. ``None`` (the
+                default) means "show only when not saving", which is what this
+                docstring has always described; ``plt.show()`` used to be called
+                unconditionally, so a run that saved to disk *also* blocked on a
+                window under a GUI backend. It is ignored under a non-interactive
+                backend either way.
         Returns:
-            None: The function does not return anything, it just plots the results of the sub-sages.
+            list[matplotlib.figure.Figure]: the figures, in the order drawn. All
+            are already closed but remain savable.
         
         '''
 
@@ -721,40 +757,53 @@ class QuantumSage():
         
         # Create results DataFrame after collecting all results
         if not results:
-            print("Warning: No results to plot. Train QSages first.")
-            return
+            # Not a print: this is a library method, and a caller checking the
+            # return value gets the same information from an empty list.
+            logger.warning("No results to plot. Train the QSages first.")
+            return []
+
+        if show is None:
+            show = saveFile == ''
+        show = bool(show) and _can_show()
+        figures = []
         
         results_df = pd.DataFrame(results, columns=['model','metric','mae','mse','rmse','r2'])
         results_df = results_df.melt(id_vars=['model', 'metric'])
         
         for metric in self._available_metrics:
-            plt.figure(figsize=figsize)
+            fig, ax = plt.subplots(figsize=figsize)
             # Filter data for current metric
             metric_data = results_df[results_df['metric']==metric]
-            sns.barplot(data = metric_data, x = 'variable', y = 'value', hue = 'model', hue_order=self._available_models)  # type: ignore[arg-type]
-            plt.title( "Predictive performance for each model for " + metric)
-            plt.xlabel( "Metric")
-            plt.ylabel( "Value" )
-            plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-            plt.tight_layout()
+            sns.barplot(data = metric_data, x = 'variable', y = 'value', hue = 'model', hue_order=self._available_models, ax=ax)  # type: ignore[arg-type]
+            ax.set_title( "Predictive performance for each model for " + metric)
+            ax.set_xlabel( "Metric")
+            ax.set_ylabel( "Value" )
+            ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+            fig.tight_layout()
             if saveFile != '':
-                plt.savefig( re.sub( '.pdf', '', saveFile) + '_' + metric + '_barplot.pdf', bbox_inches='tight' )
-            plt.show()
-            plt.close()
+                self._save_plot(fig, saveFile, f'_{metric}_barplot')
+            if show:
+                plt.show()
+            plt.close(fig)
+            figures.append(fig)
 
             # Filter predictions for current metric
             toPlot = preds[ preds['metric'] == metric ]
-            plt.figure(figsize=figsize)
-            plt.title( "Predictive performance for each model for " + metric)
-            sns.scatterplot( data = toPlot, x = 'y_test', y = 'pred', hue = 'model' )  # type: ignore[arg-type]
-            plt.xlabel( "Actual")
-            plt.ylabel( "Predicted" )
-            plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
-            plt.tight_layout()
+            fig, ax = plt.subplots(figsize=figsize)
+            ax.set_title( "Predictive performance for each model for " + metric)
+            sns.scatterplot( data = toPlot, x = 'y_test', y = 'pred', hue = 'model', ax=ax )  # type: ignore[arg-type]
+            ax.set_xlabel( "Actual")
+            ax.set_ylabel( "Predicted" )
+            ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+            fig.tight_layout()
             if saveFile != '':
-                plt.savefig( re.sub( '.pdf', '', saveFile) + '_' + metric + '_scatterplot.pdf', bbox_inches='tight' )
-            plt.show()
-            plt.close()
+                self._save_plot(fig, saveFile, f'_{metric}_scatterplot')
+            if show:
+                plt.show()
+            plt.close(fig)
+            figures.append(fig)
+
+        return figures
 
 
     def set_seed(self, seed=42):

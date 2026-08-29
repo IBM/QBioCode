@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import logging
+import os
+
 import pandas as pd 
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 from scipy.linalg import orthogonal_procrustes
@@ -22,6 +26,13 @@ from sklearn.cross_decomposition import CCA
 from scipy.spatial.distance import pdist, squareform 
 from scipy.stats import spearmanr
 from sklearn.neighbors import NearestNeighbors
+
+logger = logging.getLogger(__name__)
+
+
+def _can_show() -> bool:
+    """Whether ``plt.show()`` would display anything (see visualization.visualize_correlation)."""
+    return mpl.get_backend().lower() not in ("agg", "pdf", "ps", "svg", "cairo", "template")
 
 def normalize(embedding, eps=1e-8): 
     mean = embedding.mean(axis=0, keepdims=True)
@@ -65,19 +76,52 @@ def effective_rank(s):
     p = s / s.sum()
     return np.exp(-np.sum(p * np.log(p + 1e-12)))
 
-def plot_singular_values(singular_values, label='concatenate', filename=None):
-    plt.figure()
-    plt.plot(list(range(1, len(singular_values)+1)), [np.log(x) for x in singular_values], marker='o', color='blue', label=label)
-    plt.xlabel('Singular Value Index')
-    plt.ylabel('Log(Singular Value)')
-    plt.legend()
-    plt.show()
+def plot_singular_values(singular_values, label='concatenate', filename=None, show=False):
+    """Plot the log singular-value spectrum, optionally writing it to ``filename``.
+
+    Args:
+        singular_values: Singular values in descending order.
+        label: Legend label for the series.
+        filename: Where to write the figure; nothing is written when ``None``.
+        show: Whether to call ``plt.show()``. Defaults to ``False`` because this is
+            library code -- under a GUI backend ``show`` blocks until a human closes
+            the window, and it is ignored under a non-interactive one.
+
+    Returns:
+        matplotlib.figure.Figure: the figure, already closed but still savable.
+    """
+    fig, ax = plt.subplots()
+    ax.plot(list(range(1, len(singular_values)+1)), [np.log(x) for x in singular_values],
+            marker='o', color='blue', label=label)
+    ax.set_xlabel('Singular Value Index')
+    ax.set_ylabel('Log(Singular Value)')
+    ax.legend()
+    # Save before showing. The previous order showed first, so under a GUI backend
+    # the file was not written until someone closed the window -- a batch run
+    # stalled indefinitely with nothing on disk to show it had got this far.
     if filename is not None:
-        plt.savefig(filename, dpi=300, bbox_inches='tight')
-    plt.close()
+        fig.savefig(filename, dpi=300, bbox_inches='tight')
+        logger.info("Singular-value spectrum saved to: %s", filename)
+    if show and _can_show():
+        plt.show()
+    plt.close(fig)
+    return fig
     
-def spectral_info(embeddings, labels, plot_flag=False):
-    
+def spectral_info(embeddings, labels, plot_flag=False, outdir=".", show=False):
+    """Singular-value spectra and effective ranks for a list of embeddings.
+
+    Args:
+        embeddings: Embedding matrices to compare.
+        labels: One label per embedding, used in the legend and the result keys.
+        plot_flag: Whether to draw and write the three spectrum figures.
+        outdir: Directory the figures are written to. Previously they went to the
+            process's current working directory under fixed names, so two runs from
+            the same directory silently overwrote each other's plots.
+        show: Whether to call ``plt.show()``; see :func:`plot_singular_values`.
+
+    Returns:
+        dict: ``{label: effective_rank}``.
+    """
     singular_values = []
     ks = []
     for z in embeddings:
@@ -91,40 +135,30 @@ def spectral_info(embeddings, labels, plot_flag=False):
         sk.append(s[:k])
 
     if plot_flag:
-        fig = plt.figure()
-        for i,s in enumerate(sk):
-            plt.plot(np.log(s), label=labels[i])
-        plt.xlabel('singular value index i')
-        plt.ylabel('log($s_i$)')
-        plt.legend()
-        plt.show()
-        fig.savefig('log_spectrum.png', 
-                    dpi=300, 
-                    bbox_inches='tight')
-        
-        fig = plt.figure()
-        for i,s in enumerate(sk):
-            plt.loglog(s, label=labels[i])
-        plt.xlabel('singular value index i')
-        plt.ylabel('loglog($s_i$)')
-        plt.legend()
-        plt.show()
-        fig.savefig('loglog_spectrum.png', 
-                    dpi=300, 
-                    bbox_inches='tight')
-        skn = [] 
-        for s in sk:
-            skn.append(s / np.sum(s))
-        fig = plt.figure()
-        for i,s in enumerate(skn):
-            plt.plot(np.log(s), label=labels[i])
-        plt.xlabel('singular value index i')
-        plt.ylabel('log(normalized $s_i$)')
-        plt.legend()
-        plt.show()
-        fig.savefig('log_normalized_spectrum.png', 
-                    dpi=300, 
-                    bbox_inches='tight')
+        os.makedirs(outdir, exist_ok=True)
+        skn = [s / np.sum(s) for s in sk]
+        # (filename, plotting method, y-label, series) -- one figure each, drawn on
+        # its own axes rather than through the pyplot state machine, saved before
+        # any show, and closed so repeated calls do not accumulate figures.
+        panels = [
+            ('log_spectrum.png', 'plot', 'log($s_i$)', [np.log(s) for s in sk]),
+            ('loglog_spectrum.png', 'loglog', 'loglog($s_i$)', sk),
+            ('log_normalized_spectrum.png', 'plot', 'log(normalized $s_i$)',
+             [np.log(s) for s in skn]),
+        ]
+        for filename, method, ylabel, series in panels:
+            fig, ax = plt.subplots()
+            for i, s in enumerate(series):
+                getattr(ax, method)(s, label=labels[i])
+            ax.set_xlabel('singular value index i')
+            ax.set_ylabel(ylabel)
+            ax.legend()
+            path = os.path.join(outdir, filename)
+            fig.savefig(path, dpi=300, bbox_inches='tight')
+            logger.info("Spectrum figure saved to: %s", path)
+            if show and _can_show():
+                plt.show()
+            plt.close(fig)
     effective_ranks = {} 
     for i,label in enumerate(labels): 
         effective_ranks[label] = effective_rank(sk[i]) 
