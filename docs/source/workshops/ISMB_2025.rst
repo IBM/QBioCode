@@ -1,9 +1,5 @@
 Quantum Machine Learning for Multi-omics Analysis (ISMB 2025)
-============================================================
-
-.. image:: ../_static/qml_multiomics.png
-   :align: center
-   :width: 80%
+=============================================================
 
 **ISMB/ECCB 2025 Tutorial**
 
@@ -42,7 +38,7 @@ Agenda
 ----
 
 Session I — Foundations
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Introduction to Quantum Computing
    :icon: info
@@ -69,7 +65,7 @@ Session I — Foundations
 ----
 
 Session II — Data & Benchmarking
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Artificial Data Generation
    :icon: database
@@ -97,7 +93,7 @@ Session II — Data & Benchmarking
 ----
 
 Session III — Model Selection & Meta-learning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. QSage — Meta-learning for Model Selection
    :icon: light-bulb
@@ -127,7 +123,7 @@ Session III — Model Selection & Meta-learning
 ----
 
 Session IV — Quantum-enhanced Pipelines
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Quantum Projection Learning (QPL)
    :icon: cpu

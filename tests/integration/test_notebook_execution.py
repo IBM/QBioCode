@@ -1,0 +1,154 @@
+# Copyright 2026, IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""The tutorial notebooks still run.
+
+``nbsphinx_execute = 'never'``, so the published pages show whatever outputs were
+committed. That is fast and reproducible, and it also means a notebook can rot
+for months without anyone noticing: the page keeps rendering the old outputs.
+These tests re-execute the notebooks that finish in reasonable time.
+
+The re-execution tests are marked ``slow`` and deselected by default -- the
+QuVINE example takes about seven minutes. Run them with ``pytest -m slow``. The
+committed-output checks alongside them are cheap and always run.
+
+Each notebook runs against a *copy* of its own directory, so a notebook that
+writes results (the data-generation one does) cannot leave anything behind in
+the checkout.
+"""
+
+from __future__ import annotations
+
+import shutil
+
+import pytest
+
+from .conftest import REPO_ROOT, subprocess_env
+
+nbformat = pytest.importorskip("nbformat")
+nbclient = pytest.importorskip("nbclient")
+
+# Verified to execute end to end offline, with timings measured on a laptop:
+#   example_data_generation  ~20 s
+#   example_quvine           ~7.5 min
+# Notebooks needing anndata/scanpy or a real quantum backend are deliberately
+# absent: they cannot run in a bare CI environment.
+NOTEBOOKS = [
+    "tutorial/Artificial_data_generation/example_data_generation.ipynb",
+    "tutorial/QuVINE/example_quvine.ipynb",
+]
+
+
+@pytest.mark.slow
+@pytest.mark.parametrize("relative_path", NOTEBOOKS)
+def test_the_notebook_executes(relative_path, tmp_path, monkeypatch):
+    from nbclient import NotebookClient
+    from nbclient.exceptions import CellExecutionError
+
+    notebook_path = REPO_ROOT / relative_path
+    assert notebook_path.is_file(), f"{relative_path} is listed but missing"
+
+    # Run against a copy: the data-generation notebook writes a data/ directory
+    # next to itself, and a test must not mutate the checkout.
+    sandbox = tmp_path / notebook_path.parent.name
+    shutil.copytree(notebook_path.parent, sandbox)
+
+    for key, value in subprocess_env().items():
+        monkeypatch.setenv(key, value)
+
+    notebook = nbformat.read(sandbox / notebook_path.name, as_version=4)
+    client = NotebookClient(
+        notebook,
+        timeout=1800,
+        kernel_name="python3",
+        resources={"metadata": {"path": str(sandbox)}},
+    )
+    try:
+        client.execute()
+    except CellExecutionError as failure:
+        pytest.fail(f"{relative_path} failed to execute:\n{failure}")
+
+
+ALL_NOTEBOOKS = sorted(
+    str(path.relative_to(REPO_ROOT))
+    for directory in ("tutorial", "docs/source/tutorials")
+    for path in (REPO_ROOT / directory).rglob("*.ipynb")
+)
+
+# Notebooks whose committed outputs stop partway. Each is listed with the reason
+# it could not be completed here, so the entry is a debt record rather than a
+# permanent exemption -- delete it once the notebook is re-executed.
+KNOWN_TRUNCATED = {
+    "docs/source/tutorials/QEnsemble/QEnsemble_example_blobs.ipynb":
+        "cells 10-14 (xgb / qcosine / qensemble arms and the post-processing) "
+        "were never run; completing them needs a full quantum-ensemble sweep",
+    "tutorial/QEnsemble/QEnsemble_example_blobs.ipynb":
+        "same notebook, mirrored under tutorial/",
+    "docs/source/tutorials/QProfiler/sc_binary_quvine_2x2_qprofiler.ipynb":
+        "the import cell carries no output; inherited verbatim from the internal "
+        "repository, where execution started at cell 2",
+    "tutorial/QProfiler/sc_binary_quvine_2x2_qprofiler.ipynb":
+        "same notebook, mirrored under docs/",
+    "docs/source/tutorials/QuVINE/quvine_sc_cd4_vs_cd8.ipynb":
+        "its import cell needs anndata, which is not installable in the "
+        "environment this test suite was written in",
+}
+
+
+def _executed_and_total(relative_path):
+    """Count code cells that carry evidence of having run.
+
+    Neither signal alone is reliable: a cell that imports a module runs and
+    prints nothing, and several notebooks in this tree were saved with outputs
+    intact but ``execution_count`` cleared. Either one counts as evidence.
+    """
+    notebook = nbformat.read(REPO_ROOT / relative_path, as_version=4)
+    code_cells = [
+        cell
+        for cell in notebook.cells
+        if cell.cell_type == "code" and cell.source.strip()
+    ]
+    executed = [
+        cell
+        for cell in code_cells
+        if cell.execution_count is not None or cell.get("outputs")
+    ]
+    return len(executed), len(code_cells)
+
+
+@pytest.mark.parametrize("relative_path", ALL_NOTEBOOKS)
+def test_no_notebook_is_half_executed(request, relative_path):
+    """A notebook is either a clean template or fully executed -- never in between.
+
+    Half-executed is the state that misleads. ``nbsphinx_execute = 'never'``, so
+    the published page renders the committed outputs and then simply stops: the
+    reader sees a tutorial that appears to work right up to the cell where it
+    was abandoned. A notebook with no outputs at all is honest by comparison,
+    and is what several of these are by design.
+    """
+    if relative_path in KNOWN_TRUNCATED:
+        request.node.add_marker(
+            pytest.mark.xfail(reason=KNOWN_TRUNCATED[relative_path], strict=True)
+        )
+    executed, total = _executed_and_total(relative_path)
+    assert executed in (0, total), (
+        f"{relative_path}: {executed} of {total} code cells have outputs, so the "
+        f"published page stops partway through the tutorial"
+    )
+
+
+def test_the_truncation_list_names_only_real_notebooks():
+    """A stale entry would silently exempt a notebook that no longer exists."""
+    missing = [path for path in KNOWN_TRUNCATED if path not in ALL_NOTEBOOKS]
+    assert not missing, f"KNOWN_TRUNCATED names notebooks that are gone: {missing}"

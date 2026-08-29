@@ -77,7 +77,10 @@ def sample_negative_edges(
     Returns:
         List of negative edge tuples
     """
-    np.random.seed(seed)
+    # A local generator, not np.random.seed(): reseeding the global RNG makes every
+    # subsequent random draw in the calling process depend on this function having been
+    # called, which silently couples unrelated results together.
+    rng = np.random.default_rng(seed)
     nodes = list(G.nodes())
     n_nodes = len(nodes)
     
@@ -94,8 +97,8 @@ def sample_negative_edges(
         attempts = 0
         
         while len(negative_edges) < n_samples and attempts < max_attempts:
-            u = nodes[np.random.randint(n_nodes)]
-            v = nodes[np.random.randint(n_nodes)]
+            u = nodes[rng.integers(n_nodes)]
+            v = nodes[rng.integers(n_nodes)]
             
             if u != v and (u, v) not in existing_edges_bidirectional:
                 negative_edges.append((u, v))
@@ -123,7 +126,7 @@ def sample_negative_edges(
             
             if candidates:
                 sample_size = min(len(candidates), max(1, n_samples // n_nodes))
-                sampled = np.random.choice(len(candidates), size=sample_size, replace=False)
+                sampled = rng.choice(len(candidates), size=sample_size, replace=False)
                 for idx in sampled:
                     if len(negative_edges) < n_samples:
                         edge = candidates[idx]
@@ -158,7 +161,7 @@ def sample_negative_edges(
             max_attempts = sample_size * 10
             
             while len(negative_edges) < n_samples and attempts < max_attempts:
-                u, v = np.random.choice(comm_nodes, size=2, replace=False)
+                u, v = rng.choice(comm_nodes, size=2, replace=False)
                 if (u, v) not in existing_edges_bidirectional:
                     negative_edges.append((u, v))
                     existing_edges_bidirectional.add((u, v))
@@ -194,13 +197,14 @@ def split_edges(
     Returns:
         Tuple of (train_graph, val_edges, test_edges, negative_edges)
     """
-    np.random.seed(seed)
-    
+    # Local generator rather than np.random.seed(seed) -- see sample_negative_edges.
+    rng = np.random.default_rng(seed)
+
     edges = list(G.edges())
     n_edges = len(edges)
-    
+
     # Shuffle edges
-    np.random.shuffle(edges)
+    rng.shuffle(edges)
     
     # Split edges
     n_test = int(n_edges * test_ratio)

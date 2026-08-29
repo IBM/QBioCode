@@ -1021,7 +1021,7 @@ def compute_orc_per_edge(G: nx.Graph) -> Dict[Tuple, Dict[str, float]]:
     Two approximations are computed:
     
     1. **Generalized Jaccard (gJC)**: Fast O(d) proxy
-       gJC(u, v) = |N(u) ∩ N(v)| / |N(u) ∪ N(v)|
+       gJC(u, v) = ``|N(u) ∩ N(v)|`` / ``|N(u) ∪ N(v)|``
        
     2. **Jost-Liu lower bound (κ_LB)**: Tighter spectral bound
        κ_LB(u, v) = Δ / max(dᵤ, d_v) + 1/dᵤ + 1/d_v − 1
@@ -1124,7 +1124,7 @@ def compute_cyclomatic_number(G: nx.Graph) -> int:
     
     μ(G) = m − n + c
     
-    where m = |E|, n = |V|, c = number of connected components.
+    where m = ``|E|``, n = ``|V|``, c = number of connected components.
     
     Interpretation:
     - μ = 0 iff G is a forest (no cycles)

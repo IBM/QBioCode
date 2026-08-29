@@ -151,7 +151,18 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --cov=qbiocode --cov-report=html --cov-report=term"
+# No --cov here on purpose: it made a bare `pytest` fail outright in any
+# environment without pytest-cov, which is every environment that installed
+# qbiocode rather than the [dev] extra. CI passes --cov explicitly.
+# The default deselection keeps the matrix fast; run the excluded tiers with
+#   pytest -m slow            (notebook execution)
+#   pytest -m requires_quantum (anything needing a real backend)
+addopts = "-v -m 'not slow and not requires_quantum'"
+
+markers = [
+    "slow: minutes-long tests, e.g. executing a tutorial notebook end to end",
+    "requires_quantum: needs a real quantum backend and network credentials",
+]
 
 [tool.mypy]
 python_version = "3.10"
