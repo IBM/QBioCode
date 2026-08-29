@@ -51,8 +51,34 @@ STRUCTURAL_WARNINGS = (
     r"document isn't included in any toctree",
     r"undefined label",
     r"unknown document",
+    r"unknown source document",
     r"image file not readable",
     r"autodoc: failed to import",
+    # An object described twice is indexed twice, which makes every short
+    # cross-reference to it ambiguous and sends readers to an arbitrary one.
+    r"duplicate object description",
+    r"more than one target found for cross-reference",
+    # docutils rejects the node outright, so the page renders without it.
+    r"Transition must be child of",
+)
+
+# A warning whose location is a hand-written page under ``docs/source`` is
+# structural too: that page's own markup is wrong, and the reader sees the
+# damage. Docstring warnings are deliberately not covered -- they carry a
+# ``qbiocode/`` location, there are about thirty of them, and reformatting every
+# docstring in the tree is a separate job from this one.
+PAGE_WARNING_EXEMPTIONS = (
+    # ``.. automodule::`` registers its ``module-<name>`` anchors through the
+    # Python domain. MyST's local-id check does not see the Python domain, so it
+    # reports every cross-page link to one as missing. The anchors *are* in the
+    # rendered HTML and the links resolve -- confirmed by grepping
+    # ``api/qbiocode.learning.html`` for ``id="module-qbiocode.learning.*"``.
+    r"local id not found in doc",
+)
+
+PAGE_WARNING = re.compile(
+    r"^(?P<path>\S*[/\\]docs[/\\]source[/\\]\S+?):(?P<line>\d+):\s*"
+    r"(?P<level>WARNING|ERROR)\b"
 )
 
 
@@ -124,6 +150,34 @@ def test_it_emits_no_structural_warnings(build):
     ]
     assert not offenders, "the site built, but its structure is broken:\n" + "\n".join(
         offenders[:40]
+    )
+
+
+def test_no_hand_written_page_has_a_markup_warning(build):
+    """Markup nits in ``docs/source`` pages are visible defects, not noise.
+
+    The structural list above catches warnings by *kind*. This catches them by
+    *location*: anything docutils or MyST reports against a file the team wrote
+    by hand renders wrong on the site. It is what would have caught two nested
+    bullet lists indented past their parent (rendered as block quotes), a
+    paragraph indented one space too far, and a Colab cell fenced as ``python``
+    whose IPython magics the Python lexer could not tokenise -- none of which
+    matched any pattern in ``STRUCTURAL_WARNINGS``.
+    """
+    completed, _ = build
+    text = completed.stdout + completed.stderr
+    offenders = [
+        line
+        for line in text.splitlines()
+        if PAGE_WARNING.match(line.strip())
+        and not any(
+            re.search(pattern, line, re.IGNORECASE)
+            for pattern in PAGE_WARNING_EXEMPTIONS
+        )
+    ]
+    assert not offenders, (
+        "hand-written pages under docs/source emit markup warnings, so they do "
+        "not render as intended:\n" + "\n".join(offenders[:40])
     )
 
 

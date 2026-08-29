@@ -215,6 +215,12 @@ add_module_names = False
 
 napoleon_google_docstring = True
 napoleon_include_init_with_doc = True
+# Render a Google-style ``Attributes:`` section as :ivar: fields inside the
+# class description instead of as standalone attribute descriptions.  Without
+# this, a dataclass whose docstring lists its fields has each field described
+# twice -- once from the docstring, once from ``:undoc-members:`` walking the
+# annotations -- which Sphinx reports as "duplicate object description".
+napoleon_use_ivar = True
 
 coverage_ignore_modules = []
 coverage_ignore_functions = []

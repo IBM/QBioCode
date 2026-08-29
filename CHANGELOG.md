@@ -824,14 +824,63 @@ have been re-executed.
   rendered formula. They are now inline literals. Ten section underlines in
   `workshops/ISMB_2025.rst` and `workshops/ISMB_2026.rst` were shorter than their titles.
 
+- **Seven more defects that only a real build exposes.** Reading the sources had missed
+  all of these; each was found by building the docs and then classifying every warning
+  rather than pattern-matching the ones that looked important:
+  - `background.md` ended with a `---` transition inside the level-3 *Video Resources*
+    subsection, followed only by a closing paragraph. Every other `---` in that file is
+    followed by a heading, so docutils reads it as a section separator; this one it
+    rejected outright (*Transition must be child of `<document>` or `<section>`*). The
+    closing paragraph is a page footer, so it is now a `{seealso}` admonition and needs
+    no transition.
+  - `installation.md` linked `docs/CONDA_SUBMISSION.md` as `../CONDA_SUBMISSION.md`. The
+    file exists, but it sits above `docs/source/` and is not part of the doc set, so MyST
+    resolved it as an unknown source document. It now links the file on GitHub.
+  - `installation.md` fenced a Google Colab cell as `python`, but `!git clone` and `%cd`
+    are IPython magics and the Python lexer failed on them. The `ipython3` lexer would
+    handle it and ships with IPython, which is *not* a declared docs dependency, so the
+    block is fenced as `text`.
+  - `workshops/ISMB_2025.rst` indented two nested bullet lists past their parent item's
+    text with no blank line, so docutils opened block quotes and then reported an
+    unexpected unindent — four warnings for two lists, and neither rendered as a list.
+    `workshops/ISMB_2026.rst` had one paragraph indented a single space too far, with the
+    same effect.
+  - Google-style `Attributes:` sections collided with `:undoc-members:` on every
+    dataclass: the fields were described once from the docstring and once from the
+    annotations, which Sphinx reports as *duplicate object description* (14 of them, all
+    from `MethodMetadata` and `MethodResult`). `napoleon_use_ivar = True` renders such a
+    section as `:ivar:` fields inside the class description, so each field is described
+    exactly once.
+  - Twelve `docs/source/api/*.rst` pages documented a package's re-exported names twice —
+    once in each submodule's section, once again in the trailing *Module contents* block —
+    which made the short names ambiguous (*more than one target found for
+    cross-reference*). The package-level block now renders the package docstring only.
+    A comment in each file records why, so a `better_apidoc` regeneration does not
+    silently reintroduce it.
+
+  These took the build from 90 warnings to 43.
+
   The build is now verified locally: `python -m sphinx -b html docs/source` succeeds and
   emits **no** structural warnings (broken toctree, undefined label, unknown document,
-  unreadable image, failed autodoc import). 83 warnings remain, all docstring-formatting
-  nits — unindented block quotes, definition lists, and title underlines — spread across
-  about twenty modules. Reformatting every docstring in the tree is deliberately out of
-  scope for this release, which is why the build is not run under `-W`; the new
-  `tests/integration/test_docs_build.py` asserts the *structural* warning classes are
-  empty instead, which is the contract that matters and cannot regress silently.
+  unreadable image, failed autodoc import, duplicate object, ambiguous cross-reference,
+  malformed page structure). Of the 43 that remain, 33 are docstring-formatting nits in
+  `qbiocode/` — unindented block quotes, definition lists, one short title underline —
+  and 10 are `myst.xref_missing` reports for `module-*` anchors that `.. automodule::`
+  creates through the Python domain, which MyST's local-id check cannot see; the anchors
+  were confirmed present in the rendered HTML, so those links work. Reformatting every
+  docstring in the tree is deliberately out of scope for this release, which is why the
+  build is not run under `-W`; `tests/integration/test_docs_build.py` asserts the
+  *structural* warning classes are empty instead, which is the contract that matters and
+  cannot regress silently.
+
+  That test was also the reason six of the seven defects above survived the first pass: it
+  matched warnings by *kind*, and none of them matched a listed kind. It now checks by
+  location as well — any docutils or MyST warning reported against a file under
+  `docs/source/` fails the test, since a hand-written page that emits a markup warning does
+  not render as intended. Docstring warnings keep their exemption (they carry a `qbiocode/`
+  location), as does the `myst.xref_missing` class described above, with the verification
+  recorded in the code. Replaying the pre-fix build log through the new check produces nine
+  offenders and the post-fix log produces none, so the guard is not vacuous.
 
 #### Earlier fixes
 - Invalid escape sequence in `qbiocode/visualization/visualize_correlation.py`
