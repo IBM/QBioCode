@@ -143,3 +143,75 @@ def test_setup_py_declares_no_metadata():
     assert "setup()" in text
     for field in ("install_requires", "extras_require", "entry_points", "packages="):
         assert field not in text, f"setup.py re-declares {field}, which pyproject.toml owns"
+
+
+def test_no_lock_file_is_committed():
+    """A lock file is one OS/arch/Python; committing one implies it covers all nine.
+
+    The inherited lock also outlived its own dependency set -- it still pinned
+    tensorflow long after the tree stopped importing it. The recipe for generating
+    one lives in ``requirements/requirements.txt``; the artifact stays local.
+    """
+    lock = REQUIREMENTS_DIR / "requirements-lock.txt"
+    assert not lock.exists() or _is_git_ignored(lock), (
+        "requirements/requirements-lock.txt is tracked; a pip freeze is specific to "
+        "one platform and Python version and must not be committed"
+    )
+    gitignore = (REPO_ROOT / ".gitignore").read_text()
+    assert "requirements/requirements-lock.txt" in gitignore
+    assert "pip freeze" in (REQUIREMENTS_DIR / "requirements.txt").read_text(), (
+        "the lock-generation recipe is gone from requirements/requirements.txt"
+    )
+
+
+def _is_git_ignored(path):
+    import subprocess
+
+    result = subprocess.run(
+        ["git", "check-ignore", "-q", str(path)], cwd=REPO_ROOT, capture_output=True
+    )
+    return result.returncode == 0
+
+
+class TestTheCiProvesTheExtraIsOptional:
+    """The `[quvine]` extra is only optional if something installs *without* it.
+
+    The `test` job installs `.[dev]`, which brings the QuVINE dependencies along, so
+    it cannot detect an eager `import gensim` on the import path. The `install-matrix`
+    job's bare leg is what does; these tests keep it from being quietly dropped.
+    """
+
+    @staticmethod
+    def workflow():
+        yaml = pytest.importorskip("yaml")
+        with open(REPO_ROOT / ".github" / "workflows" / "ci.yml") as handle:
+            return yaml.safe_load(handle)
+
+    def test_a_job_installs_the_project_with_no_extras(self):
+        legs = [
+            leg["install"]
+            for job in self.workflow()["jobs"].values()
+            for leg in job.get("strategy", {}).get("matrix", {}).get("include", [])
+            if "install" in leg
+        ]
+        assert "." in legs, (
+            "no CI leg installs the project bare, so nothing checks that the "
+            f"[quvine] extra is optional; legs found: {legs}"
+        )
+        assert ".[quvine]" in legs, f"no CI leg installs the extra; legs found: {legs}"
+
+    def test_the_bare_leg_does_not_install_the_dev_extra(self):
+        """`[dev]` would pull the very dependencies the leg checks are absent."""
+        job = self.workflow()["jobs"]["install-matrix"]
+        install_steps = "\n".join(step.get("run", "") for step in job["steps"])
+        assert "[dev]" not in install_steps
+        assert "pip install pytest" in install_steps, (
+            "the bare leg needs pytest installed on its own, since [dev] is excluded"
+        )
+
+    def test_it_runs_the_console_scripts(self):
+        """The regression guard for the broken `cli.py` import, at install level."""
+        job = self.workflow()["jobs"]["install-matrix"]
+        runs = "\n".join(step.get("run", "") for step in job["steps"])
+        for script in ("qprofiler --help", "qsage --help", "quvine --help"):
+            assert script in runs, f"{script} is not smoke-tested by install-matrix"

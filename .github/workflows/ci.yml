@@ -53,6 +53,65 @@ jobs:
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
       continue-on-error: true
 
+  # The `test` job installs .[dev], which brings the [quvine] extra along with it,
+  # so it can never tell whether the extra is genuinely optional. That is the one
+  # property the extra exists for: `import qbiocode` and every classical embedding
+  # must work without gensim, hiperwalk, node2vec, torch-geometric, python-louvain
+  # or ripser installed. This job proves it from both sides. (omegaconf is not on
+  # that list: hydra-core is a base dependency and requires it, so omegaconf is
+  # present in a bare install too.)
+  #
+  # The bare leg is the interesting one. It must pass with the QuVINE tests
+  # *skipping*, not failing -- every one of them is behind `importorskip`, and
+  # `tests/integration/test_package_surface.py` asserts in a subprocess that
+  # importing qbiocode leaves all six of those modules unimported. If someone adds
+  # an eager `import gensim` anywhere on the import path, this leg goes red and the
+  # `test` job stays green.
+  install-matrix:
+    name: Install "${{ matrix.install }}" and run the suite
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # No extras at all: the published default install.
+          - install: "."
+          # Everything the [quvine] extra pulls in, and nothing else.
+          - install: ".[quvine]"
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    # pytest is installed on its own rather than through [dev]: [dev] would drag
+    # in the very dependencies this job is checking are absent.
+    - name: Install ${{ matrix.install }}
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e "${{ matrix.install }}"
+        pip install pytest
+
+    - name: Import the package
+      run: python -c "import qbiocode; print(len(qbiocode.__all__), 'public names')"
+
+    - name: Every console script answers --help
+      run: |
+        qprofiler --help > /dev/null
+        qsage --help > /dev/null
+        quvine --help > /dev/null
+
+    # -rs so the log says which tests skipped and why. On the bare leg the QuVINE
+    # tests must appear there; a silent pass with nothing skipped would mean the
+    # extra was installed after all.
+    - name: Run tests
+      run: python -m pytest -q -rs
+
   lint:
     name: Code Quality Checks
     runs-on: ubuntu-latest

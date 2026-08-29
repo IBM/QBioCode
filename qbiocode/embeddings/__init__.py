@@ -19,7 +19,9 @@ Available Constants
 -------------------
 - SKLEARN_METHODS: the classical method names, always available
 - QUVINE_HEADLINE_METHODS: the QuVINE names worth trying first
-- QUVINE_METHODS: every QuVINE name, empty when the ``[quvine]`` extra is absent
+- QUVINE_METHODS: every QuVINE name. Listed even without the ``[quvine]`` extra --
+  resolving a name is stdlib-only, so discovery works and only *running* a method
+  raises. Empty only if the QuVINE subpackage itself cannot be imported.
 
 Available Classes
 -----------------

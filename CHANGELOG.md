@@ -46,8 +46,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   QProfiler reaches them through its existing `embeddings:` config list, and passes
   `quvine_args` through for per-method overrides.
   - `qbiocode.SKLEARN_METHODS`, `qbiocode.QUVINE_HEADLINE_METHODS` and
-    `qbiocode.QUVINE_METHODS` name what is available; `QUVINE_METHODS` is empty rather
-    than raising when the `[quvine]` extra is absent.
+    `qbiocode.QUVINE_METHODS` name what is available. `QUVINE_METHODS` lists all 83
+    names even without the `[quvine]` extra installed — resolving a name is
+    stdlib-only, so discovery and the "unknown embedding" error message work in a bare
+    environment, and only *running* a method raises `QuvineDependencyError`. It is
+    empty only if the QuVINE subpackage itself is unimportable.
   - Methods needing no extra beyond the base install — `netmf`, `appnp`, `gat_*` — work on
     a bare `pip install qbiocode`.
 
@@ -172,6 +175,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The job is gated on `github.event_name == 'push' && github.ref == 'refs/heads/main'`,
   so a pull request — including one from a fork — cannot publish to the live site.
 
+- **`install-matrix` job** in `.github/workflows/ci.yml`, with a bare `pip install -e .`
+  leg and a `pip install -e ".[quvine]"` leg. The `test` job installs `.[dev]`, which
+  brings the QuVINE dependencies along, so it can never tell whether the extra is
+  actually optional — the one property the extra exists for. Each leg imports the
+  package, runs all three console scripts with `--help`, and runs the suite with `-rs`
+  so the log shows what skipped: on the bare leg the QuVINE tests must *skip*, not fail.
+  An eager `import gensim` added anywhere on the import path turns this job red while
+  the `test` job stays green.
+
 - **Extras matrix** in `README.md` and `docs/source/installation.md`. Both documented
   only `[apps]` and `[all]`; `[quvine]`, `[docs]` and `[dev]` were undocumented, and
   nothing said what a bare `pip install qbiocode` includes. `installation.md` gains a
@@ -286,6 +298,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `[all]` is now defined as `qbiocode[apps,quvine,docs,dev]` instead of a
     hand-maintained copy of every other extra's contents, which had already
     drifted out of sync.
+
+- **Packaging**: no lock file is committed, and `requirements/requirements-lock.txt`
+  is gitignored. The development repository carried a 162-line `pip freeze` labelled as
+  "the validated environment"; it was taken on macOS/arm64 under Python 3.12.4, while
+  QBioCode is tested on three operating systems × three Python versions, so it was
+  wrong on eight of those nine combinations while reading as authoritative on all
+  nine. It had also outlived the dependency set it froze — it still pinned
+  `tensorflow==2.21.0` and `keras==3.15.0`, and covered neither the docs tier nor the
+  single-cell packages (`scanpy`, `anndata`, `igraph`, `leidenalg`). The tiered
+  `requirements/*.txt` files are the single source of truth instead, and
+  `requirements/requirements.txt` documents the four commands that produce a lock in
+  the environment that will actually use it.
 
 - **Packaging**: `setup.py` is now a 33-line shim that passes no arguments, so
   `pyproject.toml` is the only place project metadata is declared. The previous
@@ -538,6 +562,14 @@ have been re-executed.
   `qbiocode.embeddings.__init__` imports `ConvAutoencoder`, which imports torch eagerly,
   so a bare `import qbiocode` already requires it. A missing torch is a broken install,
   not a missing extra, and the `[quvine]` install hint would have been wrong advice.
+
+- **`QUVINE_METHODS` was documented as empty without the `[quvine]` extra.** Both
+  `qbiocode/embeddings/__init__.py` and this changelog said so; the code has always
+  listed all 83 names, because resolving a name is stdlib-only and only *running* a
+  method needs the extra. The documentation understated what works in a bare
+  environment — including the "unknown embedding" error message, which lists the valid
+  QuVINE names. Found by running the suite against a simulated bare install rather than
+  by reading the code.
 
 - **Stale dependency advice removed.** `embedding/word2vec.py` raised
   `ImportError("... Try: pip install gensim==4.3.0 scipy==1.11.0")`, advising a downgrade
