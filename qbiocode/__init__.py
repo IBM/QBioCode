@@ -95,6 +95,7 @@ from .learning.compute_xgb import compute_xgb, compute_xgb_opt
 from .utils.dataset_checkpoint import checkpoint_restart
 from .utils.helper_fn import feature_encoding, scale_train_test, scaler_fn
 from .utils.qc_winner_finder import qml_winner
+from .utils.tutorial_data import tutorial_data_dirs, tutorial_data_path
 from .version import __version__
 
 # ====== Import visualization functions ======
@@ -144,6 +145,8 @@ __all__ = [
     "feature_encoding",
     "qml_winner",
     "checkpoint_restart",
+    "tutorial_data_path",
+    "tutorial_data_dirs",
     # Evaluation
     "modeleval",
     "evaluate",

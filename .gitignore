@@ -51,6 +51,15 @@ tutorial/**/RawDataEvaluation.csv
 tutorial/**/compiled_*.csv
 tutorial/**/results.pkl
 tutorial/**/performance_summary_and_spearman_correlation_plots/
+# tutorial/**/data/ holds a mix: run artifacts (ld_data/, per-run CSVs) that must
+# stay out of git, and four *input* fixtures that are already tracked
+# (QProfiler/data/pbmc5k_small_cd4_vs_cd8.h5ad and QProfiler/data/sc_binary/*.csv).
+# Git honours the index over this pattern, so the tracked four keep versioning
+# normally; the rule only stops *new* files here from being added by accident.
+# A `!` re-include cannot rescue them -- git does not descend into an excluded
+# directory -- so if another fixture ever needs committing, add it with
+# `git add -f` and list it here, or put it under docs/source/tutorials/**/data/,
+# which is deliberately not ignored (see below).
 tutorial/**/data/
 tutorial/**/*.png
 tutorial/**/.ipynb_checkpoints/
