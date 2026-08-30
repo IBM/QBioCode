@@ -27,6 +27,7 @@ training value moves, something fitted on test data.
 from __future__ import annotations
 
 import inspect
+import warnings
 
 import numpy as np
 import pytest
@@ -141,3 +142,71 @@ class TestLabelsNeverReachTheEmbedding:
             second = get_embeddings("spectral", X_train, X_test, n_components=3)
         for a, b in zip(first, second):
             np.testing.assert_allclose(np.abs(np.asarray(a)), np.abs(np.asarray(b)))
+
+
+class TestNMFSurvivesALeakageFreeScaler:
+    """The leakage fix broke NMF, and every shipped config runs NMF.
+
+    Fitting the MinMaxScaler on train+test bounded *both* splits to [0, 1], so
+    ``NMF.transform`` never saw a negative. Fitting it on the training split alone
+    -- the correct protocol -- leaves the test split free to fall below the
+    training minimum, and NMF is defined only on non-negative input. The result
+    was ``ValueError: Negative values in data passed to X in NMF`` on
+    ``embeddings: ['pca', 'nmf', 'none']`` with ``scaling: ['True']``, which is
+    the config shipped with the QProfiler tutorial.
+
+    The fix clips the test matrix at zero and says how much it clipped. Undoing
+    the clip breaks the notebook; undoing the *report* hides an extrapolation.
+    """
+
+    @staticmethod
+    def _split_with_test_below_the_training_range():
+        rng = np.random.default_rng(3)
+        train = rng.uniform(1.0, 2.0, size=(40, 6))
+        test = rng.uniform(0.0, 1.5, size=(15, 6))  # partly below train's minimum
+        return scale_train_test(train, test, scaling="MinMaxScaler")
+
+    def test_the_scaler_really_does_put_test_rows_below_zero(self):
+        """Guards the premise: without this the test below proves nothing."""
+        _, test = self._split_with_test_below_the_training_range()
+        assert test.min() < 0, (
+            "the fixture no longer produces out-of-range test values, so the NMF "
+            "case it is meant to exercise is not being reached"
+        )
+
+    def test_nmf_transforms_the_test_split_instead_of_raising(self):
+        train, test = self._split_with_test_below_the_training_range()
+        with pytest.warns(UserWarning, match="clipped to 0"):
+            train_embedded, test_embedded = get_embeddings("nmf", train, test, n_components=3)
+        assert train_embedded.shape == (40, 3)
+        assert test_embedded.shape == (15, 3)
+        assert np.isfinite(test_embedded).all()
+
+    def test_the_clip_reports_how_many_entries_it_touched(self):
+        """A silent clip would hide a test split outside the training range."""
+        train, test = self._split_with_test_below_the_training_range()
+        expected = int((test < 0).sum())
+        with pytest.warns(UserWarning, match=rf"\b{expected} of {test.size} test entries"):
+            get_embeddings("nmf", train, test, n_components=3)
+
+    def test_a_test_split_inside_the_training_range_is_not_warned_about(self):
+        """No excursion, no warning -- the report has to mean something."""
+        rng = np.random.default_rng(11)
+        train = rng.uniform(0.0, 5.0, size=(40, 6))
+        test = rng.uniform(1.0, 4.0, size=(10, 6))
+        train, test = scale_train_test(train, test, scaling="MinMaxScaler")
+        assert test.min() >= 0
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            get_embeddings("nmf", train, test, n_components=3)
+        # NMF's own ConvergenceWarning is expected here and is not what this checks.
+        assert not [w for w in caught if "clipped" in str(w.message)]
+
+    def test_the_train_embedding_is_unaffected_by_the_clip(self):
+        """Clipping is a test-side repair; it must not change the fitted model."""
+        train, test = self._split_with_test_below_the_training_range()
+        with pytest.warns(UserWarning):
+            first, _ = get_embeddings("nmf", train, test, n_components=3)
+        untouched_test = np.clip(test, 0.0, None)
+        second, _ = get_embeddings("nmf", train, untouched_test, n_components=3)
+        np.testing.assert_allclose(first, second)

@@ -313,6 +313,40 @@ def _warn_transductive(embedding: str) -> None:
     )
 
 
+def _nonnegative_for_nmf(X_test, embedding):
+    """Clip ``X_test`` at zero so NMF can transform it, and say how much was clipped.
+
+    NMF is defined only on non-negative input. A MinMaxScaler fit on the *training*
+    split alone -- which is the leakage-free protocol, and what QProfiler now does --
+    maps train into [0, 1] but leaves test free to fall outside it, so a test row
+    below the training minimum arrives negative and ``NMF.transform`` raises
+    ``ValueError: Negative values in data passed to X in NMF``. That is what made
+    every shipped QProfiler config crash: ``embeddings: ['pca', 'nmf', 'none']`` with
+    ``scaling: ['True']``.
+
+    Clipping at zero is the honest handling: the alternative -- scaling on train+test
+    together, so nothing ever falls outside [0, 1] -- is the leak this release
+    removed. The clip is reported rather than silent, because a large excursion means
+    the test split is genuinely outside the training range and the embedding is being
+    asked to extrapolate.
+    """
+    X_test = np.asarray(X_test, dtype=float)
+    negative = X_test < 0
+    count = int(negative.sum())
+    if count:
+        warnings.warn(
+            f"{count} of {X_test.size} test entries were negative and have been "
+            f"clipped to 0 for the {embedding!r} embedding (most negative: "
+            f"{float(X_test.min()):.4g}). NMF is only defined on non-negative input, "
+            f"and a scaler fit on the training split alone -- the leakage-free "
+            f"protocol -- does not bound the test split to the training range.",
+            UserWarning,
+            stacklevel=4,
+        )
+        X_test = np.clip(X_test, 0.0, None)
+    return X_test
+
+
 def _unknown_embedding_error(embedding: str) -> ValueError:
     """Build the error for an unrecognized embedding name, with close matches."""
     known = list(SKLEARN_METHODS) + list(QUVINE_METHODS)
@@ -588,6 +622,8 @@ def get_embeddings(
             return Z[:n_train], Z[n_train:]
 
         X_train = embedding_model.fit_transform(X_train)
+        if "nmf" == embedding:
+            X_test = _nonnegative_for_nmf(X_test, embedding)
         X_test = embedding_model.transform(X_test)
 
     return X_train, X_test
