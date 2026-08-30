@@ -40,12 +40,33 @@ than an exception:
 """
 
 import logging
+from importlib import import_module
 
+import networkx as nx
 import numpy as np
 import pytest
 
-networkx = pytest.importorskip("networkx")
-import networkx as nx  # noqa: E402
+# First-party modules are imported directly, never through
+# ``pytest.importorskip``. Each one below needs only packages that
+# requirements-base.txt makes mandatory -- qiskit, torch, scikit-learn, hydra --
+# so there is no install in which they are legitimately missing. Guarding them
+# meant the opposite of safety: a genuine ImportError anywhere in the package
+# turned these tests *off* rather than red. Injecting one fault at the top of
+# qbiocode/utils/qutils.py silently skipped 32 assertions in this file, because
+# compute_pqk, qprofiler and gat all import it transitively. A broken import has
+# to fail loudly, so it is a collection error now.
+# ``import_module`` rather than ``from X import Y``: several of these packages
+# re-export a *function* or a string under the same name as the submodule
+# (``qbiocode.learning.compute_pqk`` is both a module and the function it
+# defines), so ``from`` would bind whichever the parent package happened to
+# expose. ``import_module`` always returns the module, and still raises.
+_compute_pqk = import_module("qbiocode.learning.compute_pqk")
+_gat = import_module("qbiocode.apps.quvine.baselines.gat")
+_link_prediction = import_module("qbiocode.apps.quvine.evaluation.link_prediction")
+_method_adapters = import_module("qbiocode.apps.quvine.reproducibility.method_adapters")
+_netmf = import_module("qbiocode.apps.quvine.baselines.netmf")
+_qprofiler = import_module("qbiocode.apps.qprofiler.qprofiler")
+_qutils = import_module("qbiocode.utils.qutils")
 
 
 # ---------------------------------------------------------------------------
@@ -65,7 +86,7 @@ def test_undefined_modularity_is_nan_not_zero():
 
 def test_link_prediction_reports_nan_for_a_single_class_split(caplog):
     """Ranking metrics are undefined without both classes -- 0.5 would be a lie."""
-    mod = pytest.importorskip("qbiocode.apps.quvine.reproducibility.method_adapters")
+    mod = _method_adapters
 
     embeddings = np.random.default_rng(0).normal(size=(6, 4))
     # This path reports through `logging`, not `warnings`: it runs inside the
@@ -81,7 +102,7 @@ def test_link_prediction_reports_nan_for_a_single_class_split(caplog):
 
 def test_link_prediction_summary_is_nan_aware():
     """One undefined method must not erase every method that succeeded."""
-    ev = pytest.importorskip("qbiocode.apps.quvine.evaluation.link_prediction")
+    ev = _link_prediction
 
     results = {
         "good_a": {"auc_roc": 0.8, "auc_pr": 0.7, "mrr": 0.6},
@@ -96,7 +117,7 @@ def test_link_prediction_summary_is_nan_aware():
 
 
 def test_link_prediction_summary_of_nothing_is_nan_not_zero():
-    ev = pytest.importorskip("qbiocode.apps.quvine.evaluation.link_prediction")
+    ev = _link_prediction
 
     summary = ev.summarize_link_prediction_results({})
     assert np.isnan(summary["mean_auc_roc"])
@@ -105,7 +126,7 @@ def test_link_prediction_summary_of_nothing_is_nan_not_zero():
 
 def test_netmf_raises_rather_than_returning_random_noise():
     """A failed factorization must reach the registry as a failure, not a result."""
-    netmf = pytest.importorskip("qbiocode.apps.quvine.baselines.netmf")
+    netmf = _netmf
     import inspect
 
     # Comments are stripped first: the code that replaced the fallback *explains*
@@ -207,7 +228,7 @@ def test_scale_train_test_rejects_a_mistyped_scaler():
 
 
 def test_get_feature_map_rejects_unknown_names_and_patterns():
-    qutils = pytest.importorskip("qbiocode.utils.qutils")
+    qutils = _qutils
 
     with pytest.raises(ValueError, match=r"Unsupported feature_map 'zz'"):
         qutils.get_feature_map("zz", 4)
@@ -219,7 +240,7 @@ def test_get_feature_map_rejects_unknown_names_and_patterns():
 
 def test_every_advertised_optimizer_is_actually_constructible():
     """L_BFGS_B was built and thrown away by a `==` typo, so it never worked."""
-    qutils = pytest.importorskip("qbiocode.utils.qutils")
+    qutils = _qutils
 
     for name in qutils.SUPPORTED_OPTIMIZERS:
         assert qutils.get_optimizer(name, max_iter=3) is not None, name
@@ -237,7 +258,7 @@ def test_every_advertised_optimizer_is_actually_constructible():
     ],
 )
 def test_compute_pqk_validates_the_feature_map_before_doing_any_work(tmp_path, kwargs, expected):
-    compute_pqk_mod = pytest.importorskip("qbiocode.learning.compute_pqk")
+    compute_pqk_mod = _compute_pqk
 
     rng = np.random.default_rng(0)
     args = {"backend": "simulator", "pqk_projection_dir": str(tmp_path / "proj")}
@@ -252,7 +273,7 @@ def test_compute_pqk_validates_the_feature_map_before_doing_any_work(tmp_path, k
 
 
 def test_compute_pqk_requires_a_backend_in_args(tmp_path):
-    compute_pqk_mod = pytest.importorskip("qbiocode.learning.compute_pqk")
+    compute_pqk_mod = _compute_pqk
 
     rng = np.random.default_rng(0)
     with pytest.raises(ValueError, match="missing the required 'backend' key"):
@@ -307,7 +328,7 @@ def profiler_config():
 def test_profiler_config_is_validated_before_the_run(profiler_config, patch, expected):
     import logging
 
-    qp = pytest.importorskip("qbiocode.apps.qprofiler.qprofiler")
+    qp = _qprofiler
 
     with pytest.raises(ValueError, match=expected):
         qp._validate_config({**profiler_config, **patch}, logging.getLogger("test"))
@@ -316,7 +337,7 @@ def test_profiler_config_is_validated_before_the_run(profiler_config, patch, exp
 def test_profiler_config_reports_every_missing_key_at_once(profiler_config):
     import logging
 
-    qp = pytest.importorskip("qbiocode.apps.qprofiler.qprofiler")
+    qp = _qprofiler
 
     del profiler_config["seed"]
     del profiler_config["iter"]
@@ -339,7 +360,7 @@ def test_profiler_config_reports_every_missing_key_at_once(profiler_config):
     ],
 )
 def test_scaling_flag_spellings_all_resolve(value, expected):
-    qp = pytest.importorskip("qbiocode.apps.qprofiler.qprofiler")
+    qp = _qprofiler
 
     assert qp._resolve_scaling(value) == expected
 
@@ -348,7 +369,7 @@ def test_scaling_flag_spellings_all_resolve(value, expected):
 # 3. Degenerate graphs still produce correctly-shaped features
 # ---------------------------------------------------------------------------
 def test_nodelist_must_be_a_permutation_of_the_graph():
-    gat = pytest.importorskip("qbiocode.apps.quvine.baselines.gat")
+    gat = _gat
 
     G = nx.path_graph(4)
     assert gat.get_nodelist(G) == list(G.nodes())
@@ -369,7 +390,7 @@ def test_nodelist_must_be_a_permutation_of_the_graph():
 )
 def test_feature_matrices_keep_their_width_on_degenerate_graphs(graph):
     """Metrics networkx cannot compute fall back to a sentinel column, not a crash."""
-    gat = pytest.importorskip("qbiocode.apps.quvine.baselines.gat")
+    gat = _gat
 
     features = gat.build_structural_features(graph)
     assert features.shape[0] == graph.number_of_nodes()

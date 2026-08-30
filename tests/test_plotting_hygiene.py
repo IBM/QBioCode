@@ -41,9 +41,22 @@ import numpy as np
 import pandas as pd
 import pytest
 
-matplotlib = pytest.importorskip("matplotlib")
+import matplotlib
+
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
+
+# The two first-party plotting modules are imported directly. Guarding a module
+# of our own with ``pytest.importorskip`` means an ImportError inside it -- a
+# real regression -- silently turns its tests into skips instead of failures.
+# Both need only matplotlib, numpy and scikit-learn, all mandatory in
+# requirements-base.txt, so there is no install where they are legitimately
+# absent.
+# ``import_module``, not ``from X import Y``: ``qbiocode.apps.sage`` re-exports a
+# name that shadows its own ``sage`` submodule, so ``from`` binds the wrong
+# object depending on what has already been imported.
+_analyze = importlib.import_module("qbiocode.apps.quvine.analysis.analyze")
+_sage = importlib.import_module("qbiocode.apps.sage.sage")
 
 
 # ---------------------------------------------------------------------------
@@ -217,7 +230,7 @@ def test_rcparams_are_restored_when_plotting_raises():
 # 4. The same rules in the two other modules that plot
 # ---------------------------------------------------------------------------
 def test_quvine_spectrum_figures_are_written_where_asked(tmp_path):
-    analyze = pytest.importorskip("qbiocode.apps.quvine.analysis.analyze")
+    analyze = _analyze
 
     plt.close("all")
     embeddings = [np.random.default_rng(i).normal(size=(40, 10)) for i in range(3)]
@@ -238,7 +251,7 @@ def test_quvine_spectrum_figures_are_written_where_asked(tmp_path):
 
 
 def test_plot_singular_values_saves_before_it_shows(tmp_path, monkeypatch):
-    analyze = pytest.importorskip("qbiocode.apps.quvine.analysis.analyze")
+    analyze = _analyze
 
     order = []
     monkeypatch.setattr(analyze, "_can_show", lambda: True)
@@ -262,7 +275,7 @@ def test_plot_singular_values_saves_before_it_shows(tmp_path, monkeypatch):
 
 
 def test_qsage_plot_results_honours_the_extension_it_was_given(tmp_path):
-    sage_mod = pytest.importorskip("qbiocode.apps.sage.sage")
+    sage_mod = _sage
 
     sage = object.__new__(sage_mod.QuantumSage)
     sage._available_metrics = ["f1_score"]
@@ -294,7 +307,7 @@ def test_qsage_plot_results_honours_the_extension_it_was_given(tmp_path):
 
 
 def test_qsage_plot_results_reports_no_results_without_printing(capsys, caplog):
-    sage_mod = pytest.importorskip("qbiocode.apps.sage.sage")
+    sage_mod = _sage
 
     sage = object.__new__(sage_mod.QuantumSage)
     sage._available_metrics = []

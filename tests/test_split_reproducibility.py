@@ -28,10 +28,18 @@ from __future__ import annotations
 
 import ast
 import pathlib
+from importlib import import_module
 
 import numpy as np
 import pytest
 from sklearn.model_selection import train_test_split
+
+# Imported directly, not through ``pytest.importorskip``. The guard this replaces
+# claimed the module "requires the [quvine] extra", which is false: it imports on
+# a bare install -- networkx and scipy are enough, and the optional python-louvain
+# import inside it is already handled locally. The guard therefore protected
+# nothing while silently converting any real ImportError into six skips.
+link_prediction = import_module("qbiocode.apps.quvine.evaluation.link_prediction")
 
 PACKAGE_ROOT = pathlib.Path(__file__).resolve().parents[1] / "qbiocode"
 
@@ -193,16 +201,14 @@ class TestLinkPredictionSplitsLeaveGlobalStateAlone:
     the process would draw from. They now use a local generator.
     """
 
-    @pytest.fixture(autouse=True)
+    @pytest.fixture
     def _module(self):
-        return pytest.importorskip(
-            "qbiocode.apps.quvine.evaluation.link_prediction",
-            reason="requires the [quvine] extra",
-        )
+        return link_prediction
 
     @staticmethod
     def _graph():
-        nx = pytest.importorskip("networkx")
+        import networkx as nx
+
         return nx.karate_club_graph()
 
     def test_the_same_seed_gives_the_same_edge_split(self, _module):

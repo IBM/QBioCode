@@ -183,7 +183,7 @@ class TestTheCiProvesTheExtraIsOptional:
 
     @staticmethod
     def workflow():
-        yaml = pytest.importorskip("yaml")
+        import yaml
         with open(REPO_ROOT / ".github" / "workflows" / "ci.yml") as handle:
             return yaml.safe_load(handle)
 
