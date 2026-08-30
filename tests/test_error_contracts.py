@@ -40,6 +40,7 @@ than an exception:
 """
 
 import logging
+import pathlib
 from importlib import import_module
 
 import networkx as nx
@@ -363,6 +364,60 @@ def test_scaling_flag_spellings_all_resolve(value, expected):
     qp = _qprofiler
 
     assert qp._resolve_scaling(value) == expected
+
+
+class TestFolderPathResolution:
+    """``folder_path`` must resolve from a checkout that is not named ``QBioCode``.
+
+    ``dir_home = re.sub('QBioCode.*', 'QBioCode', os.getcwd())`` only lands when the
+    current directory really sits under one literally called ``QBioCode``. It does
+    not for the GitHub source zip, which unpacks to ``QBioCode-main``, nor for a
+    lowercase clone -- and every shipped config writes ``folder_path`` relative to
+    the checkout root (``tutorial/QProfiler/data/ld_data``). So running the QProfiler
+    tutorial from a source download failed with a path that had ``tutorial/QProfiler``
+    in it twice, and the notebook could not be executed at all.
+    """
+
+    @staticmethod
+    def _checkout(root, name):
+        """A minimal checkout: <root>/<name>/tutorial/QProfiler/data/ld_data."""
+        target = root / name / "tutorial" / "QProfiler" / "data" / "ld_data"
+        target.mkdir(parents=True)
+        return target
+
+    def test_it_resolves_from_a_checkout_named_anything(self, tmp_path, monkeypatch):
+        target = self._checkout(tmp_path, "QBioCode-main")
+        monkeypatch.chdir(target.parents[2])  # .../QBioCode-main/tutorial/QProfiler
+        resolved = _qprofiler._resolve_input_folder("tutorial/QProfiler/data/ld_data")
+        assert resolved is not None and pathlib.Path(resolved).resolve() == target.resolve()
+
+    def test_an_absolute_path_is_used_as_given(self, tmp_path):
+        target = self._checkout(tmp_path, "anything")
+        assert pathlib.Path(
+            _qprofiler._resolve_input_folder(str(target))
+        ).resolve() == target.resolve()
+
+    def test_a_path_relative_to_the_current_directory_wins_first(self, tmp_path, monkeypatch):
+        target = self._checkout(tmp_path, "QBioCode-main")
+        monkeypatch.chdir(target.parent)  # .../data
+        assert pathlib.Path(
+            _qprofiler._resolve_input_folder("ld_data")
+        ).resolve() == target.resolve()
+
+    def test_a_folder_that_exists_nowhere_returns_none(self, tmp_path, monkeypatch):
+        monkeypatch.chdir(tmp_path)
+        assert _qprofiler._resolve_input_folder("no/such/folder") is None
+
+    def test_the_error_names_every_place_it_looked(self, tmp_path, monkeypatch, profiler_config):
+        """A bare "not a directory" left users with nothing to act on."""
+        monkeypatch.chdir(tmp_path)
+        config = dict(profiler_config, folder_path="no/such/folder")
+        with pytest.raises(ValueError) as failure:
+            _qprofiler.main.__wrapped__(config)
+        message = str(failure.value)
+        assert "no/such/folder" in message
+        assert str(tmp_path) in message or "current directory" in message
+        assert "absolute path" in message
 
 
 # ---------------------------------------------------------------------------

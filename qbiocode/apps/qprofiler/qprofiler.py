@@ -32,8 +32,44 @@ from sklearn.model_selection import train_test_split
 from qiskit_algorithms.utils import algorithm_globals
 
 import sys
+
+#: Best-effort guess at the checkout root, kept because ``folder_path`` in every
+#: shipped config is written relative to it. The substitution only lands when the
+#: current directory really does sit under one literally named ``QBioCode``, which
+#: is not true of a GitHub source zip (``QBioCode-main``), a lowercase clone, or a
+#: pip install -- hence ``_resolve_input_folder`` below rather than this alone.
 dir_home = re.sub( 'QBioCode.*', 'QBioCode', os.getcwd() )
-sys.path.append( dir_home )
+if os.path.isdir(dir_home):
+    sys.path.append( dir_home )
+
+
+def _resolve_input_folder(folder_path):
+    """Return an existing directory for ``folder_path``, or ``None``.
+
+    Candidates, in order:
+
+    1. ``folder_path`` itself -- absolute, or relative to the current directory.
+    2. ``dir_home / folder_path`` -- how every shipped config is written, and the
+       only case the original code handled.
+    3. ``folder_path`` under each ancestor of the current directory. This is what
+       makes the tutorials work from a checkout whose top directory is not called
+       ``QBioCode``: run from ``QBioCode-main/tutorial/QProfiler`` with
+       ``folder_path: tutorial/QProfiler/data/ld_data``, candidate 2 points at a
+       ``QBioCode`` directory that does not exist and candidate 1 at a path two
+       levels too deep, while the ancestor walk finds the real one.
+    """
+    candidates = [folder_path, os.path.join(dir_home, folder_path)]
+    here = os.path.abspath(os.getcwd())
+    while True:
+        candidates.append(os.path.join(here, folder_path))
+        parent = os.path.dirname(here)
+        if parent == here:
+            break
+        here = parent
+    for candidate in candidates:
+        if os.path.isdir(candidate):
+            return candidate
+    return None
 
 # ====== Scaling and encoding functions imports ======
 from qbiocode import scale_train_test, feature_encoding
@@ -200,15 +236,16 @@ def main(args):
     scaler_name = _validate_config(args, log)
     # Normalize path separators for cross-platform compatibility
     folder_path = args['folder_path'].replace('/', os.sep).replace('\\', os.sep)
-    path_to_input = os.path.join(dir_home, folder_path)
-    if not os.path.isdir(path_to_input):
+    path_to_input = _resolve_input_folder(folder_path)
+    if path_to_input is None:
         raise ValueError(
-            f"folder_path {args['folder_path']!r} resolves to {path_to_input!r}, "
-            f"which is not a directory. folder_path is interpreted relative to "
-            f"{dir_home!r} (the QBioCode checkout root, derived from the current "
-            f"working directory), so run QProfiler from the repository root or "
-            f"give an absolute path."
+            f"folder_path {args['folder_path']!r} is not a directory. It was looked "
+            f"for relative to the current directory ({os.getcwd()!r}), relative to "
+            f"the derived checkout root ({dir_home!r}), and under every parent of "
+            f"the current directory. Give an absolute path, or run from a directory "
+            f"from which the relative path resolves."
         )
+    log.info(f"Reading datasets from {path_to_input}")
     if args['file_dataset'] == 'ALL':
         input_files = [file for file in os.listdir(path_to_input) if file.endswith('csv')]
     else:
