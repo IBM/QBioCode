@@ -103,6 +103,12 @@ docs = [
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
+    # tests/integration/test_notebook_execution.py executes every tracked
+    # notebook through these two. Undeclared, they were reached by
+    # ``pytest.importorskip`` and 21 notebook tests skipped silently in any
+    # environment that happened not to have them.
+    "nbclient>=0.7",
+    "nbformat>=5.0",
     "black>=23.0",
     "isort>=5.0",
     "flake8>=6.0",

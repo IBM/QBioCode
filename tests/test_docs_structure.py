@@ -302,7 +302,7 @@ class TestNoBuildOutputInGit:
 class TestCiWorkflow:
     @staticmethod
     def _workflow():
-        yaml = pytest.importorskip("yaml")
+        import yaml
         path = REPO_ROOT / ".github" / "workflows" / "ci.yml"
         return yaml.safe_load(path.read_text(encoding="utf-8"))
 

@@ -36,8 +36,13 @@ import pytest
 
 from .conftest import REPO_ROOT, subprocess_env
 
-nbformat = pytest.importorskip("nbformat")
-nbclient = pytest.importorskip("nbclient")
+# Both are declared in the [dev] extra and installed explicitly by the CI
+# install-matrix legs, so they are always present wherever this file is
+# collected. Guarding them meant every test below skipped silently in any
+# environment that lacked either -- 21 tests reporting as "not run" is
+# indistinguishable from "passed" in a green log.
+import nbclient
+import nbformat
 
 # Verified to execute end to end offline, with timings measured on a laptop:
 #   example_data_generation  ~20 s

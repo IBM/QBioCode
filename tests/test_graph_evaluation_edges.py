@@ -30,7 +30,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
-nx = pytest.importorskip("networkx")
+import networkx as nx
 
 from qbiocode import evaluate_graph  # noqa: E402 - after the importorskip
 
