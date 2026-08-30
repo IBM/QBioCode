@@ -38,8 +38,10 @@ Supported input variants:
 
 Dependencies beyond the previous GCN-MF file:
     Required: PyTorch, NumPy, SciPy, NetworkX
-    Optional: scikit-learn only for StandardScaler if normalize_structural_features=True;
-              code falls back to internal standardization when sklearn is absent.
+
+    Optional: scikit-learn only for StandardScaler if
+    normalize_structural_features=True; code falls back to internal
+    standardization when sklearn is absent.
 
 No PyTorch Geometric is required. This file implements a sparse edge-index GAT
 using only PyTorch index_add/scatter_reduce operations.

@@ -43,14 +43,14 @@ class BaseWalker:
 
         
     def run(self, graph, root, view_nodes=None):
-        """Run the walk 
+        """Run the walk.
 
         Args:
             graph (networkx graph): subgraph of the views
             root (string): Root node tied to the views
             view_nodes (list of list): list of nodes in the views
-        -------
-        Returns: 
+
+        Returns:
             Dict[str, List[walks]]
         """
         

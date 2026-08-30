@@ -133,7 +133,7 @@ class QuantumSage():
         None
             Results are stored in the internal ``_results_subsages`` dictionary with structure:
             
-            .. code-block:: python
+            .. code-block:: text
             
                 {
                     'metric1': {
@@ -726,6 +726,7 @@ class QuantumSage():
         The scatter plot will show the predictions vs. true values for each model.
         If saveFile is provided, the plots will be saved to that file. Otherwise, the plots will be shown.
         It is designed to be used after the train_sub_sages function has been called, and the sub-sages have been trained.
+
         Args:
             figsize (tuple): Size of each figure.
             saveFile (str): Base file name for the plots. One bar plot and one

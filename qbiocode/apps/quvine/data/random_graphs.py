@@ -1274,8 +1274,10 @@ def generate_degree_corrected_sbm(
     make_connected: bool = True,
 ) -> Tuple[nx.Graph, Dict[int, int]]:
     """
-    Generate a degree-corrected SBM using probabilities
-        P_ij = scale * R_{b_i,b_j} * theta_i * theta_j,
+    Generate a degree-corrected SBM using probabilities::
+
+        P_ij = scale * R_{b_i,b_j} * theta_i * theta_j
+
     where theta values are normalized to have mean 1 within each block.
     """
     rng = _rng(seed)

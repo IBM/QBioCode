@@ -21,7 +21,7 @@ Usage
 >>> figs.scatter.savefig('plots/corr_600dpi.png', dpi=600)
 
 Importing this module does not modify ``matplotlib.rcParams``. The journal styling
-is applied per figure; adopt it for your own figures with::
+is applied per figure; adopt it for your own figures with:
 
 >>> import matplotlib.pyplot as plt
 >>> from qbiocode.visualization import publication_style

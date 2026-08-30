@@ -55,13 +55,15 @@ def register_all_methods(registry: MethodRegistry) -> None:
     Register all 32 baseline methods with the registry.
     
     This function registers:
+
     - 5 Baselines: node2vec, appnp, graphsage, netmf, baseline_gcnmf
-    - 10 Filter variants: baseline_filter_heat/poly, filter_rwr_heat/poly, 
-                          filter_ctqw_heat/poly, filter_dtqw_heat/poly
+    - 10 Filter variants: baseline_filter_heat/poly, filter_rwr_heat/poly,
+      filter_ctqw_heat/poly, filter_dtqw_heat/poly
     - 10 GAT variants: gat_baseline, gat_heat, gat_poly, gat_rwr (classical),
-                       gat_ctqw_heat/poly, gat_dtqw_heat/poly, gat_rwr_heat/poly (qcal)
-    - 10 GraphGPS variants: graphgps_baseline, graphgps_heat, graphgps_poly, graphgps_rwr,
-                           graphgps_ctqw_heat/poly, graphgps_dtqw_heat/poly, graphgps_rwr_heat/poly
+      gat_ctqw_heat/poly, gat_dtqw_heat/poly, gat_rwr_heat/poly (qcal)
+    - 10 GraphGPS variants: graphgps_baseline, graphgps_heat, graphgps_poly,
+      graphgps_rwr, graphgps_ctqw_heat/poly, graphgps_dtqw_heat/poly,
+      graphgps_rwr_heat/poly
     - 3 SGNS: quvine_ctqw, quvine_dtqw, quvine_rwr
     
     Args:
