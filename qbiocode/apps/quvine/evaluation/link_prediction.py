@@ -19,21 +19,24 @@ This module provides functions for evaluating node embeddings on link prediction
 Includes edge sampling strategies, edge feature computation, and comprehensive evaluation metrics.
 
 Edge Sampling Strategies:
+
 1. Random negative sampling
 2. Hard negatives: 2-hop node pairs (common neighbors but no edge)
 3. Same-community non-edges
 4. Stratified sampling by node degree
 
 Edge Feature Computation:
-1. Hadamard product: u ⊙ v
-2. Average: (u + v) / 2
-3. L1 distance: |u - v|
-4. L2 distance: ||u - v||₂
-5. Concatenation: [u; v]
-6. Inner product (dot product): u · v
-7. Cosine similarity: (u · v) / (||u|| ||v||)
+
+1. Hadamard product: ``u ⊙ v``
+2. Average: ``(u + v) / 2``
+3. L1 distance: ``|u - v|``
+4. L2 distance: ``||u - v||₂``
+5. Concatenation: ``[u; v]``
+6. Inner product (dot product): ``u · v``
+7. Cosine similarity: ``(u · v) / (||u|| ||v||)``
 
 Evaluation Metrics:
+
 - AUC-ROC, AUC-PR
 - Precision@K, Recall@K
 - Hit@K, MRR (Mean Reciprocal Rank)

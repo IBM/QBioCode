@@ -65,7 +65,7 @@ def build_cosine_classifier(train: np.ndarray, test: np.ndarray,
     
     Notes
     -----
-    The circuit computes P(0) = 1/2 + 1/2 * |<train|test>|^2
+    The circuit computes ``P(0) = 1/2 + 1/2 * |<train|test>|^2``
     """
     qubits_per = int(np.log2(len(train)))
     

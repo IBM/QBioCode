@@ -222,6 +222,15 @@ napoleon_include_init_with_doc = True
 # annotations -- which Sphinx reports as "duplicate object description".
 napoleon_use_ivar = True
 
+# The docs build is warning-free, and ``-W`` in the Makefile keeps it that way.
+# One warning is not ours to fix: sphinx-autodoc-typehints resolves annotations
+# by importing the modules they name, and pydantic's dataclass internals annotate
+# against ``_typeshed``, which is a typing-only stub that never exists at
+# runtime. The failure is reported once, changes nothing in the output, and
+# cannot be fixed from this repository -- so exactly that subtype is suppressed,
+# and nothing broader.
+suppress_warnings = ["sphinx_autodoc_typehints.guarded_import"]
+
 coverage_ignore_modules = []
 coverage_ignore_functions = []
 coverage_ignore_classes = []

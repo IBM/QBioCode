@@ -494,8 +494,11 @@ def fuse_best_across_types(embeddings_dict, performance_scores,
     Fuse best-performing method from each type.
     
     Steps:
+
     1. For each method type (SGNS, Filter, GAT, GraphGPS):
+
        - Select best-performing method based on scores
+
     2. Fuse the best methods using specified fusion method
     
     Args:
@@ -550,10 +553,14 @@ def hierarchical_fusion(embeddings_dict, performance_scores, target_dim=None):
     Perform hierarchical fusion strategy for all 39 methods.
     
     Strategy:
+
     1. Within-type fusion:
+
        - Fuse quantum methods per type → fused_quantum_{type}
        - Fuse classical methods per type → fused_classical_{type}
+
     2. Cross-type fusion:
+
        - Select best quantum method per type
        - Select best classical method per type
        - Fuse best quantum methods → fused_q
@@ -565,13 +572,14 @@ def hierarchical_fusion(embeddings_dict, performance_scores, target_dim=None):
         target_dim: Target dimension for fused embeddings
     
     Returns:
-        Dictionary with fused embeddings:
-        - 'fused_quantum_sgns', 'fused_classical_sgns'
-        - 'fused_quantum_filter', 'fused_classical_filter'
-        - 'fused_quantum_gat', 'fused_classical_gat'
-        - 'fused_quantum_graphgps', 'fused_classical_graphgps'
-        - 'fused_q' (best quantum across types)
-        - 'fused_c' (best classical across types)
+        dict: Fused embeddings, under these keys
+
+            - 'fused_quantum_sgns', 'fused_classical_sgns'
+            - 'fused_quantum_filter', 'fused_classical_filter'
+            - 'fused_quantum_gat', 'fused_classical_gat'
+            - 'fused_quantum_graphgps', 'fused_classical_graphgps'
+            - 'fused_q' (best quantum across types)
+            - 'fused_c' (best classical across types)
     """
     fused_embeddings = {}
     method_types = ['sgns', 'filter', 'gat', 'graphgps']

@@ -14,17 +14,19 @@
 
 """
 Extended Random Graph Generator for QuVINE
-=========================================
+==========================================
 
 Combines original QuVINE random graph generators with five new synthetic graph
 families especially useful for studying quantum-vs-classical random-walk embedding:
 
 Original generators:
+
 - Erdős-Rényi, Barabási-Albert, Watts-Strogatz, Powerlaw Cluster
 - Stochastic Block Model, Random Geometric, Modular, Hierarchical
 - Core-Periphery, Bipartite Random
 
 New extended generators:
+
 1. Random regular / expander-like graphs
 2. Heterophilic / disassortative stochastic block models
 3. Degree-corrected stochastic block models

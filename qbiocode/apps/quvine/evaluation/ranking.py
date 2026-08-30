@@ -204,12 +204,14 @@ def evaluate_embeddings_ranking(
     deg_tol=0.1,
     iteration=None,
 ):
-    """
-    scores_by_method: Dict[str, np.ndarray]
-        Mapping from method name to node-level score vector
-    Returns
-    -------
-    pd.DataFrame (tidy)
+    """Score every method's node ranking against the target set.
+
+    Args:
+        scores_by_method (Dict[str, np.ndarray]): Mapping from method name to
+            node-level score vector.
+
+    Returns:
+        pd.DataFrame: One tidy row per method, k value and repeat.
     """
     subgraph = nx.Graph(subgraph)
     valid_seeds = set(seeds) & set(subgraph.nodes())

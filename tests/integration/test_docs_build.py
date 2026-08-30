@@ -12,14 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""The Sphinx site builds, and builds *structurally* clean.
+"""The Sphinx site builds, and builds without a single warning.
 
-Deliberately not ``-W``. Turning every warning into an error makes the docs job
-fail on an unrelated docstring nit in a module nobody touched, which is how
-``continue-on-error: true`` ended up on the job in the first place. Instead the
-build must succeed, and must emit none of the warnings that mean the site is
-actually broken: a toctree pointing at a document that does not exist, a page
-reachable from nothing, an unresolvable reference.
+This started as a structural check with about thirty docstring warnings written
+off as noise, because turning every warning into an error would have failed the
+docs job on an unrelated nit in a module nobody touched. Those thirty are fixed:
+malformed lists and formulae that rendered as block quotes, a heading whose
+underline was one character short, ``|u - v|`` read as an RST substitution, a
+JSON sample parsed as section titles. So the exemption is gone and the bar is
+zero warnings, enforced here and by ``-W`` in ``docs/Makefile``.
+
+Zero is the only threshold that holds. Any other number is a budget, and a
+budget is spent: the warning that means the site is genuinely broken -- a
+toctree pointing at a document that does not exist, a page reachable from
+nothing, an unresolvable reference -- arrives indistinguishable from the thirty
+already being ignored.
 
 Skipped without the ``[docs]`` extra, without the pandoc binary that nbsphinx
 shells out to for notebook pages, and without nbconvert's ``rst`` template --
@@ -42,45 +49,6 @@ from .conftest import REPO_ROOT, subprocess_env
 pytest.importorskip("sphinx", reason="the [docs] extra is not installed")
 
 DOCS_SOURCE = REPO_ROOT / "docs" / "source"
-
-# Warnings that mean the published site is wrong, as opposed to untidy. Each is
-# matched against the full warning text, case-insensitively.
-STRUCTURAL_WARNINGS = (
-    r"toctree contains reference to nonexisting document",
-    r"toctree contains reference to excluded document",
-    r"document isn't included in any toctree",
-    r"undefined label",
-    r"unknown document",
-    r"unknown source document",
-    r"image file not readable",
-    r"autodoc: failed to import",
-    # An object described twice is indexed twice, which makes every short
-    # cross-reference to it ambiguous and sends readers to an arbitrary one.
-    r"duplicate object description",
-    r"more than one target found for cross-reference",
-    # docutils rejects the node outright, so the page renders without it.
-    r"Transition must be child of",
-)
-
-# A warning whose location is a hand-written page under ``docs/source`` is
-# structural too: that page's own markup is wrong, and the reader sees the
-# damage. Docstring warnings are deliberately not covered -- they carry a
-# ``qbiocode/`` location, there are about thirty of them, and reformatting every
-# docstring in the tree is a separate job from this one.
-PAGE_WARNING_EXEMPTIONS = (
-    # ``.. automodule::`` registers its ``module-<name>`` anchors through the
-    # Python domain. MyST's local-id check does not see the Python domain, so it
-    # reports every cross-page link to one as missing. The anchors *are* in the
-    # rendered HTML and the links resolve -- confirmed by grepping
-    # ``api/qbiocode.learning.html`` for ``id="module-qbiocode.learning.*"``.
-    r"local id not found in doc",
-)
-
-PAGE_WARNING = re.compile(
-    r"^(?P<path>\S*[/\\]docs[/\\]source[/\\]\S+?):(?P<line>\d+):\s*"
-    r"(?P<level>WARNING|ERROR)\b"
-)
-
 
 def _nbconvert_rst_template_available() -> bool:
     """nbsphinx renders notebook cells through nbconvert's ``rst`` template.
@@ -140,44 +108,46 @@ def test_the_build_succeeds(build):
     )
 
 
-def test_it_emits_no_structural_warnings(build):
-    completed, _ = build
-    text = completed.stdout + completed.stderr
-    offenders = [
-        line
-        for line in text.splitlines()
-        if any(re.search(pattern, line, re.IGNORECASE) for pattern in STRUCTURAL_WARNINGS)
-    ]
-    assert not offenders, "the site built, but its structure is broken:\n" + "\n".join(
-        offenders[:40]
-    )
+def test_it_emits_no_warnings_at_all(build):
+    """Every warning, wherever it comes from -- page markup or docstring.
 
+    A docstring warning is not cosmetic: docutils drops or mangles the construct
+    it could not parse, so the published API page shows a run-together paragraph
+    or a stray block quote where a list or a formula was meant. The location is
+    ``qbiocode/...`` but the damage is on the site.
 
-def test_no_hand_written_page_has_a_markup_warning(build):
-    """Markup nits in ``docs/source`` pages are visible defects, not noise.
-
-    The structural list above catches warnings by *kind*. This catches them by
-    *location*: anything docutils or MyST reports against a file the team wrote
-    by hand renders wrong on the site. It is what would have caught two nested
-    bullet lists indented past their parent (rendered as block quotes), a
-    paragraph indented one space too far, and a Colab cell fenced as ``python``
-    whose IPython magics the Python lexer could not tokenise -- none of which
-    matched any pattern in ``STRUCTURAL_WARNINGS``.
+    The one warning that is genuinely not ours -- sphinx-autodoc-typehints
+    importing ``_typeshed`` through pydantic's dataclass internals -- is
+    suppressed by subtype in ``conf.py``, where the reason is recorded next to
+    it, rather than filtered out here where it would shade every future
+    ``guarded_import`` failure too.
     """
     completed, _ = build
     text = completed.stdout + completed.stderr
     offenders = [
         line
         for line in text.splitlines()
-        if PAGE_WARNING.match(line.strip())
-        and not any(
-            re.search(pattern, line, re.IGNORECASE)
-            for pattern in PAGE_WARNING_EXEMPTIONS
-        )
+        if re.search(r"\b(WARNING|ERROR)\b", line)
     ]
     assert not offenders, (
-        "hand-written pages under docs/source emit markup warnings, so they do "
-        "not render as intended:\n" + "\n".join(offenders[:40])
+        f"{len(offenders)} warning(s) from a build that must emit none:\n"
+        + "\n".join(offenders[:40])
+    )
+
+
+def test_the_makefile_treats_warnings_as_errors():
+    """The gate lives in the Makefile, so CI's plain ``make html`` inherits it.
+
+    Without this, ``-W`` can be dropped from ``SPHINXOPTS`` and nothing fails:
+    the test above would still pass locally while CI quietly went back to
+    building a warning-ridden site successfully.
+    """
+    makefile = (REPO_ROOT / "docs" / "Makefile").read_text()
+    match = re.search(r"^SPHINXOPTS\s*\?*=\s*(.*)$", makefile, re.MULTILINE)
+    assert match, "docs/Makefile does not define SPHINXOPTS"
+    assert "-W" in match.group(1).split(), (
+        f"docs/Makefile SPHINXOPTS is {match.group(1)!r}; a docs build that "
+        f"warns must fail"
     )
 
 

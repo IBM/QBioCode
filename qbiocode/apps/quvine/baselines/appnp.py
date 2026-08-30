@@ -19,11 +19,13 @@ Implementation of APPNP (Predict then Propagate) for node embedding generation.
 APPNP combines neural network predictions with personalized PageRank propagation.
 
 Reference:
+
 - Klicpera et al. (2019). Predict then Propagate: Graph Neural Networks meet Personalized PageRank
   https://arxiv.org/abs/1810.05997
 - Original implementation: https://github.com/gasteigerjo/ppnp
 
 Key Innovation:
+
 - Decouples feature transformation from propagation
 - Uses personalized PageRank for efficient propagation
 - More robust to oversmoothing than standard GCNs

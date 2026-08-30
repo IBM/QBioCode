@@ -85,17 +85,18 @@ class HyperparameterLoader:
     """
     Loads and manages tuned hyperparameters from JSON files.
     
-    Example JSON structure:
-    {
-        "node2vec": {
+    Example JSON structure::
+
+        {
             "node2vec": {
-                "node_classification": {"best_params": {...}, "best_score": 0.5},
-                "link_prediction": {"best_params": {...}, "best_score": 0.9},
-                "node_ranking": {"best_params": {...}, "best_score": 0.4}
-            }
-        },
-        ...
-    }
+                "node2vec": {
+                    "node_classification": {"best_params": {...}, "best_score": 0.5},
+                    "link_prediction": {"best_params": {...}, "best_score": 0.9},
+                    "node_ranking": {"best_params": {...}, "best_score": 0.4}
+                }
+            },
+            ...
+        }
     """
     
     def __init__(self, tuning_dir: Optional[str] = None, dataset_name: Optional[str] = None):

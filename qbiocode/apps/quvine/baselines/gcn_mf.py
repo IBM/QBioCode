@@ -309,8 +309,10 @@ class QuVINEGCNMF(GCNMF):
         
         Note:
             This model expects precomputed diffused features as input.
-            Compute diffusion offline using:
+            Compute diffusion offline using::
+
                 X_diffused = apply_quantum_diffusion(X, L, t_star, poly_coeffs)
+
             Then pass X_diffused to forward().
         """
         super().__init__(n_nodes, input_dim, hidden_dim, output_dim,

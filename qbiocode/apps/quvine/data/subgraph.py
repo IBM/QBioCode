@@ -278,6 +278,7 @@ def subsample_nodes_with_protected(
     Subsample nodes while preserving a protected set.
 
     Workflow:
+
     - keep all protected nodes
     - optionally expand by hop radius around them
     - if expansion exceeds budget, optionally trim in a degree-matched way

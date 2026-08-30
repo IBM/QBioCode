@@ -74,6 +74,7 @@ def run_netmf(
     Notes
     -----
     NetMF computes embeddings by:
+
     1. Computing the transition matrix P from the adjacency matrix
     2. Computing the volume (sum of degrees)
     3. Computing the DeepWalk matrix: log(vol(G) * (sum_{r=1}^T P^r) / T / b) - log(b)
