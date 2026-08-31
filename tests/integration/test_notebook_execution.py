@@ -91,16 +91,13 @@ ALL_NOTEBOOKS = sorted(
     for path in (REPO_ROOT / directory).rglob("*.ipynb")
 )
 
-# Notebooks whose committed outputs stop partway. Each is listed with the reason
-# it could not be completed here, so the entry is a debt record rather than a
-# permanent exemption -- delete it once the notebook is re-executed.
-KNOWN_TRUNCATED = {
-    "docs/source/tutorials/QEnsemble/QEnsemble_example_blobs.ipynb":
-        "cells 10-14 (xgb / qcosine / qensemble arms and the post-processing) "
-        "were never run; completing them needs a full quantum-ensemble sweep",
-    "tutorial/QEnsemble/QEnsemble_example_blobs.ipynb":
-        "same notebook, mirrored under docs/",
-}
+# Notebooks whose committed outputs stop partway. Each would be listed with the
+# reason it could not be completed, so an entry is a debt record rather than a
+# permanent exemption -- delete it once the notebook is re-executed. Empty
+# because every notebook in the tree is now either a clean template or fully
+# executed; the mechanism is kept so a future truncation is recorded here
+# deliberately rather than silently weakening the assertion below.
+KNOWN_TRUNCATED: dict[str, str] = {}
 
 
 def _executed_and_total(relative_path):
