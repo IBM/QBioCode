@@ -872,6 +872,18 @@ have been re-executed.
   `example_qprofiler.ipynb` is now `ax.tick_params(axis='x', rotation=45)`. Setting tick
   *labels* on an axis whose tick *locations* are not fixed warns in matplotlib >= 3.5 and
   silently attaches the labels to the wrong ticks if the locator picks a different count.
+- **Notebooks executed under a headless matplotlib backend published without their
+  plots.** Six notebooks were re-executed earlier in this release with `MPLBACKEND=Agg`
+  set. In an ipykernel process the backend that produces inline output is
+  `module://matplotlib_inline.backend_inline`, which captures each `plt.show()` as an
+  `image/png` display output; forcing `Agg` makes `plt.show()` a silent no-op, so the
+  cells ran, reported success, and emitted *no figure at all*. Combined with
+  `nbsphinx_execute = 'never'`, the published pages showed code and printed text with
+  every plot missing -- and `test_no_notebook_is_half_executed` stayed green, because the
+  cells were genuinely executed. `quvine_sc_cd4_vs_cd8.ipynb` alone lost 4 figures this
+  way. All six were re-run under the default inline backend and now carry their figures:
+  `QPL_example.ipynb` 4 (both trees), `qsage.ipynb` 7 (both trees),
+  `quvine_sc_t_vs_mono.ipynb` 2, `quvine_sc_cd4_vs_cd8.ipynb` 4.
 - **Four published tutorial pages render code with no results.** `PQK - OV.ipynb`,
   `example_qprofiler.ipynb`, `qsage.ipynb` and `QPL_example.ipynb` have *zero* of their
   code cells executed, and `nbsphinx_execute = 'never'`, so their pages publish the source
