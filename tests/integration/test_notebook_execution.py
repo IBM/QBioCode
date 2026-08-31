@@ -99,15 +99,12 @@ KNOWN_TRUNCATED = {
         "cells 10-14 (xgb / qcosine / qensemble arms and the post-processing) "
         "were never run; completing them needs a full quantum-ensemble sweep",
     "tutorial/QEnsemble/QEnsemble_example_blobs.ipynb":
-        "same notebook, mirrored under tutorial/",
+        "same notebook, mirrored under docs/",
     "docs/source/tutorials/QProfiler/sc_binary_quvine_2x2_qprofiler.ipynb":
         "the import cell carries no output; inherited verbatim from the internal "
         "repository, where execution started at cell 2",
     "tutorial/QProfiler/sc_binary_quvine_2x2_qprofiler.ipynb":
         "same notebook, mirrored under docs/",
-    "docs/source/tutorials/QuVINE/quvine_sc_cd4_vs_cd8.ipynb":
-        "its import cell needs anndata, which is not installable in the "
-        "environment this test suite was written in",
 }
 
 
