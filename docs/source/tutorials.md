@@ -44,8 +44,8 @@ Apply QProfiler to a real single-cell RNA-seq benchmark: **CD4 vs CD8 T-cell** c
 **What You'll Learn:**
 - Build per-task CSV datasets from balanced PBMC `h5ad` files (leakage-safe HVG selection)
 - Add and tune a PQK feature map (shallow, linearly-entangled ZZ) to avoid quantum-kernel concentration
-- Quantify quantum advantage with a paired Cohen's *d_z* (PQK vs classical)
-- Correlate data-complexity measures with the quantum advantage
+- Quantify the quantum-vs-classical gap with a paired Cohen's *d_z* (PQK vs classical)
+- Correlate data-complexity measures with that gap
 - Use complexity context (Fisher ratio, mutual information, silhouette) to explain task difficulty
 
 ---
@@ -122,7 +122,7 @@ Learn how to use quantum ensemble methods to improve classification performance 
 - Controlled-SWAP operations for deterministic data rearrangement
 - Haar-random unitaries for general mixing
 - One-hot encoding for quantum state preparation
-- Quantum advantage in ensemble methods
+- Quantum ensembling of multiple classifiers
 
 **Methods:**
 1. **Swap Method**: Uses fixed controlled-SWAP operations to create deterministic permutations of training data
@@ -151,7 +151,7 @@ Learn about Quantum Projection Learning (QPL), a technique that combines quantum
 **Key Concepts:**
 - Quantum projection methods and expectation value measurements
 - Ensemble learning with quantum features
-- Data complexity analysis for quantum advantage prediction
+- Data complexity analysis to predict where quantum features help
 - Systematic model comparison and evaluation
 - Integration with classical ML pipelines
 
@@ -162,7 +162,7 @@ Learn about Quantum Projection Learning (QPL), a technique that combines quantum
 4. Extract quantum projections from circuits
 5. Train 5+ classical models on quantum features
 6. Compare with classical baselines
-7. Analyze results and identify quantum advantages
+7. Analyze results and identify where quantum features help
 
 ---
 
