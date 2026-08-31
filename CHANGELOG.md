@@ -902,15 +902,30 @@ have been re-executed.
   way. All six were re-run under the default inline backend and now carry their figures:
   `QPL_example.ipynb` 4 (both trees), `qsage.ipynb` 7 (both trees),
   `quvine_sc_t_vs_mono.ipynb` 2, `quvine_sc_cd4_vs_cd8.ipynb` 4.
-- **Four published tutorial pages render code with no results.** `PQK - OV.ipynb`,
-  `example_qprofiler.ipynb`, `qsage.ipynb` and `QPL_example.ipynb` have *zero* of their
-  code cells executed, and `nbsphinx_execute = 'never'`, so their pages publish the source
-  with nothing under it. This predates the migration and is left as it stands: three of the
-  four need a quantum backend or a dependency this environment cannot install, so their
-  outputs could not be produced here, and committing partial ones would create exactly the
-  half-executed page `test_no_notebook_is_half_executed` exists to prevent. The condition
-  is now visible rather than silent -- that test records which notebooks are templates and
-  which are complete, and it is what surfaced these four.
+- **The Quantum Ensemble tutorial published as a truncated page, and its XGBoost arm
+  never ran.** `QEnsemble_example_blobs.ipynb` (both trees) had 10 of its 15 code cells
+  executed: the xgb, qcosine, qensemble and random-unitary arms and the post-processing
+  that compares them were all unrun, so the page stopped immediately before the
+  comparison the tutorial exists to make. Two defects kept it that way:
+  - Each arm is guarded by `method not in predictions[dataset_name].keys()` against the
+    cache in `experiments/predictions.pkl`. A method that ran but produced *nothing* is
+    also a key, so the committed cache's empty `xgb_gs` frame (0 rows, recorded in an
+    environment without XGBoost) was treated as done and never retried. The notebook
+    printed "XGBoost grid search results are empty ... Skipping XGBoost" on an install
+    where XGBoost is a base dependency and present. The guard is now
+    `needs_run(predictions, dataset_name, method, rerun)`, which counts an empty cached
+    result as absent.
+  - `helper_functions.py` used `re.sub('\ ', '_', metric)`, an invalid escape sequence
+    that warns today and is a `SyntaxError` in a future Python. Now `re.sub(' ', '_', metric)`,
+    which is the same regex.
+
+  The notebook now runs end to end in 41s (15/15 cells, 3 figures): `xgb_gs` fits its 486
+  candidates and `xgb` its 90 rows, and the post-processing reports XGBoost against every
+  quantum arm with significance tests. `experiments/predictions.pkl` and the three
+  `Blob_max_median_*.pdf` figures are refreshed with the completed comparison.
+- **`KNOWN_TRUNCATED` is now empty.** Every notebook in the tree is either a clean
+  template or fully executed. The mechanism is kept so a future truncation has to be
+  recorded deliberately rather than by weakening `test_no_notebook_is_half_executed`.
 - **The Quantum Ensemble tutorial link was a 404.** `tutorials.md` linked
   `tutorials/QEnsemble/QEnsemble_example_blobs.html`, but the notebook existed only under
   `tutorial/QEnsemble/` and had no toctree entry, so Sphinx never built that page. The
