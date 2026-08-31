@@ -25,6 +25,11 @@ notebooks and are deliberately committed only once:
 ``tutorial/QProfiler/data/``          ``pbmc5k_small_cd4_vs_cd8.h5ad`` and the
                                       ``sc_binary/*.csv`` exports
 ``docs/source/tutorials/QProfiler/``  the same, for the rendered docs
+``docs/source/tutorials/QSage/data/`` ``qprofiler_benchmarks.csv``, the QProfiler
+                                      results table QSage trains on. Committed
+                                      under ``docs/`` because ``tutorial/**/data/``
+                                      is gitignored as run output, and read from
+                                      both trees through this resolver.
 ===================================== ===========================================
 
 Every notebook previously derived its own path with
@@ -69,6 +74,7 @@ REPO_DATA_DIRS = (
     ("tutorial", "QProfiler", "data"),
     ("docs", "source", "tutorials", "QProfiler", "data"),
     ("docs", "source", "tutorials", "QuVINE", "datasets"),
+    ("docs", "source", "tutorials", "QSage", "data"),
 )
 
 #: Directories relative to the *current working directory*, which for a notebook

@@ -47,7 +47,39 @@ class QuantumSage():
                                         'Isomap Reconstruction Error', 'Fractal dimension', 'Entropy',
                                         'std_entropy']
         self._columns_metrics = ['accuracy', 'f1_score', 'auc']
-        self._columns_metadata = ['Dataset', 'embeddings','datatype', 'model_embed_datatype', 'iteration', 'model', 'BestParams_GridSearch', 'Model_Parameters']
+        # The column recording how each model was parameterized is named for the
+        # branch that produced it: model_evaluation.py writes
+        # 'BestParams_GridSearch' when grid_search is on and 'Model_Parameters'
+        # when it is off, never both (qc_winner_finder.py branches on exactly
+        # that fact). Requiring both made `data_input[self._columns_metadata]`
+        # raise `KeyError: "['BestParams_GridSearch'] not in index"` on every
+        # QProfiler run there has ever been -- so QuantumSage could not be
+        # constructed from its own documented input in *either* configuration.
+        # Whichever column is present is carried through; neither is trained on
+        # (only 'model' and 'embeddings' are read below), so an input that
+        # records no parameters at all is still usable.
+        self._columns_metadata_required = [
+            'Dataset', 'embeddings', 'datatype', 'model_embed_datatype', 'iteration', 'model',
+        ]
+        self._columns_parameters = [
+            name for name in ('BestParams_GridSearch', 'Model_Parameters')
+            if name in data_input.columns
+        ]
+        self._columns_metadata = self._columns_metadata_required + self._columns_parameters
+
+        missing = [
+            name for group in (self._columns_data_features, self._columns_metrics,
+                               self._columns_metadata_required)
+            for name in group if name not in data_input.columns
+        ]
+        if missing:
+            raise ValueError(
+                f"data_input is missing {len(missing)} required column(s): {missing}. "
+                "QSage trains on a QProfiler results table (ModelResults.csv) with the "
+                "metadata columns the QSage tutorial adds -- 'datatype', "
+                "'model_embed_datatype' and 'iteration'. See "
+                "tutorial/QSage/qsage.ipynb for the exact preparation step."
+            )
 
         self._input_data_features_only = data_input[self._columns_data_features]
         self._input_data_metrics = data_input[self._columns_metrics]
@@ -71,21 +103,81 @@ class QuantumSage():
     # TODO: trained sage should predict over every metric so that the user can decide what they want predicted
     def predict(self, input_data, metric = 'f1_score'):
         '''
-        This function is used to make the prediction for a given metric on each of the models.
-        The input data should be a DataFrame with the same features as the training data.
-        The metric should be one of the available metrics (f1_score, auc, accuracy).
-        It returns a DataFrame with the predictions for each model and the R2 score of the prediction.
-        The predictions are sorted by the product of the metric and the R2 score, so that the best performing model is at the top.
-        If the metric is not one of the available metrics, it will return None.
-        If the input data does not have the same features as the training data, it will raise an error.
+        Rank every model by its predicted score on one dataset.
+
+        Pass the dataset-complexity columns named by ``_columns_data_features`` --
+        the ``SLGH`` feature that training derives is recomputed here, so a value
+        passed in for it is ignored rather than trusted. Rows are sorted by ``metric * r2`` descending: a model
+        whose surrogate fits poorly cannot reach the top on a confident-looking
+        point prediction alone, so read the ``r2`` column alongside the score.
+
+        An unknown metric, a missing feature column, an untrained sage, or an input
+        that is not exactly one row each raise -- earlier versions returned ``None``
+        for an unknown metric and ranked on the first row of a multi-row input.
 
         Args:
-            input_data (pd.DataFrame): DataFrame with the same features as the training data.
-            metric (str): The metric to predict. Should be one of the available metrics (f1_score, auc, accuracy).
+            input_data (pd.DataFrame): Exactly one row, carrying at least the
+                columns in ``_columns_data_features``. Extra columns are ignored.
+            metric (str): One of the trained metrics (``f1_score``, ``auc``,
+                ``accuracy``).
 
         Returns:
-            predictions_df (pd.DataFrame): DataFrame with the predictions for each model and the R2 score of the prediction.
+            predictions_df (pd.DataFrame): One row per model, with columns
+                ``model``, ``<metric>``, ``r2`` and ``<metric>*r2``, ranked by the
+                last of those.
         '''
+
+        if not self._results_subsages:
+            raise RuntimeError(
+                "No sub-sages have been trained yet, so there is nothing to predict "
+                "with. Call train_sub_sages() first, or load a QuantumSage that was "
+                "trained and pickled earlier."
+            )
+        if metric not in self._results_subsages:
+            raise ValueError(
+                f"No sub-sage was trained for metric {metric!r}. Trained metrics are "
+                f"{sorted(self._results_subsages)}."
+            )
+
+        # One row in, one ranking out. The returned frame is one row per *model*, so
+        # a multi-row input has nowhere to go -- and the loop below took
+        # `.predict(...)[0]`, quietly ranking on the first row and discarding the
+        # rest. That is easy to hit by accident: complexity features are measured on
+        # the *embedded* data, so a single dataset contributes a distinct feature row
+        # per (embedding, iteration), and the obvious
+        # `results_df[sage._columns_data_features].drop_duplicates()` yields several.
+        # The old behaviour returned a confident-looking ranking for whichever row
+        # happened to sort first, labelled as the dataset's.
+        if len(input_data) != 1:
+            raise ValueError(
+                f"input_data must hold exactly one row of dataset-complexity features; "
+                f"got {len(input_data)}. Features are measured on the embedded data, so "
+                "one dataset has a separate row per (embedding, iteration) -- select the "
+                "one you want to predict for, e.g. "
+                "held_out_df[held_out_df['embeddings'] == 'pca'][sage._columns_data_features]"
+                ".iloc[[0]], or call predict() once per row."
+            )
+
+        missing = [c for c in self._columns_data_features if c not in input_data.columns]
+        if missing:
+            raise ValueError(
+                f"input_data is missing {len(missing)} of the {len(self._columns_data_features)} "
+                f"dataset-complexity features the sub-sages were trained on: {missing}. "
+                "Pass the feature columns of a QProfiler results table, e.g. "
+                "results_df[sage._columns_data_features]."
+            )
+
+        # Reproduce the training-time feature derivation. train_sub_sages() appends
+        # SLGH (Scaled Latent Geometric Hardness) to X *after* splitting, so every
+        # fitted sub-sage expects 24 columns while _columns_data_features names only
+        # the 23 it was derived from. Forwarding the caller's frame unchanged made
+        # predict() raise sklearn's "Feature names seen at fit time, yet now
+        # missing: - SLGH" for the exact input the docstring asks for -- so no
+        # caller passing the documented columns could ever get a prediction.
+        # Recomputed rather than accepted from the caller: SLGH is a row-wise
+        # function of columns that are already present, so deriving it here cannot
+        # disagree with training, whereas a value passed in could.
+        input_data = calculate_SLGH(input_data[self._columns_data_features])
 
         predictions = []
         for model in self._available_models:
