@@ -139,7 +139,13 @@ version = {attr = "qbiocode.version.__version__"}
 dependencies = {file = ["requirements/requirements-base.txt"]}
 
 [tool.setuptools.package-data]
-qbiocode = ["py.typed"]
+# No `qbiocode = ["py.typed"]` here. The marker was declared and the file has
+# never existed, so setuptools silently shipped nothing -- but had anyone created
+# it to "fix" the declaration, the claim would have been false: py.typed tells a
+# consumer's type checker that this package's annotations are complete and
+# authoritative, and `disallow_untyped_defs = false` below says they are not.
+# Downstream users would then get confident `error:` lines derived from `Any`.
+# Add the marker when the tree is fully annotated, not before.
 "qbiocode.apps.qprofiler" = ["configs/*.yaml"]
 "qbiocode.apps.quvine" = ["configs/*.yaml"]
 
