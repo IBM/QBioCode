@@ -868,6 +868,18 @@ have been re-executed.
   for. It now validates the keys the requested backend and primitive actually need and
   raises a `ValueError` naming the missing ones, their purpose, and the keys it did get.
 #### Notebooks
+- **`PQK - OV.ipynb` reported accuracy as F1.** `run_model` returned
+  `best_model.score(x_test, y_test)`, which for an `SVC` is accuracy — then named it
+  `f1_score`, printed it as "Test F1 score", stored it in `F1_Quantum`/`F1_Classical`,
+  wrote it to `PQK_OV_results.csv`, and labelled the plot's y-axis "F1 Score". It also
+  contradicted the grid search in the same function, which selects on `f1_weighted`. The
+  tell was that every reported value was an exact k/59 fraction of the test set. It now
+  scores the held-out set with `f1_score(..., average='weighted')`, the metric the search
+  actually optimises, so the reported number and the selection criterion agree.
+- **A separator printed 60 lines of one `=`.** `print('\n=' * 60)` repeats
+  newline-plus-equals sixty times rather than prefixing a newline to a 60-character rule;
+  five occurrences across the download and preprocessing cells turned each section break
+  into 60 lines of noise. Now `print('\n' + '=' * 60)`.
 - **Four notebooks imported packages that do not exist.** `example_qprofiler.ipynb`
   (docs) used `from apps.qprofiler import qprofiler`, `qsage.ipynb` (docs) used
   `from apps.sage.sage import QuantumSage`, and both copies of `QPL_example.ipynb` used
