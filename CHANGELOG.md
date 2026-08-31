@@ -816,6 +816,24 @@ have been re-executed.
   cached projections were additionally unreachable after the PQK cache-key fix
   above, since their filenames predate the feature-map fingerprint.
 
+- **`pqk(..., data_map=True)` could never build its feature map.** The data map in
+  `qbiocode.embeddings.embed.pqk` ended in `return float(coeff)`, but qiskit calls a
+  `data_map_func` with *symbolic* parameters while it constructs the circuit --
+  `PauliFeatureMap.pauli_block` passes a `ParameterVector`, not a data row -- so every
+  call raised `TypeError: Parameter expression with unbound parameters {...} is not
+  numeric` before a single circuit ran. `data_map=True` is the default, so the function
+  was unusable for all three feature maps. `compute_pqk` carried a *fixed* copy of the
+  same function, which is why the QProfiler `pqk` model worked while calling `pqk()`
+  directly -- what `tutorial/PQK - OV.ipynb` does -- did not. The two copies are now one
+  shared `qbiocode.utils.qutils.unit_coefficient_data_map`, which returns a float for
+  numeric input and the unevaluated expression for symbolic input, so they cannot drift
+  apart again. `tests/test_feature_map_data_map.py` covers the symbolic input directly,
+  each feature map built through it, and a `pqk` round trip on the simulator.
+- **A missing `seed` surfaced as a bare `KeyError`.** `get_backend_session` indexed
+  `args["seed"]` and `args["shots"]` unchecked, so a config missing either failed several
+  frames into a notebook with a message naming neither the function nor what the key is
+  for. It now validates the keys the requested backend and primitive actually need and
+  raises a `ValueError` naming the missing ones, their purpose, and the keys it did get.
 #### Notebooks
 - **Four notebooks imported packages that do not exist.** `example_qprofiler.ipynb`
   (docs) used `from apps.qprofiler import qprofiler`, `qsage.ipynb` (docs) used

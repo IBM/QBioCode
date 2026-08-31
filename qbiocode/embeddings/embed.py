@@ -16,7 +16,6 @@ import difflib
 import os
 import warnings
 from functools import lru_cache
-from functools import reduce
 
 import numpy as np
 
@@ -55,7 +54,9 @@ def pqk(
     Args:
         X_train (np.ndarray): Training data features.
         X_test (np.ndarray): Test data features.
-        args (dict): Arguments containing backend and other configurations.
+        args (dict): Backend configuration. Requires ``backend`` (``'simulator'``,
+            ``'simulator_aer'``, or an ``'ibm_*'`` device) and, for the
+            simulator, ``seed`` so the statevector primitive is reproducible.
         store (bool): If true projections are stored, using data_key as indefitier
         data_key (str): Key for the dataset, default is ''.
         encoding (str): Encoding method for the quantum circuit, default is 'Z'.
@@ -70,23 +71,11 @@ def pqk(
 
     feat_dimension = X_train.shape[1]
 
-    if data_map:
-        #  This function ensures that all multiplicative factors of data features inside single qubit gates are 1.0
-        def data_map_func(x: np.ndarray) -> float:
-            """
-            Define a function map from R^n to R.
-
-            Args:
-                x: data
-
-            Returns:
-                float: the mapped value
-            """
-            coeff = x[0] / 2 if len(x) == 1 else reduce(lambda m, n: (m * n) / 2, x)
-            return float(coeff)
-
-    else:
-        data_map_func = None
+    # Shared with compute_pqk so the two PQK paths cannot drift again: the copy
+    # that used to live here coerced its result with float(), which qiskit's
+    # symbolic ParameterVector cannot satisfy, so every data_map=True call raised
+    # "Parameter expression with unbound parameters ... is not numeric".
+    data_map_func = qutils.unit_coefficient_data_map if data_map else None
 
     # choose a method for mapping your features onto the circuit
     feature_map, _ = qutils.get_feature_map(

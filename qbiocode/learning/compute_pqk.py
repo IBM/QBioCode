@@ -29,7 +29,6 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 
 # from qiskit.primitives import Sampler
-from functools import reduce
 
 # ====== Qiskit imports ======
 from qiskit import QuantumCircuit
@@ -275,25 +274,10 @@ def compute_pqk(
         )
         return new_session, new_prim
 
-    #  This function ensures that all multiplicative factors of data features inside single qubit gates are 1.0
-    def data_map_func(x: np.ndarray):
-        """
-        Define a function map from R^n to R.
-
-        Args:
-            x: data
-
-        Returns:
-            the mapped value (float or Parameter expression)
-        """
-        coeff = x[0] / 2 if len(x) == 1 else reduce(lambda m, n: (m * n) / 2, x)
-        # Check if coeff is a numeric type before converting to float
-        # If it's a Parameter expression, return it as-is for Qiskit to handle
-        try:
-            return float(coeff)
-        except (TypeError, ValueError):
-            # If conversion fails, it's likely a Parameter expression
-            return coeff
+    # Shared with qbiocode.embeddings.embed.pqk -- see
+    # qutils.unit_coefficient_data_map for why the symbolic case must not be
+    # narrowed to a float.
+    data_map_func = qutils.unit_coefficient_data_map
 
     # choose a method for mapping your features onto the circuit
     feature_map, _ = qutils.get_feature_map(

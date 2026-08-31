@@ -5,6 +5,7 @@ import logging
 import math
 import os
 import re
+from functools import reduce
 
 import numpy as np
 import pandas as pd
@@ -51,6 +52,25 @@ def get_backend_session(args: dict, primitive: str, num_qubits: int):
     backend = None
     session = None
     prim = None
+
+    # Checked here rather than left to a bare ``KeyError: 'seed'`` several frames
+    # into a notebook: these keys are the caller's contract, and the message has
+    # to name which one is missing and what it is for.
+    required = ["backend"]
+    if args.get("backend") == "simulator":
+        required.append("seed")
+        if primitive != "estimator":
+            required.append("shots")
+    missing = [key for key in required if key not in args]
+    if missing:
+        raise ValueError(
+            f"args is missing the required key(s) {missing} for the "
+            f"{args.get('backend')!r} backend with the {primitive!r} primitive. "
+            f"'backend' selects where circuits run ('simulator', 'simulator_aer', "
+            f"or an 'ibm_*' device), 'seed' seeds the statevector primitive so "
+            f"runs are reproducible, and 'shots' sets the sampler's shot count. "
+            f"Got keys: {sorted(args)}."
+        )
 
     if args["backend"] == "simulator":
 
@@ -250,6 +270,39 @@ SUPPORTED_ENTANGLEMENTS = ("full", "linear", "reverse_linear", "pairwise", "circ
 
 #: Optimizer names accepted by :func:`get_optimizer`.
 SUPPORTED_OPTIMIZERS = ("SPSA", "COBYLA", "GradientDescent", "L_BFGS_B")
+
+
+def unit_coefficient_data_map(x):
+    """
+    Map a row of features to the rotation angle of a feature-map gate.
+
+    This is the ``data_map_func`` used by the projected-quantum-kernel paths. It
+    divides by two at every step so that every multiplicative factor of a data
+    feature inside a single-qubit gate is 1.0, rather than qiskit's default
+    ``prod(pi - x_i)``.
+
+    Args:
+        x: one row of features -- either numeric, or a symbolic
+            ``ParameterVector``. Qiskit calls a data map with *both*: with
+            symbolic parameters when it builds the feature-map circuit
+            (``PauliFeatureMap.pauli_block`` passes a ``ParameterVector``), and
+            with numeric values only if a caller evaluates the map directly.
+
+    Returns:
+        The mapped angle: a ``float`` for numeric input, or the unevaluated
+        ``ParameterExpression`` for symbolic input.
+
+    Notes:
+        Narrowing the symbolic case with ``float()`` raises
+        ``TypeError: Parameter expression with unbound parameters ... is not
+        numeric`` and makes every ``data_map=True`` feature map unbuildable, so
+        the symbolic expression is returned untouched for qiskit to bind later.
+    """
+    coeff = x[0] / 2 if len(x) == 1 else reduce(lambda m, n: (m * n) / 2, x)
+    try:
+        return float(coeff)
+    except (TypeError, ValueError):
+        return coeff
 
 
 def get_feature_map(feature_map, feat_dimension, reps=1, entanglement="linear", data_map_func=None):
