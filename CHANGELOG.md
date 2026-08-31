@@ -854,6 +854,24 @@ have been re-executed.
   the published page stopped just before its result. It now runs end to end (36 result
   rows: 4 embeddings x 3 models x 3 iterations, 3 figures) and its two
   `KNOWN_TRUNCATED` entries in `tests/integration/test_notebook_execution.py` are gone.
+- **`example_qprofiler.ipynb` published as an empty page and could not be run to fill
+  it.** The notebook had 0 of 7 cells executed, and its config pointed at
+  `folder_path: 'tutorial/QProfiler/data/ld_data'` -- a *repository-relative* path, which
+  `_resolve_input_folder` walks up the directory tree to find. From the `docs/` copy that
+  resolved to the `tutorial/` tree's data, so the two copies of the notebook silently read
+  the same input, and from an installed package it resolved to nothing. The two
+  `configs/config.yaml` copies had also drifted apart (different model lists, embeddings,
+  `n_jobs`, and credential comments), so the same notebook behaved differently depending
+  on which tree you opened. Both copies are now byte-identical and demo-sized
+  (`embeddings: ['none','pca']`, 8 models, `n_jobs: 1`, `iter: 2`), `folder_path` is the
+  notebook-relative `'data/ld_data'` that the notebook itself generates, and the missing
+  `xgb_args` / `gridsearch_xgb_args` blocks are documented rather than silently defaulted.
+  The notebook now runs end to end from a clean checkout: 7/7 cells, 7 figures, 80s.
+- **A deprecated matplotlib call mislabelled the tutorial's axes.** Every
+  `ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')` in
+  `example_qprofiler.ipynb` is now `ax.tick_params(axis='x', rotation=45)`. Setting tick
+  *labels* on an axis whose tick *locations* are not fixed warns in matplotlib >= 3.5 and
+  silently attaches the labels to the wrong ticks if the locator picks a different count.
 - **Four published tutorial pages render code with no results.** `PQK - OV.ipynb`,
   `example_qprofiler.ipynb`, `qsage.ipynb` and `QPL_example.ipynb` have *zero* of their
   code cells executed, and `nbsphinx_execute = 'never'`, so their pages publish the source

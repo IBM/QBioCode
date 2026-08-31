@@ -3,11 +3,19 @@
 
 config_file_name: 'basic_config'
 
-# specify output directory where input datasets are located
-folder_path: 'tutorial/QProfiler/data/ld_data'
+# Directory holding the input CSVs. Relative paths resolve against the working
+# directory first, so 'data/ld_data' is the directory example_qprofiler.ipynb
+# generates next to itself -- which keeps this config correct from either the
+# tutorial/ or the docs/source/tutorials/ copy of the notebook.
+folder_path: 'data/ld_data'
 file_dataset: 'ALL'
 # or use a list as below, to only select a few datasets
 # file_dataset: ['file1', 'file2', 'file3', etc]
+
+# Set to True if your CSV files have row names in the first column
+# If True, the first column will be used as index and excluded from features
+# If False (default), all columns except the last are treated as features
+index_col: False
 
 # choose a backend for the QML methods
 # backend: 'ibm_cleveland'
@@ -18,23 +26,30 @@ backend: 'simulator'
 # 'name' should be the account name alias you used when saving your runtime credentials.  This is relevant if you have multiple accounts stored in your json.
 # 'ibm_instance' is the instance with your account under which to run your job.  If not included, it will search for an available instance under your account if you have multiple.
 qiskit_json_path: '~/.qiskit/qiskit-ibm.json'
-name: 'account_name_alias'
-# ibm_instance: 
+# name: 'account_name_alias'
+# ibm_instance:
 
-# of ML methods to parallelize
-n_jobs: 9
+# of ML methods to run in parallel
+# this is the number of jobs to run in parallel, and should be set to no more than the number of models you will run, or the number of cores you have available.
+# Left at 1 so the tutorial's log output stays in order and the run is reproducible;
+# raise it to the number of models for a real sweep.
+n_jobs: 1
 
 # select the embedding method for reducing dimensionality (number of features) in your data set
+# this always needs to be a list! even if you only want to use one embedding method, it still needs to be in a list.
+# embeddings: ['none']
 embeddings: ['none', 'pca']
-# embeddings: ['pca', 'isomap', 'none']
 
 # number of dimensions (features) to embed (reduce) your data down to
 n_components: 3
 
 # ML models to generate
-# model: ['svc', 'dt', 'lr', 'nb', 'rf', 'mlp', 'qsvc', 'vqc', 'qnn', 'pqk']
-model: ['svc', 'pqk']
-#model: ['xgb']
+# parameters to use for each ML method are listed further down in this file
+# All ten are supported; the tutorial runs the six classical models, xgboost, and one
+# quantum model, which finishes in a few minutes on a laptop. qsvc/vqc/qnn are the
+# expensive ones -- add them for a real sweep:
+#   model: ['svc', 'dt', 'lr', 'nb', 'rf', 'mlp', 'xgb', 'qsvc', 'vqc', 'qnn', 'pqk']
+model: ['lr', 'nb', 'dt', 'rf', 'svc', 'mlp', 'xgb', 'pqk']
 
 average: 'weighted'
 multi_class: 'raise'
@@ -49,11 +64,17 @@ resil_level: 1
 
 # set the ratio of train:test the data is split into, in this case 70:30
 test_size: 0.3
+
+# Enable stratified sampling to maintain class distribution in train/test splits
+# Set to ['y'] to enable stratification, or [] to disable
+# Stratification is recommended for imbalanced datasets
 stratify: ['y']
+
+# Enable feature scaling (MinMaxScaler)
 scaling: ['True']
 
 # this turns on a grid search (hyperparameter tuning) for the CML methods
-grid_search: True
+grid_search: False
 
 # n-fold cross validation
 cross_validation: 5
@@ -61,7 +82,7 @@ NN_depth: 1
 
 # This sets the number of times you will perform a train-test split of your data.
 # For each split, models are generated for every model-embedding combination specified above.
-iter: 3
+iter: 2
 
 # Begin function arguments
 # Each CML method will have a grid search set of arguments as well as a standard
@@ -129,25 +150,6 @@ gridsearch_rf_args: {'n_estimators': [10, 50, 100, 200],
                      'bootstrap': [True, False]
                      }
 
-# begin XGB arguments
-xgb_args: {'n_estimators': 100,
-          'max_depth': null,
-          'learning_rate' : 0.5,
-          'subsample' : 0.5,
-          'colsample_bytree' : 1.0,
-          'min_child_weight' : 1,
-          }
-
-gridsearch_xgb_args: {'n_estimators': [50, 100, 200, 300],
-                      'max_depth': [5, 10, 20, 30, null],
-                      'learning_rate': [0.01, 0.1, 0.2],
-                      'subsample': [0.7, 0.8, 1.0],
-                      'colsample_bytree': [0.7, 0.8, 1.0],
-                      'min_child_weight': [1, 3, 5],
-                      'bootstrap': [True, False]
-                     }
-
-
 # Begin MLP arguments
 mlp_args: {'hidden_layer_sizes': 100,
            'activation': 'relu', 
@@ -163,6 +165,24 @@ gridsearch_mlp_args: {'hidden_layer_sizes': [[20,],[50,],[100,]],
                       'solver': ['sgd', 'adam'],
                       'alpha': [0.0001, 0.05],
                       'learning_rate': ['constant','adaptive'],
+                      }
+
+
+# begin XGB arguments
+xgb_args: {'n_estimators': 100,
+           'max_depth': null,
+           'learning_rate': 0.5,
+           'subsample': 0.5,
+           'colsample_bytree': 1.0,
+           'min_child_weight': 1,
+           }
+
+gridsearch_xgb_args: {'n_estimators': [50, 100, 200, 300],
+                      'max_depth': [5, 10, 20, 30, null],
+                      'learning_rate': [0.01, 0.1, 0.2],
+                      'subsample': [0.7, 0.8, 1.0],
+                      'colsample_bytree': [0.7, 0.8, 1.0],
+                      'min_child_weight': [1, 3, 5],
                       }
 
 
