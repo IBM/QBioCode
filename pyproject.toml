@@ -109,6 +109,11 @@ dev = [
     # environment that happened not to have them.
     "nbclient>=0.7",
     "nbformat>=5.0",
+    # tests/integration/test_distribution_contents.py builds a real sdist and wheel
+    # and inspects what they carry. It guards on `build` and says the [dev] extra
+    # provides it -- which was not true until this line, so the guard could only
+    # ever skip.
+    "build>=1.0",
     "black>=23.0",
     "isort>=5.0",
     "flake8>=6.0",

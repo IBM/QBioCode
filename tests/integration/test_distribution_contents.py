@@ -40,6 +40,7 @@ Skipped when ``build`` is absent -- that is a missing tool, not a broken package
 
 from __future__ import annotations
 
+import shutil
 import subprocess
 import sys
 import tarfile
@@ -63,6 +64,46 @@ EXPECTED_WHEEL_DATA = {
 }
 
 
+#: Directories that belong to the developer's machine, not to the commit. Copied
+#: past when staging a build tree: each one either cannot appear in a released
+#: artifact or actively distorts what does.
+NOT_PART_OF_THE_SOURCE = (
+    ".git", ".venv", ".venv-quvine", ".pytest_cache", ".mypy_cache",
+    "__pycache__", "dist", "build", "node_modules",
+)
+
+
+def _stage_source_tree(destination: Path) -> Path:
+    """Copy the working tree, minus the builder's own leftovers.
+
+    Deliberately *not* a clean ``git archive``: the point of this module is that
+    MANIFEST.in globs the working tree, so run output sitting in ``tutorial/**/data``
+    has to be visible here or the test proves nothing.
+
+    What is excluded is the build machinery's own residue, and one item in it is
+    load-bearing: ``qbiocode.egg-info/SOURCES.txt``. setuptools *unions* the
+    previous SOURCES.txt into each new sdist instead of recomputing it, so a
+    checkout that ever built with a broader MANIFEST.in keeps shipping the files
+    that MANIFEST.in no longer names -- 231 untracked CSVs, in the case that
+    prompted this. That is builder-dependence too, but of a different kind than
+    this module tests, and it would mask the working-tree channel entirely. It is
+    also why a release must build from a fresh checkout, or delete ``*.egg-info``
+    first; ``.github/workflows/release.yml`` gets this right by construction,
+    since ``actions/checkout`` has no egg-info to be stale.
+    """
+    root = destination / "repo"
+    shutil.copytree(
+        REPO_ROOT,
+        root,
+        ignore=lambda directory, names: {
+            name for name in names
+            if name in NOT_PART_OF_THE_SOURCE or name.endswith(".egg-info")
+        },
+        symlinks=True,
+    )
+    return root
+
+
 @pytest.fixture(scope="module")
 def distributions(tmp_path_factory):
     """Build a real sdist and wheel into a scratch directory.
@@ -71,9 +112,10 @@ def distributions(tmp_path_factory):
     previous manual build cannot be mistaken for this one's output.
     """
     outdir = tmp_path_factory.mktemp("dist")
+    source = _stage_source_tree(tmp_path_factory.mktemp("src"))
     completed = subprocess.run(
         [sys.executable, "-m", "build", "--no-isolation", "--outdir", str(outdir)],
-        cwd=str(REPO_ROOT),
+        cwd=str(source),
         capture_output=True,
         text=True,
         timeout=900,
