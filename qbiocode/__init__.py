@@ -43,6 +43,14 @@ Quick Start
 >>> qprofiler.main(config)
 """
 
+# ====== Order the OpenMP runtimes before importing anything else ======
+# Must come first: xgboost and torch each vendor a copy of libomp, and whichever
+# starts second can crash the process with SIGSEGV during model fitting. See
+# qbiocode.utils._openmp for the measurements behind this.
+from .utils._openmp import preload_openmp_libraries
+
+preload_openmp_libraries()
+
 # ====== Import data generation functions ======
 from .data_generation import (
     generate_circles_datasets,

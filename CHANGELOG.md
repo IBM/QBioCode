@@ -365,6 +365,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+#### 💥 Every XGBoost fit crashed the interpreter on macOS
+- **`import qbiocode` no longer loads `torch` before `xgboost`.** `xgboost` and `torch`
+  each vendor their own copy of `libomp` under the same install name, so importing both
+  maps two independent LLVM OpenMP runtimes into one process. The first to initialise
+  claims the process-wide runtime state, and the second dies when it opens a parallel
+  region — `EXC_BAD_ACCESS` in `libomp.dylib` at `__kmp_suspend_initialize_thread`, with
+  no Python traceback and nothing to catch. `qbiocode/__init__.py` imports `.embeddings`
+  before `.learning`, and `.embeddings` eagerly imported `ConvAutoencoder`, whose first
+  line is `import torch` — so torch won the race in *every* process that imported the
+  package, and every XGBoost fit that followed was a segfault. This took out QPL's
+  `qpl_xgb` arm, `compute_xgb`, and so any QProfiler run configured with an XGBoost
+  model; from a notebook it surfaced only as `DeadKernelError: Kernel died`, and from a
+  script as a silent exit 139.
+
+  Two changes fix it. `ConvAutoencoder` is resolved through a lazy module `__getattr__`,
+  so torch is imported only if that class is actually used — nothing in the package uses
+  it, so the eager import bought nothing. And `qbiocode/__init__.py` now calls
+  `qbiocode.utils._openmp.preload_openmp_libraries()` before any submodule import, which
+  initialises xgboost's runtime first and keeps a caller's later `import torch` safe.
+  That module records the measurements: `xgboost`-then-`torch` fits fine,
+  `torch`-then-`xgboost` segfaults, and turning parallelism down does *not* help —
+  neither `n_jobs=1` on the estimator nor on the surrounding search, because the fault is
+  inside the OpenMP runtime, below joblib. Guarded by
+  `tests/test_openmp_import_order.py`.
+
 #### ⚠️ Train/test contamination in QProfiler — results change
 - **QProfiler no longer scales the test set with test-set statistics.** Previously
   `qprofiler.py` called `scaler_fn` separately on each split, which fit a *fresh*
@@ -596,10 +621,11 @@ have been re-executed.
   the extra.
 
 - **`torch` is declared in the base dependency set only.** It was listed in both the
-  base set and the `[quvine]` extra, which implied it was optional —
-  `qbiocode.embeddings.__init__` imports `ConvAutoencoder`, which imports torch eagerly,
-  so a bare `import qbiocode` already requires it. A missing torch is a broken install,
-  not a missing extra, and the `[quvine]` install hint would have been wrong advice.
+  base set and the `[quvine]` extra, which implied it was optional. It is declared once,
+  in the base set, so a missing torch reads as a broken install rather than a missing
+  extra and no wrong `[quvine]` install hint is offered. Note that `import qbiocode` no
+  longer *loads* torch — see the OpenMP crash above — but it is still a base dependency,
+  because both `ConvAutoencoder` and the QuVINE baselines need it to be present.
 
 - **`QUVINE_METHODS` was documented as empty without the `[quvine]` extra.** Both
   `qbiocode/embeddings/__init__.py` and this changelog said so; the code has always
