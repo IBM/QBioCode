@@ -8,6 +8,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -116,11 +117,11 @@ def compute_lr_opt(
     args,
     model="Logistic Regression",
     cv=5,
-    penalty=[],
-    C=[],
-    solver=[],
+    penalty=None,
+    C=None,
+    solver=None,
     verbose=False,
-    max_iter=[],
+    max_iter=None,
     random_state=None,
 ):
     """This function also generates a model using a Logistic Regression (LR) method as implemented in
@@ -151,7 +152,18 @@ def compute_lr_opt(
     """
 
     beg_time = time.time()
-    params = {"penalty": penalty, "C": C, "solver": solver, "max_iter": max_iter}
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "lr",
+        {
+            "penalty": penalty,
+            "C": C,
+            "solver": solver,
+            "max_iter": max_iter,
+        },
+    )
     # Perform Grid Search to find the best parameters
     grid_search = GridSearchCV(LogisticRegression(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)

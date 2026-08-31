@@ -21,6 +21,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid, warn_ignored_hyperparameter
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Begin functions ======
@@ -120,14 +121,14 @@ def compute_xgb_opt(
     verbose=False,
     cv=5,
     model="xgb",
-    bootstrap=[],
-    max_depth=[],
-    max_features=[],
-    learning_rate=[],
-    subsample=[],
-    colsample_bytree=[],
-    n_estimators=[],
-    min_child_weight=[],
+    bootstrap=None,
+    max_depth=None,
+    max_features=None,
+    learning_rate=None,
+    subsample=None,
+    colsample_bytree=None,
+    n_estimators=None,
+    min_child_weight=None,
     random_state=None,
 ):
     """
@@ -177,15 +178,29 @@ def compute_xgb_opt(
         raise ImportError(error_msg)
 
     beg_time = time.time()
-    params = {
-        "n_estimators": n_estimators,
-        "max_depth": max_depth,
-        "learning_rate": learning_rate,
-        "subsample": subsample,
-        "colsample_bytree": colsample_bytree,
-        "min_child_weight": min_child_weight,
-        "bootstrap": bootstrap,
-    }
+    # XGBoost has no bootstrap parameter, but its sklearn wrapper accepts unknown
+    # keyword arguments without complaint, so this was never an error -- just a
+    # silently doubled search returning identical models.
+    if bootstrap:
+        warn_ignored_hyperparameter(
+            "xgb", "bootstrap", "XGBoost does not implement -- it samples rows via 'subsample'."
+        )
+
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "xgb",
+        {
+            "n_estimators": n_estimators,
+            "max_depth": max_depth,
+            "learning_rate": learning_rate,
+            "subsample": subsample,
+            "colsample_bytree": colsample_bytree,
+            "min_child_weight": min_child_weight,
+            "bootstrap": bootstrap,
+        },
+    )
 
     # Perform Grid Search to find the best parameters
     grid_search = GridSearchCV(XGBClassifier(random_state=random_state), param_grid=params, cv=cv)  # type: ignore

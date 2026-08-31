@@ -7,6 +7,7 @@ from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 from sklearn.svm import SVC
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -108,9 +109,9 @@ def compute_svc_opt(
     verbose=False,
     cv=5,
     model="SVC",
-    C=[],
-    gamma=[],
-    kernel=[],
+    C=None,
+    gamma=None,
+    kernel=None,
     random_state=None,
 ):
     """This function generates a model using a Support Vector Classifier (SVC) method as implemented in
@@ -140,7 +141,17 @@ def compute_svc_opt(
     """
 
     beg_time = time.time()
-    params = {"C": C, "gamma": gamma, "kernel": kernel}
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "svc",
+        {
+            "C": C,
+            "gamma": gamma,
+            "kernel": kernel,
+        },
+    )
     # Perform Grid Search to find the best parameters
     grid_search = GridSearchCV(SVC(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)

@@ -7,6 +7,7 @@ from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 from sklearn.naive_bayes import GaussianNB
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -91,7 +92,15 @@ def compute_nb_opt(
     """
 
     beg_time = time.time()
-    params = {"var_smoothing": var_smoothing}
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "nb",
+        {
+            "var_smoothing": var_smoothing,
+        },
+    )
     # Perform Grid Search to find the best parameters
     grid_search = GridSearchCV(GaussianNB(), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
