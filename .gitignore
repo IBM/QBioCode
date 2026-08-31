@@ -56,6 +56,11 @@ tutorial/**/ModelResults.csv
 tutorial/**/RawDataEvaluation.csv
 tutorial/**/compiled_*.csv
 tutorial/**/results.pkl
+# Written by the QSage tutorial, which saves and reloads a trained sage to show
+# the round-trip works. Named rather than globbed as `*.pkl`: QEnsemble already
+# tracks datasets.pkl and predictions.pkl, and a blanket rule would quietly
+# exclude them the first time either was re-added.
+tutorial/**/my_qsage_model.pkl
 tutorial/**/performance_summary_and_spearman_correlation_plots/
 # tutorial/**/data/ holds a mix: run artifacts (ld_data/, per-run CSVs) that must
 # stay out of git, and four *input* fixtures that are already tracked
@@ -83,6 +88,7 @@ docs/source/tutorials/**/ModelResults.csv
 docs/source/tutorials/**/RawDataEvaluation.csv
 docs/source/tutorials/**/compiled_*.csv
 docs/source/tutorials/**/results.pkl
+docs/source/tutorials/**/my_qsage_model.pkl
 docs/source/tutorials/**/performance_summary_and_spearman_correlation_plots/
 docs/source/tutorials/**/*.png
 docs/source/tutorials/**/.ipynb_checkpoints/
