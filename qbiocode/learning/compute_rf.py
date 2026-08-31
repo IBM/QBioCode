@@ -8,6 +8,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -125,12 +126,12 @@ def compute_rf_opt(
     verbose=False,
     cv=5,
     model="Random Forest",
-    bootstrap=[],
-    max_depth=[],
-    max_features=[],
-    min_samples_leaf=[],
-    min_samples_split=[],
-    n_estimators=[],
+    bootstrap=None,
+    max_depth=None,
+    max_features=None,
+    min_samples_leaf=None,
+    min_samples_split=None,
+    n_estimators=None,
     random_state=None,
 ):
     """
@@ -166,14 +167,20 @@ def compute_rf_opt(
     """
 
     beg_time = time.time()
-    params = {
-        "n_estimators": n_estimators,
-        "max_features": max_features,
-        "max_depth": max_depth,
-        "min_samples_split": min_samples_split,
-        "min_samples_leaf": min_samples_leaf,
-        "bootstrap": bootstrap,
-    }
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "rf",
+        {
+            "n_estimators": n_estimators,
+            "max_features": max_features,
+            "max_depth": max_depth,
+            "min_samples_split": min_samples_split,
+            "min_samples_leaf": min_samples_leaf,
+            "bootstrap": bootstrap,
+        },
+    )
 
     # Perform Grid Search to find the best parameters
     grid_search = GridSearchCV(RandomForestClassifier(random_state=random_state), param_grid=params, cv=cv)

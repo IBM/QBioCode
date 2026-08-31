@@ -8,6 +8,7 @@ from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 from sklearn.neural_network import MLPClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -137,12 +138,12 @@ def compute_mlp_opt(
     verbose=False,
     cv=5,
     model="Multi-layer Perceptron",
-    hidden_layer_sizes=[],
-    activation=[],
-    max_iter=[],
-    solver=[],
-    alpha=[],
-    learning_rate=[],
+    hidden_layer_sizes=None,
+    activation=None,
+    max_iter=None,
+    solver=None,
+    alpha=None,
+    learning_rate=None,
     random_state=None,
 ):
     """
@@ -176,14 +177,20 @@ def compute_mlp_opt(
     """
 
     beg_time = time.time()
-    params = {
-        "hidden_layer_sizes": hidden_layer_sizes,
-        "activation": activation,
-        "max_iter": max_iter,
-        "solver": solver,
-        "alpha": alpha,
-        "learning_rate": learning_rate,
-    }
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "mlp",
+        {
+            "hidden_layer_sizes": hidden_layer_sizes,
+            "activation": activation,
+            "max_iter": max_iter,
+            "solver": solver,
+            "alpha": alpha,
+            "learning_rate": learning_rate,
+        },
+    )
 
     # Pemlporm Grid Search to find the best parameters
     grid_search = GridSearchCV(MLPClassifier(random_state=random_state), param_grid=params, cv=cv)

@@ -390,6 +390,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   inside the OpenMP runtime, below joblib. Guarded by
   `tests/test_openmp_import_order.py`.
 
+#### Grid search over a subset of a model's hyperparameters
+- **`compute_*_opt` no longer requires a config to enumerate every hyperparameter.**
+  All seven tuned learners (`dt`, `lr`, `mlp`, `nb`, `rf`, `svc`, `xgb`) took one keyword
+  per tunable hyperparameter, each defaulting to `[]`, and handed all of them to
+  `GridSearchCV` unconditionally. Any config naming a subset therefore died inside
+  sklearn on whichever parameter it had left alone:
+
+      ValueError: Parameter grid for parameter 'colsample_bytree' need to be a
+      non-empty sequence, got: []
+
+  The message names a parameter the user never wrote and points at sklearn rather than at
+  the config, and it made a deliberately small grid inexpressible — trimming a demo
+  config was indistinguishable from corrupting it, which is why the QPL tutorial shipped
+  a 2430-combination XGBoost grid. `qbiocode.learning._grid.build_param_grid` now keeps
+  only the values actually supplied, leaving every unmentioned hyperparameter at the
+  estimator's own default, and raises a message naming the config block to add and the
+  `grid_search: False` opt-out when *nothing* was supplied. Guarded by
+  `tests/test_grid_search_partial.py`.
+
+  Two related fixes came with it. A bare string is wrapped rather than searched
+  character by character — `max_features: sqrt` in YAML was previously searched as
+  `['s', 'q', 'r', 't']`, four invalid values that produced no error and a meaningless
+  `best_params_`. And the `[]` defaults are now `None`: a shared mutable default is a
+  hazard whether or not this code happened to mutate it.
+
+- **`compute_xgb_opt` reports a `bootstrap` grid instead of silently doubling.**
+  XGBoost has no `bootstrap` parameter, but its sklearn wrapper accepts unknown keyword
+  arguments without complaint, so the shipped tutorial config was never an error — it
+  just searched twice as many combinations, every duplicate returning the same model. It
+  now warns and names `subsample` as the parameter that actually samples rows.
+
 #### ⚠️ Train/test contamination in QProfiler — results change
 - **QProfiler no longer scales the test set with test-set statistics.** Previously
   `qprofiler.py` called `scaler_fn` separately on each split, which fit a *fresh*
