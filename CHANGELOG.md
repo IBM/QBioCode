@@ -363,6 +363,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the one module that could have needed it, is written against PyTorch, which
   remains a dependency.
 
+- **Tutorials no longer label an empirical score difference "quantum advantage".** The
+  term names a complexity-theoretic result; what these notebooks measure is a per-dataset
+  score gap between quantum and classical arms on small simulated data, which is not
+  evidence of one. `QPL_example.ipynb` renames section 9 to *Quantum vs. Classical
+  Comparison*, its output figure to `{tag}_quantum_vs_classical.png`, and its prints to
+  say which datasets a quantum model ranked first on; `QEnsemble_example_blobs.ipynb`
+  renames its *Quantum Advantage* takeaway to *Quantum Ensembling*, since superposition
+  over classifiers is a mechanism rather than a demonstrated advantage;
+  `quvine_sc_cd4_vs_cd8.ipynb` renames its `quantum_adv` column, comments, and plot axis
+  to *quantum recall gain*, which is what the quantity is — `recall(ctqw,dtqw) −
+  recall(node2vec)`. `docs/source/tutorials.md` follows the notebooks it describes.
+
+  The QuVINE notebook was re-executed because its axis label is rasterized into a
+  committed figure, and the re-run moved its numbers materially — one seed-budget stratum
+  went from p=0.005 to p=0.376, and several bootstrap Spearman correlations flipped sign.
+  Nothing about the rename caused that: `qbiocode/apps/quvine/embedding/word2vec.py`
+  trains gensim `Word2Vec` with `workers=8` and accepts no `seed`, and
+  `baselines/node2vec.py` takes a `seed` but also uses `workers=8`, so no SGNS embedding
+  in QuVINE is reproducible run to run however `base_seed` is threaded through the walks.
+  The notebook's prose already tells readers to trust only intervals that clear zero, so
+  it is not contradicted, but the per-stratum significance stars in §7 are not stable and
+  should not be read as findings. Fixing this means `workers=1` plus an explicit `seed`,
+  which is roughly an 8x slowdown on every SGNS embedding and would change every committed
+  QuVINE number — deliberately left out of a rename.
+
+  Two mentions are deliberately kept. `QEnsemble_example_blobs.ipynb` retains "theoretical
+  connections to quantum advantage" and "investigate theoretical quantum advantage" in its
+  further-work lists, where the term is used correctly, and `docs/source/background.md`
+  retains its discussion of the concept along with the Huang et al. paper title. The
+  `evaluate_graph` keys `quantum_advantage_score`/`_arithmetic`/`_geometric`/`_harmonic`
+  and `compute_quantum_advantage_metrics` are also unchanged: they are public API, and
+  renaming them would break callers and any saved result CSV for a wording change.
+
 ### Fixed
 
 #### 💥 Every XGBoost fit crashed the interpreter on macOS
