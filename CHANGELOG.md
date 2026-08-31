@@ -876,6 +876,14 @@ have been re-executed.
   tell was that every reported value was an exact k/59 fraction of the test set. It now
   scores the held-out set with `f1_score(..., average='weighted')`, the metric the search
   actually optimises, so the reported number and the selection criterion agree.
+- **`PQK - OV.ipynb` refit 1,260 identical models.** Its `param_grid` was a single flat
+  dict sweeping `gamma` across all four kernels, but `SVC` ignores `gamma` when
+  `kernel='linear'` — so 35 C x 37 gamma for the linear kernel was 1,295 fits of 35
+  distinct models, 24.3% of the 5,180-combination grid spent on exact duplicates, and a
+  linear winner reported a meaningless best `gamma`. `param_grid` is now a list of grids
+  applying `gamma` only to the kernels that read it: the same search space in 3,920
+  combinations. The cell now also prints the combination count, since this grid is the
+  notebook's whole runtime cost.
 - **A separator printed 60 lines of one `=`.** `print('\n=' * 60)` repeats
   newline-plus-equals sixty times rather than prefixing a newline to a 60-character rule;
   five occurrences across the download and preprocessing cells turned each section break
