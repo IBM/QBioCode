@@ -231,9 +231,15 @@ def main(args):
     beg_time = time.time() 
     log = logging.getLogger(__name__)
     log.info(f"Main program initiated")
-    log.info(f"The number of ML methods being parallelized is {min(args['n_jobs'], len(args['model']))}")
-    log.info(f"Chosen backend for quantum algorithms is: {args['backend']}") 
+    # Validate before touching args, not after. These three log lines used to sit
+    # above this call and indexed 'n_jobs', 'model' and 'backend' directly, so a
+    # config missing any of them died with a bare KeyError raised from a logging
+    # statement -- the exact "error attributed to the wrong thing" that
+    # _validate_config exists to replace, and it reported one missing key where
+    # the validator reports all of them at once.
     scaler_name = _validate_config(args, log)
+    log.info(f"The number of ML methods being parallelized is {min(args['n_jobs'], len(args['model']))}")
+    log.info(f"Chosen backend for quantum algorithms is: {args['backend']}")
     # Normalize path separators for cross-platform compatibility
     folder_path = args['folder_path'].replace('/', os.sep).replace('\\', os.sep)
     path_to_input = _resolve_input_folder(folder_path)
