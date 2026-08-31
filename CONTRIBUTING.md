@@ -51,18 +51,41 @@ This project adheres to a [Code of Conduct](CODE_OF_CONDUCT.md). By participatin
 3. **Install in Development Mode**
    ```bash
    pip install -e .
-   pip install -r requirements.txt
    ```
+   `pyproject.toml` reads the runtime dependencies from
+   `requirements/requirements-base.txt`, so this one command installs them too --
+   there is no separate `pip install -r requirements.txt` step.
 
-4. **Install Development Dependencies** (optional)
+4. **Install Optional Tiers** (as needed)
    ```bash
-   pip install -e ".[dev]"
+   pip install -e ".[dev]"     # pytest, nbclient, black, mypy, build
+   pip install -e ".[quvine]"  # the QuVINE embedding methods
+   pip install -e ".[docs]"    # the Sphinx toolchain (pandoc is a system binary)
+   pip install -e ".[all]"     # every tier at once
+   ```
+   Or install the complete development environment in one step, from the repo root:
+   ```bash
+   pip install -r requirements.txt
    ```
 
 5. **Verify Installation**
    ```bash
    python -c "import qbiocode; print(qbiocode.__version__)"
    ```
+
+6. **Building Distribution Artifacts Locally**
+   ```bash
+   rm -rf dist build *.egg-info && python -m build
+   ```
+   The `rm -rf` is not housekeeping. setuptools *unions* the previous
+   `qbiocode.egg-info/SOURCES.txt` into each new sdist rather than recomputing it,
+   so a checkout that ever built with a broader `MANIFEST.in` keeps shipping files
+   `MANIFEST.in` no longer names -- and because `MANIFEST.in` globs the working
+   tree, notebook run output under `tutorial/**/data/` lands in the archive too.
+   Both make the artifact a function of your shell history rather than of the
+   commit. `.github/workflows/release.yml` avoids this by construction, since a
+   fresh `actions/checkout` has no stale metadata;
+   `tests/integration/test_distribution_contents.py` guards it for everyone else.
 
 ## How to Contribute
 
@@ -285,7 +308,7 @@ make clean
 make html
 ```
 
-View documentation at `docs/_build/html/index.html`
+View documentation at `docs/build/html/index.html`
 
 ### Documentation Guidelines
 

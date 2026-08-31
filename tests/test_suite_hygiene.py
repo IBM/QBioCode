@@ -35,8 +35,15 @@ from __future__ import annotations
 
 import ast
 import pathlib
+import re
+import sys
 
 import pytest
+
+if sys.version_info >= (3, 11):
+    import tomllib
+else:  # pragma: no cover -- exercised only on 3.10
+    tomllib = pytest.importorskip("tomli", reason="needs tomllib (3.11+) or tomli")
 
 TESTS_DIR = pathlib.Path(__file__).resolve().parent
 REPO_ROOT = TESTS_DIR.parent
@@ -72,6 +79,32 @@ def _requirement_names(path):
             line = line.split(separator, 1)[0]
         names.append(line.strip().lower())
     return names
+
+
+def _declared_optional():
+    """Every distribution any extra declares, plus the tiered requirements files.
+
+    Both sources matter and neither subsumes the other: ``quvine`` and ``docs``
+    are mirrored between ``pyproject.toml`` and ``requirements/``
+    (test_requirements_consistency.py pins them together), while ``dev`` and
+    ``apps`` exist only as extras. Reading just the files made ``build`` -- a
+    genuinely optional build frontend that only the sdist test needs -- look like
+    an undeclared guard.
+    """
+    optional = set()
+    for filename in ("requirements-quvine.txt", "requirements-docs.txt"):
+        optional |= set(_requirement_names(REPO_ROOT / "requirements" / filename))
+
+    with open(REPO_ROOT / "pyproject.toml", "rb") as handle:
+        config = tomllib.load(handle)
+    for requirements in config["project"].get("optional-dependencies", {}).values():
+        for requirement in requirements:
+            # "qbiocode[apps,quvine]" in the `all` extra is a self-reference, not a
+            # third-party package; the extras it names are read on their own pass.
+            name = re.split(r"[\[<>=!~; ]", requirement, maxsplit=1)[0].strip().lower()
+            if name and name != "qbiocode":
+                optional.add(name)
+    return optional
 
 
 def _importorskip_targets():
@@ -111,9 +144,7 @@ def test_every_guarded_module_is_actually_optional():
     broken -- and then it hides the breakage.
     """
     mandatory = set(_requirement_names(REPO_ROOT / "requirements" / "requirements-base.txt"))
-    optional = set()
-    for filename in ("requirements-quvine.txt", "requirements-docs.txt"):
-        optional |= set(_requirement_names(REPO_ROOT / "requirements" / filename))
+    optional = _declared_optional()
 
     wrong = []
     for path, line, target in _importorskip_targets():
@@ -123,13 +154,18 @@ def test_every_guarded_module_is_actually_optional():
         distribution = IMPORT_TO_DISTRIBUTION.get(root, root)
         if root in CONDITIONAL_SHIMS or distribution in optional:
             continue
-        why = "declared in requirements-base.txt" if distribution in mandatory else "not optional"
+        why = (
+            "declared in requirements-base.txt, so it is present in every install"
+            if distribution in mandatory
+            else "declared by no extra and no requirements file"
+        )
         wrong.append(f"{path}:{line} importorskip({target!r}) -- {distribution} is {why}")
 
     assert not wrong, (
         "pytest.importorskip on a module that is not optional. Import it "
-        "directly, or -- if it really is optional -- declare it in an extra and "
-        "add it to CONDITIONAL_SHIMS with the reason:\n  " + "\n  ".join(wrong)
+        "directly, or -- if it really is optional -- declare it in an extra in "
+        "pyproject.toml (or add it to CONDITIONAL_SHIMS with the reason):\n  "
+        + "\n  ".join(wrong)
     )
 
 
