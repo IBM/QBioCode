@@ -100,11 +100,6 @@ KNOWN_TRUNCATED = {
         "were never run; completing them needs a full quantum-ensemble sweep",
     "tutorial/QEnsemble/QEnsemble_example_blobs.ipynb":
         "same notebook, mirrored under docs/",
-    "docs/source/tutorials/QProfiler/sc_binary_quvine_2x2_qprofiler.ipynb":
-        "the import cell carries no output; inherited verbatim from the internal "
-        "repository, where execution started at cell 2",
-    "tutorial/QProfiler/sc_binary_quvine_2x2_qprofiler.ipynb":
-        "same notebook, mirrored under docs/",
 }
 
 

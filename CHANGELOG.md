@@ -847,6 +847,13 @@ have been re-executed.
   top of `sc_binary_qprofiler.ipynb` (both trees) states that the outputs below predate
   the train/test contamination fix, that they are therefore not comparable to a fresh
   run of the same config, and that the corrected numbers are usually slightly lower.
+- **The 2x2 quadrant tutorial published as a truncated page.**
+  `sc_binary_quvine_2x2_qprofiler.ipynb` (both trees) had 7 of its 8 code cells run: the
+  final cell, which is the entire point of the notebook -- the 2x2 comparison of classical
+  vs QuVINE embeddings against classical vs quantum models -- had never been executed, so
+  the published page stopped just before its result. It now runs end to end (36 result
+  rows: 4 embeddings x 3 models x 3 iterations, 3 figures) and its two
+  `KNOWN_TRUNCATED` entries in `tests/integration/test_notebook_execution.py` are gone.
 - **Four published tutorial pages render code with no results.** `PQK - OV.ipynb`,
   `example_qprofiler.ipynb`, `qsage.ipynb` and `QPL_example.ipynb` have *zero* of their
   code cells executed, and `nbsphinx_execute = 'never'`, so their pages publish the source
