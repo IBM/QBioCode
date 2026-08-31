@@ -27,8 +27,19 @@ recursive-include docs/source *.rst *.md *.py
 recursive-include docs/source/_static *.png *.jpg *.svg *.gif
 recursive-include docs/source/_templates *.rst
 
-# Include tutorial notebooks
-recursive-include tutorial *.ipynb *.png *.csv *.pkl
+# Include tutorial notebooks and the fixtures they read.
+#
+# Named individually rather than swept in by extension. `tutorial/**/data/` and
+# `tutorial/**/*.png` are notebook *output* and gitignored, with four fixtures
+# force-added as exceptions -- so `recursive-include tutorial *.csv *.png *.pkl`
+# packaged whatever run artifacts happened to be lying around. On a checkout
+# where the data-generation notebook had been run once, that was 239 untracked
+# CSVs and 111 MB, making the sdist's size a function of the builder's shell
+# history rather than of the repository.
+recursive-include tutorial *.ipynb
+include tutorial/QProfiler/data/pbmc5k_small_cd4_vs_cd8.h5ad
+recursive-include tutorial/QProfiler/data/sc_binary *.csv
+recursive-include tutorial/QEnsemble/experiments *.csv *.pkl
 
 # Exclude build artifacts and cache
 global-exclude *.pyc
