@@ -75,6 +75,16 @@ tutorial/**/data/
 tutorial/**/*.png
 tutorial/**/.ipynb_checkpoints/
 tutorial/**/pqk_projections/
+tutorial/**/qpl_projections/
+# `PQK - OV.ipynb` downloads a 46 MB archive and extracts ~250 MB of TCGA tables
+# beside itself, then writes its results table there. Every byte is reproducible
+# from the URL in the notebook's own download cell, so none of it belongs in git --
+# and without these rules a reader's first run leaves ~300 MB of untracked files
+# that `git add -A` would happily commit. The results *.png is already covered by
+# the tutorial/**/*.png rule above.
+tutorial/**/OV/
+tutorial/**/ovarian.zip
+tutorial/**/PQK_OV_results.csv
 
 # Keep tutorial notebooks and configs
 !tutorial/**/*.ipynb
