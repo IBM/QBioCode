@@ -867,6 +867,23 @@ have been re-executed.
   frames into a notebook with a message naming neither the function nor what the key is
   for. It now validates the keys the requested backend and primitive actually need and
   raises a `ValueError` naming the missing ones, their purpose, and the keys it did get.
+- **A stale `dir_home` outranked the directory you were standing in.** `dir_home` is
+  computed once, at import time, from `os.getcwd()`; `_resolve_input_folder` then tried
+  `dir_home / folder_path` *before* walking the ancestors of the current directory. In a
+  short-lived CLI run the two agree, so the defect was invisible there -- but in any
+  long-lived process whose working directory moves after import (a notebook kernel that
+  `os.chdir`s, a test session, a batch driver looping over checkouts) the frozen root won,
+  and a run launched from `QBioCode-main/tutorial/QProfiler` silently read another
+  checkout's CSVs and reported them as its own. The candidate order is now: the path as
+  given, then each ancestor of the *current* directory, then a checkout root derived from
+  the current directory, and only last the import-time `dir_home` -- kept in the list so
+  configs that relied on it still resolve, but no longer able to shadow the caller's own
+  tree. `tests/test_error_contracts.py::TestFolderPathResolution` covers the case
+  directly, `monkeypatch.chdir`-ing into a fake `QBioCode-main` checkout.
+- **`dir_home`'s value was published to GitHub Pages.** autodoc renders module-level
+  data values, so `api/qbiocode.apps.qprofiler.html` carried the absolute filesystem path
+  of whichever machine built the docs. It is now marked `:meta private:`.
+
 #### Notebooks
 
 - **`tutorial/QuVINE/example_quvine.ipynb` killed its own kernel.** The notebook
