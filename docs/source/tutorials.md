@@ -65,10 +65,42 @@ Explore QSage, an intelligent meta-learning system that predicts which machine l
 
 ### 4. QuVINE - Quantum View-based Network Embeddings
 
-Learn how to use QuVINE to embed the nodes of a graph using classical and quantum random walks combined with SGNS-based representation learning. This tutorial walks through a single-cell example (CD4 vs. CD8) and demonstrates the 2×2 comparison of classical/quantum embeddings.
+QuVINE embeds the **nodes of a graph** using classical and quantum random walks combined with
+SGNS-based representation learning. Where QProfiler characterizes a tabular dataset, QuVINE works on
+a different modality - a graph - and returns a node-embedding matrix, with `evaluate_graph` as the
+graph analogue of QProfiler's dataset summary.
 
 QuVINE's dependencies ship behind an optional extra, so install it with
 `pip install "qbiocode[quvine]"` before running these notebooks.
+
+Four notebooks, in reading order: the synthetic-graph walkthrough introduces the API and the method
+registry, two single-cell notebooks apply it to real data, and the last drives QuVINE through
+QProfiler.
+
+#### Getting Started - 12 Embedding Methods on Synthetic Graphs
+
+Benchmark QuVINE's quantum walks, its quantum-calibrated neural baselines, and classical baselines on
+three stochastic block models of increasing difficulty, then correlate each graph's complexity against
+node-classification performance. Fully synthetic - no data files needed.
+
+<a href="tutorials/QuVINE/example_quvine.html">📓 <strong>View Tutorial Notebook</strong></a>
+
+**What You'll Learn:**
+- Turn a `networkx.Graph` into an embedding matrix with `qbiocode.apps.quvine.embed`
+- Score node classification across 12 methods × 3 graphs × 5 iterations
+- Summarize a graph with `evaluate_graph` (~80 spectral, topological, and structural metrics)
+- Correlate complexity (spectral gap, IPR, spectral degeneracy, entropy) with macro-F1
+- Reproduce the same embedding from the `quvine` console script
+
+**Key Concepts:**
+- Planted-community stochastic block models, with `p_out` as the difficulty knob
+- Quantum-calibrated spectral filters, GAT, and GraphGPS variants alongside RWR/CTQW/DTQW walks
+- Graph complexity as a predictor of embedding quality
+
+#### Single-Cell Application - CD4 vs. CD8
+
+Build a multi-view graph from single-cell data and compare classical against quantum-calibrated
+embeddings on a downstream classification task.
 
 <a href="tutorials/QuVINE/quvine_sc_cd4_vs_cd8.html">📓 <strong>View Tutorial Notebook</strong></a>
 
@@ -84,6 +116,27 @@ QuVINE's dependencies ship behind an optional extra, so install it with
 - Random walk with restart (RWR) and discrete-/continuous-time quantum walks
 - Skip-gram negative sampling (SGNS) embedding learning
 - Reproducible, seed-controlled embedding pipelines
+
+#### Semi-Supervised Node Classification and Ranking - T vs. Monocyte
+
+A transductive task on an 800-cell graph with two views (RNA and protein) and soft seed labels.
+QuVINE is evaluated the two ways it natively supports - training a classifier on the seed nodes'
+embeddings, and ranking non-seed nodes by similarity to the seeds - each against honest baselines.
+
+<a href="tutorials/QuVINE/quvine_sc_t_vs_mono.html">📓 <strong>View Tutorial Notebook</strong></a>
+
+**What You'll Learn:**
+- Embed two view-graphs separately and as an early-fusion concatenation
+- Compare embedding arms against a no-embedding label-spreading baseline on the same graph
+- Rank nodes by seed similarity with `seed_centroid_scores` and score recall@k / precision@k
+- Read `SeedTargetEvaluator`'s degree- and distance-matched null controls
+- Use spectral gap and modularity per view to explain which view diffusion helps
+
+**Key Concepts:**
+- Transductive, semi-supervised node problems with soft seeds
+- Cross-modality fusion versus QuVINE's internal fusion across walk kinds
+- Null controls that separate real recovery from a preference for hubs or near neighbors
+- 95% confidence intervals: overlapping CIs mean no reproducible difference at this scale
 
 #### QuVINE as a QProfiler Embedding - 2×2 Classical/Quantum Comparison
 
@@ -222,7 +275,9 @@ Artificial Data Generation <tutorials/Artificial_data_generation/example_data_ge
 Single-Cell Preprocessing & QC <tutorials/Preprocessing/sc-qc>
 QProfiler <tutorials/QProfiler/example_qprofiler>
 QProfiler on Single-Cell Data <tutorials/QProfiler/sc_binary_qprofiler>
+QuVINE - Getting Started <tutorials/QuVINE/example_quvine>
 QuVINE on Single-Cell Data <tutorials/QuVINE/quvine_sc_cd4_vs_cd8>
+QuVINE on T vs. Monocyte <tutorials/QuVINE/quvine_sc_t_vs_mono>
 QuVINE Embeddings in QProfiler <tutorials/QProfiler/sc_binary_quvine_2x2_qprofiler>
 Quantum Ensemble Learning <tutorials/QEnsemble/QEnsemble_example_blobs>
 QSage <tutorials/QSage/qsage>
