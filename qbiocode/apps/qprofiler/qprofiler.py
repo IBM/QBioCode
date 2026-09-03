@@ -38,6 +38,12 @@ import sys
 #: current directory really does sit under one literally named ``QBioCode``, which
 #: is not true of a GitHub source zip (``QBioCode-main``), a lowercase clone, or a
 #: pip install -- hence ``_resolve_input_folder`` below rather than this alone.
+#:
+#: :meta private:
+#:
+#: Private to autodoc deliberately: its value is whatever directory the *documenting*
+#: process ran in, so publishing it wrote the doc builder's own absolute filesystem
+#: path into the API page on GitHub Pages.
 dir_home = re.sub( 'QBioCode.*', 'QBioCode', os.getcwd() )
 if os.path.isdir(dir_home):
     sys.path.append( dir_home )
@@ -49,23 +55,30 @@ def _resolve_input_folder(folder_path):
     Candidates, in order:
 
     1. ``folder_path`` itself -- absolute, or relative to the current directory.
-    2. ``dir_home / folder_path`` -- how every shipped config is written, and the
-       only case the original code handled.
-    3. ``folder_path`` under each ancestor of the current directory. This is what
+    2. ``folder_path`` under each ancestor of the current directory. This is what
        makes the tutorials work from a checkout whose top directory is not called
        ``QBioCode``: run from ``QBioCode-main/tutorial/QProfiler`` with
-       ``folder_path: tutorial/QProfiler/data/ld_data``, candidate 2 points at a
-       ``QBioCode`` directory that does not exist and candidate 1 at a path two
-       levels too deep, while the ancestor walk finds the real one.
+       ``folder_path: tutorial/QProfiler/data/ld_data``, candidate 1 points two
+       levels too deep and the ``QBioCode``-derived root below does not exist,
+       while the ancestor walk finds the real one.
+    3. ``folder_path`` under a checkout root derived from the *current* directory.
+    4. ``folder_path`` under ``dir_home``, the same root derived from the directory
+       this module was imported from. Last, deliberately: ``dir_home`` is frozen at
+       import time, so in a long-lived process (a notebook kernel, a test session)
+       it can name a different checkout than the one the caller is standing in, and
+       ranking it above the ancestor walk let a stale root silently win.
     """
-    candidates = [folder_path, os.path.join(dir_home, folder_path)]
     here = os.path.abspath(os.getcwd())
+    candidates = [folder_path]
     while True:
         candidates.append(os.path.join(here, folder_path))
         parent = os.path.dirname(here)
         if parent == here:
             break
         here = parent
+    derived = re.sub("QBioCode.*", "QBioCode", os.path.abspath(os.getcwd()))
+    candidates.append(os.path.join(derived, folder_path))
+    candidates.append(os.path.join(dir_home, folder_path))
     for candidate in candidates:
         if os.path.isdir(candidate):
             return candidate
