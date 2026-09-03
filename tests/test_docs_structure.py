@@ -32,6 +32,7 @@ What they catch is exactly what went wrong before:
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import subprocess
@@ -297,6 +298,62 @@ class TestNoBuildOutputInGit:
         ignored = (REPO_ROOT / ".gitignore").read_text(encoding="utf-8")
         assert "docs/build/" in ignored
         assert "docs/_build/" in ignored
+
+
+class TestPublishedNotebooks:
+    """Guards on the notebooks that become pages of the published site.
+
+    ``nbsphinx_execute = 'never'``, so whatever a notebook carries in its committed
+    JSON is what GitHub Pages serves. Two things have gone wrong that way.
+    """
+
+    #: Notebooks that become site pages. ``_static/workshops/`` is third-party Qiskit
+    #: material offered as a download, not a rendered page, so it is out of scope.
+    NOTEBOOK_DIRS = ("tutorial", "docs/source/tutorials")
+
+    @staticmethod
+    def _notebooks():
+        for rel in TestPublishedNotebooks.NOTEBOOK_DIRS:
+            yield from sorted((REPO_ROOT / rel).rglob("*.ipynb"))
+
+    def test_no_notebook_carries_dead_ipywidgets_state(self):
+        """``metadata.widgets`` with no widget output fails ``sphinx-build -W``.
+
+        A tqdm progress bar registers widget state even when its output renders as
+        plain text. nbsphinx then warns ``nbsphinx_widgets_path not given and
+        ipywidgets module unavailable`` -- fatal under ``-W`` -- and the state itself
+        was 127 KB of never-rendered JSON in one notebook. Strip
+        ``metadata.widgets``; do not add ipywidgets to the docs extra to silence it.
+        """
+        offenders = []
+        for path in self._notebooks():
+            notebook = json.loads(path.read_text(encoding="utf-8"))
+            if "widgets" not in notebook.get("metadata", {}):
+                continue
+            rendered = sum(
+                1
+                for cell in notebook["cells"]
+                for output in cell.get("outputs", [])
+                if "application/vnd.jupyter.widget-view+json" in output.get("data", {})
+            )
+            if not rendered:
+                offenders.append(path.relative_to(REPO_ROOT).as_posix())
+        assert not offenders, f"dead metadata.widgets in: {offenders}"
+
+    def test_no_notebook_publishes_an_absolute_local_path(self):
+        """Committed output once named the author's home directory on every page.
+
+        Useless to a reader (it names a directory that does not exist on their
+        machine) and a needless disclosure of one machine's layout. Placeholders
+        (``<env>/``, ``<repo>/``) are the substitute.
+        """
+        leak = re.compile(r"/(?:Users|home)/[A-Za-z0-9_.-]+|/private/tmp/")
+        offenders = []
+        for path in self._notebooks():
+            found = sorted(set(leak.findall(path.read_text(encoding="utf-8"))))
+            if found:
+                offenders.append((path.relative_to(REPO_ROOT).as_posix(), found))
+        assert not offenders, f"absolute local paths in notebooks: {offenders}"
 
 
 class TestCiWorkflow:

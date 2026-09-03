@@ -164,6 +164,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (Quantum Ensemble, QPL, PQK-OV) renumber to 5-7. `apps/quvine.rst` now links both
   notebooks directly instead of only the gallery page.
 
+- **The last two QuVINE notebooks are now published, not merely present in `tutorial/`.**
+  `docs/source/tutorials/QuVINE/` gains copies of `example_quvine.ipynb` (11 cells,
+  4 figures: 12 embedding methods x 3 planted-community SBMs x 5 iterations, then the
+  graph-complexity-vs-macro-F1 correlation) and `quvine_sc_t_vs_mono.ipynb` (8 cells,
+  2 figures: seed->eval node classification and seed->target ranking on the 800-cell
+  two-view graph, scored against a no-embedding label-spreading baseline and
+  degree-/distance-matched null controls). Both ship with complete committed outputs,
+  because `nbsphinx_execute = 'never'` means an unexecuted notebook publishes as a page
+  that stops partway. Neither copy contains an absolute filesystem path.
+
+  `tutorials.md` §4 now presents all four QuVINE notebooks as `####` subsections in
+  reading order -- synthetic-graph API walkthrough, CD4 vs. CD8, T vs. monocyte, then
+  QuVINE-through-QProfiler -- each with its own **What You'll Learn** and **Key
+  Concepts** block, and the toctree gains the two new pages.
+
+  Publishing `example_quvine.ipynb` also surfaced 127 KB of dead
+  `metadata.widgets` state in it -- 165 tqdm progress-bar widget records with **no**
+  widget output to render, since every progress bar had already been captured as plain
+  text. nbsphinx warned `nbsphinx_widgets_path not given and ipywidgets module
+  unavailable`, which is fatal under `sphinx-build -W`, and the state would otherwise
+  have shipped to Pages unrendered. The block is removed from both copies (nothing else
+  in either file changed: same 25 cells, same execution counts, same outputs byte for
+  byte). Adding `ipywidgets` to the `[docs]` extra would have silenced the warning while
+  keeping the dead payload, so it was deliberately not done.
+
+- **`tests/test_docs_structure.py`: two guards on notebooks that become site pages**
+  (19 static checks, up from 17). One rejects `metadata.widgets` with no corresponding
+  widget output -- the condition above, which would otherwise return the next time
+  anyone re-runs a notebook with a progress bar and breaks the `-W` docs build. The
+  other rejects any `/Users/...`, `/home/...` or `/private/tmp/` string anywhere in a
+  notebook under `tutorial/` or `docs/source/tutorials/`, so the path scrub cannot
+  silently regress.
+
 - **`deploy-docs` job** in `.github/workflows/ci.yml`. On a push to `main` it downloads
   the HTML the `docs` job already built and publishes it to the `gh-pages` branch that
   https://ibm.github.io/QBioCode serves, writing `.nojekyll` first so Pages does not
