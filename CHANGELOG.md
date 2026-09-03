@@ -868,6 +868,27 @@ have been re-executed.
   for. It now validates the keys the requested backend and primitive actually need and
   raises a `ValueError` naming the missing ones, their purpose, and the keys it did get.
 #### Notebooks
+
+- **`tutorial/QuVINE/example_quvine.ipynb` killed its own kernel.** The notebook
+  benchmarks 12 methods, three of which are torch-backed (`appnp`, `gat_*`,
+  `graphgps_*`). On macOS the process ends up with three separate LLVM OpenMP
+  runtimes mapped in -- `torch/lib/libomp.dylib`, `qiskit_aer/backends/libomp.dylib`
+  and the interpreter's own (a venv built on Anaconda) -- and whichever initialises
+  second dies with `SIGSEGV` in `__kmp_fork_barrier` the first time it opens a
+  parallel region. Each of the three torch methods reproduced it standalone at exit
+  139; there is no Python traceback, so a Jupyter front end can only report that the
+  kernel died. `KMP_DUPLICATE_LIB_OK=TRUE` does not help. The notebook now pins
+  `OMP_NUM_THREADS=1` before importing `qbiocode`, matching what its sibling
+  `quvine_sc_t_vs_mono.ipynb` already did -- that inconsistency was the whole bug.
+  Re-executed end to end: 11/11 cells, 4 figures, 180 result rows, no NaN, so all
+  three torch methods now genuinely run rather than being skipped.
+
+  Note that `preload_openmp_libraries()` imports xgboost at `import qbiocode` to
+  claim the runtime first, which is what a QPL/XGBoost pipeline needs and is exactly
+  what makes torch lose the race here. The two orderings are mutually exclusive and
+  the preload has no opt-out; `OMP_NUM_THREADS=1` is the only setting that satisfies
+  both. Left as-is rather than reordered, because reordering would restore the
+  XGBoost-fit crash it was added to prevent.
 - **`PQK - OV.ipynb` reported accuracy as F1.** `run_model` returned
   `best_model.score(x_test, y_test)`, which for an `SVC` is accuracy — then named it
   `f1_score`, printed it as "Test F1 score", stored it in `F1_Quantum`/`F1_Classical`,
