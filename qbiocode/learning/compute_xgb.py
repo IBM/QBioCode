@@ -21,6 +21,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid, warn_ignored_hyperparameter
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Begin functions ======
@@ -43,6 +44,7 @@ def compute_xgb(
     learning_rate=0.5,
     colsample_bytree=1,
     min_child_weight=1,
+    random_state=None,
 ):
     """
     This function generates a model using an Extreme Gradient Boositing (xgb) Classifier method as implemented in xgboost. It takes in parameter
@@ -66,6 +68,7 @@ def compute_xgb(
         learning_rate (float): Step size shrinkage used in update to prevent overfitting. Default is 0.5
         colsample_bytree  (float): subsample ratio of columns when constructing each tree. Default is 1
         min_child_weight (int) : Minimum sum of instance weight (hessian) needed in a child. Default is 1
+        random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
      Returns:
         modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken for training and validation.
 
@@ -96,6 +99,7 @@ def compute_xgb(
             learning_rate=learning_rate,
             colsample_bytree=colsample_bytree,
             min_child_weight=min_child_weight,
+            random_state=random_state,
         )
     )
     # Fit the training datset
@@ -117,14 +121,15 @@ def compute_xgb_opt(
     verbose=False,
     cv=5,
     model="xgb",
-    bootstrap=[],
-    max_depth=[],
-    max_features=[],
-    learning_rate=[],
-    subsample=[],
-    colsample_bytree=[],
-    n_estimators=[],
-    min_child_weight=[],
+    bootstrap=None,
+    max_depth=None,
+    max_features=None,
+    learning_rate=None,
+    subsample=None,
+    colsample_bytree=None,
+    n_estimators=None,
+    min_child_weight=None,
+    random_state=None,
 ):
     """
     This function generates a model using an Extreme Gradient Boositing (xgb) Classifier method as implemented in xgboost.
@@ -151,6 +156,7 @@ def compute_xgb_opt(
         colsample_bytree (list): List of subsample ratio of columns when constructing each tree options for grid search.
         n_estimators (list): List of number of estimators options for grid search.
         min_child_weight (list): List of minimum sum of instance weight (hessian) needed in a childoptions for grid search.
+        random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
 
     Returns:
         modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken for training and validation.
@@ -172,23 +178,37 @@ def compute_xgb_opt(
         raise ImportError(error_msg)
 
     beg_time = time.time()
-    params = {
-        "n_estimators": n_estimators,
-        "max_depth": max_depth,
-        "learning_rate": learning_rate,
-        "subsample": subsample,
-        "colsample_bytree": colsample_bytree,
-        "min_child_weight": min_child_weight,
-        "bootstrap": bootstrap,
-    }
+    # XGBoost has no bootstrap parameter, but its sklearn wrapper accepts unknown
+    # keyword arguments without complaint, so this was never an error -- just a
+    # silently doubled search returning identical models.
+    if bootstrap:
+        warn_ignored_hyperparameter(
+            "xgb", "bootstrap", "XGBoost does not implement -- it samples rows via 'subsample'."
+        )
+
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "xgb",
+        {
+            "n_estimators": n_estimators,
+            "max_depth": max_depth,
+            "learning_rate": learning_rate,
+            "subsample": subsample,
+            "colsample_bytree": colsample_bytree,
+            "min_child_weight": min_child_weight,
+            "bootstrap": bootstrap,
+        },
+    )
 
     # Perform Grid Search to find the best parameters
-    grid_search = GridSearchCV(XGBClassifier(), param_grid=params, cv=cv)  # type: ignore
+    grid_search = GridSearchCV(XGBClassifier(random_state=random_state), param_grid=params, cv=cv)  # type: ignore
     grid_search.fit(X_train, y_train)
 
     # Get the best parameters and use them to create the final model
     best_params = grid_search.best_params_
-    best_xgb = XGBClassifier(**best_params)  # type: ignore
+    best_xgb = XGBClassifier(**best_params, random_state=random_state)  # type: ignore
     best_xgb.fit(X_train, y_train)
 
     # Make predictions and calculate accuracy

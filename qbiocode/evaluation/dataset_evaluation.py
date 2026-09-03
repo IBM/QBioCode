@@ -313,9 +313,9 @@ def get_complexity(df, n_neighbors=10, n_components=2):
         n_components: Number of components (dimensions) for Isomap projection.  Default value 2
 
     Returns:
-        - reconstruction_error: float
-            The reconstruction error of the Isomap model, which indicates the complexity of the manifold.
-        - reconstruction_error: The residual error of geodesic distances
+        float: The reconstruction error of the fitted Isomap model -- the
+            residual between geodesic and Euclidean distances, which indicates
+            the complexity of the manifold.
     """
 
     isomap = Isomap(n_neighbors=10, n_components=2)

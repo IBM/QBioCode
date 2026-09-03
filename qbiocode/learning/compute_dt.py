@@ -7,6 +7,7 @@ from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 from sklearn.tree import DecisionTreeClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -108,11 +109,12 @@ def compute_dt_opt(
     verbose=False,
     model="Decision Tree",
     cv=5,
-    criterion=[],
-    max_depth=[],
-    min_samples_split=[],
-    min_samples_leaf=[],
-    max_features=[],
+    criterion=None,
+    max_depth=None,
+    min_samples_split=None,
+    min_samples_leaf=None,
+    max_features=None,
+    random_state=None,
 ):
     """This function also generates a model using a Decision Tree (DT) Classifier method as implemented in
     `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html>`__.
@@ -137,26 +139,33 @@ def compute_dt_opt(
         min_samples_split (list): List of minimum samples required to split an internal node. Default is empty list.
         min_samples_leaf (list): List of minimum samples required to be at a leaf node. Default is empty list.
         max_features (list): List of maximum features to consider when looking for the best split. Default is empty list.
+        random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
 
     Returns:
         modeleval (dict): A dictionary containing the evaluation metrics, best parameters, and time taken for training and validation.
     """
 
     beg_time = time.time()
-    params = {
-        "criterion": criterion,
-        "max_depth": max_depth,
-        "min_samples_split": min_samples_split,
-        "min_samples_leaf": min_samples_leaf,
-        "max_features": max_features,
-    }
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "dt",
+        {
+            "criterion": criterion,
+            "max_depth": max_depth,
+            "min_samples_split": min_samples_split,
+            "min_samples_leaf": min_samples_leaf,
+            "max_features": max_features,
+        },
+    )
     # Perform Grid Search to find the best parameters
-    grid_search = GridSearchCV(DecisionTreeClassifier(), param_grid=params, cv=cv)
+    grid_search = GridSearchCV(DecisionTreeClassifier(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
 
     # Get the best parameters and use them to create the final Decision Tree model
     best_params = grid_search.best_params_
-    best_dt = DecisionTreeClassifier(**best_params)
+    best_dt = DecisionTreeClassifier(**best_params, random_state=random_state)
     best_dt.fit(X_train, y_train)
 
     # Make predictions and calculate accuracy

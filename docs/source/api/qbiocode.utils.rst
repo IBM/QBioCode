@@ -12,18 +12,18 @@ qbiocode.utils.combine\_evals\_results module
    :show-inheritance:
    :undoc-members:
 
-qbiocode.utils.dataset\_checkpoint module
------------------------------------------
-
-.. automodule:: qbiocode.utils.dataset_checkpoint
-   :members:
-   :show-inheritance:
-   :undoc-members:
-
 qbiocode.utils.data\_encoding module
 ------------------------------------
 
 .. automodule:: qbiocode.utils.data_encoding
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+qbiocode.utils.dataset\_checkpoint module
+-----------------------------------------
+
+.. automodule:: qbiocode.utils.dataset_checkpoint
    :members:
    :show-inheritance:
    :undoc-members:
@@ -40,6 +40,14 @@ qbiocode.utils.find\_string module
 ----------------------------------
 
 .. automodule:: qbiocode.utils.find_string
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+qbiocode.utils.generate\_qml\_configs module
+--------------------------------------------
+
+.. automodule:: qbiocode.utils.generate_qml_configs
    :members:
    :show-inheritance:
    :undoc-members:
@@ -76,10 +84,20 @@ qbiocode.utils.qutils module
    :show-inheritance:
    :undoc-members:
 
-Module contents
----------------
+qbiocode.utils.tutorial\_data module
+------------------------------------
 
-.. automodule:: qbiocode.utils
+.. automodule:: qbiocode.utils.tutorial_data
    :members:
    :show-inheritance:
    :undoc-members:
+
+Module contents
+---------------
+
+.. Members are deliberately omitted here: every name this package
+   re-exports is documented in its own submodule section above, and
+   repeating them makes each object ambiguous (Sphinx reports
+   "duplicate object description" and "more than one target found").
+   Re-apply this after regenerating with better_apidoc.
+.. automodule:: qbiocode.utils

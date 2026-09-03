@@ -1,3 +1,17 @@
+# Copyright 2026, IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
 QBioCode: Quantum Machine Learning for Biological Data Analysis
 ================================================================
@@ -11,11 +25,11 @@ Main Modules
 ------------
 - learning: Classical and quantum machine learning algorithms
 - embeddings: Feature embedding and encoding methods
-- evaluation: Model and dataset evaluation tools
+- evaluation: Model, dataset and graph-complexity evaluation tools
 - data_generation: Synthetic dataset generators
 - visualization: Result visualization and correlation analysis
 - utils: Helper functions and utilities
-- apps: Command-line applications (QProfiler, QSage)
+- apps: Command-line applications (QProfiler, QSage, QuVINE)
 
 Quick Start
 -----------
@@ -28,6 +42,14 @@ Quick Start
 >>> from qbiocode.apps.qprofiler import qprofiler
 >>> qprofiler.main(config)
 """
+
+# ====== Order the OpenMP runtimes before importing anything else ======
+# Must come first: xgboost and torch each vendor a copy of libomp, and whichever
+# starts second can crash the process with SIGSEGV during model fitting. See
+# qbiocode.utils._openmp for the measurements behind this.
+from .utils._openmp import preload_openmp_libraries
+
+preload_openmp_libraries()
 
 # ====== Import data generation functions ======
 from .data_generation import (
@@ -42,10 +64,18 @@ from .data_generation import (
 from .data_generation.generator import generate_data
 
 # ====== Import embedding functions ======
-from .embeddings.embed import get_embeddings, pqk
+from .embeddings.embed import (
+    QUVINE_HEADLINE_METHODS,
+    QUVINE_METHODS,
+    SKLEARN_METHODS,
+    get_embeddings,
+    is_transductive,
+    pqk,
+)
 
 # ====== Import evaluation functions ======
 from .evaluation.dataset_evaluation import evaluate
+from .evaluation.graph_evaluation import evaluate_graph
 from .evaluation.model_evaluation import modeleval
 from .evaluation.model_run import model_run
 
@@ -61,23 +91,26 @@ from .learning.compute_rf import compute_rf, compute_rf_opt
 from .learning.compute_svc import compute_svc, compute_svc_opt
 from .learning.compute_vqc import compute_vqc
 
-try:
-    from .learning.compute_xgb import compute_xgb, compute_xgb_opt
-except Exception:
-    # XGBoost not available (e.g., OpenMP not installed on macOS)
-    compute_xgb = None  # type: ignore
-    compute_xgb_opt = None  # type: ignore
+# compute_xgb.py guards the xgboost import itself and both functions raise an
+# actionable ImportError -- naming libomp and the exact reinstall command -- when
+# it is missing, so this import is unconditional. Wrapping it in try/except and
+# binding None on failure would replace that message with
+# "'NoneType' object is not callable" and would additionally hide a genuine
+# breakage in the module (a typo, a broken sibling import) as a missing extra.
+from .learning.compute_xgb import compute_xgb, compute_xgb_opt
 
 # ====== Import helper functions ======
 from .utils.dataset_checkpoint import checkpoint_restart
-from .utils.helper_fn import feature_encoding, scaler_fn
+from .utils.helper_fn import feature_encoding, scale_train_test, scaler_fn
 from .utils.qc_winner_finder import qml_winner
+from .utils.tutorial_data import tutorial_data_dirs, tutorial_data_path
 from .version import __version__
 
 # ====== Import visualization functions ======
 from .visualization.visualize_correlation import (
     compute_results_correlation,
     plot_results_correlation,
+    publication_style,
 )
 
 # ====== Expose apps submodule ======
@@ -109,19 +142,28 @@ __all__ = [
     "compute_pqk",
     # Embeddings
     "get_embeddings",
+    "is_transductive",
+    "SKLEARN_METHODS",
+    "QUVINE_HEADLINE_METHODS",
+    "QUVINE_METHODS",
     "pqk",
     # Utilities
     "scaler_fn",
+    "scale_train_test",
     "feature_encoding",
     "qml_winner",
     "checkpoint_restart",
+    "tutorial_data_path",
+    "tutorial_data_dirs",
     # Evaluation
     "modeleval",
     "evaluate",
+    "evaluate_graph",
     "model_run",
     # Visualization
     "plot_results_correlation",
     "compute_results_correlation",
+    "publication_style",
     # Data generation
     "generate_data",
     "generate_circles_datasets",

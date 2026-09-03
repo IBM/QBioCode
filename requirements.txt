@@ -1,48 +1,18 @@
-dill
-h5py
-hfda
-hydra-core
-ipykernel
-networkx
-numpy
-optuna
-pandas
-qiskit==2.2.0
-qiskit-aer==0.17.0
-qiskit-algorithms==0.4.0
-qiskit-ibm-runtime==0.44.0
-qiskit-ibm-transpiler==0.11.0
-qiskit-machine-learning==0.9.0
-qiskit-nature==0.7.2
-scikit-dimension
-scikit-learn
-scipy
-seaborn
-tensorflow
-torch
-tqdm
-umap-learn
-xgboost
+# ==========================================================================
+# QBioCode requirements -- pointer file
+# ==========================================================================
+# The dependency lists moved into requirements/ and are now tiered:
+#
+#   requirements/requirements-base.txt    core runtime (read by pyproject.toml)
+#   requirements/requirements-quvine.txt  the [quvine] extra
+#   requirements/requirements-docs.txt    the [docs] extra
+#   requirements/requirements.txt         everything, for development
+#
+# This file is kept so that the documented
+#     pip install -r requirements.txt
+# still installs a complete development environment. Run it from the repo
+# root -- requirements/requirements.txt ends in "-e .[dev]", which pip
+# resolves relative to the current directory.
+# ==========================================================================
 
-# Single-cell / multi-omics tutorials (sc-qc preprocessing, QProfiler single-cell)
-scanpy
-anndata
-leidenalg
-igraph
-# Imported directly by tutorial notebooks (also available transitively; pinned here to be explicit)
-matplotlib
-pyyaml
-requests
-
-# Documentation
-sphinx
-sphinx-autodoc-typehints 
-sphinx_rtd_theme
-myst_parser
-better_apidoc
-nbsphinx
-myst_nb
-furo
-pydata-sphinx-theme
-pandoc
-sphinx-design
+-r requirements/requirements.txt

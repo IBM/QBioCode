@@ -8,6 +8,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -125,12 +126,13 @@ def compute_rf_opt(
     verbose=False,
     cv=5,
     model="Random Forest",
-    bootstrap=[],
-    max_depth=[],
-    max_features=[],
-    min_samples_leaf=[],
-    min_samples_split=[],
-    n_estimators=[],
+    bootstrap=None,
+    max_depth=None,
+    max_features=None,
+    min_samples_leaf=None,
+    min_samples_split=None,
+    n_estimators=None,
+    random_state=None,
 ):
     """
     This function also generates a model using a Random Forest (RF) Classifier method as implemented in
@@ -157,6 +159,7 @@ def compute_rf_opt(
         min_samples_leaf (list): List of minimum samples leaf options for grid search.
         min_samples_split (list): List of minimum samples split options for grid search.
         n_estimators (list): List of number of estimators options for grid search.
+        random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
 
     Returns:
         modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken for training and validation.
@@ -164,22 +167,28 @@ def compute_rf_opt(
     """
 
     beg_time = time.time()
-    params = {
-        "n_estimators": n_estimators,
-        "max_features": max_features,
-        "max_depth": max_depth,
-        "min_samples_split": min_samples_split,
-        "min_samples_leaf": min_samples_leaf,
-        "bootstrap": bootstrap,
-    }
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "rf",
+        {
+            "n_estimators": n_estimators,
+            "max_features": max_features,
+            "max_depth": max_depth,
+            "min_samples_split": min_samples_split,
+            "min_samples_leaf": min_samples_leaf,
+            "bootstrap": bootstrap,
+        },
+    )
 
     # Perform Grid Search to find the best parameters
-    grid_search = GridSearchCV(RandomForestClassifier(), param_grid=params, cv=cv)
+    grid_search = GridSearchCV(RandomForestClassifier(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
 
     # Get the best parameters and use them to create the final model
     best_params = grid_search.best_params_
-    best_rf = RandomForestClassifier(**best_params)
+    best_rf = RandomForestClassifier(**best_params, random_state=random_state)
     best_rf.fit(X_train, y_train)
 
     # Make predictions and calculate accuracy

@@ -1,0 +1,383 @@
+# Copyright 2026, IBM Corporation.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Structural checks on the Sphinx documentation source.
+
+These are deliberately static: they parse the ``.rst``/``.md`` sources and the CI
+workflow rather than running ``sphinx-build``, so they hold in an environment
+where the ``[docs]`` extra is not installed (the common case for a contributor
+running ``pytest``). An executed-build test belongs in
+``tests/integration/test_docs_build.py`` behind ``importorskip("sphinx")``.
+
+What they catch is exactly what went wrong before:
+
+* an API reference reachable by no toctree, so every page was an orphan
+* toctree entries naming files that were never added
+* ``automodule`` directives naming modules that do not exist
+* ``conf.py`` paths that only resolve when ``sphinx-build`` runs from ``docs/``
+* a documented version that disagrees with ``qbiocode/version.py``
+* rendered HTML committed back into the repository
+"""
+
+from __future__ import annotations
+
+import json
+import os
+import re
+import subprocess
+from pathlib import Path
+
+import pytest
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
+DOCS_DIR = REPO_ROOT / "docs"
+SOURCE_DIR = DOCS_DIR / "source"
+
+#: Mirrors ``exclude_patterns`` in ``conf.py``. ``workshops/_tutorial.rst`` is a
+#: ``{{placeholder}}`` skeleton for authoring new workshop pages, not a page.
+EXCLUDED = {"workshops/_tutorial.rst"}
+
+#: Documents Sphinx reaches without a toctree entry.
+IMPLICIT_ROOTS = {"index.rst"}
+
+#: A page may opt out of the orphan warning explicitly: ``:orphan:`` as a field in
+#: reStructuredText, ``orphan: true`` in MyST front matter. Honour that rather than
+#: forcing every such page into a toctree.
+_ORPHAN_MARKERS = (":orphan:", "orphan: true")
+
+
+def _declares_itself_orphan(rel: str) -> bool:
+    if rel.endswith(".ipynb"):
+        return False
+    head = (SOURCE_DIR / rel).read_text(encoding="utf-8")[:512]
+    return any(marker in head for marker in _ORPHAN_MARKERS)
+
+DOC_SUFFIXES = (".rst", ".md", ".ipynb")
+
+
+def _iter_documents():
+    """Every file Sphinx would treat as a document, as source-relative posix paths."""
+    for path in sorted(SOURCE_DIR.rglob("*")):
+        if not path.is_file() or path.suffix not in DOC_SUFFIXES:
+            continue
+        rel = path.relative_to(SOURCE_DIR).as_posix()
+        if rel in EXCLUDED or rel.startswith(("build/", "_static/", ".ipynb_checkpoints/")):
+            continue
+        if ".ipynb_checkpoints/" in rel:
+            continue
+        yield rel
+
+
+def _toctree_entries(text: str):
+    """Yield the raw entries of every toctree in ``text``.
+
+    Handles both the reStructuredText ``.. toctree::`` directive and the MyST
+    ```` ```{toctree} ```` fence, and skips option lines (``:maxdepth: 2``) and
+    the blank line that follows them -- a naive "indented block" regex stops at
+    that blank line and reports every entry as missing.
+    """
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        rst = line.strip() == ".. toctree::"
+        myst = line.strip().startswith("```{toctree}")
+        if not (rst or myst):
+            i += 1
+            continue
+        i += 1
+        while i < len(lines):
+            entry = lines[i]
+            stripped = entry.strip()
+            if myst and stripped.startswith("```"):
+                break
+            if rst and stripped and not entry[:1].isspace():
+                break  # dedented back out of the directive
+            i += 1
+            if not stripped or stripped.startswith(":"):
+                continue  # blank line or directive option
+            yield stripped
+
+
+def _resolve(entry: str, containing_doc: str):
+    """Turn one toctree entry into a source-relative path, or None if not a document."""
+    # "Some Title <path/to/doc>" -> "path/to/doc"
+    match = re.search(r"<([^>]+)>\s*$", entry)
+    target = match.group(1) if match else entry
+    if target.startswith(("http://", "https://", "self", "genindex", "modindex", "search")):
+        return None
+    if "*" in target or "?" in target:
+        return None  # glob entry; existence is Sphinx's problem, not ours
+    base = os.path.dirname(containing_doc)
+    return os.path.normpath(os.path.join(base, target)).replace(os.sep, "/")
+
+
+def _mocked_imports():
+    r"""The names in ``autodoc_mock_imports``, parsed a line at a time.
+
+    Not a single bracket regex: the list carries comments, and one of them is
+    ``# [quvine] extra`` -- a non-greedy ``\[(.*?)\]`` stops at that ``]`` and
+    reports an empty list, which would make this check vacuously pass.
+    """
+    lines = (SOURCE_DIR / "conf.py").read_text(encoding="utf-8").splitlines()
+    names = set()
+    collecting = False
+    for line in lines:
+        if not collecting:
+            if re.match(r"^autodoc_mock_imports\s*=\s*\[", line):
+                collecting = True
+                line = line.split("[", 1)[1]
+            else:
+                continue
+        code = line.split("#", 1)[0]
+        names.update(re.findall(r"[\"']([^\"']+)[\"']", code))
+        if "]" in code:
+            break
+    return names
+
+
+def _reachable_documents():
+    """Map every document reachable from a toctree to the document that includes it."""
+    reachable = {}
+    for doc in _iter_documents():
+        if doc.endswith(".ipynb"):
+            continue  # notebooks contain no toctrees
+        text = (SOURCE_DIR / doc).read_text(encoding="utf-8")
+        for entry in _toctree_entries(text):
+            target = _resolve(entry, doc)
+            if target is not None:
+                reachable.setdefault(target, doc)
+    return reachable
+
+
+class TestToctree:
+    def test_every_toctree_entry_names_an_existing_document(self):
+        """A toctree entry with no file behind it is a build warning and a dead link."""
+        dangling = []
+        for target, source in sorted(_reachable_documents().items()):
+            if not any((SOURCE_DIR / f"{target}{s}").exists() for s in DOC_SUFFIXES):
+                if not (SOURCE_DIR / target).exists():
+                    dangling.append(f"{target} (referenced from {source})")
+        assert not dangling, "toctree entries with no document:\n  " + "\n  ".join(dangling)
+
+    def test_no_document_is_orphaned(self):
+        """Every page must be reachable by navigation.
+
+        The whole of ``api/`` used to fail this: nothing pointed at ``api/modules``,
+        so the API reference was reachable only by guessing a URL.
+        """
+        reachable = _reachable_documents()
+        orphans = []
+        for doc in _iter_documents():
+            if doc in IMPLICIT_ROOTS or _declares_itself_orphan(doc):
+                continue
+            stem = doc.rsplit(".", 1)[0]
+            if stem in reachable or doc in reachable:
+                continue
+            orphans.append(doc)
+        assert not orphans, (
+            "documents in no toctree (Sphinx warns, and -W fails the build):\n  "
+            + "\n  ".join(sorted(orphans))
+        )
+
+    def test_the_api_reference_is_rooted(self):
+        """Guards the specific regression: api/modules reachable from api_overview."""
+        assert "api/modules" in _reachable_documents()
+
+
+class TestApiPages:
+    def test_every_automodule_target_exists(self):
+        """An ``automodule`` for a module that was renamed or removed documents nothing."""
+        missing = []
+        for page in sorted((SOURCE_DIR / "api").glob("*.rst")):
+            text = page.read_text(encoding="utf-8")
+            for target in re.findall(r"^\.\.\s+automodule::\s+(\S+)", text, re.M):
+                parts = target.split(".")
+                as_module = REPO_ROOT.joinpath(*parts).with_suffix(".py")
+                as_package = REPO_ROOT.joinpath(*parts, "__init__.py")
+                if not (as_module.exists() or as_package.exists()):
+                    missing.append(f"{target} (in {page.name})")
+        assert not missing, "automodule targets that do not exist:\n  " + "\n  ".join(missing)
+
+    @pytest.mark.parametrize(
+        "module",
+        [
+            "qbiocode.apps",
+            "qbiocode.apps.quvine",
+            "qbiocode.apps.qprofiler",
+            "qbiocode.evaluation.graph_evaluation",
+            "qbiocode.utils.tutorial_data",
+        ],
+    )
+    def test_new_public_modules_have_a_page(self, module):
+        """``qbiocode.apps`` had no page at all, so QuVINE was absent from the API docs."""
+        pages = list((SOURCE_DIR / "api").glob("*.rst"))
+        directives = "\n".join(p.read_text(encoding="utf-8") for p in pages)
+        assert f"automodule:: {module}\n" in directives, f"{module} is undocumented"
+
+
+class TestConfPy:
+    """``conf.py`` used to build every path from ``"."``, so it only worked from ``docs/``."""
+
+    def test_paths_are_anchored_on_file_not_cwd(self):
+        text = (SOURCE_DIR / "conf.py").read_text(encoding="utf-8")
+        assert "os.path.abspath(__file__)" in text
+        assert "_REPO_ROOT" in text and "_DOCS_DIR" in text and "_CONF_DIR" in text
+        # A bare "." as a sys.path entry or a template/output directory is the bug.
+        assert 'sys.path.insert(0, ".")' not in text
+        assert '"-t", "./' not in text and "'-t', './" not in text
+
+    def test_version_matches_the_package(self):
+        """conf.py hardcoded 0.0.1 while the package declared 0.1.0."""
+        conf = (SOURCE_DIR / "conf.py").read_text(encoding="utf-8")
+        assert re.search(r"^release\s*=\s*_package_version\(\)", conf, re.M), (
+            "release must be read from qbiocode/version.py, not hardcoded"
+        )
+        version_py = (REPO_ROOT / "qbiocode" / "version.py").read_text(encoding="utf-8")
+        declared = re.search(r"^__version__\s*=\s*[\"']([^\"']+)[\"']", version_py, re.M)
+        assert declared, "qbiocode/version.py declares no __version__"
+        # And the parser in conf.py must agree with that literal.
+        namespace = {"__file__": str(SOURCE_DIR / "conf.py")}
+        exec(  # noqa: S102 - executing our own conf.py is the point
+            "\n".join(
+                [
+                    "import os, re",
+                    "_CONF_DIR = os.path.dirname(os.path.abspath(__file__))",
+                    "_REPO_ROOT = os.path.dirname(os.path.dirname(_CONF_DIR))",
+                    re.search(
+                        r"^def _package_version\(\):.*?(?=^\S)", conf, re.M | re.S
+                    ).group(0),
+                    "parsed = _package_version()",
+                ]
+            ),
+            namespace,
+        )
+        assert namespace["parsed"] == declared.group(1)
+
+    def test_mocks_cover_the_quvine_extra_and_nothing_imaginary(self):
+        names = _mocked_imports()
+        assert names, "autodoc_mock_imports is not a literal list of names"
+        # Every [quvine] import name must be mocked, or a docs build without the
+        # extra cannot import the modules it is documenting.
+        from qbiocode.apps.quvine._deps import OPTIONAL_DEPENDENCIES
+
+        assert set(OPTIONAL_DEPENDENCIES) <= names, (
+            f"unmocked optional imports: {sorted(set(OPTIONAL_DEPENDENCIES) - names)}"
+        )
+        # TensorFlow appears nowhere in the tree; mocking it hid that fact.
+        assert "tensorflow" not in names and "keras" not in names
+
+
+class TestNoBuildOutputInGit:
+    def test_no_rendered_html_is_tracked(self):
+        """~250 files of Sphinx output were once committed under docs/_build/html/."""
+        try:
+            tracked = subprocess.run(
+                ["git", "ls-files", "docs/_build", "docs/build"],
+                cwd=REPO_ROOT,
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout.split()
+        except (OSError, subprocess.CalledProcessError):
+            pytest.skip("not a git checkout")
+        assert not tracked, f"build output is tracked: {tracked[:5]}"
+
+    def test_both_build_directories_are_ignored(self):
+        ignored = (REPO_ROOT / ".gitignore").read_text(encoding="utf-8")
+        assert "docs/build/" in ignored
+        assert "docs/_build/" in ignored
+
+
+class TestPublishedNotebooks:
+    """Guards on the notebooks that become pages of the published site.
+
+    ``nbsphinx_execute = 'never'``, so whatever a notebook carries in its committed
+    JSON is what GitHub Pages serves. Two things have gone wrong that way.
+    """
+
+    #: Notebooks that become site pages. ``_static/workshops/`` is third-party Qiskit
+    #: material offered as a download, not a rendered page, so it is out of scope.
+    NOTEBOOK_DIRS = ("tutorial", "docs/source/tutorials")
+
+    @staticmethod
+    def _notebooks():
+        for rel in TestPublishedNotebooks.NOTEBOOK_DIRS:
+            yield from sorted((REPO_ROOT / rel).rglob("*.ipynb"))
+
+    def test_no_notebook_carries_dead_ipywidgets_state(self):
+        """``metadata.widgets`` with no widget output fails ``sphinx-build -W``.
+
+        A tqdm progress bar registers widget state even when its output renders as
+        plain text. nbsphinx then warns ``nbsphinx_widgets_path not given and
+        ipywidgets module unavailable`` -- fatal under ``-W`` -- and the state itself
+        was 127 KB of never-rendered JSON in one notebook. Strip
+        ``metadata.widgets``; do not add ipywidgets to the docs extra to silence it.
+        """
+        offenders = []
+        for path in self._notebooks():
+            notebook = json.loads(path.read_text(encoding="utf-8"))
+            if "widgets" not in notebook.get("metadata", {}):
+                continue
+            rendered = sum(
+                1
+                for cell in notebook["cells"]
+                for output in cell.get("outputs", [])
+                if "application/vnd.jupyter.widget-view+json" in output.get("data", {})
+            )
+            if not rendered:
+                offenders.append(path.relative_to(REPO_ROOT).as_posix())
+        assert not offenders, f"dead metadata.widgets in: {offenders}"
+
+    def test_no_notebook_publishes_an_absolute_local_path(self):
+        """Committed output once named the author's home directory on every page.
+
+        Useless to a reader (it names a directory that does not exist on their
+        machine) and a needless disclosure of one machine's layout. Placeholders
+        (``<env>/``, ``<repo>/``) are the substitute.
+        """
+        leak = re.compile(r"/(?:Users|home)/[A-Za-z0-9_.-]+|/private/tmp/")
+        offenders = []
+        for path in self._notebooks():
+            found = sorted(set(leak.findall(path.read_text(encoding="utf-8"))))
+            if found:
+                offenders.append((path.relative_to(REPO_ROOT).as_posix(), found))
+        assert not offenders, f"absolute local paths in notebooks: {offenders}"
+
+
+class TestCiWorkflow:
+    @staticmethod
+    def _workflow():
+        import yaml
+        path = REPO_ROOT / ".github" / "workflows" / "ci.yml"
+        return yaml.safe_load(path.read_text(encoding="utf-8"))
+
+    def test_docs_build_failure_fails_ci(self):
+        """The build step carried continue-on-error, so broken docs went unnoticed."""
+        steps = self._workflow()["jobs"]["docs"]["steps"]
+        build = next(s for s in steps if s.get("name") == "Build documentation")
+        assert not build.get("continue-on-error", False)
+
+    def test_deploy_is_gated_to_pushes_on_main(self):
+        """A pull request -- including one from a fork -- must not publish the site."""
+        job = self._workflow()["jobs"]["deploy-docs"]
+        condition = job["if"]
+        assert "github.event_name == 'push'" in condition
+        assert "refs/heads/main" in condition
+        assert job["needs"] == "docs" or "docs" in job["needs"]
+
+    def test_deploy_writes_nojekyll(self):
+        """Without it, Pages drops every _-prefixed Sphinx directory."""
+        steps = self._workflow()["jobs"]["deploy-docs"]["steps"]
+        assert any(".nojekyll" in str(step.get("run", "")) for step in steps)

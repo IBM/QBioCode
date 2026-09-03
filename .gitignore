@@ -2,6 +2,7 @@
 venv/
 env/
 .venv/
+.venv-quvine/
 .env/
 *env/
 .*env/
@@ -35,25 +36,84 @@ coverage.xml
 credentials.json
 
 # Documentation
-docs/build/*
+# Sphinx build output. `docs/Makefile` sets BUILDDIR = build, and CI uploads
+# docs/build/html, so docs/build/ is the single build directory. docs/_build/ is
+# listed too because ~250 files of rendered HTML plus a .doctrees build cache were
+# once committed under it: the published site is now produced by the deploy-docs
+# job in .github/workflows/ci.yml, so no build output belongs in git.
+docs/build/
+docs/_build/
 docs/outputdir/*
 
-# Project specific
-results/
-data/
+# Project specific (top-level scratch dirs only -- anchored with a leading
+# slash so they do not swallow committed fixtures such as
+# docs/source/tutorials/QProfiler/data/*.h5ad)
+/results/
+/data/
 
 # Tutorial generated outputs
 tutorial/**/ModelResults.csv
 tutorial/**/RawDataEvaluation.csv
 tutorial/**/compiled_*.csv
 tutorial/**/results.pkl
+# Written by the QSage tutorial, which saves and reloads a trained sage to show
+# the round-trip works. Named rather than globbed as `*.pkl`: QEnsemble already
+# tracks datasets.pkl and predictions.pkl, and a blanket rule would quietly
+# exclude them the first time either was re-added.
+tutorial/**/my_qsage_model.pkl
 tutorial/**/performance_summary_and_spearman_correlation_plots/
+# tutorial/**/data/ holds a mix: run artifacts (ld_data/, per-run CSVs) that must
+# stay out of git, and four *input* fixtures that are already tracked
+# (QProfiler/data/pbmc5k_small_cd4_vs_cd8.h5ad and QProfiler/data/sc_binary/*.csv).
+# Git honours the index over this pattern, so the tracked four keep versioning
+# normally; the rule only stops *new* files here from being added by accident.
+# A `!` re-include cannot rescue them -- git does not descend into an excluded
+# directory -- so if another fixture ever needs committing, add it with
+# `git add -f` and list it here, or put it under docs/source/tutorials/**/data/,
+# which is deliberately not ignored (see below).
 tutorial/**/data/
 tutorial/**/*.png
 tutorial/**/.ipynb_checkpoints/
 tutorial/**/pqk_projections/
+tutorial/**/qpl_projections/
+# `PQK - OV.ipynb` downloads a 46 MB archive and extracts ~250 MB of TCGA tables
+# beside itself, then writes its results table there. Every byte is reproducible
+# from the URL in the notebook's own download cell, so none of it belongs in git --
+# and without these rules a reader's first run leaves ~300 MB of untracked files
+# that `git add -A` would happily commit. The results *.png is already covered by
+# the tutorial/**/*.png rule above.
+tutorial/**/OV/
+tutorial/**/ovarian.zip
+tutorial/**/PQK_OV_results.csv
 
 # Keep tutorial notebooks and configs
 !tutorial/**/*.ipynb
 !tutorial/**/configs/
 !tutorial/**/configs/*.yaml
+
+# Docs tutorial generated outputs (mirror of the tutorial/ rules above).
+# Notebooks under docs/source/tutorials are published with nbsphinx_execute =
+# 'never', so their run artifacts are never needed by the docs build.
+docs/source/tutorials/**/ModelResults.csv
+docs/source/tutorials/**/RawDataEvaluation.csv
+docs/source/tutorials/**/compiled_*.csv
+docs/source/tutorials/**/results.pkl
+docs/source/tutorials/**/my_qsage_model.pkl
+docs/source/tutorials/**/performance_summary_and_spearman_correlation_plots/
+docs/source/tutorials/**/*.png
+docs/source/tutorials/**/.ipynb_checkpoints/
+docs/source/tutorials/**/pqk_projections/
+
+# Deliberately NOT ignoring docs/source/tutorials/**/data/: unlike tutorial/,
+# that directory holds committed *input* fixtures (pbmc5k_small_cd4_vs_cd8.h5ad
+# and the sc_binary/*.csv matrices) which the published notebooks read.
+
+# Keep docs tutorial notebooks, configs, and committed figure assets
+!docs/source/tutorials/**/*.ipynb
+!docs/source/tutorials/**/configs/
+!docs/source/tutorials/**/configs/*.yaml
+!docs/source/tutorials/PQK_OV_results.png
+
+# Generated locally by `pip freeze`; specific to one OS/arch/Python, so never
+# committed. See requirements/requirements.txt for the recipe.
+requirements/requirements-lock.txt

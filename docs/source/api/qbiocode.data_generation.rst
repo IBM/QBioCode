@@ -1,5 +1,5 @@
-qbiocode.data\_generation package
-=================================
+qbiocode.data_generation package
+================================
 
 Submodules
 ----------
@@ -79,7 +79,9 @@ qbiocode.data\_generation.make\_swiss\_roll module
 Module contents
 ---------------
 
+.. Members are deliberately omitted here: every name this package
+   re-exports is documented in its own submodule section above, and
+   repeating them makes each object ambiguous (Sphinx reports
+   "duplicate object description" and "more than one target found").
+   Re-apply this after regenerating with better_apidoc.
 .. automodule:: qbiocode.data_generation
-   :members:
-   :show-inheritance:
-   :undoc-members:

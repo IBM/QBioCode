@@ -60,6 +60,14 @@ qbiocode.learning.compute\_qnn module
    :show-inheritance:
    :undoc-members:
 
+qbiocode.learning.compute\_qpl module
+-------------------------------------
+
+.. automodule:: qbiocode.learning.compute_qpl
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 qbiocode.learning.compute\_qsvc module
 --------------------------------------
 
@@ -103,7 +111,9 @@ qbiocode.learning.compute\_xgb module
 Module contents
 ---------------
 
+.. Members are deliberately omitted here: every name this package
+   re-exports is documented in its own submodule section above, and
+   repeating them makes each object ambiguous (Sphinx reports
+   "duplicate object description" and "more than one target found").
+   Re-apply this after regenerating with better_apidoc.
 .. automodule:: qbiocode.learning
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -7,6 +7,7 @@ from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 from sklearn.svm import SVC
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -108,9 +109,10 @@ def compute_svc_opt(
     verbose=False,
     cv=5,
     model="SVC",
-    C=[],
-    gamma=[],
-    kernel=[],
+    C=None,
+    gamma=None,
+    kernel=None,
+    random_state=None,
 ):
     """This function generates a model using a Support Vector Classifier (SVC) method as implemented in
     `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html>`__.
@@ -133,19 +135,30 @@ def compute_svc_opt(
         C (list or float): Regularization parameter(s), default is an empty list.
         gamma (list or str): Kernel coefficient(s) for 'rbf', 'poly', and 'sigmoid', default is an empty list.
         kernel (list or str): Specifies the kernel type(s) to be used in the algorithm, default is an empty list.
+        random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
      Returns:
         modeleval (dict): A dictionary containing the evaluation metrics of the model, including accuracy, AUC, F1 score, and the time taken to train and validate the model across the grid search.
     """
 
     beg_time = time.time()
-    params = {"C": C, "gamma": gamma, "kernel": kernel}
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "svc",
+        {
+            "C": C,
+            "gamma": gamma,
+            "kernel": kernel,
+        },
+    )
     # Perform Grid Search to find the best parameters
-    grid_search = GridSearchCV(SVC(), param_grid=params, cv=cv)
+    grid_search = GridSearchCV(SVC(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
 
     # Get the best parameters and use them to create the final SVC model
     best_params = grid_search.best_params_
-    best_svc = SVC(**best_params)
+    best_svc = SVC(**best_params, random_state=random_state)
     best_svc.fit(X_train, y_train)
 
     # Make predictions and calculate accuracy

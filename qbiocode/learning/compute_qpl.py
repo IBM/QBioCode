@@ -12,12 +12,20 @@ from sklearn.model_selection import GridSearchCV, RandomizedSearchCV
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 
+# Deliberately broad: a missing xgboost raises ImportError, but an xgboost whose
+# native library cannot load raises OSError (no libomp on macOS) or
+# xgboost.core.XGBoostError, which subclasses ValueError -- narrowing to
+# ImportError here would let those escape as an unhandled error at import time.
+# The reason is kept so the messages below can quote the actual failure instead
+# of guessing at it.
 try:
     from xgboost import XGBClassifier
 
     XGBOOST_AVAILABLE = True
-except Exception:
+    _XGBOOST_ERROR = None
+except Exception as exc:
     XGBOOST_AVAILABLE = False
+    _XGBOOST_ERROR = str(exc)
     XGBClassifier = None  # type: ignore
 
 # from qiskit.primitives import Sampler
@@ -237,6 +245,7 @@ def compute_qpl(
     if "xgb" in classical_models and not XGBOOST_AVAILABLE:
         warnings.warn(
             "XGBoost is not properly installed or configured and will be skipped.\n"
+            f"Error: {_XGBOOST_ERROR}\n"
             "On macOS, you may need to install OpenMP:\n"
             "  brew install libomp\n"
             "Then reinstall XGBoost:\n"
@@ -302,13 +311,20 @@ def create_xgb_model(seed):
     if not XGBOOST_AVAILABLE:
         raise ImportError(
             "XGBoost is not properly installed or configured.\n"
+            f"Error: {_XGBOOST_ERROR}\n\n"
             "On macOS, you may need to install OpenMP:\n"
             "  brew install libomp\n\n"
             "Then reinstall XGBoost:\n"
             "  pip install --force-reinstall xgboost\n\n"
             "See installation documentation for more details."
         )
-    xgb = XGBClassifier(objective="binary:logistic", eval_metric="logloss")  # type: ignore
+    # random_state=seed, like every sibling create_*_model here: the search grid
+    # below varies `subsample` and `colsample_bytree`, both of which sample rows and
+    # columns at random, so an unseeded estimator made this model irreproducible even
+    # though the search itself was seeded.
+    xgb = XGBClassifier(  # type: ignore
+        objective="binary:logistic", eval_metric="logloss", random_state=seed
+    )
 
     xgb_param_distributions = {
         "n_estimators": [100, 200, 300],

@@ -46,12 +46,13 @@ from .compute_nb import compute_nb, compute_nb_opt
 from .compute_rf import compute_rf, compute_rf_opt
 from .compute_svc import compute_svc, compute_svc_opt
 
-try:
-    from .compute_xgb import compute_xgb, compute_xgb_opt
-except Exception:
-    # XGBoost not available (e.g., OpenMP not installed on macOS)
-    compute_xgb = None  # type: ignore
-    compute_xgb_opt = None  # type: ignore
+# compute_xgb.py guards the xgboost import itself and both functions raise an
+# actionable ImportError -- naming libomp and the exact reinstall command -- when
+# it is missing, so this import is unconditional. Wrapping it in try/except and
+# binding None on failure would replace that message with
+# "'NoneType' object is not callable" and would additionally hide a genuine
+# breakage in the module (a typo, a broken sibling import) as a missing extra.
+from .compute_xgb import compute_xgb, compute_xgb_opt
 
 from .compute_pqk import compute_pqk
 from .compute_qpl import compute_qpl

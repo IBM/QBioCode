@@ -8,6 +8,7 @@ from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 from sklearn.neural_network import MLPClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -137,12 +138,13 @@ def compute_mlp_opt(
     verbose=False,
     cv=5,
     model="Multi-layer Perceptron",
-    hidden_layer_sizes=[],
-    activation=[],
-    max_iter=[],
-    solver=[],
-    alpha=[],
-    learning_rate=[],
+    hidden_layer_sizes=None,
+    activation=None,
+    max_iter=None,
+    solver=None,
+    alpha=None,
+    learning_rate=None,
+    random_state=None,
 ):
     """
     This function also generates a model using a Multi-layer Perceptron (mlp), a neural network, as implemented in scikit-learn
@@ -168,28 +170,35 @@ def compute_mlp_opt(
             solver (str or list): The solver for weight optimization.
             alpha (float or list): L2 penalty (regularization term) parameter.
             learning_rate (str or list): Learning rate schedule for weight updates.
+            random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
     Returns:
             modeleval (dict): A dictionary containing the evaluation metrics of the model on the test dataset, including accuracy, AUC, F1 score,
                       and the time taken to train and validate the model, along with the best parameters found during grid search.
     """
 
     beg_time = time.time()
-    params = {
-        "hidden_layer_sizes": hidden_layer_sizes,
-        "activation": activation,
-        "max_iter": max_iter,
-        "solver": solver,
-        "alpha": alpha,
-        "learning_rate": learning_rate,
-    }
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "mlp",
+        {
+            "hidden_layer_sizes": hidden_layer_sizes,
+            "activation": activation,
+            "max_iter": max_iter,
+            "solver": solver,
+            "alpha": alpha,
+            "learning_rate": learning_rate,
+        },
+    )
 
     # Pemlporm Grid Search to find the best parameters
-    grid_search = GridSearchCV(MLPClassifier(), param_grid=params, cv=cv)
+    grid_search = GridSearchCV(MLPClassifier(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
 
     # Get the best parameters and use them to create the final model
     best_params = grid_search.best_params_
-    best_mlp = MLPClassifier(**best_params)
+    best_mlp = MLPClassifier(**best_params, random_state=random_state)
     best_mlp.fit(X_train, y_train)
 
     # Make predictions and calculate accuracy

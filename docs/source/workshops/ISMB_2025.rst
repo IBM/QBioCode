@@ -1,9 +1,5 @@
 Quantum Machine Learning for Multi-omics Analysis (ISMB 2025)
-============================================================
-
-.. image:: ../_static/qml_multiomics.png
-   :align: center
-   :width: 80%
+=============================================================
 
 **ISMB/ECCB 2025 Tutorial**
 
@@ -42,7 +38,7 @@ Agenda
 ----
 
 Session I — Foundations
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Introduction to Quantum Computing
    :icon: info
@@ -61,15 +57,17 @@ Session I — Foundations
 
    **Materials**
    - 📄 Slides:
-        - `Intro to Quantum <../_static/workshops/Intro_to_Quantum.pdf>`_ 
-        - `QML Overview <../_static/workshops/QML.pdf>`_
+
+     - `Intro to Quantum <../_static/workshops/Intro_to_Quantum.pdf>`_
+     - `QML Overview <../_static/workshops/QML.pdf>`_
+
    - 💻 Notebook: `Intro to Qiskit <../_static/workshops/IntrotoQiskit.ipynb>`_
    - 📘 Background: `Quantum Machine Learning <https://ibm.github.io/QBioCode/background.html>`_
 
 ----
 
 Session II — Data & Benchmarking
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Artificial Data Generation
    :icon: database
@@ -90,14 +88,15 @@ Session II — Data & Benchmarking
    **Materials**
    - 💻 Notebook: `Tutorial QProfiler <https://github.com/IBM/QBioCode/blob/main/tutorial/QProfiler/example_qprofiler.ipynb>`_
    - 📄 Slides: `QBC <../_static/workshops/qbiocode.pdf>`_
-   - 📘 Documentation: 
-      - `QProfiler <https://ibm.github.io/QBioCode/apps/profiler.html>`_ 
-      - `Configuration Guide <https://ibm.github.io/QBioCode/apps/config.html>`_
+   - 📘 Documentation:
+
+     - `QProfiler <https://ibm.github.io/QBioCode/apps/profiler.html>`_
+     - `Configuration Guide <https://ibm.github.io/QBioCode/apps/config.html>`_
 
 ----
 
 Session III — Model Selection & Meta-learning
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. QSage — Meta-learning for Model Selection
    :icon: light-bulb
@@ -127,7 +126,7 @@ Session III — Model Selection & Meta-learning
 ----
 
 Session IV — Quantum-enhanced Pipelines
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. dropdown:: 1. Quantum Projection Learning (QPL)
    :icon: cpu

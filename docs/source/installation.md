@@ -23,6 +23,12 @@ Install with apps support (QProfiler, QSage):
 pip install 'qbiocode[apps]'
 ```
 
+Install with QuVINE graph embeddings (`quvine_rwr`, `quvine_dtqw`, `node2vec`, ...):
+
+```bash
+pip install 'qbiocode[quvine]'
+```
+
 Install with all optional dependencies:
 
 ```bash
@@ -31,6 +37,61 @@ pip install 'qbiocode[all]'
 
 ```{note}
 **For zsh users:** The quotes around `'qbiocode[apps]'` are required because zsh interprets square brackets as glob patterns. Bash users can omit quotes, but using them works in both shells.
+```
+
+## Optional dependency extras
+
+A plain `pip install qbiocode` gives you the full classical and quantum pipeline:
+data generation, all scikit-learn embeddings, PQK, and the classical/quantum
+models. Everything below is additive.
+
+| Extra | Command | What it adds |
+| --- | --- | --- |
+| *(none)* | `pip install qbiocode` | Core library: embeddings (`pca`, `nmf`, `umap`, `tsne`, `spectral`, ...), PQK, classical + quantum models, `evaluate_graph`, `scale_train_test` |
+| `apps` | `pip install 'qbiocode[apps]'` | Hydra-driven CLIs for the QProfiler and QSage apps (`hydra-core`, `joblib`) |
+| `quvine` | `pip install 'qbiocode[quvine]'` | QuVINE quantum/classical graph embeddings — 83 methods reachable through `get_embeddings("quvine_*", ...)` |
+| `docs` | `pip install 'qbiocode[docs]'` | Sphinx toolchain for building this documentation locally |
+| `dev` | `pip install 'qbiocode[dev]'` | `pytest`, `pytest-cov`, `black`, `isort`, `flake8`, `mypy` |
+| `all` | `pip install 'qbiocode[all]'` | Union of every extra above |
+
+Extras combine, so `pip install 'qbiocode[apps,quvine]'` is valid.
+
+### QuVINE graph embeddings
+
+QuVINE ships as a single all-or-nothing extra rather than one extra per method
+family. Its dependencies (`gensim`, `hiperwalk`, `node2vec`, `omegaconf`,
+`python-louvain`, `ripser`, `torch-geometric`) overlap heavily across the walk,
+spectral and neural methods, so a partial install would leave most method names
+resolving and a handful raising at call time — harder to reason about than a
+single yes/no.
+
+Without the extra, `import qbiocode` and every classical embedding keep working;
+only the QuVINE method names are affected, and they raise an actionable error
+naming the missing module and the exact install command:
+
+```python
+>>> import qbiocode as qbc
+>>> qbc.get_embeddings("quvine_rwr", X_train, X_test)
+QuvineDependencyError: QuVINE method 'quvine_rwr' requires the optional 'quvine'
+extra. Install it with: pip install "qbiocode[quvine]"
+(missing: gensim, provided by gensim>=4.4)
+```
+
+`QuvineDependencyError` subclasses `ImportError`, so `except ImportError` already
+catches it. `qbiocode.embeddings.QUVINE_METHODS` lists the method names, and
+`qbiocode.apps.quvine.missing_dependencies()` reports which optional packages are
+absent without raising.
+
+```{note}
+`torch` is already a base dependency, so the `quvine` extra does not pull in a
+second deep-learning stack. On macOS, `pip install 'qbiocode[quvine]'` may need
+`brew install cmake` first for `ripser`.
+```
+
+```{warning}
+The `quvine` extra pins `setuptools<81` because `node2vec` imports
+`pkg_resources`, which setuptools 81 removed. If you install QuVINE into an
+environment that needs a newer setuptools, use a separate virtual environment.
 ```
 
 ## Install with Conda
@@ -67,7 +128,7 @@ pip install qbiocode
 pip install 'qbiocode[apps]'
 ```
 
-**Note**: See [docs/CONDA_SUBMISSION.md](../CONDA_SUBMISSION.md) for information about the conda submission process.
+**Note**: See [docs/CONDA_SUBMISSION.md](https://github.com/IBM/QBioCode/blob/main/docs/CONDA_SUBMISSION.md) for information about the conda submission process.
 
 ## Install from Source
 
@@ -121,6 +182,12 @@ Once the activated, you'll see `(venv)` at the beginning of your terminal promt.
    
    # Or install with apps support
    pip install -e ".[apps]"
+
+   # Or with QuVINE graph embeddings
+   pip install -e ".[quvine]"
+
+   # Or everything
+   pip install -e ".[all]"
    ```
 
 5. **macOS Users: Install OpenMP for XGBoost (Required)**
@@ -343,7 +410,7 @@ pip install --force-reinstall xgboost
 
 Another cloud-based option is [Google Colab](https://colab.research.google.com/):
 
-```python
+```text
 # In a Colab notebook cell:
 !git clone https://github.com/IBM/QBioCode.git
 %cd QBioCode

@@ -153,6 +153,8 @@ You can also import and use QProfiler components directly in Python:
 For complete examples, see the :doc:`QProfiler Tutorial <../tutorials/QProfiler/example_qprofiler>`.
 
 
+.. _data-complexity-measures:
+
 Data Complexity Measures
 =========================
 

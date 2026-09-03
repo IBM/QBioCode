@@ -8,6 +8,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.multiclass import OneVsOneClassifier, OneVsRestClassifier
 
 # ====== Additional local imports ======
+from qbiocode.learning._grid import build_param_grid
 from qbiocode.evaluation.model_evaluation import modeleval
 
 # ====== Scikit-learn imports ======
@@ -116,11 +117,12 @@ def compute_lr_opt(
     args,
     model="Logistic Regression",
     cv=5,
-    penalty=[],
-    C=[],
-    solver=[],
+    penalty=None,
+    C=None,
+    solver=None,
     verbose=False,
-    max_iter=[],
+    max_iter=None,
+    random_state=None,
 ):
     """This function also generates a model using a Logistic Regression (LR) method as implemented in
     `scikit-learn <https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html>`__.
@@ -143,20 +145,32 @@ def compute_lr_opt(
         solver (list): List of solvers to try, default is an empty list.
         verbose (bool): Whether to print detailed logs, default is False.
         max_iter (list): List of maximum iterations to try, default is an empty list.
+        random_state (int or None): Seed for the estimator's own randomness. QProfiler fills this in from the run's ``seed`` so two runs at one seed agree; None leaves the estimator drawing from the global RNG.
 
     Returns:
         modeleval (dict): A dictionary containing the evaluation metrics, best parameters, and time taken for training and validation.
     """
 
     beg_time = time.time()
-    params = {"penalty": penalty, "C": C, "solver": solver, "max_iter": max_iter}
+    # Only the hyperparameters actually supplied. Passing all of them meant a
+    # config that named a subset died in sklearn on the first one it left at its
+    # `[]` default; see qbiocode.learning._grid.
+    params = build_param_grid(
+        "lr",
+        {
+            "penalty": penalty,
+            "C": C,
+            "solver": solver,
+            "max_iter": max_iter,
+        },
+    )
     # Perform Grid Search to find the best parameters
-    grid_search = GridSearchCV(LogisticRegression(), param_grid=params, cv=cv)
+    grid_search = GridSearchCV(LogisticRegression(random_state=random_state), param_grid=params, cv=cv)
     grid_search.fit(X_train, y_train)
 
     # Get the best parameters and use them to create the final Decision Tree model
     best_params = grid_search.best_params_
-    best_logres = LogisticRegression(**best_params)
+    best_logres = LogisticRegression(**best_params, random_state=random_state)
     best_logres.fit(X_train, y_train)
 
     # Make predictions and calculate accuracy
