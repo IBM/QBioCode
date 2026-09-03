@@ -1025,6 +1025,18 @@ have been re-executed.
   in `tutorials.md` now resolves to a built page, and every built page is reachable from
   the toctree.
 
+- **Absolute local paths were baked into committed notebook outputs.** Seventeen
+  notebooks carried the running machine's own filesystem paths in their stored output --
+  a `<env>/lib/python3.12/site-packages/node2vec/edges.py` pkg_resources warning, tqdm's
+  `IProgress not found` banner, and `print()` echoes of the working directory and data
+  directory. Because `nbsphinx_execute = 'never'`, those strings publish verbatim to
+  GitHub Pages, where they are simultaneously useless to a reader (they name a directory
+  that does not exist on their machine) and a needless disclosure of the author's home
+  directory layout. Every one is now a `<env>/` or `<repo>/` placeholder. Only the output
+  text changed; no figure, table, or metric was touched. Commented-out source paths in
+  `archive/` are left alone -- they are provenance in code, not stray output, and that
+  tree is not part of the published site.
+
 #### Documentation build
 - **The entire API reference was orphaned.** Nothing in any toctree pointed at
   `api/modules`, so Sphinx emitted "document isn't included in any toctree" for every
