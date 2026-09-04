@@ -132,7 +132,7 @@ Examples:
   quvine --edgelist edges.csv --method quvine_fused --output out/
   quvine --list-methods
 
-For more information, see: https://github.com/IBM/QBioCode
+For more information, see: https://github.com/qiskit-community/QBioCode
 """,
     )
     parser.add_argument("--edgelist", "-i", help="Path to a 2/3-column edge-list file (source,target[,weight]).")

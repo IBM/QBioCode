@@ -41,7 +41,7 @@ environment:
    5. **Fuses views** into a single embedding when requested
 
 .. note::
-    Before you start, make sure that you have installed QBioCode correctly by following the  `Installation <https://ibm.github.io/QBioCode/installation.html>`_ guide.
+    Before you start, make sure that you have installed QBioCode correctly by following the  `Installation <https://qiskit-community.github.io/QBioCode/installation.html>`_ guide.
 
 .. important::
     Graph-complexity metrics are **not** part of the embedding app. They live in

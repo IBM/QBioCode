@@ -369,7 +369,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/IBM/QBioCode",
+            "url": "https://github.com/qiskit-community/QBioCode",
             "icon": "fab fa-github",
             "type": "fontawesome",
         }

@@ -264,13 +264,13 @@ Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics
 - [QSage App](apps/sage.rst) - Feature selection application
 - [QuVINE App](apps/quvine.rst) - Quantum view-based network embeddings
 - [QuVINE Configuration Guide](apps/quvine_config.md) - The shipped QuVINE YAML config, section by section
-- [GitHub Repository](https://github.com/IBM/QBioCode) - Source code and examples
+- [GitHub Repository](https://github.com/qiskit-community/QBioCode) - Source code and examples
 
 ## Support
 
 If you encounter any issues or have questions about the tutorials:
-- Check the [GitHub Issues](https://github.com/IBM/QBioCode/issues)
-- Review the [Contributing Guide](https://github.com/IBM/QBioCode/blob/main/CONTRIBUTING.md)
+- Check the [GitHub Issues](https://github.com/qiskit-community/QBioCode/issues)
+- Review the [Contributing Guide](https://github.com/qiskit-community/QBioCode/blob/main/CONTRIBUTING.md)
 - Consult the API documentation for detailed function references
 
 ```{toctree}

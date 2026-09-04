@@ -199,7 +199,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **`deploy-docs` job** in `.github/workflows/ci.yml`. On a push to `main` it downloads
   the HTML the `docs` job already built and publishes it to the `gh-pages` branch that
-  https://ibm.github.io/QBioCode serves, writing `.nojekyll` first so Pages does not
+  https://qiskit-community.github.io/QBioCode serves, writing `.nojekyll` first so Pages does not
   discard Sphinx's `_static/`, `_images/`, `_sources/` and `_modules/` directories. The
   site was previously updated by committing the rendered output into the repository and
   copying it across by hand. `peaceiris/actions-gh-pages` is used rather than
@@ -454,6 +454,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   renaming them would break callers and any saved result CSV for a wording change.
 
 ### Fixed
+
+#### 🚧 The documentation site had not been rebuilt since 12 July
+- **`deploy-docs` was never reached.** The job is correct and correctly gated
+  (`push` to `main`, never on a pull request), but it declares `needs: docs` -- and the
+  `docs` job had been failing on every push to `main`. GitHub therefore *skipped* the
+  deploy rather than failing it, which is the quiet kind of broken: CI showed a red X
+  attributed to a docs warning while the published site silently stayed months behind.
+  `gh-pages` still carried a build whose commit message predates the job's own message
+  template, so nothing that job produced had ever been published.
+- **The `docs` job failed on six warnings, not on anything structural.** `docs/Makefile`
+  passes `-W --keep-going`, so any warning is fatal: three malformed docstring
+  constructs surfacing in generated `api/` pages, and three duplicate link targets in
+  `docs/source/workshops/ISMB_2026.rst` where named references (`` `Profile <...>`_ ``)
+  repeated the same label. The workshop links are now anonymous (`` `...`__ ``), which is
+  what a repeated label requires.
+- **The docs job built on a Python the pinned Sphinx does not support.** It requested
+  3.10 while the `[docs]` extra pins `sphinx<9`; Sphinx 8.2 requires Python >= 3.11, so
+  on 3.10 pip quietly backtracked to Sphinx 8.1.3 -- a toolchain nobody had verified the
+  build against, selected by the resolver rather than chosen. That job now uses 3.12,
+  matching the other single-version jobs. The supported-Python floor is still asserted
+  by the test matrix, which is where it belongs.
+
+#### 🔗 Documentation URLs pointed at a repository that had moved
+- **The project moved from `IBM/QBioCode` to `qiskit-community/QBioCode`, and the old
+  Pages host stopped answering.** `https://ibm.github.io/QBioCode/` returns 404 -- a
+  transferred repository redirects on `github.com`, but its `github.io` Pages site does
+  not follow. 81 links across 28 files still named the old host or org, including the
+  GitHub button that the theme renders on every page of the site.
+- All of them now name `qiskit-community`. IBM remains where it is accurate: Apache
+  license headers, author affiliations, `research.ibm.com` profiles and IBM Quantum
+  references are untouched.
+- Five malformed links in `README.md` are repaired at the same time, all of them
+  reachable only by reading the rendered page: a missing `/` produced
+  `.../QBioCodeapps/sage.html`; a `[url(url)` typo rendered as literal text instead of a
+  link; the issue tracker was pointed at the Pages host, which does not serve `/issues`;
+  and a stray blank line split one sentence across a paragraph break.
 
 #### 🩹 `quvine` read an edge list's header row as an edge
 - **`quvine --edgelist` now recognizes and skips a header row.** `_load_graph` passed
@@ -1370,8 +1406,8 @@ This is the first public release of QBioCode, a comprehensive framework for quan
 - Automated CI/CD pipelines
 - Ready for PyPI distribution and Zenodo archiving
 
-**Note**: This is an alpha release. APIs may change in future versions. Please report any issues on our [GitHub issue tracker](https://github.com/IBM/QBioCode/issues).
+**Note**: This is an alpha release. APIs may change in future versions. Please report any issues on our [GitHub issue tracker](https://github.com/qiskit-community/QBioCode/issues).
 
 ---
 
-[0.1.0]: https://github.com/IBM/QBioCode/releases/tag/v0.1.0
+[0.1.0]: https://github.com/qiskit-community/QBioCode/releases/tag/v0.1.0

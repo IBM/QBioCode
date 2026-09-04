@@ -3,7 +3,7 @@
 This guide explains QuVINE's YAML configuration: what each section controls, and
 — just as importantly — **which of QuVINE's three entry points actually reads
 it**. The shipped default is
-[`qbiocode/apps/quvine/configs/config.yaml`](https://github.com/IBM/QBioCode/blob/main/qbiocode/apps/quvine/configs/config.yaml).
+[`qbiocode/apps/quvine/configs/config.yaml`](https://github.com/qiskit-community/QBioCode/blob/main/qbiocode/apps/quvine/configs/config.yaml).
 
 ## Overview
 

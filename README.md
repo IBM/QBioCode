@@ -64,9 +64,7 @@ most method names resolving and a few raising at call time. Without it,
 `import qbiocode` and all classical embeddings still work — only the
 `quvine_*` names raise, with a message naming the missing module and the exact
 install command. See
-
 [Installation](https://qiskit-community.github.io/QBioCode/installation.html) for details.
-
 
 </details>
 
@@ -230,7 +228,7 @@ sage = QuantumSage(data=benchmark_df, features=features, metrics=metrics)
 predictions = sage.predict(new_dataset_features)
 ```
 
-[📖 QSage Documentation](https://qiskit-community.github.io/QBioCodeapps/sage.html) | [📓 Tutorial](tutorial/QSage/qsage.ipynb)
+[📖 QSage Documentation](https://qiskit-community.github.io/QBioCode/apps/sage.html) | [📓 Tutorial](tutorial/QSage/qsage.ipynb)
 
 ### QuVINE
 
@@ -298,7 +296,7 @@ from qbiocode import evaluate_graph
 metrics = evaluate_graph(G, name="karate")   # 1 x 88 DataFrame
 ```
 
-[📖 QuVINE Documentation](https://ibm.github.io/QBioCode/apps/quvine.html) | [⚙️ Configuration Guide](https://ibm.github.io/QBioCode/apps/quvine_config.html) | [📊 Graph-Complexity Measures](https://ibm.github.io/QBioCode/apps/quvine.html#graph-complexity-measures) | [📓 Tutorial](tutorial/QuVINE/example_quvine.ipynb)
+[📖 QuVINE Documentation](https://qiskit-community.github.io/QBioCode/apps/quvine.html) | [⚙️ Configuration Guide](https://qiskit-community.github.io/QBioCode/apps/quvine_config.html) | [📊 Graph-Complexity Measures](https://qiskit-community.github.io/QBioCode/apps/quvine.html#graph-complexity-measures) | [📓 Tutorial](tutorial/QuVINE/example_quvine.ipynb)
 
 ## 📖 Tutorials
 
@@ -388,7 +386,7 @@ Projected Quantum Kernels on real multi-omics cancer genomics:
 - Create 3-year survival labels from clinical data
 - Compare quantum-enhanced against classical SVM performance across four modalities
 
-All twelve are also rendered on the [documentation site](https://ibm.github.io/QBioCode/tutorials.html).
+All twelve are also rendered on the [documentation site](https://qiskit-community.github.io/QBioCode/tutorials.html).
 
 ## 🔧 Core Modules
 
@@ -479,7 +477,7 @@ num_configs, used_files = generate_qml_experiment_configs(
 
 ## 📊 Documentation
 
-Full documentation is available at: **[https://qiskit-community.github.io/QBioCode(https://qiskit-community.github.io/QBioCode)**
+Full documentation is available at: **[https://qiskit-community.github.io/QBioCode/](https://qiskit-community.github.io/QBioCode/)**
 
 - [Installation Guide](https://qiskit-community.github.io/QBioCode/installation.html)
 - [API Reference](https://qiskit-community.github.io/QBioCode/api/qbiocode.html)
@@ -504,7 +502,7 @@ If you use QBioCode in your research, please cite:
   author = {Raubenolt, Bryan and Bose, Aritra and Rhrissorrakrai, Kahn and 
             Utro, Filippo and Mohan, Akhil and Blankenberg, Daniel and Parida, Laxmi},
   year = {2024},
-  url = {https://github.com/IBM/QBioCode}
+  url = {https://github.com/qiskit-community/QBioCode}
 }
 ```
 
@@ -525,8 +523,8 @@ See [CITATION.cff](CITATION.cff) for more details.
 ## 📞 Support
 
 For questions, issues, or feature requests:
-- Open an issue on [GitHub](https://qiskit-community.github.io/QBioCode/issues)
-- Check the [documentation](https://qiskit-community.github.io/QBioCode)
+- Open an issue on [GitHub](https://github.com/qiskit-community/QBioCode/issues)
+- Check the [documentation](https://qiskit-community.github.io/QBioCode/)
 - Contact the authors
 
 ---
