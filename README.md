@@ -64,7 +64,7 @@ most method names resolving and a few raising at call time. Without it,
 `import qbiocode` and all classical embeddings still work — only the
 `quvine_*` names raise, with a message naming the missing module and the exact
 install command. See
-[Installation](https://ibm.github.io/QBioCode/installation.html) for details.
+[Installation](https://qiskit-community.github.io/QBioCode/installation.html) for details.
 
 </details>
 
@@ -205,7 +205,7 @@ from qbiocode.apps.qprofiler import qprofiler
 qprofiler.main(config)
 ```
 
-[📖 QProfiler Documentation](https://ibm.github.io/QBioCode/apps/profiler.html) | [📓 Tutorial](tutorial/QProfiler/example_qprofiler.ipynb)
+[📖 QProfiler Documentation](https://qiskit-community.github.io/QBioCode/apps/profiler.html) | [📓 Tutorial](tutorial/QProfiler/example_qprofiler.ipynb)
 
 ### QSage
 
@@ -228,7 +228,7 @@ sage = QuantumSage(data=benchmark_df, features=features, metrics=metrics)
 predictions = sage.predict(new_dataset_features)
 ```
 
-[📖 QSage Documentation](https://ibm.github.io/QBioCode/apps/sage.html) | [📓 Tutorial](tutorial/QSage/qsage.ipynb)
+[📖 QSage Documentation](https://qiskit-community.github.io/QBioCodeapps/sage.html) | [📓 Tutorial](tutorial/QSage/qsage.ipynb)
 
 ## 📖 Tutorials
 
@@ -355,12 +355,12 @@ num_configs, used_files = generate_qml_experiment_configs(
 
 ## 📊 Documentation
 
-Full documentation is available at: **[https://ibm.github.io/QBioCode/](https://ibm.github.io/QBioCode/)**
+Full documentation is available at: **[https://qiskit-community.github.io/QBioCode(https://qiskit-community.github.io/QBioCode)**
 
-- [Installation Guide](https://ibm.github.io/QBioCode/installation.html)
-- [API Reference](https://ibm.github.io/QBioCode/api/qbiocode.html)
-- [Tutorials](https://ibm.github.io/QBioCode/tutorials.html)
-- [Background](https://ibm.github.io/QBioCode/background.html)
+- [Installation Guide](https://qiskit-community.github.io/QBioCode/installation.html)
+- [API Reference](https://qiskit-community.github.io/QBioCode/api/qbiocode.html)
+- [Tutorials](https://qiskit-community.github.io/QBioCode/tutorials.html)
+- [Background](https://qiskit-community.github.io/QBioCode/background.html)
 
 ## 🤝 Contributing
 
@@ -401,8 +401,8 @@ See [CITATION.cff](CITATION.cff) for more details.
 ## 📞 Support
 
 For questions, issues, or feature requests:
-- Open an issue on [GitHub](https://github.com/IBM/QBioCode/issues)
-- Check the [documentation](https://ibm.github.io/QBioCode/)
+- Open an issue on [GitHub](https://qiskit-community.github.io/QBioCode/issues)
+- Check the [documentation](https://qiskit-community.github.io/QBioCode)
 - Contact the authors
 
 ---
