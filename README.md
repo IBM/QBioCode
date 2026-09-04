@@ -96,7 +96,7 @@ pip install qbiocode
 
 ```bash
 # Clone the repository
-git clone https://github.com/IBM/QBioCode.git
+git clone https://github.com/qiskit-community/QBioCode.git
 cd QBioCode
 
 # Create virtual environment
