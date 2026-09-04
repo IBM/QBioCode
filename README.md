@@ -64,7 +64,9 @@ most method names resolving and a few raising at call time. Without it,
 `import qbiocode` and all classical embeddings still work — only the
 `quvine_*` names raise, with a message naming the missing module and the exact
 install command. See
+
 [Installation](https://qiskit-community.github.io/QBioCode/installation.html) for details.
+
 
 </details>
 
