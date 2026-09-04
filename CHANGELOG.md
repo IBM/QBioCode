@@ -314,6 +314,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   together. Replayed against the pre-fix tree it reports eight offenders; against this one,
   none.
 
+- **QuVINE documentation at QProfiler/QSage parity.** The QuVINE app page was 199 lines
+  against `profiler.rst`'s 974 and linked 2 of its 4 notebooks.
+  - `docs/source/apps/quvine.rst` gains **How QuVINE Works** (the view → walk → corpus →
+    SGNS → fusion pipeline, with a stage-by-stage reading of `pipeline.py`), a
+    **command-line flag table**, an **Outputs** section naming every file a run writes and
+    every key in `embedding_meta.json`, a **Configuration** section, and links to all four
+    QuVINE notebooks instead of two.
+  - New page `docs/source/apps/quvine_config.md` documents the 314-line shipped config
+    section by section — and, first of all, **which of the three entry points reads which
+    sections**. `embed()` and the `quvine` CLI read `views`, `walks`, `train`, `min_count`,
+    `fusion` and `experiment.base_seed`; `data_path`, `graph`, `disease`, `runtime`,
+    `preprocess`, `baselines`, `analysis` and `evaluation` are the Hydra research
+    pipeline's alone. It also records the `${now:...}` Hydra-only resolver, the
+    `preprocess.subgraph` → `preprocess.subsample` schema migration, and the six supported
+    `fusion.method` values (`concatenate` is not one, despite appearing in older configs).
+  - New `:ref:`graph-complexity-measures`` section grouping all 88 `evaluate_graph`
+    columns by family — Laplacian spectrum, eigenvector localization, diffusion and walk
+    spectra, quantum composites, paths, degree/centrality concentration, community,
+    Ollivier-Ricci curvature, effective resistance, persistent homology, label-aware —
+    the graph analogue of `profiler.rst`'s `:ref:`data-complexity-measures``, and
+    cross-linked from `apps.rst` and `tutorials.md`.
+  - `README.md` gains a QuVINE Applications subsection, and its tutorial list goes from
+    5 entries to the 12 the site actually publishes.
+
 ### Changed
 - **Code Formatting**: Applied consistent code style across entire codebase
   - Ran `black` formatter on all Python files
@@ -430,6 +454,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   renaming them would break callers and any saved result CSV for a wording change.
 
 ### Fixed
+
+#### 🩹 `quvine` read an edge list's header row as an edge
+- **`quvine --edgelist` now recognizes and skips a header row.** `_load_graph` passed
+  `header=None` to `pd.read_csv`, so the `source,target` first line that the tool's own
+  `--help` and documentation both show was loaded as an edge between a node named
+  "source" and a node named "target". On the 34-node karate graph the run reported 34
+  nodes without the header and **36 with it**, embedded the two phantom nodes, and exited
+  0 either way — nothing in `embedding_meta.json` or on stderr said which had happened.
+  A header is now dropped and the fact reported on stderr.
+- Detection matches a **closed set of conventional column names** (`source`/`target`,
+  `from`/`to`, `gene1`/`gene2`, `node_a`/`node_b`, ...), both fields required, rather than
+  sniffing. Every heuristic considered has a failure mode that is worse than the bug:
+  "row 0's endpoints appear nowhere else" deletes the first edge of a sparse matching, and
+  "row 0 is non-numeric" deletes the first edge of every string-labelled graph — and a
+  deleted real edge leaves no phantom node to notice. Single-letter names (`u`, `v`, `a`,
+  `b`) are deliberately excluded as plausible node labels.
+- New `--header {auto,yes,no}` forces the decision for anything the set does not cover.
+  A file containing only a header is now an error rather than an empty graph.
+
+#### 🩹 A nested `.. toctree::` swallowed the rest of its page
+- **`tests/test_docs_structure.py`'s toctree parser now ends a directive body where
+  reStructuredText does** — at the first non-blank line indented no further than the
+  directive — instead of only at column 0. That held for as long as every toctree in the
+  tree sat at column 0. Restoring `better_apidoc` broke it: the pages it generates indent
+  the whole body under one top-level `.. automodule::`, so nothing dedents to column 0,
+  and the parser ran to the end of the file yielding every `list-table` row as a toctree
+  entry — one of them a dataclass `__repr__` long enough to raise
+  `OSError: File name too long` when the existence check `stat()`ed it as a filename.
 
 #### 💥 Every XGBoost fit crashed the interpreter on macOS
 - **`import qbiocode` no longer loads `torch` before `xgboost`.** `xgboost` and `torch`

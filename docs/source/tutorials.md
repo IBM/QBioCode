@@ -73,6 +73,11 @@ graph analogue of QProfiler's dataset summary.
 QuVINE's dependencies ship behind an optional extra, so install it with
 `pip install "qbiocode[quvine]"` before running these notebooks.
 
+The graph summary these notebooks lean on is documented in full under
+{ref}`Graph-Complexity Measures <graph-complexity-measures>`, and the YAML config
+they configure QuVINE with in the {doc}`QuVINE Configuration Guide
+<apps/quvine_config>`.
+
 Four notebooks, in reading order: the synthetic-graph walkthrough introduces the API and the method
 registry, two single-cell notebooks apply it to real data, and the last drives QuVINE through
 QProfiler.
@@ -258,6 +263,7 @@ Learn how to apply Projected Quantum Kernels (PQK) to real-world cancer genomics
 - [QProfiler App](apps/profiler.rst) - Standalone profiling application
 - [QSage App](apps/sage.rst) - Feature selection application
 - [QuVINE App](apps/quvine.rst) - Quantum view-based network embeddings
+- [QuVINE Configuration Guide](apps/quvine_config.md) - The shipped QuVINE YAML config, section by section
 - [GitHub Repository](https://github.com/IBM/QBioCode) - Source code and examples
 
 ## Support

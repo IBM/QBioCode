@@ -8,8 +8,8 @@ Before asking for help, please check our comprehensive documentation:
 
 - **Official Documentation**: [https://qbiocode.readthedocs.io/](https://qbiocode.readthedocs.io/)
 - **API Reference**: [https://qbiocode.readthedocs.io/en/latest/api/](https://qbiocode.readthedocs.io/en/latest/api/)
-- **Tutorials**: Check the `tutorial/` directory in the repository
-- **Examples**: See the `docs/source/tutorials/` directory
+- **Tutorials**: Check the `tutorial/` directory in the repository, or the
+  rendered gallery at [https://ibm.github.io/QBioCode/tutorials.html](https://ibm.github.io/QBioCode/tutorials.html)
 
 ## 💬 Getting Help
 

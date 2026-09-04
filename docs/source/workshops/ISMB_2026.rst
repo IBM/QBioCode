@@ -29,13 +29,13 @@ Instructors
 -----------
 
 **Aritra Bose** — Staff Research Scientist, IBM  
-`Profile <https://research.ibm.com/people/aritra-bose>`_
+`Profile <https://research.ibm.com/people/aritra-bose>`__
 
 **Filippo Utro** — Senior Research Scientist, IBM  
-`Profile <https://research.ibm.com/people/filippo-utro>`_
+`Profile <https://research.ibm.com/people/filippo-utro>`__
 
 **Laxmi Parida** — IBM Fellow  
-`Profile <https://research.ibm.com/people/laxmi-parida>`_
+`Profile <https://research.ibm.com/people/laxmi-parida>`__
 
 ----
 
@@ -200,8 +200,8 @@ Session II — QBioCode Applications (11:00–13:00)
    **Materials**
 
    - 💻 Notebook: `Tutorial QEnsemble <https://github.com/IBM/QBioCode/blob/main/tutorial/QEnsemble/QEnsemble_example_blobs.ipynb>`_
-   - 📄 Slides: `QEnsemble <../_static/workshops/QEnsemble_slides.pdf>`_
-   - 📘 Documentation: `QEnsemble <https://ibm.github.io/QBioCode/tutorials/QEnsemble/QEnsemble_example_blobs.html>`_
+   - 📄 Slides: `QEnsemble <../_static/workshops/QEnsemble_slides.pdf>`__
+   - 📘 Documentation: `QEnsemble <https://ibm.github.io/QBioCode/tutorials/QEnsemble/QEnsemble_example_blobs.html>`__
 
 ----
 
