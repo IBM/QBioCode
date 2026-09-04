@@ -119,7 +119,7 @@ brew install libomp
 pip install --force-reinstall xgboost
 ```
 
-For detailed installation instructions, see the [Installation Guide](https://ibm.github.io/QBioCode/installation.html).
+For detailed installation instructions, see the [Installation Guide](https://github.com/qiskit-community/QBioCode/installation.html).
 
 ### Running Tests
 
