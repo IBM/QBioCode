@@ -2,7 +2,7 @@
 
 **A comprehensive suite of computational resources for quantum machine learning applications in healthcare and life sciences.**
 
-[![PyPI version](https://badge.fury.io/py/qbiocode.svg)](https://badge.fury.io/py/qbiocode) [![Minimum Python Version](https://img.shields.io/badge/Python-%3E=%203.10-blue)](https://www.python.org/downloads/) [![Maximum Python Version Tested](https://img.shields.io/badge/Python-%3C=%203.12-blueviolet)](https://www.python.org/downloads/) [![Supported Python Versions](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/) [![GitHub Pages](https://img.shields.io/badge/docs-sphinx-blue)](https://ibm.github.io/QBioCode/)
+[![PyPI version](https://badge.fury.io/py/qbiocode.svg)](https://badge.fury.io/py/qbiocode) [![Minimum Python Version](https://img.shields.io/badge/Python-%3E=%203.10-blue)](https://www.python.org/downloads/) [![Maximum Python Version Tested](https://img.shields.io/badge/Python-%3C=%203.12-blueviolet)](https://www.python.org/downloads/) [![Supported Python Versions](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-blue)](https://www.python.org/downloads/) [![GitHub Pages](https://img.shields.io/badge/docs-sphinx-blue)](https://qiskit-community.github.io/QBioCode/)
 
 <img src="docs/source/img/QBioCode_logo.png" width="300" />
 
